@@ -1,11 +1,12 @@
 import {
   INITIATIVES_IMG_ALLOWED_FORMATS,
+  TERRITORY_STORY_IMG_DESCRIPTION_MAX_LENGTH,
   TERRITORY_STORY_IMG_MAX_FILE_SIZE,
   TERRITORY_STORY_IMG_MAX_HEIGHT,
   TERRITORY_STORY_IMG_MAX_WIDTH,
   TERRITORY_STORY_IMG_MIN_HEIGHT,
   TERRITORY_STORY_IMG_MIN_WIDTH,
-  TERRITORY_STORY_MAX_IMAGES,
+  TERRITORY_STORY_IMG_MAX_AMOUNT,
 } from "@config/monitoring";
 import { LabelAndErrors } from "@ui/LabelingWithErrors";
 import type { ImageObjectTS } from "pages/monitoring/types/territoryStory";
@@ -13,13 +14,10 @@ import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import { cn } from "@ui/shadCN/lib/utils";
 import { ImageUp, Trash, Trash2 } from "lucide-react";
 import { Button } from "@ui/shadCN/component/button";
-import { Input } from "@ui/shadCN/component/input";
 import { ImgValidator } from "@utils/imgValidator";
-import {
-  InputGroup,
-  InputGroupButton,
-  InputGroupInput,
-} from "@ui/shadCN/component/input-group";
+import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
+import TextareaAutosize from "react-textarea-autosize";
+import { inputLengthCount, inputWarnColor } from "@utils/ui";
 
 export function ImagesInput({
   images,
@@ -39,14 +37,9 @@ export function ImagesInput({
   } | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const firstLoad = useRef(false);
 
   useEffect(() => {
-    if (firstLoad.current) {
-      return;
-    }
     setImageCards(images);
-    firstLoad.current = true;
   }, [images]);
 
   const handleFileSelect = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -92,7 +85,7 @@ export function ImagesInput({
       return;
     }
 
-    if (imageCards.length >= TERRITORY_STORY_MAX_IMAGES) {
+    if (imageCards.length >= TERRITORY_STORY_IMG_MAX_AMOUNT) {
       setErrors(["Límite de imágenes alcanzado."]);
       return;
     }
@@ -113,7 +106,7 @@ export function ImagesInput({
     }
   };
 
-  const handleUpdateDescription = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleUpdateDescription = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setErrors([]);
     setStagedImage((oldStaged) => {
       if (!oldStaged) {
@@ -134,96 +127,144 @@ export function ImagesInput({
   };
 
   return (
-    <div className="space-y-2">
-      {imageCards.length > 0 && (
-        <>
-          <div className="text-primary px-2">Imágener adjuntas al relato</div>
-          {imageCards.map((img, index) => (
-            <ImageCard
-              key={img.fileUrl}
-              imageInfo={img}
-              removeImage={() => removeImage(index)}
-            />
-          ))}
-        </>
-      )}
+    <fieldset>
+      <legend className="flex w-full justify-between text-primary font-normal px-2">
+        <span>Ajuntar imágenes</span>
+        <span>
+          {imageCards.length} de {TERRITORY_STORY_IMG_MAX_AMOUNT} imágenes
+        </span>
+      </legend>
 
-      <div>
-        <LabelAndErrors
-          htmlFor="imageUpload"
-          errID="err_img"
-          validationErrors={errors}
-        >
-          Cargar imagen para el relato
-        </LabelAndErrors>
-
-        <div className="flex flex-col gap-2">
-          <div
-            className={cn(
-              "relative group mt-1 overflow-hidden rounded-xl border border-primary border-dashed bg-white h-40 transition-all focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-primary",
-              stagedImage
-                ? "border-primary bg-muted"
-                : "border-muted-foreground/30 hover:border-primary cursor-pointer",
-            )}
+      <div className="border border-input p-2 rounded-xl">
+        <div>
+          <LabelAndErrors
+            htmlFor="imageUpload"
+            errID="errors_img"
+            validationErrors={errors}
+            className="m-0 p-0"
           >
-            <button
-              type="button"
-              className="absolute inset-0 w-full h-full cursor-pointer z-0 opacity-0"
-              onClick={() => fileInputRef.current?.click()}
-              aria-label="Cargar imagen"
-            />
+            <span className="sr-only">
+              Carga la imagen e ingresa la descipción
+            </span>
+          </LabelAndErrors>
 
-            <div className="absolute inset-0 p-2 flex items-center justify-center pointer-events-none z-0">
-              {stagedImage ? (
-                <img
-                  src={stagedImage.preview}
-                  className="w-full h-full object-contain"
-                  alt="Vista previa"
-                />
-              ) : (
-                <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                  <ImageUp className="w-16 h-16 opacity-30 text-primary" />
-                  <span className="text-base text-primary">
-                    Selecciona una imagen para subir
-                  </span>
+          <div className="grid grid-cols-2 gap-4">
+            <div
+              className={cn(
+                "relative group mt-1 overflow-hidden rounded-xl border border-primary border-dashed bg-white min-h-40 h-full transition-all focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-primary",
+                stagedImage
+                  ? "border-primary bg-muted"
+                  : "border-muted-foreground/30 hover:border-primary cursor-pointer",
+              )}
+            >
+              <button
+                type="button"
+                className="absolute inset-0 w-full h-full cursor-pointer z-0 opacity-0"
+                onClick={() => fileInputRef.current?.click()}
+                aria-label="Cargar imagen"
+              />
+
+              <div className="absolute inset-0 p-2 flex items-center justify-center pointer-events-none z-0">
+                {stagedImage ? (
+                  <img
+                    src={stagedImage.preview}
+                    className="w-full h-full object-contain"
+                    alt="Vista previa"
+                  />
+                ) : (
+                  <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                    <ImageUp className="w-16 h-16 opacity-30 text-primary" />
+                    <span className="text-base text-primary">
+                      Selecciona una imagen
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {stagedImage && (
+                <div className="absolute bottom-3 right-3 flex gap-2 z-10">
+                  <Button
+                    type="button"
+                    variant="outline_destructive"
+                    className="bg-white shadow-md h-9 w-9"
+                    onClick={() => setStagedImage(null)}
+                  >
+                    <span className="sr-only">Quitar imagen</span>
+                    <Trash2 aria-hidden="true" />
+                  </Button>
                 </div>
               )}
             </div>
 
-            {stagedImage && (
-              <div className="absolute bottom-3 right-3 flex gap-2 z-10">
-                <Button
-                  type="button"
-                  variant="outline_destructive"
-                  className="bg-white shadow-md h-9 w-9"
-                  onClick={() => setStagedImage(null)}
+            <div className="flex flex-col mt-1">
+              <label
+                htmlFor="image_description"
+                className="text-primary font-normal"
+              >
+                Descripción de la imagen <span aria-hidden="true">*</span>
+              </label>
+              <InputGroup className="h-full rounded-lg">
+                <TextareaAutosize
+                  id="image_description"
+                  name="image_description"
+                  data-slot="input-group-control"
+                  placeholder="Escribe una breve descripción de la imagen..."
+                  className="field-sizing-content min-h-20 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none"
+                  value={stagedImage?.description ?? ""}
+                  onChange={handleUpdateDescription}
+                  maxLength={TERRITORY_STORY_IMG_DESCRIPTION_MAX_LENGTH}
+                  disabled={!stagedImage}
+                  aria-required="true"
+                  aria-describedby={
+                    errors.length > 0 ? "errors_img" : undefined
+                  }
+                />
+                <InputGroupAddon
+                  align="block-end"
+                  className={cn(
+                    "mt-0 pt-0",
+                    inputWarnColor(
+                      stagedImage?.description ?? "",
+                      TERRITORY_STORY_IMG_DESCRIPTION_MAX_LENGTH,
+                    ),
+                  )}
                 >
-                  <span className="sr-only">Quitar imagen</span>
-                  <Trash2 aria-hidden="true" />
-                </Button>
-              </div>
-            )}
-          </div>
+                  {inputLengthCount(
+                    stagedImage?.description ?? "",
+                    TERRITORY_STORY_IMG_DESCRIPTION_MAX_LENGTH,
+                  )}
+                </InputGroupAddon>
+              </InputGroup>
 
-          <InputGroup className="py-5">
-            <InputGroupInput
-              placeholder="Escribe una breve descripción de la imagen..."
-              value={stagedImage?.description ?? ""}
-              type="text"
-              onChange={handleUpdateDescription}
-              disabled={!stagedImage}
-            />
-            <InputGroupButton
-              size="sm"
-              variant="ghost-clean"
-              className="text-primary hover:text-accent"
-              disabled={!stagedImage}
-              onClick={handleAddStagedImage}
-            >
-              Subir imagen
-            </InputGroupButton>
-          </InputGroup>
+              <Button
+                size="sm"
+                variant="default"
+                className="mt-2 self-end"
+                disabled={!stagedImage}
+                onClick={handleAddStagedImage}
+              >
+                Adjuntar imagen
+              </Button>
+            </div>
+          </div>
         </div>
+
+        {imageCards.length > 0 && (
+          <>
+            <div className="flex w-full justify-between text-primary font-normal px-2 mt-2">
+              Imágenes adjuntas
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+              {imageCards.map((img, index) => (
+                <ImageCard
+                  key={img.fileUrl}
+                  imageInfo={img}
+                  removeImage={() => removeImage(index)}
+                />
+              ))}
+            </div>
+          </>
+        )}
 
         <input
           ref={fileInputRef}
@@ -231,12 +272,10 @@ export function ImagesInput({
           className="sr-only"
           onChange={(e) => void handleFileSelect(e)}
           disabled={isLoading}
+          aria-describedby={errors.length > 0 ? "errors_img" : undefined}
         />
-        <div className="text-right">
-          {imageCards.length} de {TERRITORY_STORY_MAX_IMAGES} imágenes
-        </div>
       </div>
-    </div>
+    </fieldset>
   );
 }
 
@@ -248,11 +287,11 @@ function ImageCard({
   removeImage: () => void;
 }) {
   return (
-    <div className="flex gap-2 p-2 rounded-lg border border-primary bg-muted space-y-2">
+    <div className="flex gap-2 p-2 rounded-lg bg-background/50 space-y-2">
       <img
         src={imageInfo.fileUrl}
         alt={imageInfo.description}
-        className="h-30 m-0! aspect-video object-cover rounded"
+        className="border border-primary/50 h-30 object-contain rounded"
       />
       <div className="flex flex-col w-full gap-2 justify-between">
         <div>
