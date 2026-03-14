@@ -1,68 +1,75 @@
-import { type SetStateAction, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-import { Label } from "@ui/shadCN/component/label";
 import { LabelAndErrors } from "@ui/LabelingWithErrors";
 import { Combobox } from "@ui/ComboBox";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import { StrValidator } from "@utils/strValidator";
-import { inputLengthCount, inputWarnColor } from "@utils/ui";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@ui/shadCN/component/input-group";
-import { INITIATIVE_LOCALITY_MAX_LENGTH } from "@config/monitoring";
 
 import {
-  isLocationObj,
   TagDataBasic,
-  type LocationDataBasic,
 } from "pages/monitoring/types/initiative";
-import {
-  getColombianDepartments,
-  getMunicipalitiesByDepartment,
-} from "pages/monitoring/utils/manageLocation";
 import type { ItemEditorProps } from "pages/monitoring/types/initiativeData";
-import { locationAlreadyExist } from "pages/monitoring/ui/initiativesAdmin/utils/fieldClientValidations";
-import { fetchAndMakeLocationObj } from "pages/monitoring/ui/initiativesAdmin/utils/builders";
 import { InputListActionButtons } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/InputListActionButtons";
 import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 import { getTags } from "pages/monitoring/api/services/tags";
 import { ODataTagInfo } from "pages/monitoring/types/odataResponse";
+import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
+import { TagCategory } from "pages/monitoring/types/tagData";
+import { NativeSelect, NativeSelectOption } from "@ui/shadCN/component/native-select";
+import { ODataParams } from "@appTypes/odata";
 
 export function TagInput<T extends TagDataBasic>({
-  selectedItems,
-  setter,
   update,
   discard,
   disabled = false,
 }: ItemEditorProps<T>) {
+  const initiativeTagCategories: TagCategory[] = [
+    { id: 1, name: "PoliticalContext" }, 
+    { id: 2, name: "SocialContext" }
+  ];
+
+  const [tagCategories, setTagCategories] = useState<TagCategory[]>(() => 
+    initiativeTagCategories.map((category) => ({
+      ...category,
+      name: translateTagCategory(category.name),
+    }))
+  );
   const [tags, setTags] = useState<ODataTagInfo | null>(null);
-  const [currentTag, setCurrentTag] = useState<number | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [selectedTag, setSelectedTag] = useState<number | null>(null);
   const [inputErr, setInputErr] = useState<{ [key: string]: string[] }>({});
+  const [searchParams] = useState<ODataParams>({
+    orderby: "id asc",
+  });
 
-  useEffect(() => {
-    const fetchTags = async () => {
-      const tags = await getTags({});
+  const fetchTags = async (categoryId: string) => {
 
-      if (isMonitoringAPIError(tags)) {
-        return;
-      }
-
-      setTags(tags);
+    const newSearchParams = {
+      ...searchParams,
+      filter: `category/id eq ${categoryId}`,
     };
 
-    void fetchTags();
-  }, []);
+    let tags = await getTags(newSearchParams);
+
+    if (isMonitoringAPIError(tags)) {
+      return;
+    }
+
+    tags.value.forEach(tag => {
+      tag.categoryName = translateTagCategory(tag.category.name);
+      tag.selectLabel = `${tag.name} - (${tag.categoryName})`;
+    });
+
+    setTags(tags);
+  };
 
   useEffect(() => {
-  }, [currentTag]);
+  }, [selectedTag]);
 
   const reset = useCallback(async () => {
     setInputErr({});
 
     if (update === null) {
-      setCurrentTag(null);
+      setSelectedTag(null);
       return;
     }
 
@@ -79,52 +86,86 @@ export function TagInput<T extends TagDataBasic>({
     if (update && discard) {
       discard();
     }
-    setCurrentTag(null);
+    setSelectedTag(null);
 
     setInputErr({});
   };
 
   return (
-    <>
-      <LabelAndErrors
-        errID="errors_tag"
-        validationErrors={inputErr.tag ?? []}
-        htmlFor="tag"
-      >
-        {inputErr?.tag && (
-          <span className="sr-only">
-            {uiText.initiative.module.tags.label}
-          </span>
-        )}
-      </LabelAndErrors>
-
-      <div className="form-input-list">
-        <Combobox
-          id="tag"
-          items={tags?.value ?? []}
-          value={currentTag ?? 0}
-          setValue={(e) => console.log(e)}
-          keys={{ forValue: "id", forLabel: "name" }}
-          uiText={{
-            itemNotFound:
-              uiText.initiative.module.tags.notFound,
-            trigger: uiText.initiative.module.tags.trigger,
-            inputPlaceholder:
-              uiText.initiative.module.tags.placeholder,
-          }}
-          aria-required="true"
-          aria-invalid={inputErr.tag !== undefined}
-          aria-describedby={inputErr.tag ? "errors_tag" : undefined}
-        />
-
-        <InputListActionButtons
-          update={update}
-          handleSave={handleSave}
-          handleDiscard={handleDiscard}
-          reset={() => void reset()}
-          disabled={disabled}
-        />
+    <div className="form-input-list">
+      <div>
+        <NativeSelect
+          id="category"
+          value={selectedCategory ?? 0}
+          onChange={(e) =>
+            fetchTags(e.target.value)
+          }
+          // onBlur={categoryOnBlur}
+          // disabled={!!tagId || isLoading}
+          className="bg-background"
+          // aria-invalid={errors.category !== undefined}
+          // aria-describedby={
+          //   errors.category ? "errors_category" : undefined
+          // }
+        >
+          <NativeSelectOption
+            key={"tag_category_default"}
+            value=""
+            disabled
+          >
+            {/* {uiText.form.defaultCategoryTitle} */}
+          </NativeSelectOption>
+          {tagCategories.map((category) => (
+            <NativeSelectOption
+              key={`tag_category_${category.id}`}
+              value={category.id}
+            >
+              {category.name}
+            </NativeSelectOption>
+          ))}
+        </NativeSelect>
       </div>
-    </>
+      <div>
+        <LabelAndErrors
+          errID="errors_tag"
+          validationErrors={inputErr.tag ?? []}
+          htmlFor="tag"
+        >
+          {inputErr?.tag && (
+            <span className="sr-only">
+              {uiText.initiative.module.tags.label}
+            </span>
+          )}
+        </LabelAndErrors>
+
+        <div className="form-input-list">
+          <Combobox
+            id="tag"
+            items={tags?.value ?? []}
+            value={selectedTag ?? 0}
+            setValue={(e) => console.log(e)}
+            keys={{ forValue: "id", forLabel: "selectLabel" }}
+            uiText={{
+              itemNotFound:
+                uiText.initiative.module.tags.notFound,
+              trigger: uiText.initiative.module.tags.trigger,
+              inputPlaceholder:
+                uiText.initiative.module.tags.placeholder,
+            }}
+            aria-required="true"
+            aria-invalid={inputErr.tag !== undefined}
+            aria-describedby={inputErr.tag ? "errors_tag" : undefined}
+          />
+        </div>
+      </div>
+
+      <InputListActionButtons
+        update={update}
+        handleSave={handleSave}
+        handleDiscard={handleDiscard}
+        reset={() => void reset()}
+        disabled={disabled}
+      />
+    </div>
   );
 }

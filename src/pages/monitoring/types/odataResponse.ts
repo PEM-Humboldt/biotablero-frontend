@@ -127,6 +127,7 @@ export interface ODataTag extends HasId {
     name: string;
   };
   categoryName: string;
+  selectLabel: string;
 }
 
 export interface TagEntryShort extends Omit<ODataTag, "categoryName"> {
