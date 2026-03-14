@@ -2,6 +2,7 @@ import {
   BadgeQuestionMark,
   FilePlay,
   House,
+  MapPinCheckInside,
   PackageOpen,
   ZoomIn,
 } from "lucide-react";
@@ -14,4 +15,9 @@ export const generalItems: DashboardItem[] = [
   { description: "Recursos", icon: PackageOpen, linkTo: "/" },
   { description: "Tutorial", icon: FilePlay, linkTo: "/" },
   { description: "Preguntas Frecuentes", icon: BadgeQuestionMark, linkTo: "/" },
+  {
+    description: "Iniciativas (Provicional)",
+    icon: MapPinCheckInside,
+    linkTo: "/Monitoreo/Iniciativas",
+  },
 ];

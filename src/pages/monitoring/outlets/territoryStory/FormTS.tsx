@@ -56,11 +56,7 @@ function fromLexicalEditorStateRefToMarkdown(
   return markdown;
 }
 
-export function TerritoryStoryForm({
-  territoryStoryId,
-}: {
-  territoryStoryId?: number;
-}) {
+export function FormTS({ territoryStoryId }: { territoryStoryId?: number }) {
   const [formKey, setFormKey] = useState(0);
   const [story, setStory] = useState<TerritoryStoryForm>(initializeTSForm());
   const [isLoading, setIsLoading] = useState(false);
