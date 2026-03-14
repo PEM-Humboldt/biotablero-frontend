@@ -1,4 +1,9 @@
+// NOTE: Este selector de iniciativas sólo tiene uso mientras se construye
+// el naegador de iniciativas, no debe ser usado en ninguna otra parte pues
+// será borrado
+
 import { type ChangeEvent, useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 
 import { getInitiatives } from "pages/monitoring/api/services/initiatives";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
@@ -8,13 +13,11 @@ import {
   NativeSelectOption,
 } from "@ui/shadCN/component/native-select";
 
-import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
-
-export function Selector() {
+export function InitiativeSelector_NOT_FOR_PRODUCTION() {
   const [allInitiatives, setAllInitiatives] = useState<
     ODataInitiative["value"]
   >([]);
-  const { setInitiative } = useInitiativeCTX();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchInitiatives = async () => {
@@ -30,9 +33,7 @@ export function Selector() {
   }, []);
 
   const handleInitiativeChange = (e: ChangeEvent<HTMLSelectElement>) => {
-    void setInitiative(
-      e.target.value !== "" ? Number(e.target.value) : undefined,
-    );
+    void navigate(`/Monitoreo/Iniciativas/${e.target.value}`);
   };
 
   return (

@@ -13,20 +13,20 @@ import {
   type FormEvent,
 } from "react";
 import { KeywordInput } from "@composites/keywordInput";
-import { YoutubeVideoInput } from "pages/monitoring/outlets/territoryStory/formTS/YoutubeVideoInput";
+import { YoutubeVideoInput } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/YoutubeVideoInput";
 import type {
   ImageObjectTS,
   TerritoryStoryForm,
   TerritoryStoryFull,
   VideoObjectTS,
 } from "pages/monitoring/types/territoryStory";
-import { ImagesInput } from "pages/monitoring/outlets/territoryStory/formTS/ImagesInput";
+import { ImagesInput } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/ImagesInput";
 import {
   TERRITORY_STORY_KEYWORD_MAX_LENGTH,
   TERRITORY_STORY_KEYWORDS_MAX_AMOUNT,
 } from "@config/monitoring";
-import { TitleInput } from "pages/monitoring/outlets/territoryStory/formTS/TitleInput";
-import { SubmitStory } from "pages/monitoring/outlets/territoryStory/formTS/SubmitStory";
+import { TitleInput } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/TitleInput";
+import { SubmitStory } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/SubmitStory";
 import { getTerritoryStory } from "pages/monitoring/api/services/territoryStory";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 

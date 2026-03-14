@@ -8,10 +8,10 @@ import { InitiativesMap } from "pages/monitoring/outlets/InitiativesMap";
 import { Initiatives } from "pages/monitoring/outlets/Initiatives";
 
 import { checkNLoad } from "@utils/userLoader";
-import type { UserType } from "@appTypes/user";
 import { Logs } from "pages/monitoring/outlets/Logs";
 import { InitiativesAdmin } from "pages/monitoring/outlets/InitiativesAdmin";
 import { InitiativesManagement } from "pages/monitoring/outlets/InitiativesManagement";
+import { InitiativeError } from "pages/monitoring/outlets/initiatives/InitiativeError";
 
 export const routes = createBrowserRouter([
   {
@@ -38,7 +38,7 @@ export const routes = createBrowserRouter([
         children: [
           { index: true, Component: InitiativesMap },
           {
-            path: "Iniciativas",
+            path: "Iniciativas/:initiativeId?/:tabSection?/:detailItem?",
             children: [
               {
                 index: true,

@@ -15,7 +15,7 @@ import {
 } from "pages/monitoring/api/services/youtube";
 import { isYoutubeVideoMetadata } from "pages/monitoring/api/types/guards";
 import type { VideoObjectTS } from "pages/monitoring/types/territoryStory";
-import { ErrorsList, LabelAndErrors } from "@ui/LabelingWithErrors";
+import { LabelAndErrors } from "@ui/LabelingWithErrors";
 import { Button } from "@ui/shadCN/component/button";
 import { ExternalLink, Trash } from "lucide-react";
 import { TERRITORY_STORY_YT_VID_MAX_AMOUNT } from "@config/monitoring";
