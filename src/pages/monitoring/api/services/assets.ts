@@ -45,7 +45,7 @@ export async function uploadImages(
   return imageUploadErrors;
 }
 
-export async function postTerritoryHistoryVideo(
+export async function postTerritoryStoryVideo(
   territoryStoryId: number,
   fileUrl: string,
 ) {
@@ -59,9 +59,7 @@ export async function postTerritoryHistoryVideo(
   return res;
 }
 
-export async function deleteTerritoryHistoryVideo(
-  territoryStoryVideoId: number,
-) {
+export async function deleteTerritoryStoryVideo(territoryStoryVideoId: number) {
   const res = await monitoringAPI<VideoObjectTS[]>({
     type: "delete",
     endpoint: `/TerritoryStoryVideo/${territoryStoryVideoId}`,
@@ -70,10 +68,29 @@ export async function deleteTerritoryHistoryVideo(
   return res;
 }
 
-export async function getTerritoryHistoryVideos(territoryStoryId: number) {
+export async function getTerritoryStoryVideos(territoryStoryId: number) {
   const res = await monitoringAPI<VideoObjectTS[]>({
     type: "get",
     endpoint: `/TerritoryStoryVideo/GetByTerritoryStory/${territoryStoryId}`,
+  });
+
+  return res;
+}
+
+export async function postTerritoryStoryImage(
+  territoryStoryId: number,
+  description: string,
+  file: File,
+) {
+  const formData = new FormData();
+  formData.append("TerritoryStoryId", String(territoryStoryId));
+  formData.append("Description", description);
+  formData.append("File", file);
+
+  const res = await monitoringAPI({
+    type: "post",
+    endpoint: "TerritoryStoryImage",
+    options: { data: formData, headers: { accept: "*/*" } },
   });
 
   return res;

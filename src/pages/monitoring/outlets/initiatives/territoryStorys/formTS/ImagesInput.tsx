@@ -22,11 +22,14 @@ import { inputLengthCount, inputWarnColor } from "@utils/ui";
 export function ImagesInput({
   images,
   updateImages,
+  errors,
+  setErrors,
 }: {
   images: ImageObjectTS[];
   updateImages: (images: ImageObjectTS[]) => void;
+  errors: string[];
+  setErrors: (errors: string[]) => void;
 }) {
-  const [errors, setErrors] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [imageCards, setImageCards] = useState<ImageObjectTS[]>([]);
 

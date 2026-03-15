@@ -8,7 +8,6 @@ import {
 } from "react";
 
 import { Button } from "@ui/shadCN/component/button";
-import { cn } from "@ui/shadCN/lib/utils";
 import {
   InputGroup,
   InputGroupAddon,
@@ -30,6 +29,8 @@ type KeywordInputProps = {
     sr: string;
     keywordCounter: (currentAmount: number, total: number) => string;
   };
+  errors: string[];
+  setErrors: (errors: string[]) => void;
 };
 
 export function KeywordInput({
@@ -46,12 +47,13 @@ export function KeywordInput({
     keywordCounter: (currentAmount: number, total: number) =>
       `${currentAmount} de ${total} palabras clave`,
   },
+  errors,
+  setErrors,
 }: KeywordInputProps): ReactNode {
   const [inputStr, setInputStr] = useState<string>("");
-  const [errors, setErrors] = useState<string[] | null>(null);
 
   const saveKeyword = (keyword: string) => {
-    setErrors(null);
+    setErrors([]);
 
     const [cleanStr, inputErr] = new StrValidator(keyword)
       .sanitize()
@@ -68,7 +70,7 @@ export function KeywordInput({
       return;
     }
 
-    updateKeywordsList([...new Set([...keywordsList, cleanStr])]);
+    updateKeywordsList([...keywordsList, cleanStr]);
     setInputStr("");
   };
 
@@ -98,7 +100,7 @@ export function KeywordInput({
     }
 
     updateKeywordsList(keywordsList.filter((_, i) => i !== index));
-    setErrors(null);
+    setErrors([]);
   };
 
   return (
@@ -157,8 +159,8 @@ export function KeywordInput({
             autoComplete="on"
             placeholder={inputTxt.placeholder}
             maxLength={keywordMaxLength}
-            aria-invalid={errors !== null}
-            aria-describedby={errors !== null ? "errors_keywords" : undefined}
+            aria-invalid={errors.length > 0}
+            aria-describedby={errors.length > 0 ? "errors_keywords" : undefined}
             disabled={keywordsList === null}
           />
         )}

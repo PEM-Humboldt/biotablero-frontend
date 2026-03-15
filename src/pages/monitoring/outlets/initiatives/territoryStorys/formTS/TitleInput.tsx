@@ -6,18 +6,19 @@ import {
 } from "@ui/shadCN/component/input-group";
 import { inputLengthCount, inputWarnColor } from "@utils/ui";
 import { LabelAndErrors } from "@ui/LabelingWithErrors";
-import { useState } from "react";
 import { StrValidator } from "@utils/strValidator";
 
 export function TitleInput({
   title,
   titleUpdater,
+  errors,
+  setErrors,
 }: {
   title: string;
   titleUpdater: (title: string) => void;
+  errors: string[];
+  setErrors: (title: string[]) => void;
 }) {
-  const [errors, setErrors] = useState<string[]>([]);
-
   const validateTitle = () => {
     setErrors([]);
     const [cleanTitle, titleErrors] = new StrValidator(title)

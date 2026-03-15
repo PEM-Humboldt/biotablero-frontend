@@ -24,11 +24,14 @@ import { Input } from "@ui/shadCN/component/input";
 export function YoutubeVideoInput({
   videos,
   updateVideos,
+  errors,
+  setErrors,
 }: {
   videos: VideoObjectTS[];
   updateVideos: (updatedVideosList: VideoObjectTS[]) => void;
+  errors: string[];
+  setErrors: (errors: string[]) => void;
 }) {
-  const [errors, setErrors] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [videoUrlOrID, setVideoUrlOrID] = useState<string>("");
   const [videoCardsInfo, setVideoCardsInfo] = useState<YoutubeVideoCardInfo[]>(
@@ -90,9 +93,9 @@ export function YoutubeVideoInput({
     }
 
     setIsLoading(false);
-    setErrors((oldErrs) => [...(oldErrs ?? []), ...cleanedVideos]);
+    setErrors(cleanedVideos);
     setVideoCardsInfo((oldCardsInfo) => [...oldCardsInfo, ...newCardsInfo]);
-  }, [videos, currentVideosIds]);
+  }, [videos, currentVideosIds, setErrors]);
 
   useEffect(() => {
     void loadVideoCards();
@@ -100,8 +103,7 @@ export function YoutubeVideoInput({
 
   const addVideo = async () => {
     if (currentVideosIds.current.has(getCleanYoutubeId(videoUrlOrID) ?? "")) {
-      setErrors((oldErrs) => [
-        ...(oldErrs ?? []),
+      setErrors([
         "El video ya se encuentra dentro de los medios que hacen parte del relato",
       ]);
       return;
@@ -110,7 +112,7 @@ export function YoutubeVideoInput({
     const videoInfo = await getVideo(videoUrlOrID);
 
     if (!isYoutubeVideoMetadata(videoInfo)) {
-      setErrors((oldErrs) => [...(oldErrs ?? []), videoInfo.data[0].msg]);
+      setErrors(videoInfo.data.map((err) => err.msg));
       return;
     }
 
@@ -181,7 +183,9 @@ export function YoutubeVideoInput({
                 }
                 disabled={isLoading}
               />
-              <Button onClick={() => void addVideo()}>Adjuntar video</Button>
+              <Button onClick={() => void addVideo()} type="button">
+                Adjuntar video
+              </Button>
             </div>
           </div>
         )}
@@ -237,6 +241,7 @@ function VideoPreviewCard({
             variant="link"
             className="p-0! h-8 mr-auto text-primary"
             title="abrir en una ventana nueva"
+            type="button"
           >
             <a href={videoInfo.url} target="_blank">
               abrir video
@@ -248,6 +253,7 @@ function VideoPreviewCard({
             size="icon-sm"
             variant="ghost"
             title="Borrar el video"
+            type="button"
           >
             <span className="sr-only">Borrar</span>
             <Trash />

@@ -3,6 +3,7 @@ import type { ODataTerritoryStory } from "pages/monitoring/types/odataResponse";
 import { monitoringAPI } from "pages/monitoring/api/core";
 import { createODataGetter } from "pages/monitoring/api/oDataGetter";
 import type { TerritoryStoryFull } from "pages/monitoring/types/territoryStory";
+import type { RequestData } from "pages/monitoring/api/types/definitions";
 
 export function getTerritoryStoriesFromInitiative(initiativeId: number) {
   return createODataGetter<ODataTerritoryStory>(
@@ -19,9 +20,7 @@ export function getTerritoryStory(territoryStoryId: number) {
   return res;
 }
 
-export function createTerritoryStory(data: {
-  [K in keyof TerritoryStoryFull]: string | Record<string, string[]>;
-}) {
+export function createTerritoryStory(data: RequestData) {
   const res = monitoringAPI<TerritoryStoryFull>({
     type: "post",
     endpoint: "TerritoryStory",

@@ -3,7 +3,7 @@
 // será borrado
 
 import { type ChangeEvent, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 import { getInitiatives } from "pages/monitoring/api/services/initiatives";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
@@ -18,6 +18,7 @@ export function InitiativeSelector_NOT_FOR_PRODUCTION() {
     ODataInitiative["value"]
   >([]);
   const navigate = useNavigate();
+  const params = useParams();
 
   useEffect(() => {
     const fetchInitiatives = async () => {
@@ -38,7 +39,10 @@ export function InitiativeSelector_NOT_FOR_PRODUCTION() {
 
   return (
     <div className="w-full">
-      <NativeSelect onChange={handleInitiativeChange}>
+      <NativeSelect
+        onChange={handleInitiativeChange}
+        value={params.initiativeId ?? 0}
+      >
         <NativeSelectOption value={0}>
           Selecciona una iniciativa
         </NativeSelectOption>

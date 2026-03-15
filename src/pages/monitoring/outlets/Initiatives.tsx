@@ -11,7 +11,7 @@ import { useEffect } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { initiativeTabs } from "pages/monitoring/outlets/initiatives/layout/tabs";
-import { InitiativeError } from "./initiatives/InitiativeError";
+import { InitiativeError } from "pages/monitoring/outlets/initiatives/InitiativeError";
 
 export function Initiatives() {
   const { layoutDispatch } = useOutletContext<UiManager>();
