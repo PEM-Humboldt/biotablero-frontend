@@ -20,6 +20,7 @@ type KeywordInputProps = {
   keywordsList: string[];
   updateKeywordsList: (updatedKeywordsList: string[]) => void;
   separators?: string[];
+  keywordRefinement?: (kw: string) => string;
   source?: string[];
   keywordsLimit: number;
   keywordMaxLength?: number;
@@ -38,6 +39,7 @@ export function KeywordInput({
   updateKeywordsList,
   source,
   separators = [","],
+  keywordRefinement,
   keywordsLimit = 5,
   keywordMaxLength = 120,
   inputTxt = {
@@ -70,7 +72,10 @@ export function KeywordInput({
       return;
     }
 
-    updateKeywordsList([...keywordsList, cleanStr]);
+    updateKeywordsList([
+      ...keywordsList,
+      keywordRefinement ? keywordRefinement(cleanStr) : cleanStr,
+    ]);
     setInputStr("");
   };
 

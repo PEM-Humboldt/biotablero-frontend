@@ -230,7 +230,7 @@ export function FormTS({ territoryStoryId }: { territoryStoryId?: number }) {
           textStateRef={textToPull}
           className="bg-background"
           text={{ ...uiText.textEditor }}
-          errors={errors.Text ?? ["carjoa"]}
+          errors={errors.Text ?? []}
           setErrors={updateError("Text")}
         />
 
@@ -240,6 +240,9 @@ export function FormTS({ territoryStoryId }: { territoryStoryId?: number }) {
           keywordsLimit={TERRITORY_STORY_KEYWORDS_MAX_AMOUNT}
           keywordMaxLength={TERRITORY_STORY_KEYWORD_MAX_LENGTH}
           separators={[" ", ",", "\n"]}
+          keywordRefinement={(kw) =>
+            `${kw.charAt(0).toLocaleUpperCase()}${kw.slice(1)}`
+          }
           inputTxt={{ ...uiText.keywords }}
           errors={errors.Keywords ?? []}
           setErrors={updateError("Keywords")}
