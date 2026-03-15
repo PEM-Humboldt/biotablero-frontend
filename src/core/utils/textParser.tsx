@@ -1,9 +1,19 @@
-import type { ReactNode } from "react";
+import type { MutableRefObject, ReactNode } from "react";
 import React from "react";
 
-import { $convertFromMarkdownString, TRANSFORMERS } from "@lexical/markdown";
+import {
+  $convertFromMarkdownString,
+  $convertToMarkdownString,
+  TRANSFORMERS,
+} from "@lexical/markdown";
 import { createHeadlessEditor } from "@lexical/headless";
-import { $getRoot, type LexicalNode, ElementNode, TextNode } from "lexical";
+import {
+  $getRoot,
+  type LexicalNode,
+  ElementNode,
+  TextNode,
+  EditorState,
+} from "lexical";
 import {
   $isHeadingNode,
   $isQuoteNode,
@@ -17,6 +27,7 @@ import {
   ListNode,
 } from "@lexical/list";
 import { $isLinkNode, LinkNode } from "@lexical/link";
+import { type Transformer } from "@lexical/markdown";
 
 const nodes = [HeadingNode, ListNode, ListItemNode, QuoteNode, LinkNode];
 
@@ -102,4 +113,19 @@ export function lexNodesToReactNodes(lexNodes: LexicalNode[]): ReactNode {
 
     return null;
   });
+}
+
+export function fromLexicalEditorStateRefToMarkdown(
+  textStateRef: MutableRefObject<EditorState | null>,
+  transformers: Transformer[],
+): string {
+  if (!textStateRef.current) {
+    return "";
+  }
+
+  const markdown = textStateRef.current.read(() =>
+    $convertToMarkdownString(transformers),
+  );
+
+  return markdown;
 }

@@ -21,17 +21,37 @@ import { ExternalLink, Trash } from "lucide-react";
 import { TERRITORY_STORY_YT_VID_MAX_AMOUNT } from "@config/monitoring";
 import { Input } from "@ui/shadCN/component/input";
 
+type YoutubeVideoInputProps = {
+  videos: VideoObjectTS[];
+  updateVideos: (updatedVideosList: VideoObjectTS[]) => void;
+  errors: string[];
+  setErrors: (errors: string[]) => void;
+  text: {
+    title: string;
+    counter: (current: number, total: number) => string;
+    input: { label: string; placeholder: string; upload: string };
+    videosPool: {
+      title: string;
+      videoTitle: (videoTitle: string) => string;
+      authorTitle: (author: string) => string;
+      openBtn: { title: string; label: string };
+      removeBtn: { title: string; sr: string };
+    };
+    errorsYoutubeFeedback: {
+      conection: (err: string) => string;
+      purge: (url: string, why: string) => string;
+      alreadyUploaded: string;
+    };
+  };
+};
+
 export function YoutubeVideoInput({
   videos,
   updateVideos,
   errors,
   setErrors,
-}: {
-  videos: VideoObjectTS[];
-  updateVideos: (updatedVideosList: VideoObjectTS[]) => void;
-  errors: string[];
-  setErrors: (errors: string[]) => void;
-}) {
+  text,
+}: YoutubeVideoInputProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [videoUrlOrID, setVideoUrlOrID] = useState<string>("");
   const [videoCardsInfo, setVideoCardsInfo] = useState<YoutubeVideoCardInfo[]>(
@@ -77,13 +97,16 @@ export function YoutubeVideoInput({
       if (!isYoutubeVideoMetadata(videoInfo)) {
         if (videoInfo.status >= 429) {
           cleanedVideos = [
-            `${videoInfo.data[0].msg}, no grabes y vuelve a cargar la página.`,
+            text.errorsYoutubeFeedback.conection(videoInfo.data[0].msg),
           ];
           break;
         }
 
         cleanedVideos.push(
-          `El video ${video.fileUrl} va a ser eliminado del relato: ${videoInfo.data[0].msg}.\nPara mantenerlo en el relato, haz el video público o corrige el enlace, y vuelve a agregarlo.`,
+          text.errorsYoutubeFeedback.purge(
+            video.fileUrl,
+            videoInfo.data[0].msg,
+          ),
         );
 
         continue;
@@ -95,7 +118,7 @@ export function YoutubeVideoInput({
     setIsLoading(false);
     setErrors(cleanedVideos);
     setVideoCardsInfo((oldCardsInfo) => [...oldCardsInfo, ...newCardsInfo]);
-  }, [videos, currentVideosIds, setErrors]);
+  }, [videos, currentVideosIds, setErrors, text]);
 
   useEffect(() => {
     void loadVideoCards();
@@ -103,9 +126,7 @@ export function YoutubeVideoInput({
 
   const addVideo = async () => {
     if (currentVideosIds.current.has(getCleanYoutubeId(videoUrlOrID) ?? "")) {
-      setErrors([
-        "El video ya se encuentra dentro de los medios que hacen parte del relato",
-      ]);
+      setErrors([text.errorsYoutubeFeedback.alreadyUploaded]);
       return;
     }
 
@@ -147,9 +168,12 @@ export function YoutubeVideoInput({
   return (
     <fieldset>
       <legend className="flex w-full justify-between text-primary font-normal px-2">
-        <span>Adjuntar videos de youtube</span>
+        <span>{text.title}</span>
         <span>
-          {videoCardsInfo.length} de {TERRITORY_STORY_YT_VID_MAX_AMOUNT} videos
+          {text.counter(
+            videoCardsInfo.length,
+            TERRITORY_STORY_YT_VID_MAX_AMOUNT,
+          )}
         </span>
       </legend>
 
@@ -162,9 +186,7 @@ export function YoutubeVideoInput({
               htmlFor="youtubeVideoInput"
               className="m-0 p-0"
             >
-              <span className="sr-only">
-                Ingresa la url o el id del video de YouTube
-              </span>
+              <span className="sr-only">{text.input.label}</span>
             </LabelAndErrors>
 
             <div className="flex gap-2 items-center">
@@ -176,7 +198,7 @@ export function YoutubeVideoInput({
                 onChange={handleOnInputChage}
                 onKeyDown={(e) => void handleOnKeyDown(e)}
                 autoComplete="off"
-                placeholder="url de youtube o id del video"
+                placeholder={text.input.placeholder}
                 aria-invalid={errors.length > 0}
                 aria-describedby={
                   errors.length > 0 ? "errors_youtubeVideo" : undefined
@@ -184,7 +206,7 @@ export function YoutubeVideoInput({
                 disabled={isLoading}
               />
               <Button onClick={() => void addVideo()} type="button">
-                Adjuntar video
+                {text.input.upload}
               </Button>
             </div>
           </div>
@@ -193,7 +215,7 @@ export function YoutubeVideoInput({
         {videoCardsInfo.length > 0 && (
           <>
             <div className="flex w-full justify-between text-primary font-normal px-2 mt-2">
-              Videos adjuntos
+              {text.videosPool.title}
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-2">
               {videoCardsInfo.map((video) => (
@@ -201,6 +223,12 @@ export function YoutubeVideoInput({
                   key={video.youtubeId}
                   videoInfo={video}
                   removeVideo={removeVideo}
+                  text={{
+                    videoTitle: text.videosPool.videoTitle,
+                    authorTitle: text.videosPool.authorTitle,
+                    openBtn: { ...text.videosPool.openBtn },
+                    removeBtn: { ...text.videosPool.removeBtn },
+                  }}
                 />
               ))}
             </div>
@@ -214,9 +242,16 @@ export function YoutubeVideoInput({
 function VideoPreviewCard({
   videoInfo,
   removeVideo,
+  text,
 }: {
   videoInfo: YoutubeVideoMetadata;
   removeVideo: (videoUrl: string) => void;
+  text: {
+    videoTitle: (videoTitle: string) => string;
+    authorTitle: (author: string) => string;
+    openBtn: { title: string; label: string };
+    removeBtn: { title: string; sr: string };
+  };
 }) {
   return (
     <div className="flex gap-2 p-2 rounded-lg bg-background/50 space-y-2">
@@ -228,23 +263,25 @@ function VideoPreviewCard({
       <div className="flex flex-col w-full gap-2 justify-between">
         <div>
           <span
-            title={`Título: ${videoInfo.title}`}
+            title={text.videoTitle(videoInfo.title)}
             className="block font-normal"
           >
             {videoInfo.title}
           </span>
-          <span title={`Autor: ${videoInfo.author}`}>{videoInfo.author}</span>
+          <span title={text.authorTitle(videoInfo.author)}>
+            {videoInfo.author}
+          </span>
         </div>
         <div className="flex items-center">
           <Button
             asChild
             variant="link"
             className="p-0! h-8 mr-auto text-primary"
-            title="abrir en una ventana nueva"
+            title={text.openBtn.title}
             type="button"
           >
             <a href={videoInfo.url} target="_blank">
-              abrir video
+              {text.openBtn.label}
               <ExternalLink />
             </a>
           </Button>
@@ -252,10 +289,10 @@ function VideoPreviewCard({
             onClick={() => removeVideo(videoInfo.url)}
             size="icon-sm"
             variant="ghost"
-            title="Borrar el video"
+            title={text.removeBtn.title}
             type="button"
           >
-            <span className="sr-only">Borrar</span>
+            <span className="sr-only">{text.removeBtn.sr}</span>
             <Trash />
           </Button>
         </div>

@@ -1,11 +1,12 @@
-import { type MutableRefObject } from "react";
-import { type EditorState } from "lexical";
+import { useState, type MutableRefObject } from "react";
+import { $getRoot, type EditorState } from "lexical";
 
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { ListItemNode, ListNode } from "@lexical/list";
@@ -35,6 +36,7 @@ import { GetEditorState } from "@composites/richTextEditor/GetEditorState";
 import { uiText } from "@composites/richTextEditor/layout/uiTextAndSettings";
 import { LoadTextPlugin } from "@composites/richTextEditor/LoadTextPlugin";
 import { cn } from "@ui/shadCN/lib/utils";
+import { inputWarnColor } from "@utils/ui";
 
 const editorTransformers: Transformer[] = [
   UNORDERED_LIST,
@@ -60,18 +62,44 @@ export function RichTextEditor({
   editorNamespace,
   placeholder,
   className,
+  id,
+  onBlur,
+  onChange,
+  describedBy,
+  counter,
+  maxLength = 10_000,
 }: {
   textToLoad?: string;
   textStateRef: MutableRefObject<EditorState | null>;
   editorNamespace?: string;
   placeholder?: string;
   className?: string;
+  onBlur?: () => void;
+  onChange?: () => void;
+  id?: string;
+  describedBy?: string;
+  counter?: boolean;
+  maxLength?: number;
 }) {
+  const [textLength, setTextLength] = useState(0);
   const initialConfig = {
     namespace: editorNamespace || "richTextEditor",
     theme: inputTheme,
     onError: (err: Error) => console.error("Lexical:", err),
     nodes: [HeadingNode, ListNode, ListItemNode, QuoteNode, LinkNode],
+  };
+
+  const handleOnChange = (editorState: EditorState) => {
+    if (onChange) {
+      onChange();
+    }
+    if (counter) {
+      const getTextLength = editorState.read(() =>
+        $getRoot().getTextContentSize(),
+      );
+
+      setTextLength(getTextLength);
+    }
   };
 
   return (
@@ -87,24 +115,39 @@ export function RichTextEditor({
           <RichTextPlugin
             contentEditable={
               <ContentEditable
+                id={id}
+                onBlur={onBlur}
                 aria-placeholder={placeholder || uiText.placeholderDefault}
                 placeholder={
                   <div className="absolute left-0 top-0 m-4 text-primary/60">
                     {placeholder || uiText.placeholderDefault}
                   </div>
                 }
+                aria-describedby={describedBy}
                 className="mt-2 p-4 focus-within:outline-none"
+                maxLength={maxLength}
               />
             }
             ErrorBoundary={LexicalErrorBoundary}
           />
         </div>
+        {counter && (
+          <div
+            className={cn(
+              "flex justify-end px-2",
+              inputWarnColor(textLength, maxLength),
+            )}
+          >
+            {textLength} / {maxLength}
+          </div>
+        )}
       </div>
       <ListPlugin />
       <LinkPlugin />
-      <AutoFocusPlugin />
       <HistoryPlugin />
       <CustomShortcuts />
+      <AutoFocusPlugin />
+      <OnChangePlugin onChange={handleOnChange} />
       <MarkdownShortcutPlugin transformers={editorTransformers} />
       <LoadTextPlugin text={textToLoad} />
       <GetEditorState editorRef={textStateRef} />

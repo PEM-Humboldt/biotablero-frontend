@@ -73,7 +73,11 @@ export function Initiatives() {
             ))}
           </TabsList>
           {[...initiativeTabs].map(([key, value]) => (
-            <TabsContent key={`tContent_${key}`} value={value.slug}>
+            <TabsContent
+              key={`tContent_${key}`}
+              value={value.slug}
+              className="m-0 p-0"
+            >
               <value.component />
             </TabsContent>
           ))}

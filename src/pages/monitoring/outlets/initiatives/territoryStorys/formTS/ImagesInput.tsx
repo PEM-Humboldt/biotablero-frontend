@@ -18,18 +18,44 @@ import { ImgValidator } from "@utils/imgValidator";
 import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 import TextareaAutosize from "react-textarea-autosize";
 import { inputLengthCount, inputWarnColor } from "@utils/ui";
+import { StrValidator } from "@utils/strValidator";
+
+type ImagesInputProps = {
+  images: ImageObjectTS[];
+  updateImages: (images: ImageObjectTS[]) => void;
+  errors: string[];
+  setErrors: (errors: string[]) => void;
+  text: {
+    title: string;
+    counter: (current: number, total: number) => string;
+    image: {
+      input: string;
+      inputBtnSR: string;
+      inputLabel: string;
+      inputPreviewAlt: string;
+      removeSR: string;
+    };
+    description: {
+      label: string;
+    };
+    add: string;
+    imagesPool: {
+      quotaReached: string;
+      title: string;
+      descriptionTileSR: (description: string) => string;
+      removeTitle: string;
+      removeSR: string;
+    };
+  };
+};
 
 export function ImagesInput({
   images,
   updateImages,
   errors,
   setErrors,
-}: {
-  images: ImageObjectTS[];
-  updateImages: (images: ImageObjectTS[]) => void;
-  errors: string[];
-  setErrors: (errors: string[]) => void;
-}) {
+  text,
+}: ImagesInputProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [imageCards, setImageCards] = useState<ImageObjectTS[]>([]);
 
@@ -83,19 +109,29 @@ export function ImagesInput({
       return;
     }
 
-    if (stagedImage.description.trim().length < 5) {
-      setErrors(["La descripción debe tener al menos 5 caracteres."]);
+    // TODO: Validation STR
+    const [cleanDescription, descriptionErrors] = new StrValidator(
+      stagedImage.description,
+    )
+      .sanitize()
+      .isRequired()
+      .hasLengthLessOrEqualThan(
+        TERRITORY_STORY_IMG_DESCRIPTION_MAX_LENGTH,
+      ).result;
+
+    if (descriptionErrors.length > 0) {
+      setErrors(descriptionErrors.map((e) => `descripcion: ${e}`));
       return;
     }
 
     if (imageCards.length >= TERRITORY_STORY_IMG_MAX_AMOUNT) {
-      setErrors(["Límite de imágenes alcanzado."]);
+      setErrors([text.imagesPool.quotaReached]);
       return;
     }
 
     const newImage: ImageObjectTS = {
       fileUrl: stagedImage.preview,
-      description: stagedImage.description,
+      description: cleanDescription,
       file: stagedImage.file,
     };
 
@@ -132,9 +168,9 @@ export function ImagesInput({
   return (
     <fieldset>
       <legend className="flex w-full justify-between text-primary font-normal px-2">
-        <span>Ajuntar imágenes</span>
+        <span>{text.title}</span>
         <span>
-          {imageCards.length} de {TERRITORY_STORY_IMG_MAX_AMOUNT} imágenes
+          {text.counter(imageCards.length, TERRITORY_STORY_IMG_MAX_AMOUNT)}
         </span>
       </legend>
 
@@ -146,9 +182,7 @@ export function ImagesInput({
             validationErrors={errors}
             className="m-0 p-0"
           >
-            <span className="sr-only">
-              Carga la imagen e ingresa la descipción
-            </span>
+            <span className="sr-only">{text.image.input}</span>
           </LabelAndErrors>
 
           <div className="grid grid-cols-2 gap-4">
@@ -164,7 +198,7 @@ export function ImagesInput({
                 type="button"
                 className="absolute inset-0 w-full h-full cursor-pointer z-0 opacity-0"
                 onClick={() => fileInputRef.current?.click()}
-                aria-label="Cargar imagen"
+                aria-label={text.image.inputBtnSR}
               />
 
               <div className="absolute inset-0 p-2 flex items-center justify-center pointer-events-none z-0">
@@ -172,13 +206,13 @@ export function ImagesInput({
                   <img
                     src={stagedImage.preview}
                     className="w-full h-full object-contain"
-                    alt="Vista previa"
+                    alt={text.image.inputPreviewAlt}
                   />
                 ) : (
                   <div className="flex flex-col items-center gap-2 text-muted-foreground">
                     <ImageUp className="w-16 h-16 opacity-30 text-primary" />
                     <span className="text-base text-primary">
-                      Selecciona una imagen
+                      {text.image.inputLabel}
                     </span>
                   </div>
                 )}
@@ -192,7 +226,7 @@ export function ImagesInput({
                     className="bg-white shadow-md h-9 w-9"
                     onClick={() => setStagedImage(null)}
                   >
-                    <span className="sr-only">Quitar imagen</span>
+                    <span className="sr-only">{text.image.removeSR}</span>
                     <Trash2 aria-hidden="true" />
                   </Button>
                 </div>
@@ -204,7 +238,7 @@ export function ImagesInput({
                 htmlFor="image_description"
                 className="text-primary font-normal"
               >
-                Descripción de la imagen <span aria-hidden="true">*</span>
+                {text.description.label} <span aria-hidden="true">*</span>
               </label>
               <InputGroup className="h-full rounded-lg">
                 <TextareaAutosize
@@ -246,7 +280,7 @@ export function ImagesInput({
                 disabled={!stagedImage}
                 onClick={handleAddStagedImage}
               >
-                Adjuntar imagen
+                {text.add}
               </Button>
             </div>
           </div>
@@ -255,7 +289,7 @@ export function ImagesInput({
         {imageCards.length > 0 && (
           <>
             <div className="flex w-full justify-between text-primary font-normal px-2 mt-2">
-              Imágenes adjuntas
+              {text.imagesPool.title}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
               {imageCards.map((img, index) => (
@@ -263,6 +297,11 @@ export function ImagesInput({
                   key={img.fileUrl}
                   imageInfo={img}
                   removeImage={() => removeImage(index)}
+                  text={{
+                    descriptionTitleSR: text.imagesPool.descriptionTileSR,
+                    removeTitle: text.imagesPool.removeTitle,
+                    removeSR: text.imagesPool.removeSR,
+                  }}
                 />
               ))}
             </div>
@@ -285,9 +324,15 @@ export function ImagesInput({
 function ImageCard({
   imageInfo,
   removeImage,
+  text,
 }: {
   imageInfo: ImageObjectTS;
   removeImage: () => void;
+  text: {
+    descriptionTitleSR: (description: string) => string;
+    removeTitle: string;
+    removeSR: string;
+  };
 }) {
   return (
     <div className="flex gap-2 p-2 rounded-lg bg-background/50 space-y-2">
@@ -299,7 +344,7 @@ function ImageCard({
       <div className="flex flex-col w-full gap-2 justify-between">
         <div>
           <span className="sr-only">
-            descripcion para la imagen: ${imageInfo.description}
+            {text.descriptionTitleSR(imageInfo.description)}
           </span>
           <span aria-hidden="true">{imageInfo.description}</span>
         </div>
@@ -307,11 +352,11 @@ function ImageCard({
           onClick={() => removeImage()}
           size="icon-sm"
           variant="ghost"
-          title="Borrar el video"
+          title={text.removeTitle}
           type="button"
           className="self-end"
         >
-          <span className="sr-only">Borrar</span>
+          <span className="sr-only">{text.removeSR}</span>
           <Trash />
         </Button>
       </div>

@@ -11,11 +11,13 @@ import { StrValidator } from "@utils/strValidator";
 export function TitleInput({
   title,
   titleUpdater,
+  text,
   errors,
   setErrors,
 }: {
   title: string;
   titleUpdater: (title: string) => void;
+  text: { label: string; placeholder: string };
   errors: string[];
   setErrors: (title: string[]) => void;
 }) {
@@ -41,9 +43,9 @@ export function TitleInput({
         validationErrors={errors}
         htmlFor="title"
         className="text-primary font-normal"
+        required={true}
       >
-        Título
-        <span aria-hidden="true"> *</span>
+        {text.label}
       </LabelAndErrors>
 
       <InputGroup>
@@ -55,7 +57,7 @@ export function TitleInput({
           onChange={(e) => titleUpdater(e.target.value)}
           onBlur={validateTitle}
           autoComplete="off"
-          placeholder="Este es el título de mi relato"
+          placeholder={text.placeholder}
           aria-invalid={errors.length > 0}
           aria-describedby={errors.length > 0 ? "errors_title" : undefined}
           maxLength={TERRITORY_STORY_TITLE_MAX_LENGTH}

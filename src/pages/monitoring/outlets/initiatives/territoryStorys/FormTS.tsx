@@ -1,11 +1,6 @@
-import {
-  RichTextEditor,
-  availableTransformers,
-} from "@composites/RichTextEditor";
-import { $convertToMarkdownString } from "@lexical/markdown";
+import { availableTransformers } from "@composites/RichTextEditor";
 import { type EditorState } from "lexical";
 import {
-  type MutableRefObject,
   useCallback,
   useEffect,
   useRef,
@@ -38,6 +33,9 @@ import { postTerritoryStoryImage } from "pages/monitoring/api/services/assets";
 import { toast } from "sonner";
 import { BookOpenCheck } from "lucide-react";
 import type { RequestData } from "pages/monitoring/api/types/definitions";
+import { TextEditor } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/TextEditor";
+import { fromLexicalEditorStateRefToMarkdown } from "@utils/textParser";
+import { uiText } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/layout/uiText";
 
 const initializeTSForm = (
   territoryStory?: TerritoryStoryFull,
@@ -50,20 +48,6 @@ const initializeTSForm = (
   images: territoryStory?.images ?? ([] as ImageObjectTS[]),
   videos: territoryStory?.videos ?? ([] as VideoObjectTS[]),
 });
-
-function fromLexicalEditorStateRefToMarkdown(
-  textStateRef: MutableRefObject<EditorState | null>,
-): string {
-  if (!textStateRef.current) {
-    return "";
-  }
-
-  const markdown = textStateRef.current.read(() =>
-    $convertToMarkdownString(availableTransformers),
-  );
-
-  return markdown;
-}
 
 // TODO: COnfirmar con César sobre la Capitalización de campos
 const TS_ERROR_FIELDS = [
@@ -165,7 +149,10 @@ export function FormTS({ territoryStoryId }: { territoryStoryId?: number }) {
     const payload: RequestData = {
       initiativeId: initiativeInfo.id,
       title: story.title,
-      text: fromLexicalEditorStateRefToMarkdown(textToPull),
+      text: fromLexicalEditorStateRefToMarkdown(
+        textToPull,
+        availableTransformers,
+      ),
       restricted: story.restricted,
       enabled: story.enabled,
       ...(keywords.length > 0 && { keywords }),
@@ -181,12 +168,7 @@ export function FormTS({ territoryStoryId }: { territoryStoryId?: number }) {
     }
 
     if (story.images.length === 0) {
-      toast("Melo melo", {
-        position: "bottom-right",
-        description: `El relato '${res.title}' fue creado con éxito`,
-        icon: <BookOpenCheck className="size-8 text-primary" />,
-        className: "px-6! gap-6! border-2! border-primary!",
-      });
+      successToast(territoryStoryId === undefined, story.title);
       return;
     }
 
@@ -207,18 +189,11 @@ export function FormTS({ territoryStoryId }: { territoryStoryId?: number }) {
     if (uploadErrrors.length > 0) {
       setErrors({
         Images: uploadErrrors,
-        root: [
-          "El relato fue creado correctamente, pero sucedió un problema al subir las imágenes",
-        ],
+        root: [uiText.errors.createdButErrImageUpload],
       });
     } else {
       setStory(initializeTSForm());
-      toast("Melo melo caramelo", {
-        position: "bottom-right",
-        description: `El relato '${res.title}' fue creado con éxito`,
-        icon: <BookOpenCheck className="size-8 text-primary" />,
-        className: "px-6! gap-6! border-2! border-primary!",
-      });
+      successToast(territoryStoryId === undefined, story.title);
     }
   };
 
@@ -229,73 +204,84 @@ export function FormTS({ territoryStoryId }: { territoryStoryId?: number }) {
   };
 
   return isLoading ? (
-    <div>Cargando...</div>
+    <div>{uiText.loading}</div>
   ) : (
-    <form
-      key={formKey}
-      onSubmit={(e) => void handleSubmit(e)}
-      onReset={(e) => void handleReset(e)}
-      className="p-4 w-full max-w-[1200px] flex flex-col gap-2 bg-muted"
-    >
-      <h3>
-        {territoryStoryId ? "Editar relato" : "Crear relato"} del territorio
-      </h3>
-      <TitleInput
-        title={story.title}
-        titleUpdater={updateField("title")}
-        errors={errors.Title ?? []}
-        setErrors={updateError("Title")}
-      />
+    <main className="page-main">
+      <header>
+        <h3>{territoryStoryId ? uiText.edit : uiText.create}</h3>
+      </header>
 
-      <div>
-        <span className="text-primary font-normal">El relato</span>
-        <RichTextEditor
+      <form
+        key={formKey}
+        onSubmit={(e) => void handleSubmit(e)}
+        onReset={(e) => void handleReset(e)}
+        className="w-full flex flex-col gap-3 lg:gap-6 p-6"
+      >
+        <TitleInput
+          title={story.title}
+          titleUpdater={updateField("title")}
+          text={{ ...uiText.titleInput }}
+          errors={errors.Title ?? []}
+          setErrors={updateError("Title")}
+        />
+
+        <TextEditor
           textToLoad={story.text}
           textStateRef={textToPull}
-          placeholder="Mi relato..."
           className="bg-background"
+          text={{ ...uiText.textEditor }}
+          errors={errors.Text ?? ["carjoa"]}
+          setErrors={updateError("Text")}
         />
-      </div>
 
-      <KeywordInput
-        keywordsList={story.keywords}
-        updateKeywordsList={updateField("keywords")}
-        keywordsLimit={TERRITORY_STORY_KEYWORDS_MAX_AMOUNT}
-        keywordMaxLength={TERRITORY_STORY_KEYWORD_MAX_LENGTH}
-        inputTxt={{
-          label: "Palabras clave",
-          placeholder: "agrega una palabra oprimiendo enter",
-          sr: "agrega una palabra oprimiendo enter",
-          keywordCounter: (currentAmount: number, total: number) =>
-            `${currentAmount} de ${total} palabras clave`,
-        }}
-        errors={errors.Keywords ?? []}
-        setErrors={updateError("Keywords")}
-      />
+        <KeywordInput
+          keywordsList={story.keywords}
+          updateKeywordsList={updateField("keywords")}
+          keywordsLimit={TERRITORY_STORY_KEYWORDS_MAX_AMOUNT}
+          keywordMaxLength={TERRITORY_STORY_KEYWORD_MAX_LENGTH}
+          separators={[" ", ",", "\n"]}
+          inputTxt={{ ...uiText.keywords }}
+          errors={errors.Keywords ?? []}
+          setErrors={updateError("Keywords")}
+        />
 
-      <ImagesInput
-        images={story.images}
-        updateImages={updateField("images")}
-        errors={errors.Images ?? []}
-        setErrors={updateError("Images")}
-      />
+        <ImagesInput
+          images={story.images}
+          updateImages={updateField("images")}
+          errors={errors.Images ?? []}
+          setErrors={updateError("Images")}
+          text={{ ...uiText.imagesInput }}
+        />
 
-      <YoutubeVideoInput
-        videos={story.videos}
-        updateVideos={updateField("videos")}
-        errors={errors.Videos ?? []}
-        setErrors={updateError("Videos")}
-      />
+        <YoutubeVideoInput
+          videos={story.videos}
+          updateVideos={updateField("videos")}
+          errors={errors.Videos ?? []}
+          setErrors={updateError("Videos")}
+          text={{ ...uiText.videosInput }}
+        />
 
-      <SubmitStory
-        restricted={story.restricted}
-        setRestricted={updateField("restricted")}
-        enabled={story.enabled}
-        setEnabled={updateField("enabled")}
-        submitErrors={errors.root ?? []}
-      />
-    </form>
+        <SubmitStory
+          restricted={story.restricted}
+          setRestricted={updateField("restricted")}
+          enabled={story.enabled}
+          setEnabled={updateField("enabled")}
+          submitErrors={errors.root ?? []}
+          text={{ ...uiText.submitStory }}
+        />
+      </form>
+    </main>
   );
+}
+
+function successToast(itsNewStory: boolean, storyName: string) {
+  const text = itsNewStory ? uiText.toast.creation : uiText.toast.update;
+  toast(text.title, {
+    position: "bottom-right",
+    description: text.description(storyName),
+    icon: <BookOpenCheck className="size-8 text-primary" />,
+    className: "px-6! gap-6! border-2! border-primary!",
+  });
 }
 
 // async function saveVideoChanges(
