@@ -24,7 +24,7 @@ interface State {
   showInfoGraph: boolean;
   forestLP: Array<ForestLPExt>;
   message: MessageWrapperType;
-  forestPersistenceValue: number;
+  currentPersistence: number;
   texts: {
     forestLP: textsObject;
   };
@@ -36,7 +36,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
   mounted = false;
   componentName = "forestLP";
   flpController;
-  currentPeriod = "2016-2021";
+  currentPeriod = "";
 
   constructor(props: Props) {
     super(props);
@@ -45,7 +45,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
       showInfoGraph: true,
       forestLP: [],
       message: "loading",
-      forestPersistenceValue: 0,
+      currentPersistence: 0,
       texts: {
         forestLP: { info: "", cons: "", meto: "", quote: "" },
       },
@@ -55,23 +55,29 @@ class ForestLossPersistence extends React.Component<Props, State> {
 
   componentDidMount() {
     this.mounted = true;
-    const { areaType, areaId, searchType } = this
+    const { areaType, areaId, setLoadingLayer } = this
       .context as LegacyContextValues;
 
-    const areaTypeId = areaType!.id;
-    const areaIdId = areaId!.id.toString();
+    if (!areaType || !areaId) {
+      setLoadingLayer(false);
+      return;
+    }
+
+    const areaTypeId = areaType.id;
+    const areaIdId = areaId.id;
 
     this.flpController.setArea(areaTypeId, areaIdId);
 
-    this.switchLayer(this.currentPeriod);
-
+    setLoadingLayer(true);
     this.flpController
-      .getForestLPData(this.currentPeriod)
+      .getForestLPData()
       .then((data) => {
+        this.currentPeriod = data.forestLP[data.forestLP.length - 1].id;
+        this.switchLayer(this.currentPeriod);
         if (this.mounted) {
           this.setState({
             forestLP: data.forestLP,
-            forestPersistenceValue: data.forestPersistenceValue,
+            currentPersistence: data.currentPersistence,
             message: null,
           });
         }
@@ -107,7 +113,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
   render() {
     const {
       forestLP,
-      forestPersistenceValue,
+      currentPersistence,
       showInfoGraph,
       message,
       texts,
@@ -149,7 +155,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
                 colorPalettes.default[0],
             }}
           >
-            {`${formatNumber(forestPersistenceValue, 0)} ha `}
+            {`${formatNumber(currentPersistence, 0)} ha `}
           </h5>
         </div>
         <div>
@@ -162,6 +168,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
             tooltips={graphData.tooltips}
             loadStatus={message}
             margin={{
+              left: 100,
               bottom: 50,
             }}
             axisY={{

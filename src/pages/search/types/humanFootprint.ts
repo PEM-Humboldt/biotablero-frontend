@@ -1,9 +1,4 @@
-export const currentHFCategories = [
-  "natural",
-  "baja",
-  "media",
-  "alta",
-] as const;
+// TODO: Eliminar
 
 export const persistenceHFCategories = [
   "dinamica",
@@ -25,17 +20,6 @@ export const timelineHFYears = [
   "2015",
   "2018",
 ] as const;
-
-export interface currentHFValue {
-  value: number;
-  category: (typeof currentHFCategories)[number];
-}
-
-export interface currentHFCategories {
-  area: number;
-  key: (typeof currentHFCategories)[number];
-  percentage: number;
-}
 
 export interface hfPersistence {
   area: number;

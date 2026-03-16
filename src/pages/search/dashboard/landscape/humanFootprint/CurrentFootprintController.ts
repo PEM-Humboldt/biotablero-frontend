@@ -1,5 +1,4 @@
 import { formatNumber } from "@utils/format";
-import BackendAPI from "pages/search/api/backendAPI";
 import { RasterLayer } from "pages/search/types/layers";
 import { matchColor } from "pages/search/utils/matchColor";
 import { CancelTokenSource } from "axios";
@@ -7,56 +6,107 @@ import { CancelTokenSource } from "axios";
 import { LargeStackedBarData } from "@composites/charts/LargeStackedBar";
 import { MetricTypesMap } from "pages/search/types/metrics";
 import SearchAPI from "pages/search/api/searchAPI";
-import { currentHFCategories } from "pages/search/types/humanFootprint";
 import { MetricsUtils } from "pages/search/utils/metrics";
+import LayerAPI from "pages/search/api/layerAPI";
 export class CurrentFootprintController {
   areaType: string = "";
-  areaId: string = "";
+  areaId: number = 0;
   activeRequests: Map<string, CancelTokenSource> = new Map();
+  classes: Set<string> = new Set();
+  itemId: string = "";
 
   constructor() {}
 
-  setArea(areaType: string, areaId: string) {
+  setArea(areaType: string, areaId: number) {
     this.areaType = areaType;
     this.areaId = areaId;
   }
 
   /**
-   * Get shape layers in GeoJSON format for current human footprint component
+   * Get the average of the current human footprint for the current area
    *
-   * @returns { Promise<ShapeLayer> } object with the parameters of the layer
+   * @returns { Promise<{ id: string; average: number, category: string }> }
    */
-  getCurrentHFLayers = async (period: string): Promise<Array<RasterLayer>> => {
+  getCurrentHFAverage() {
+    return SearchAPI.requestMetricsValues<"currentHF_average">(
+      "currentHF_average",
+      this.areaId,
+    ).then((averageValues) => {
+      // TODO: Asignar una categoría al promedi opara poder darle color, los
+      // rangos varíaron con respecto a las clasificaciones que teníamos antes
+      const category = "Baja";
+      return {
+        ...averageValues,
+        category,
+      };
+    });
+  }
+
+  /**
+   * Get the current human footprint values for the current area
+   *
+   * @returns { Promise<SmallStackedBarData[]>}
+   */
+  getCurrentHFValues() {
+    return SearchAPI.requestMetricsValues<"currentHF">(
+      "currentHF",
+      this.areaId,
+    ).then((res) => {
+      const { id, ...classes } = res;
+      this.itemId = id;
+      this.classes = new Set(
+        Object.keys(classes).filter(
+          (classId) => classes[classId as keyof typeof classes] != 0.0,
+        ),
+      );
+      return this.transformData(res);
+    });
+  }
+
+  /**
+   * Get layers for current human footprint component
+   *
+   * @returns { Promise<ShapeLayer> } layers for the classes in the current area
+   */
+  getCurrentHFLayers = async (): Promise<Array<RasterLayer>> => {
     if (this.areaId) {
       const requests: Array<Promise<{ layer: string }>> = [];
 
-      currentHFCategories.forEach((categoryId, index) => {
+      this.classes.forEach((classId) => {
         const { request, source } = SearchAPI.requestMetricsLayer(
           "currentHF",
-          period,
-          index + 1,
+          this.itemId,
+          classId,
           Number(this.areaId),
         );
         requests.push(request);
-        this.activeRequests.set(categoryId, source);
+        this.activeRequests.set(classId, source);
       });
 
       const res = await Promise.all(requests);
 
-      currentHFCategories.forEach((categoryId) => {
-        this.activeRequests.delete(categoryId);
+      this.classes.forEach((classId) => {
+        this.activeRequests.delete(classId);
       });
 
       if (res.some((result) => typeof result === "string")) {
         throw new Error("request canceled");
       }
       const layersRequests: Array<Promise<Blob>> = [];
-      res.forEach((response) => {
-        const request = SearchAPI.getLayerData(response);
+      res.forEach((layerObj) => {
+        const { request, source } = LayerAPI.getLayerData(layerObj);
         layersRequests.push(request);
+        this.activeRequests.set(layerObj.layer, source);
       });
 
       const layerResponses = await Promise.all(layersRequests);
+      res.forEach((layerObj) => {
+        this.activeRequests.delete(layerObj.layer);
+      });
+
+      if (res.some((result) => typeof result === "string")) {
+        throw new Error("request canceled");
+      }
 
       const layersBase64Promises: Array<Promise<string>> = [];
 
@@ -67,8 +117,8 @@ export class CurrentFootprintController {
 
       const layersBase64 = await Promise.all(layersBase64Promises);
 
-      return currentHFCategories.map((category, index) => ({
-        id: category,
+      return [...this.classes].map((classId, index) => ({
+        id: classId,
         data: layersBase64[index],
         selected: false,
         paneLevel: 2,
@@ -163,7 +213,7 @@ export class CurrentFootprintController {
     );
 
     /**
-     * TODO: No sé si hay una mejor forma de ordenar el objeto resultado,
+     * No sé si hay una mejor forma de ordenar el objeto resultado,
      * intenté sacar los valores directamente de las keys de MetricTypesMap["currentHF"]
      * pero el mismo interprete de typescript me los pasaba ya desordenados
      */
