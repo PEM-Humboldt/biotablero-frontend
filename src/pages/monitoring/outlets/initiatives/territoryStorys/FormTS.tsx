@@ -24,12 +24,20 @@ import { TitleInput } from "pages/monitoring/outlets/initiatives/territoryStorys
 import { SubmitStory } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/SubmitStory";
 import {
   createTerritoryStory,
+  disableTerritoryStory,
+  editTerritoryStoryGeneralInfo,
+  enableTerritoryStory,
   getTerritoryStory,
 } from "pages/monitoring/api/services/territoryStory";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import type { ApiRequestError } from "@appTypes/api";
-import { postTerritoryStoryImage } from "pages/monitoring/api/services/assets";
+import {
+  deleteTerritoryStoryImage,
+  deleteTerritoryStoryVideo,
+  postTerritoryStoryImage,
+  postTerritoryStoryVideo,
+} from "pages/monitoring/api/services/assets";
 import { toast } from "sonner";
 import { BookOpenCheck } from "lucide-react";
 import type { RequestData } from "pages/monitoring/api/types/definitions";
@@ -68,13 +76,32 @@ function isFormErrorKey(key: string): key is TSErrorFields {
   return (TS_ERROR_FIELDS as readonly string[]).includes(key);
 }
 
-export function FormTS({ territoryStoryId }: { territoryStoryId?: number }) {
+export function makeApiResponseErrorObject(errors: ApiRequestError): FormError {
+  return errors.data.reduce<FormError>((errObject, current) => {
+    const key =
+      current?.field && isFormErrorKey(current.field) ? current.field : "root";
+
+    if (!errObject[key]) {
+      errObject[key] = [];
+    }
+
+    errObject[key].push(current.msg);
+    return errObject;
+  }, {});
+}
+
+export function FormTS({
+  territoryStoryId = 9,
+}: {
+  territoryStoryId?: number;
+}) {
   const [formKey, setFormKey] = useState(0);
   const [story, setStory] = useState<TerritoryStoryForm>(initializeTSForm());
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<FormError>({});
   const textToPull = useRef<EditorState | null>(null);
   const { initiativeInfo } = useInitiativeCTX();
+  const storyToUpdate = useRef<TerritoryStoryForm | null>(null);
 
   const updateField = useCallback(
     <K extends keyof TerritoryStoryForm>(field: K) =>
@@ -95,22 +122,6 @@ export function FormTS({ territoryStoryId }: { territoryStoryId?: number }) {
     [],
   );
 
-  const makeErrorObject = (errors: ApiRequestError): FormError => {
-    return errors.data.reduce<FormError>((errObject, current) => {
-      const key =
-        current?.field && isFormErrorKey(current.field)
-          ? current.field
-          : "root";
-
-      if (!errObject[key]) {
-        errObject[key] = [];
-      }
-
-      errObject[key].push(current.msg);
-      return errObject;
-    }, {});
-  };
-
   const fetchStoryData = useCallback(async () => {
     if (territoryStoryId === undefined) {
       setStory(initializeTSForm());
@@ -121,13 +132,14 @@ export function FormTS({ territoryStoryId }: { territoryStoryId?: number }) {
     const res = await getTerritoryStory(territoryStoryId);
 
     if (isMonitoringAPIError(res)) {
-      const errorObject = makeErrorObject(res);
+      const errorObject = makeApiResponseErrorObject(res);
 
       setErrors(errorObject);
       setIsLoading(false);
       return;
     }
 
+    storyToUpdate.current = initializeTSForm(res);
     setStory(initializeTSForm(res));
     setIsLoading(false);
   }, [territoryStoryId]);
@@ -135,6 +147,74 @@ export function FormTS({ territoryStoryId }: { territoryStoryId?: number }) {
   useEffect(() => {
     void fetchStoryData();
   }, [fetchStoryData]);
+
+  const handleSubmitImages = async (res: TerritoryStoryFull) => {
+    const imagesUrls = new Set(story.images.map((img) => img.fileUrl));
+    const imagesToAdd = story.images.filter((img) => img.file);
+    const imagesToRemove = storyToUpdate.current
+      ? storyToUpdate.current.images.filter(
+          (img) => !imagesUrls.has(img.fileUrl) && img.id !== undefined,
+        )
+      : [];
+
+    const removeImages = imagesToRemove.map((img) =>
+      deleteTerritoryStoryImage(img.id!),
+    );
+
+    const postImages = imagesToAdd.map((img) =>
+      postTerritoryStoryImage(res.id, img.description, img.file!),
+    );
+
+    const resRemoveImages = await Promise.all(removeImages);
+    if (isMonitoringAPIError(resRemoveImages)) {
+      return makeApiResponseErrorObject(resRemoveImages);
+    }
+
+    const resPostImages = await Promise.all(postImages);
+    if (isMonitoringAPIError(resPostImages)) {
+      return makeApiResponseErrorObject(resPostImages);
+    }
+
+    return null;
+  };
+
+  const handleSubmitVideos = async (res: TerritoryStoryFull) => {
+    const videosUrlsInForm = new Set(story.videos.map((vid) => vid.fileUrl));
+    const videosUrlsInStory = new Set(
+      storyToUpdate.current
+        ? storyToUpdate.current.videos.map((vid) => vid.fileUrl)
+        : [],
+    );
+    const videosToRemove = storyToUpdate.current
+      ? storyToUpdate.current.videos.filter(
+          (vid) => !videosUrlsInForm.has(vid.fileUrl) && vid.id !== undefined,
+        )
+      : [];
+
+    const videosToAdd = story.videos.filter(
+      (vid) => !videosUrlsInStory.has(vid.fileUrl),
+    );
+
+    const removeVideos = videosToRemove.map((vid) =>
+      deleteTerritoryStoryVideo(vid.id!),
+    );
+
+    const addVideos = videosToAdd.map((vid) =>
+      postTerritoryStoryVideo(res.id, vid.fileUrl),
+    );
+
+    const resRemoveVideos = await Promise.all(removeVideos);
+    if (isMonitoringAPIError(resRemoveVideos)) {
+      return makeApiResponseErrorObject(resRemoveVideos);
+    }
+
+    const resPostVideos = await Promise.all(addVideos);
+    if (isMonitoringAPIError(resPostVideos)) {
+      return makeApiResponseErrorObject(resPostVideos);
+    }
+
+    return null;
+  };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -154,47 +234,46 @@ export function FormTS({ territoryStoryId }: { territoryStoryId?: number }) {
         availableTransformers,
       ),
       restricted: story.restricted,
-      enabled: story.enabled,
+      enabled: territoryStoryId === undefined ? false : story.enabled,
       ...(keywords.length > 0 && { keywords }),
-      ...(story.videos.length > 0 && {
-        videos: story.videos.map((v) => ({ fileUrl: v.fileUrl })),
-      }),
     };
 
-    const res = await createTerritoryStory(payload);
+    const res =
+      territoryStoryId === undefined
+        ? await createTerritoryStory(payload)
+        : await editTerritoryStoryGeneralInfo(territoryStoryId, payload);
+
     if (isMonitoringAPIError(res)) {
-      setErrors(makeErrorObject(res));
+      setErrors(makeApiResponseErrorObject(res));
       return;
     }
 
-    if (story.images.length === 0) {
-      successToast(territoryStoryId === undefined, story.title);
-      return;
-    }
+    const results = await Promise.all([
+      handleSubmitImages(res),
+      handleSubmitVideos(res),
+    ]);
 
-    const imagesToUpload = story.images
-      .filter((img) => img.file !== undefined)
-      .map((img) =>
-        postTerritoryStoryImage(res.id, img.description, img.file!),
-      );
-
-    let uploadErrrors: string[] = [];
-    const uploadedImages = await Promise.all(imagesToUpload);
-    uploadedImages.forEach((img) => {
-      if (isMonitoringAPIError(img)) {
-        uploadErrrors = [...uploadErrrors, ...img.data.map((i) => i.msg)];
+    const uploadErrors = results.reduce((all, current) => {
+      if (current === null) {
+        return all;
       }
-    });
+      return { ...all, ...current };
+    }, {} as FormError);
 
-    if (uploadErrrors.length > 0) {
-      setErrors({
-        Images: uploadErrrors,
-        root: [uiText.errors.createdButErrImageUpload],
-      });
-    } else {
-      setStory(initializeTSForm());
-      successToast(territoryStoryId === undefined, story.title);
+    if (uploadErrors && Object.keys(uploadErrors).length > 0) {
+      setErrors(uploadErrors);
+      return;
     }
+
+    const resEnabledStatus = story.enabled
+      ? await enableTerritoryStory(res.id)
+      : await disableTerritoryStory(res.id);
+    if (isMonitoringAPIError(resEnabledStatus)) {
+      setErrors(makeApiResponseErrorObject(resEnabledStatus));
+      return;
+    }
+
+    successToast(territoryStoryId === undefined, res.title);
   };
 
   const handleReset = async (e: FormEvent<HTMLFormElement>) => {
@@ -202,6 +281,10 @@ export function FormTS({ territoryStoryId }: { territoryStoryId?: number }) {
     setFormKey((oldKey) => oldKey + 1);
     await fetchStoryData();
   };
+
+  if (!story.enabled) {
+    return null;
+  }
 
   return isLoading ? (
     <div>{uiText.loading}</div>
@@ -267,8 +350,6 @@ export function FormTS({ territoryStoryId }: { territoryStoryId?: number }) {
         <SubmitStory
           restricted={story.restricted}
           setRestricted={updateField("restricted")}
-          enabled={story.enabled}
-          setEnabled={updateField("enabled")}
           submitErrors={errors.root ?? []}
           text={{ ...uiText.submitStory }}
         />

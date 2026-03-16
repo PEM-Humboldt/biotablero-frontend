@@ -76,53 +76,39 @@ export function YoutubeVideoInput({
     );
   }, [videoCardsInfo]);
 
-  const loadVideoCards = useCallback(async () => {
-    if (videos.length === 0) {
-      return;
-    }
+  const loadVideoCards = useCallback(async (videosToLoad: VideoObjectTS[]) => {
+    if (videosToLoad.length === 0) return;
 
     setIsLoading(true);
-    setErrors([]);
-
     const newCardsInfo: YoutubeVideoCardInfo[] = [];
-    let cleanedVideos: string[] = [];
 
-    for (const video of videos) {
+    for (const video of videosToLoad) {
       const videoId = getCleanYoutubeId(video.fileUrl);
-      if (currentVideosIds.current.has(videoId ?? "")) {
-        continue;
-      }
+      if (currentVideosIds.current.has(videoId ?? "")) continue;
 
       const videoInfo = await getVideo(videoId);
-      if (!isYoutubeVideoMetadata(videoInfo)) {
-        if (videoInfo.status >= 429) {
-          cleanedVideos = [
-            text.errorsYoutubeFeedback.conection(videoInfo.data[0].msg),
-          ];
-          break;
-        }
-
-        cleanedVideos.push(
-          text.errorsYoutubeFeedback.purge(
-            video.fileUrl,
-            videoInfo.data[0].msg,
-          ),
-        );
-
-        continue;
+      if (isYoutubeVideoMetadata(videoInfo)) {
+        newCardsInfo.push(videoInfo);
       }
-
-      newCardsInfo.push(videoInfo);
     }
 
+    if (newCardsInfo.length > 0) {
+      setVideoCardsInfo((old) => [...old, ...newCardsInfo]);
+    }
     setIsLoading(false);
-    setErrors(cleanedVideos);
-    setVideoCardsInfo((oldCardsInfo) => [...oldCardsInfo, ...newCardsInfo]);
-  }, [videos, currentVideosIds, setErrors, text]);
+  }, []);
 
   useEffect(() => {
-    void loadVideoCards();
-  }, [loadVideoCards]);
+    if (videos.length > 0 && videoCardsInfo.length === 0) {
+      void loadVideoCards(videos);
+    }
+  }, [videos, loadVideoCards, videoCardsInfo.length]);
+
+  useEffect(() => {
+    currentVideosIds.current = new Set(
+      videoCardsInfo.map((vC) => vC.youtubeId),
+    );
+  }, [videoCardsInfo]);
 
   const addVideo = async () => {
     if (currentVideosIds.current.has(getCleanYoutubeId(videoUrlOrID) ?? "")) {

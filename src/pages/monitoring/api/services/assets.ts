@@ -52,7 +52,7 @@ export async function postTerritoryStoryVideo(
   const payload = { territoryStoryId, fileUrl };
   const res = await monitoringAPI<VideoObjectTS[]>({
     type: "post",
-    endpoint: `/TerritoryStoryVideo/GetByTerritoryStory/${territoryStoryId}`,
+    endpoint: `TerritoryStoryVideo`,
     options: { data: payload },
   });
 
@@ -62,7 +62,7 @@ export async function postTerritoryStoryVideo(
 export async function deleteTerritoryStoryVideo(territoryStoryVideoId: number) {
   const res = await monitoringAPI<VideoObjectTS[]>({
     type: "delete",
-    endpoint: `/TerritoryStoryVideo/${territoryStoryVideoId}`,
+    endpoint: `TerritoryStoryVideo/${territoryStoryVideoId}`,
   });
 
   return res;
@@ -71,7 +71,7 @@ export async function deleteTerritoryStoryVideo(territoryStoryVideoId: number) {
 export async function getTerritoryStoryVideos(territoryStoryId: number) {
   const res = await monitoringAPI<VideoObjectTS[]>({
     type: "get",
-    endpoint: `/TerritoryStoryVideo/GetByTerritoryStory/${territoryStoryId}`,
+    endpoint: `TerritoryStoryVideo/GetByTerritoryStory/${territoryStoryId}`,
   });
 
   return res;
@@ -91,6 +91,15 @@ export async function postTerritoryStoryImage(
     type: "post",
     endpoint: "TerritoryStoryImage",
     options: { data: formData, headers: { accept: "*/*" } },
+  });
+
+  return res;
+}
+
+export async function deleteTerritoryStoryImage(imageInTSId: number) {
+  const res = await monitoringAPI({
+    type: "delete",
+    endpoint: `TerritoryStoryImage/${imageInTSId}`,
   });
 
   return res;

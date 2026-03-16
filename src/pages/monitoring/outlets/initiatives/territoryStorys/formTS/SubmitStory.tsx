@@ -3,19 +3,11 @@ import { Button } from "@ui/shadCN/component/button";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 
 type SubmitStoryProps = {
-  enabled: boolean;
-  setEnabled: (set: boolean) => void;
   restricted: boolean;
   setRestricted: (set: boolean) => void;
   submitErrors: string[];
   text: {
     title: string;
-    enabled: {
-      ariaLabel: string;
-      title: { enabled: string; disabled: string };
-      sr: { enabled: string; disabled: string };
-      label: { enabled: string; disabled: string };
-    };
     restricted: {
       ariaLabel: string;
       title: { restricted: string; unrestricted: string };
@@ -27,8 +19,6 @@ type SubmitStoryProps = {
 };
 
 export function SubmitStory({
-  enabled,
-  setEnabled,
   restricted,
   setRestricted,
   submitErrors,
@@ -38,27 +28,6 @@ export function SubmitStory({
     <>
       <div className="w-full md:w-[50%] lg:w-[30%] ml-auto bg-background flex flex-col rounded-lg border border-input p-2">
         <span className="text-primary font-normal">{text.title}</span>
-        <div className="flex gap-2 items-center">
-          <Switch
-            id="enabled"
-            checked={enabled}
-            onCheckedChange={setEnabled}
-            aria-label={text.enabled.ariaLabel}
-          />
-          <label
-            htmlFor="enabled"
-            className="cursor-pointer"
-            title={
-              enabled ? text.enabled.title.enabled : text.enabled.title.disabled
-            }
-          >
-            <span className="sr-only">
-              {enabled ? text.enabled.sr.enabled : text.enabled.sr.disabled}
-            </span>
-            {enabled ? text.enabled.label.enabled : text.enabled.label.disabled}
-          </label>
-        </div>
-
         <div className="flex gap-2 items-center">
           <Switch
             id="restricted"
@@ -96,9 +65,7 @@ export function SubmitStory({
         <Button type="reset" variant="outline_destructive">
           {text.submit.reset}
         </Button>
-        <Button type="submit">
-          {enabled ? text.submit.publish : text.submit.save}
-        </Button>
+        <Button type="submit">{text.submit.publish}</Button>
       </div>
     </>
   );

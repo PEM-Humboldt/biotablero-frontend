@@ -62,6 +62,7 @@ export function ListTypeSelector() {
         <Button
           key={key}
           variant={activeList === key ? "default" : "outline"}
+          type="button"
           size="icon"
           onClick={() => selectListType(key)}
           title={label}

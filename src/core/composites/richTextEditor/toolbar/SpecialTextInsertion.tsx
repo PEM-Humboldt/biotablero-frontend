@@ -68,6 +68,7 @@ export function SpecialTextInsertion() {
           <Button
             variant={isLink ? "default" : "outline"}
             size="icon"
+            type="button"
             title={structureModifications.link.label}
           >
             <structureModifications.link.icon className="size-4" />
@@ -78,6 +79,7 @@ export function SpecialTextInsertion() {
       <Button
         variant={isQuote ? "default" : "outline"}
         size="icon"
+        type="button"
         onClick={toggleQuote}
         title={structureModifications.quote.label}
       >

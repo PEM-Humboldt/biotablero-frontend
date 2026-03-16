@@ -84,18 +84,6 @@ export const uiText = {
 
   submitStory: {
     title: "Configuración del relato",
-    enabled: {
-      ariaLabel: "Estado de publicación",
-      title: {
-        enabled: "El relato estará disponible al guardarlo",
-        disabled: "El relato se mantendrá en borrador al guardarlo",
-      },
-      sr: {
-        enabled: "Modo público activo",
-        disabled: "Modo borrador activo",
-      },
-      label: { enabled: "Publicar", disabled: "Borrador" },
-    },
     restricted: {
       ariaLabel: "Restricción de público",
       title: {

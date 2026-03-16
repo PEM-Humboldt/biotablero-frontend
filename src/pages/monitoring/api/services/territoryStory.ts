@@ -42,3 +42,21 @@ export function editTerritoryStoryGeneralInfo(
 
   return res;
 }
+
+export function enableTerritoryStory(territoryStoryId: number) {
+  const res = monitoringAPI({
+    type: "post",
+    endpoint: `TerritoryStory/Enable/${territoryStoryId}`,
+  });
+
+  return res;
+}
+
+export function disableTerritoryStory(territoryStoryId: number) {
+  const res = monitoringAPI({
+    type: "delete",
+    endpoint: `TerritoryStory/Disable/${territoryStoryId}`,
+  });
+
+  return res;
+}

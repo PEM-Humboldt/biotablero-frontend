@@ -42,6 +42,7 @@ export function TextFormatSelector() {
           key={key}
           variant={activeFormats[key] ? "default" : "outline"}
           size="icon"
+          type="button"
           onClick={() => toggleFormat(key)}
           title={label}
         >

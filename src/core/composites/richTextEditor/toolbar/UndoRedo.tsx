@@ -43,6 +43,7 @@ export function UndoRedo() {
       <Button
         variant="outline"
         size="icon"
+        type="button"
         disabled={!canUndo}
         onClick={() => editor.dispatchCommand(UNDO_COMMAND, undefined)}
         title={uiText.history.undo.title}
@@ -54,6 +55,7 @@ export function UndoRedo() {
       <Button
         variant="outline"
         size="icon"
+        type="button"
         disabled={!canRedo}
         onClick={() => editor.dispatchCommand(REDO_COMMAND, undefined)}
         title={uiText.history.redo.title}
