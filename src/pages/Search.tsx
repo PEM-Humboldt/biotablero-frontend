@@ -122,7 +122,12 @@ export function Search() {
           area_type: searchState.areaType!,
         };
 
-        searchDispatch({
+        searchDispatchComplete({
+          type: SearchUpdated.AREA_ID,
+          areaId: areaBasic,
+        });
+
+        searchDispatchComplete({
           type: SearchUpdated.CONSOLE_DRAW,
           payload: {
             areaId: areaBasic,
