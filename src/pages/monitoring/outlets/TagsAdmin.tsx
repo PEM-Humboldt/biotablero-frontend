@@ -13,7 +13,7 @@ import type {
 } from "pages/monitoring/types/odataResponse";
 import { ODataTable } from "@composites/ODataTable";
 import { TablePager } from "@composites/TablePager";
-import { tableContent } from "pages/monitoring/outlets/tagsAdmin/layout/tableContent";
+import { getTableContent } from "pages/monitoring/outlets/tagsAdmin/layout/tableContent";
 import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
 import { TagFormButton } from "pages/monitoring/outlets/tagsAdmin/TagFormBtn";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
@@ -98,10 +98,11 @@ export function TagsAdmin() {
             <p>{uiText.noDataAvailable}</p>
           ) : (
             <ODataTable
-              cols={tableContent}
+              cols={getTableContent(() =>
+                setRefetchTrigger((prev) => prev + 1),
+              )}
               values={parseODataTags(tags)}
               className="table-tags"
-              onActionSuccess={() => setRefetchTrigger((prev) => prev + 1)}
             />
           )}
           <TablePager

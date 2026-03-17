@@ -25,12 +25,10 @@ export function ODataTable<T extends HasId>({
   cols,
   values,
   className,
-  onActionSuccess,
 }: {
   cols: ODataColumn<T>[];
   values: T[];
   className?: string;
-  onActionSuccess?: () => void;
 }) {
   return (
     <div className={className}>
@@ -38,12 +36,7 @@ export function ODataTable<T extends HasId>({
         <OdataTableHead cols={cols} />
         <tbody>
           {values.map((row) => (
-            <ODataTableRow
-              key={row.id}
-              cols={cols}
-              row={row}
-              onActionSuccess={onActionSuccess}
-            />
+            <ODataTableRow key={row.id} cols={cols} row={row} />
           ))}
         </tbody>
       </table>
@@ -72,18 +65,16 @@ function OdataTableHead<T extends HasId>({ cols }: { cols: ODataColumn<T>[] }) {
 function ODataTableRow<T extends HasId>({
   cols,
   row,
-  onActionSuccess,
 }: {
   cols: ODataColumn<T>[];
   row: T;
-  onActionSuccess?: () => void;
 }) {
   const logDataString = (col: ODataColumn<T>, row: T) => {
     const value = row[col.source];
 
     if (col.type === "action") {
       const Actions = col.actions;
-      return <Actions value={value} onActionSuccess={onActionSuccess} />;
+      return <Actions value={value} />;
     }
 
     if (col.type === "text" && col.processValue) {
