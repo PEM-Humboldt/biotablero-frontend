@@ -371,14 +371,7 @@ export function TagFormButton({
                   >
                     {uiText.form.category}
                   </label>
-                  <InputGroup>
-                    <InputGroupInput
-                      id="categoryName"
-                      type="text"
-                      value={translateTagCategory(formData.category.name)}
-                      disabled={true}
-                    />
-                  </InputGroup>
+                  <div>{translateTagCategory(formData.category.name)}</div>
                 </div>
               )}
 
