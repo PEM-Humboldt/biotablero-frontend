@@ -338,7 +338,6 @@ export function TagFormButton({
                       }))
                     }
                     onBlur={categoryOnBlur}
-                    disabled={!!tagId || isLoading}
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 mt-1"
                     aria-invalid={errors.category !== undefined}
                     aria-describedby={
