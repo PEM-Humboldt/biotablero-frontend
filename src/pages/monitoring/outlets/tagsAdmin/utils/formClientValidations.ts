@@ -5,7 +5,7 @@ import type { FormClientValidation } from "pages/monitoring/types/formValidation
 export const tagValidations: FormClientValidation<TagDataForm>[] = [
   {
     condition: (f) => Boolean(f.category.id) && f.category.id > 0,
-    path: "categoryId",
+    path: "category",
     message: uiText.form.validation.categoryIdRequired,
   },
   {
