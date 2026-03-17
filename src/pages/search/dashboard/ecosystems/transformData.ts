@@ -1,4 +1,5 @@
 import {
+  SE_LABELS,
   SEData,
   SEDataExtended,
   SEPAData,
@@ -70,7 +71,7 @@ export const transformSEValues = (
       key: seRawData.type,
       area: Number(seRawData.area),
       percentage: seRawData.percentage,
-      label: seRawData.type,
+      label: SE_LABELS[seRawData.type],
     },
     {
       key: "NA",
