@@ -62,26 +62,17 @@ export function TagsAdmin() {
         skip: skip,
       };
 
-      try {
-        const updatedTags = await getTags(newSearchParams);
-        if (isMonitoringAPIError(updatedTags)) {
-          setTags(null);
-          return;
-        }
-
-        setTags(updatedTags);
-        setLoadMsg({
-          message: null,
-          type: "normal",
-        });
-      } catch (err) {
-        setLoadMsg({
-          message: uiText.loadingStates.error,
-          type: "error",
-        });
-
-        console.error(uiText.criticalError, err);
+      const updatedTags = await getTags(newSearchParams);
+      if (isMonitoringAPIError(updatedTags)) {
+        setTags(null);
+        return;
       }
+
+      setTags(updatedTags);
+      setLoadMsg({
+        message: null,
+        type: "normal",
+      });
     };
 
     void filterChange();

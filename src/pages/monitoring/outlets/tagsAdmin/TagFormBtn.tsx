@@ -67,94 +67,74 @@ export function TagFormButton({
   }
 
   const fetchTag = async () => {
-    try {
-      if (tagId) {
-        handleFormReset();
-        setLoadStatusMsg(uiText.table.loadStatus.loading);
-        const res = await getTagById(tagId);
-
-        if (isMonitoringAPIError(res)) {
-          setErrors({ root: [res.message] });
-        } else {
-          setFormData({
-            name: res.name || "",
-            url: res.url || "",
-            category: res.category || { id: 0, name: "" },
-          });
-        }
-
-        setLoadStatusMsg(uiText.table.loadStatus.loaded);
-      }
-    } catch (err) {
-      setLoadStatusMsg(uiText.table.loadStatus.error);
-      console.error(err);
-      setErrors({ root: ["Error obteniendo la etiqueta."] });
-    } finally {
+    if (tagId) {
+      handleFormReset();
+      setLoadStatusMsg(uiText.table.loadStatus.loading);
+      const result = await getTagById(tagId);
       setIsLoading(false);
+
+      if (isMonitoringAPIError(result)) {
+        setErrors({ root: [result.message] });
+        return;
+      }
+
+      setFormData({
+        name: result.name || "",
+        url: result.url || "",
+        category: result.category || { id: 0, name: "" },
+      });
+
+      setLoadStatusMsg(uiText.table.loadStatus.loaded);
     }
   };
 
   const fetchTagCategories = async () => {
-    try {
-      handleFormReset();
-      setLoadStatusMsg(uiText.table.loadStatus.loading);
-      const result = await getTagCategories();
+    handleFormReset();
+    setLoadStatusMsg(uiText.table.loadStatus.loading);
+    const result = await getTagCategories();
+    setIsLoading(false);
 
-      if (isMonitoringAPIError(result)) {
-        throw new Error(result.message);
-      }
-
-      setTagCategories(
-        result.map((category) => ({
-          ...category,
-          name: translateTagCategory(category.name),
-        })),
-      );
-
-      setLoadStatusMsg(uiText.table.loadStatus.loaded);
-    } catch (err) {
-      setLoadStatusMsg(uiText.table.loadStatus.error);
-      console.error(err);
-      setErrors({ root: ["Error obteniendo las categorías."] });
-    } finally {
-      setIsLoading(false);
+    if (isMonitoringAPIError(result)) {
+      setErrors({ root: [result.message] });
+      return;
     }
+
+    setTagCategories(
+      result.map((category) => ({
+        ...category,
+        name: translateTagCategory(category.name),
+      })),
+    );
+
+    setLoadStatusMsg(uiText.table.loadStatus.loaded);
   };
 
   const removeTag = async () => {
-    try {
-      if (tagId) {
-        setLoadStatusMsg(uiText.table.loadStatus.loading);
-        const res = await deleteTag(tagId);
-
-        if (isMonitoringAPIError(res)) {
-          setErrors((oldErr) => ({
-            ...oldErr,
-            root: res.data.map((error) => error.msg),
-          }));
-          console.error(res);
-          setLoadStatusMsg(uiText.table.loadStatus.loaded);
-          return;
-        }
-
-        setLoadStatusMsg(uiText.table.loadStatus.loaded);
-
-        toast(uiText.toast.delete.title, {
-          position: "bottom-right",
-          description: uiText.toast.delete.description,
-          icon: <UserRoundCheck className="size-8 text-primary" />,
-          className: "px-6! gap-6! border-2! border-primary!",
-        });
-
-        setOpenDialogAlert(false);
-        onActionSuccess?.();
-      }
-    } catch (err) {
-      setLoadStatusMsg(uiText.table.loadStatus.error);
-      console.error(err);
-      setErrors({ root: ["Error al eliminar la etiqueta."] });
-    } finally {
+    if (tagId) {
+      setLoadStatusMsg(uiText.table.loadStatus.loading);
+      const res = await deleteTag(tagId);
       setIsLoading(false);
+
+      if (isMonitoringAPIError(res)) {
+        setErrors((oldErr) => ({
+          ...oldErr,
+          root: res.data.map((error) => error.msg),
+        }));          
+        setLoadStatusMsg(uiText.table.loadStatus.loaded);
+        return;
+      }
+
+      setLoadStatusMsg(uiText.table.loadStatus.loaded);
+
+      toast(uiText.toast.delete.title, {
+        position: "bottom-right",
+        description: uiText.toast.delete.description,
+        icon: <UserRoundCheck className="size-8 text-primary" />,
+        className: "px-6! gap-6! border-2! border-primary!",
+      });
+
+      setOpenDialogAlert(false);
+      onActionSuccess?.();
     }
   };
 
@@ -252,54 +232,48 @@ export function TagFormButton({
       return;
     }
 
-    try {
-      const finalUrl = formData.url?.trim() || null;
-      const payload = (!tagId
-        ? {
-            name: formData.name,
-            url: finalUrl,
-            category: formData.category,
-          }
-        : {
-            name: formData.name,
-            url: finalUrl,
-          }) as unknown as TagDataForm;
+    const finalUrl = formData.url?.trim() || null;
+    const payload = (!tagId
+      ? {
+          name: formData.name,
+          url: finalUrl,
+          category: formData.category,
+        }
+      : {
+          name: formData.name,
+          url: finalUrl,
+        }) as unknown as TagDataForm;
 
-      let res = null;
+    let res = null;
 
-      if (!tagId) {
-        res = await addTag(payload);
-      } else {
-        res = await updateTag(tagId, payload);
-      }
-
-      if (isMonitoringAPIError(res)) {
-        setErrors((oldErr) => ({
-          ...oldErr,
-          root: res.data.map((error) => error.msg),
-        }));
-        console.error(res);
-
-        return;
-      }
-
-      toast(uiText.toast.create.title, {
-        position: "bottom-right",
-        description: tagId
-          ? uiText.toast.edit.description
-          : uiText.toast.create.description,
-        icon: <UserRoundCheck className="size-8 text-primary" />,
-        className: "px-6! gap-6! border-2! border-primary!",
-      });
-
-      setOpenDialogForm(false);
-      onActionSuccess?.();
-    } catch (err) {
-      setErrors((oldErr) => ({ ...oldErr, root: [uiText.criticalError.user] }));
-      console.error(uiText.criticalError.log, err);
-    } finally {
-      setIsLoading(false);
+    if (!tagId) {
+      res = await addTag(payload);
+    } else {
+      res = await updateTag(tagId, payload);
     }
+
+    setIsLoading(false);
+
+    if (isMonitoringAPIError(res)) {
+      setErrors((oldErr) => ({
+        ...oldErr,
+        root: res.data.map((error) => error.msg),
+      }));
+
+      return;
+    }
+
+    toast(uiText.toast.create.title, {
+      position: "bottom-right",
+      description: tagId
+        ? uiText.toast.edit.description
+        : uiText.toast.create.description,
+      icon: <UserRoundCheck className="size-8 text-primary" />,
+      className: "px-6! gap-6! border-2! border-primary!",
+    });
+
+    setOpenDialogForm(false);
+    onActionSuccess?.();
   };
 
   const getSubmitButtonText = () => {
