@@ -15,13 +15,12 @@ import { cn } from "@ui/shadCN/lib/utils";
 import backgroundImage from "pages/home/assets/biotablero-slider.webp";
 
 import { type DisplayModule } from "core/layout/mainLayout/modules";
+import { useVisibleModules } from "@hooks/useVisibleModules";
 
 type CarrouselProps = {
   activeTab: number | null;
   setActiveTab: Dispatch<SetStateAction<number | null>>;
 };
-
-import { useVisibleModules } from "@hooks/useVisibleModules";
 
 export function ModulesCarousel({ activeTab, setActiveTab }: CarrouselProps) {
   const modules = useVisibleModules();
