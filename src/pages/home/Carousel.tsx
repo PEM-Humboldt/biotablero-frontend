@@ -1,4 +1,4 @@
-import { type Dispatch, type SetStateAction, useMemo } from "react";
+import { type Dispatch, type SetStateAction } from "react";
 import { Link } from "react-router";
 import { Info } from "lucide-react";
 
@@ -10,7 +10,6 @@ import {
   CarouselPrevious,
 } from "@ui/shadCN/component/carousel";
 import { Button } from "@ui/shadCN/component/button";
-import { useUserCTX } from "@hooks/UserContext";
 import { cn } from "@ui/shadCN/lib/utils";
 
 import backgroundImage from "pages/home/assets/biotablero-slider.webp";
