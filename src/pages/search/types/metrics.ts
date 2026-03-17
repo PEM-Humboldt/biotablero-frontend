@@ -20,6 +20,9 @@ export type MetricTypesMap = {
     "Natural" | "Baja" | "Media" | "Alta" | "Muy Alta"
   >;
   currentHF_average: MetricDataStructure<"id", "average">;
+  paramo: MetricDataStructure<"id", "paramo">;
+  tropicalDryForest: MetricDataStructure<"id", "bosqueSeco">;
+  wetland: MetricDataStructure<"id", "humedal">;
 };
 
 export type MetricsTypes = keyof MetricTypesMap;
