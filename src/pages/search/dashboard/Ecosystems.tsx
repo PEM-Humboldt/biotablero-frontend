@@ -11,13 +11,13 @@ import {
 
 import BackendAPI from "pages/search/api/backendAPI";
 import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
-import { SEPAData } from "pages/search/types/ecosystems";
+import { SEData } from "pages/search/types/ecosystems";
 import { EcosystemsController } from "pages/search/dashboard/EcosystemsController";
 import { RasterLayer } from "pages/search/types/layers";
 
 import { Coverage } from "pages/search/dashboard/ecosystems/Coverage";
 // import { ProtectedAreas } from "pages/search/dashboard/ecosystems/ProtectedAreas";
-// import { StrategicEcosystems } from "pages/search/dashboard/ecosystems/StrategicEcosystems";
+import { StrategicEcosystems } from "pages/search/dashboard/ecosystems/StrategicEcosystems";
 import { SmallStackedBarData } from "@composites/charts/SmallStackedBar";
 
 type TextsContent = { info: string; cons: string; meto: string; quote: string };
@@ -37,7 +37,7 @@ type EcosystemsState = {
   PATotalArea: number;
   PADivergentData: boolean;
 
-  SEAreas: SEPAData[];
+  SEAreas: SEData[];
   SETotalArea: number;
 
   layers: RasterLayer[];
@@ -54,6 +54,8 @@ type EcosystemsState = {
     pa: TextsContent;
     se: TextsContent;
   };
+
+  activeSE: string;
 };
 
 type TextSection = keyof EcosystemsState["texts"];
@@ -85,6 +87,8 @@ const initialState: EcosystemsState = {
     pa: { info: "", cons: "", meto: "", quote: "" },
     se: { info: "", cons: "", meto: "", quote: "" },
   },
+
+  activeSE: "",
 };
 
 type EcosystemsAction =
@@ -96,7 +100,10 @@ type EcosystemsAction =
   | {
       type: "SET_TEXTS";
       payload: { section: keyof EcosystemsState["texts"]; value: TextsContent };
-    };
+    }
+  | { type: "SE_VALUES_SUCCEEDED"; payload: SEData[] }
+  | { type: "SE_VALUES_FAILED" }
+  | { type: "SET_ACTIVE_SE"; payload: string };
 
 function ecosystemsReducer(
   state: EcosystemsState,
@@ -146,6 +153,32 @@ function ecosystemsReducer(
         },
       };
 
+    case "SE_VALUES_SUCCEEDED":
+      return {
+        ...state,
+        SEAreas: action.payload,
+        SETotalArea: action.payload.reduce((acc, item) => acc + item.area, 0),
+        messages: {
+          ...state.messages,
+          se: null,
+        },
+      };
+
+    case "SE_VALUES_FAILED":
+      return {
+        ...state,
+        messages: {
+          ...state.messages,
+          se: "no-data",
+        },
+      };
+
+    case "SET_ACTIVE_SE":
+      return {
+        ...state,
+        activeSE: action.payload,
+      };
+
     default:
       return state;
   }
@@ -155,12 +188,21 @@ const controller = new EcosystemsController();
 
 export function Ecosystems() {
   const context = useContext(SearchLegacyCTX) as LegacyContextValues;
-  const { areaType, areaId } = context;
+  const { areaType, areaId, areaHa } = context;
 
   const [state, dispatch] = useReducer(ecosystemsReducer, initialState);
 
-  const { showInfoMain, infoShown, coverageData, layers, messages, texts } =
-    state;
+  const {
+    showInfoMain,
+    infoShown,
+    coverageData,
+    layers,
+    messages,
+    texts,
+    SEAreas,
+    SETotalArea,
+    activeSE,
+  } = state;
 
   if (!areaType || !areaId) {
     context.setLoadingLayer(false);
@@ -170,9 +212,9 @@ export function Ecosystems() {
   const areaTypeId = areaType.id;
   const areaIdId = areaId.id;
 
-  controller.setArea(areaTypeId, areaIdId);
-
   useEffect(() => {
+    controller.setArea(areaTypeId, areaIdId);
+
     context.setLoadingLayer(true);
 
     controller
@@ -200,6 +242,18 @@ export function Ecosystems() {
       .catch(() => {
         dispatch({ type: "COVERAGE_VALUES_FAILED" });
         context.setLoadingLayer(false);
+      });
+
+    controller
+      .getStrategicEcosystemsValues()
+      .then((res) => {
+        dispatch({
+          type: "SE_VALUES_SUCCEEDED",
+          payload: res,
+        });
+      })
+      .catch(() => {
+        dispatch({ type: "SE_VALUES_FAILED" });
       });
 
     const TEXT_SECTIONS: TextSection[] = ["ecosystems", "coverage", "pa", "se"];
@@ -241,6 +295,15 @@ export function Ecosystems() {
    */
   const toggleInfo = (value: TextSection) =>
     dispatch({ type: "TOGGLE_SECTION_INFO", payload: value });
+
+  /**
+   * Sets the active strategic ecosystem
+   *
+   * @param {string} id - Strategic ecosystem id
+   */
+  const setActiveSE = (id: string) => {
+    dispatch({ type: "SET_ACTIVE_SE", payload: id });
+  };
 
   /**
    * Set the selected layer to highlight
@@ -299,20 +362,20 @@ export function Ecosystems() {
         {*/}
 
         {/* STRATEGIC ECOSYSTEMS */}
-        {/*}
         <StrategicEcosystems
           SEAreas={SEAreas}
           SETotalArea={SETotalArea}
           areaHa={areaHa!}
+          activeSE={activeSE}
+          setActiveSE={setActiveSE}
           infoOpen={infoShown.has("se")}
           toggleInfo={() => toggleInfo("se")}
           texts={texts.se}
           messages={messages.se}
-          areaIdStr={areaIdStr}
+          areaIdStr={areaIdId.toString()}
           isLoading={messages.se === "loading"}
           noData={messages.se === "no-data"}
         />
-        {*/}
       </div>
     </div>
   );

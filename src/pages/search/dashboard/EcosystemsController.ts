@@ -1,9 +1,10 @@
 import SearchAPI from "pages/search/api/searchAPI";
-import LayerAPI from "../api/layerAPI";
+import LayerAPI from "pages/search/api/layerAPI";
 import { RasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import { transformCoverageValues } from "./ecosystems/transformData";
+import { SEData } from "pages/search/types/ecosystems";
 
 /**
  * Controller for Ecosystems Component
@@ -120,6 +121,37 @@ export class EcosystemsController {
    * @returns { Promise<Array<RasterLayer>> } layers for the Special Ecosystem type
    */
 
+  /**
+   * Get the coverage values for the current area
+   *
+   * @returns { Promise<SmallStackedBarData[]>}
+   */
+  async getStrategicEcosystemsValues(): Promise<SEData[]> {
+    const keys = ["paramo", "tropicalDryForest", "wetland"] as const;
+
+    const requests = keys.map((key) =>
+      SearchAPI.requestMetricsValues<typeof key>(key, this.areaId),
+    );
+
+    const responses = await Promise.all(requests);
+
+    const result: SEData[] = responses.map((res, index) => {
+      const { id, ...values } = res;
+
+      const totalArea = Object.values(values).reduce(
+        (acc, value) => acc + value,
+        0,
+      );
+
+      return {
+        type: keys[index],
+        area: Number(totalArea),
+        values,
+      };
+    });
+
+    return result;
+  }
   // TODO: Refactor to use SearchAPI when available
 
   /*
