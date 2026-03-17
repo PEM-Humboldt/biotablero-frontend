@@ -12,9 +12,7 @@ export function InitiativesManagement() {
         <h3>Tablero de iniciativas</h3>
       </header>
 
-      <JoinRequests
-        InitiativesAsLeader={userInitiativesAs[RoleInInitiative.LEADER]}
-      />
+      <JoinRequests />
       <InitiativeUpdater />
     </main>
   );

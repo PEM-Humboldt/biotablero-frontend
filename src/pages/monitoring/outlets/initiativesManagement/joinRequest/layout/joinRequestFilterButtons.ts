@@ -15,12 +15,12 @@ export const filterJoinRequestButtonsConfig: FilterJoinRequestSettings[] = [
     label: uiText.module.filteringLabels.aproved,
     status: JoinRequestStatus.APPROVED,
     sortBy: "responseDate",
-    newerFirst: false,
+    newerFirst: true,
   },
   {
     label: uiText.module.filteringLabels.rejected,
     status: JoinRequestStatus.REJECTED,
     sortBy: "responseDate",
-    newerFirst: false,
+    newerFirst: true,
   },
 ];

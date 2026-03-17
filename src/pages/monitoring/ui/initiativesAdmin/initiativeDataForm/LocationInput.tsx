@@ -3,7 +3,7 @@ import { type SetStateAction, useCallback, useEffect, useState } from "react";
 import { Label } from "@ui/shadCN/component/label";
 import { LabelAndErrors } from "@ui/LabelingWithErrors";
 import { Combobox } from "@ui/ComboBox";
-import { isMonitoringAPIError } from "pages/monitoring/api/monitoringAPI";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { StrValidator } from "@utils/strValidator";
 import { inputLengthCount, inputWarnColor } from "@utils/ui";
 import {
@@ -45,7 +45,12 @@ export function LocationInput<T extends LocationDataBasic>({
   const [inputErr, setInputErr] = useState<{ [key: string]: string[] }>({});
 
   useEffect(() => {
-    void getColombianDepartments().then((reps) => setDepartments(reps));
+    const getDepts = async () => {
+      const depts = await getColombianDepartments();
+      setDepartments(depts);
+    };
+
+    void getDepts();
   }, []);
 
   useEffect(() => {
@@ -55,21 +60,18 @@ export function LocationInput<T extends LocationDataBasic>({
     }
 
     const getMunicipalities = async () => {
-      try {
-        const municipalitiesList =
-          await getMunicipalitiesByDepartment(currentDepartment);
-        if (isMonitoringAPIError(municipalitiesList)) {
-          setInputErr((oldErr) => ({
-            ...oldErr,
-            location: [municipalitiesList.message],
-          }));
-          return;
-        }
-
-        setMunicipalities(municipalitiesList);
-      } catch (err) {
-        console.error(err);
+      const municipalitiesList =
+        await getMunicipalitiesByDepartment(currentDepartment);
+      if (isMonitoringAPIError(municipalitiesList)) {
+        setInputErr((oldErr) => ({
+          ...oldErr,
+          location: municipalitiesList.data.map((err) => err.msg),
+        }));
+        setMunicipalities([]);
+        return;
       }
+
+      setMunicipalities(municipalitiesList);
     };
 
     void getMunicipalities();

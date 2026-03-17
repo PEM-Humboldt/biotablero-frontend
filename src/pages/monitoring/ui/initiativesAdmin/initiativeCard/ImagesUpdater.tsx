@@ -17,7 +17,7 @@ import { EditModeButton } from "pages/monitoring/ui/initiativesAdmin/initiativeC
 import { ImagePreview } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/ImagePreview";
 import { ImagesInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/ImagesInput";
 import { Button } from "@ui/shadCN/component/button";
-import { uploadImages } from "pages/monitoring/api/monitoringAPI";
+import { uploadImages } from "pages/monitoring/api/services/assets";
 import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 import { useInitiativeDataCTX } from "pages/monitoring/ui/initiativesAdmin/hooks/useAdminUpdateContext";
 
@@ -52,42 +52,37 @@ export function ImagesUpdater({
 
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (isLoading || !sectionInfo.current) {
+    if (isLoading || !sectionInfo.current || !initiativeId) {
       return;
     }
 
-    try {
-      setIsLoading(true);
+    setIsLoading(true);
 
-      const imagesToUpload = [
-        {
-          file: sectionInfo.current.imageUrl,
-          path: `${backEndpointImage}/${initiativeId}`,
-        },
-        {
-          file: sectionInfo.current.bannerUrl,
-          path: `${backEndpointBanner}/${initiativeId}`,
-        },
-      ];
+    const imagesToUpload = [
+      {
+        file: sectionInfo.current.imageUrl,
+        path: `${backEndpointImage}/${initiativeId}`,
+      },
+      {
+        file: sectionInfo.current.bannerUrl,
+        path: `${backEndpointBanner}/${initiativeId}`,
+      },
+    ];
 
-      const imageUploadErrors = await uploadImages(imagesToUpload);
+    const imageUploadErrors = await uploadImages(imagesToUpload);
 
-      if (imageUploadErrors?.length > 0) {
-        setErrors((oldErr) => ({
-          ...oldErr,
-          images: { root: imageUploadErrors },
-        }));
-      }
-
-      setForceRender((n) => n + 1);
-      await updater!();
-      setCurrentEdit!("none");
-    } catch (err) {
-      setErrors((oldErr) => ({ ...oldErr, root: [uiText.criticalError.user] }));
-      console.error(uiText.criticalError.log, err);
-    } finally {
+    if (imageUploadErrors?.length > 0) {
+      setErrors((oldErr) => ({
+        ...oldErr,
+        images: { root: imageUploadErrors },
+      }));
       setIsLoading(false);
+      return;
     }
+
+    setForceRender((n) => n + 1);
+    await updater!();
+    setCurrentEdit!("none");
   };
 
   const undoChanges = () => {

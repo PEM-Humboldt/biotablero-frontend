@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState, useMemo } from "react";
 
 import { ErrorsList } from "@ui/LabelingWithErrors";
-import { commonErrorMessage } from "@utils/ui";
 import {
   INITIATIVE_CONTACTS_MAX_AMOUNT,
   INITIATIVE_CONTACTS_MIN_AMOUNT,
@@ -18,9 +17,9 @@ import type {
 import type { CardInfoGrouped } from "pages/monitoring/types/initiativeData";
 import {
   getInitiative,
-  isMonitoringAPIError,
-  monitoringAPI,
-} from "pages/monitoring/api/monitoringAPI";
+  changeInitiativeStatus,
+} from "pages/monitoring/api/services/initiatives";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { makeLocationObj } from "pages/monitoring/ui/initiativesAdmin/utils/builders";
 import { InitiativeStatusDialog } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/InitiativeStatusDialog";
 import { FormListUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/FormListUpdater";
@@ -36,7 +35,7 @@ export function InitiativeInfoUpdater({
 }: {
   initiativeId: number;
 }) {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [initiativeInfo, setInitiativeInfo] =
     useState<InitiativeFullInfo | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
@@ -49,41 +48,34 @@ export function InitiativeInfoUpdater({
   }, [initiativeInfo?.enabled]);
 
   const getInitiativeInfo = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const res = await getInitiative(initiativeId);
+    setIsLoading(true);
+    const res = await getInitiative(initiativeId);
 
-      if (isMonitoringAPIError(res)) {
-        const { status, message, data } = res;
-        setErrors((oldErr) => [
-          ...oldErr,
-          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-        ]);
-        console.error(res);
-
-        return;
-      }
-
-      if (!res) {
-        setErrors((oldErr) => [...oldErr, uiText.error.noGetData]);
-
-        return;
-      }
-
-      const initiativeAdminInfo = {
-        ...res,
-        users: res.users.filter(
-          (user) => user.level.id === RoleInInitiative.LEADER,
-        ),
-      } satisfies InitiativeFullInfo;
-
-      setInitiativeInfo(initiativeAdminInfo);
-    } catch (err) {
-      setErrors((oldErr) => [...oldErr, uiText.error.critical.user]);
-      console.error(uiText.error.critical.log, err);
-    } finally {
+    if (isMonitoringAPIError(res)) {
+      setErrors((oldErr) => [...oldErr, ...res.data.map((error) => error.msg)]);
+      setInitiativeInfo(null);
       setIsLoading(false);
+
+      return;
     }
+
+    if (!res) {
+      setErrors((oldErr) => [...oldErr, uiText.error.noGetData]);
+      setInitiativeInfo(null);
+      setIsLoading(false);
+
+      return;
+    }
+
+    const initiativeAdminInfo = {
+      ...res,
+      users: res.users.filter(
+        (user) => user.level.id === RoleInInitiative.LEADER,
+      ),
+    } satisfies InitiativeFullInfo;
+
+    setInitiativeInfo(initiativeAdminInfo);
+    setIsLoading(false);
   }, [initiativeId]);
 
   useEffect(() => {
@@ -95,35 +87,23 @@ export function InitiativeInfoUpdater({
       return;
     }
 
-    try {
-      setIsLoading(true);
-      const endpoint = initiativeInfo.enabled ? "Disable" : "Enable";
-      const method = initiativeInfo.enabled ? "delete" : "post";
-      const res = await monitoringAPI<InitiativeFullInfo>({
-        type: method,
-        endpoint: `Initiative/${endpoint}/${initiativeInfo.id}`,
-      });
+    setIsLoading(true);
+    const res = await changeInitiativeStatus(
+      initiativeInfo.enabled,
+      initiativeInfo.id,
+    );
 
-      if (isMonitoringAPIError(res)) {
-        const { status, message, data } = res;
-        setErrors((oldErr) => [
-          ...oldErr,
-          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-        ]);
-        console.error(res);
-
-        return;
-      }
-
-      setCurrentEdit(res.enabled ? "none" : null);
-
-      void getInitiativeInfo();
-    } catch (err) {
-      setErrors((oldErr) => [...oldErr, uiText.error.critical.user]);
-      console.error(uiText.error.critical.log, err);
-    } finally {
+    if (isMonitoringAPIError(res)) {
+      setErrors((oldErr) => [...oldErr, ...res.data.map((error) => error.msg)]);
       setIsLoading(false);
+
+      return;
     }
+
+    setCurrentEdit(res.enabled ? "none" : null);
+
+    void getInitiativeInfo();
+    setIsLoading(false);
   };
 
   const initiativeInfoGrouped = useMemo<CardInfoGrouped | null>(() => {
@@ -188,7 +168,6 @@ export function InitiativeInfoUpdater({
 
         <GeneralInfoUpdater
           title={uiText.tabsContent.initiativeManagement.general.title}
-          backEndpoint="Initiative"
         />
 
         <FormListUpdater

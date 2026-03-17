@@ -7,7 +7,6 @@ import {
 } from "react";
 
 import { cn } from "@ui/shadCN/lib/utils";
-import { commonErrorMessage } from "@utils/ui";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { Button } from "@ui/shadCN/component/button";
 
@@ -17,10 +16,8 @@ import type {
 } from "pages/monitoring/types/initiativeData";
 import { EditModeButton } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/EditModeButton";
 import { GeneralInfoInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/GeneralInfo";
-import {
-  isMonitoringAPIError,
-  monitoringAPI,
-} from "pages/monitoring/api/monitoringAPI";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import { updateInitiativeGeneralInfo } from "pages/monitoring/api/services/initiatives";
 import { validateFormClient } from "pages/monitoring/ui/initiativesAdmin/utils/validateFormClient";
 import { updateInitiativeGeneralValidations } from "pages/monitoring/ui/initiativesAdmin/utils/formClientValidations";
 import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
@@ -28,13 +25,9 @@ import { useInitiativeDataCTX } from "pages/monitoring/ui/initiativesAdmin/hooks
 
 type GeneralInfoUpdaterProps = {
   title: string;
-  backEndpoint: string;
 };
 
-export function GeneralInfoUpdater({
-  title,
-  backEndpoint,
-}: GeneralInfoUpdaterProps) {
+export function GeneralInfoUpdater({ title }: GeneralInfoUpdaterProps) {
   const { initiative, updater, currentEdit, setCurrentEdit } =
     useInitiativeDataCTX();
   const [isLoading, setIsLoading] = useState(false);
@@ -57,7 +50,7 @@ export function GeneralInfoUpdater({
 
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (isLoading || !sectionInfo.current) {
+    if (isLoading || !sectionInfo.current || !initiativeId) {
       return;
     }
 
@@ -72,53 +65,34 @@ export function GeneralInfoUpdater({
       return;
     }
 
-    try {
-      setIsLoading(true);
+    setIsLoading(true);
 
-      const payload = Object.fromEntries(
-        Object.entries({
-          name: sectionInfo.current.name,
-          shortName: sectionInfo.current.shortName,
-          description: sectionInfo.current.description,
-          objective: sectionInfo.current.objective,
-          baseline: sectionInfo.current.baseline,
-        }).filter(([_, value]) => Boolean(value)),
-      ) as Record<string, string>;
+    const payload = Object.fromEntries(
+      Object.entries({
+        name: sectionInfo.current.name,
+        shortName: sectionInfo.current.shortName,
+        description: sectionInfo.current.description,
+        objective: sectionInfo.current.objective,
+        baseline: sectionInfo.current.baseline,
+      }).filter(([_, value]) => Boolean(value)),
+    ) as Record<string, string>;
 
-      const res = await monitoringAPI({
-        type: "put",
-        endpoint: `${backEndpoint}/${initiativeId}`,
-        options: {
-          data: payload,
-          headers: {
-            accept: "application/json",
-            "Content-Type": "application/json",
-          },
-        },
-      });
+    const res = await updateInitiativeGeneralInfo(initiativeId, payload);
 
-      if (isMonitoringAPIError(res)) {
-        const { status, message, data } = res;
-        setErrors((oldErr) => ({
-          ...oldErr,
-          root: [
-            `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-          ],
-        }));
-        console.error(res);
-
-        return;
-      }
-
-      setForceRender((n) => n + 1);
-      await updater!();
-      setCurrentEdit!("none");
-    } catch (err) {
-      setErrors((oldErr) => ({ ...oldErr, root: [uiText.criticalError.user] }));
-      console.error(uiText.criticalError.log, err);
-    } finally {
+    if (isMonitoringAPIError(res)) {
+      setErrors((oldErr) => ({
+        ...oldErr,
+        root: res.data.map((error) => error.msg),
+      }));
       setIsLoading(false);
+
+      return;
     }
+
+    setForceRender((n) => n + 1);
+    await updater!();
+    setCurrentEdit!("none");
+    setIsLoading(false);
   };
 
   const undoChanges = () => {

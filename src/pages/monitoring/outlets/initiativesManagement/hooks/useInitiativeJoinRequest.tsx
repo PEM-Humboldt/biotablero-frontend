@@ -4,13 +4,10 @@ import type { ODataParams } from "@appTypes/odata";
 import type { GetKeysWithStringValues } from "@appTypes/utils";
 
 import type { ODataInitiativeUserRequest } from "pages/monitoring/types/odataResponse";
-import {
-  getInitiativeRequests,
-  isMonitoringAPIError,
-  monitoringAPI,
-} from "pages/monitoring/api/monitoringAPI";
+import { getInitiativeRequests } from "pages/monitoring/api/services/initiatives";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import { updateJoinRequest } from "pages/monitoring/api/services/initiatives";
 import type { JoinRequestStatus } from "pages/monitoring/types/userJoinRequest";
-import { uiText } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/uiText";
 
 type JoinRequestsPool = {
   initialized: boolean;
@@ -44,10 +41,12 @@ export function useInitiativeJoinRequest(initiativesIds: number[]) {
 
       const reqestAmounts = await Promise.all(req);
 
-      return reqestAmounts.reduce(
-        (total, current) => total + (current?.["@odata.count"] ?? 0),
-        0,
-      );
+      return reqestAmounts.reduce((total, current) => {
+        if (isMonitoringAPIError(current)) {
+          return total;
+        }
+        return total + (current?.["@odata.count"] ?? 0);
+      }, 0);
     },
     [initiativesIds],
   );
@@ -95,8 +94,8 @@ export function useInitiativeJoinRequest(initiativesIds: number[]) {
             const res = await getInitiativeRequests(id, params);
 
             if (isMonitoringAPIError(res)) {
-              console.error(res);
-              errors.push(uiText.error.fetchJoinRequest);
+              errors.push(res.data[0].msg);
+              continue;
             }
 
             if (res?.value) {
@@ -164,20 +163,21 @@ export function useInitiativeJoinRequest(initiativesIds: number[]) {
 
   const resolveJoinRequest = async (
     requestId: number,
-    newStatus: "Approved" | "Rejected",
+    resolvedInto: "Approved" | "Rejected",
   ) => {
-    const res = await monitoringAPI({
-      type: "put",
-      endpoint: `JoinRequest/${requestId}?requestStatus=${newStatus}`,
-    });
+    const res = await updateJoinRequest(requestId, resolvedInto);
 
     if (isMonitoringAPIError(res)) {
-      const { message, status, data } = res;
-      return { message, status, data };
+      return res.data[0].msg;
     }
 
     return null;
   };
 
-  return { getRequestPage, resetPool, getTotalRequests, resolveJoinRequest };
+  return {
+    getRequestPage,
+    resetPool,
+    getTotalRequests,
+    resolveJoinRequest,
+  };
 }

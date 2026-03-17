@@ -9,7 +9,7 @@ import type { InitiativeUser } from "pages/monitoring/types/odataResponse";
 import {
   changeUserRoleInInitiative,
   removeUserFromInitiative,
-} from "pages/monitoring/api/monitoringAPI";
+} from "pages/monitoring/api/services/user";
 import {
   RoleEvents,
   initiativeRoleToState,
@@ -21,6 +21,7 @@ import {
   roleEventRestrictions,
 } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/roleEvents";
 import { uiText } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
 export function UsersListForManagement({
   users,
@@ -130,13 +131,12 @@ function ActionsToUserByRole({
         : await changeUserRoleInInitiative(user.id, newRoleId);
 
     await updater();
-
     setIsLoading(false);
 
-    if (res) {
+    if (isMonitoringAPIError(res)) {
       toast("Error", {
         position: "bottom-right",
-        description: res,
+        description: res.data[0].msg,
         icon: <Ban className="size-8 text-primary" />,
         className: "px-6! gap-6! border-2! border-primary!",
       });

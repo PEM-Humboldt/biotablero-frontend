@@ -6,10 +6,8 @@ import { INITIATIVE_DISPLAY_LEADERS_SEARCH } from "@config/monitoring";
 
 import type { ItemEditorProps } from "pages/monitoring/types/initiativeData";
 import type { UserItem } from "pages/monitoring/types/catalog";
-import {
-  getUsers,
-  isMonitoringAPIError,
-} from "pages/monitoring/api/monitoringAPI";
+import { getUsers } from "pages/monitoring/api/services/user";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import {
   NEW_ADMIN_CREDENTIALS,
   normalizeUsersFromOData,
@@ -30,17 +28,15 @@ export function UsersInput<T extends UserItem>({
 
   useEffect(() => {
     const getUsersInfo = async () => {
-      try {
-        const users = await getUsers();
-        if (isMonitoringAPIError(users)) {
-          throw new Error(users.message);
-        }
+      const users = await getUsers();
 
-        const usersInfo = normalizeUsersFromOData(users);
-        setAllUsers(usersInfo);
-      } catch (err) {
-        console.error(err);
+      if (isMonitoringAPIError(users)) {
+        setAllUsers([]);
+        return;
       }
+
+      const usersInfo = normalizeUsersFromOData(users);
+      setAllUsers(usersInfo);
     };
 
     void getUsersInfo();

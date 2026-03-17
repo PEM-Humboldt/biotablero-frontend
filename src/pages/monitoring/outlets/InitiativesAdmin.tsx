@@ -6,10 +6,8 @@ import { INITIATIVES_PER_PAGE } from "@config/monitoring";
 import { Button } from "@ui/shadCN/component/button";
 
 import { searchBarItems } from "pages/monitoring/outlets/initiativesAdmin/layout/searchBarContent";
-import {
-  getInitiatives,
-  isMonitoringAPIError,
-} from "pages/monitoring/api/monitoringAPI";
+import { getInitiatives } from "pages/monitoring/api/services/initiatives";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { TablePager } from "@composites/TablePager";
 import { InitiativeDataForm } from "pages/monitoring/outlets/initiativesAdmin/InitiativeDataForm";
 import { CircleXIcon, ListPlus } from "lucide-react";
@@ -30,7 +28,6 @@ import {
 import { InitiativeCard } from "pages/monitoring/outlets/initiativesAdmin/InitiativeCard";
 import { InitiativeTag } from "pages/monitoring/outlets/initiativesAdmin/InitiativeTag";
 import { cn } from "@ui/shadCN/lib/utils";
-import { commonErrorMessage } from "@utils/ui";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 
@@ -59,39 +56,29 @@ export function InitiativesAdmin() {
     const skip = (currentPage - 1) * INITIATIVES_PER_PAGE;
     const newSearchParams = { ...searchParams, skip };
 
-    try {
-      const res = await getInitiatives(newSearchParams);
+    const res = await getInitiatives(newSearchParams);
 
-      if (isMonitoringAPIError(res)) {
-        const { status, message, data } = res;
-        setError(
-          `${commonErrorMessage[status] ?? message}${data ? `: ${data}` : "."}`,
-        );
-        console.error(res);
-
-        setInitiatives(null);
-        setInitiativesFound(0);
-        return;
-      }
-
-      const initiativesObj: Map<number, InitiativeDisplayInfoShort> =
-        res.value.reduce((acc, cur) => {
-          const updatedEntry = {
-            ...cur,
-            locations: cur.locations.map(makeLocationObj),
-          };
-          acc.set(cur.id, updatedEntry);
-          return acc;
-        }, new Map<number, InitiativeDisplayInfoShort>());
-
-      setError("");
-      setInitiatives(initiativesObj);
-      setInitiativesFound(res["@odata.count"]);
-    } catch (err) {
-      console.error(err);
-    } finally {
+    if (isMonitoringAPIError(res)) {
+      setError(res.data[0].msg);
+      setInitiatives(null);
+      setInitiativesFound(0);
       setLoading(false);
+      return;
     }
+
+    const initiativesObj: Map<number, InitiativeDisplayInfoShort> =
+      res.value.reduce((acc, cur) => {
+        const updatedEntry = {
+          ...cur,
+          locations: cur.locations.map(makeLocationObj),
+        };
+        acc.set(cur.id, updatedEntry);
+        return acc;
+      }, new Map<number, InitiativeDisplayInfoShort>());
+
+    setError("");
+    setInitiatives(initiativesObj);
+    setInitiativesFound(res["@odata.count"]);
   }, [searchParams, currentPage]);
 
   useEffect(() => {

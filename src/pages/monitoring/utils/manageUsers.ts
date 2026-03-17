@@ -1,8 +1,16 @@
-import { getUserLevels } from "pages/monitoring/api/monitoringAPI";
+import { getUserLevels } from "pages/monitoring/api/services/user";
 import type { UserItem, UserLevel } from "pages/monitoring/types/catalog";
 import type { ODataUserInfo } from "pages/monitoring/types/odataResponse";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
-export const USER_LEVELS: UserLevel[] = await getUserLevels();
+export const USER_LEVELS: UserLevel[] = await (async () => {
+  const userLevels = await getUserLevels();
+  if (isMonitoringAPIError(userLevels)) {
+    return [];
+  }
+  return userLevels as UserLevel[];
+})();
+
 export const NEW_ADMIN_CREDENTIALS = USER_LEVELS[0];
 
 export function normalizeUsersFromOData(

@@ -10,17 +10,15 @@ import {
   DialogTrigger,
 } from "@ui/shadCN/component/dialog";
 
-import {
-  isMonitoringAPIError,
-  monitoringAPI,
-} from "pages/monitoring/api/monitoringAPI";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import type { LogEntryFull } from "pages/monitoring/types/odataResponse";
 import { uiText } from "pages/monitoring/outlets/logs/layout/uiText";
+import { fetchLogDetails } from "pages/monitoring/api/services/logs";
 
 export function ShowLogDetailsButton({ value }: { value: unknown }) {
-  const [visible, setVisible] = useState(false);
   const [log, setLog] = useState<LogEntryFull | null>(null);
   const [loadStatusMsg, setLoadStatusMsg] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   if (typeof value !== "string") {
     throw new Error(
@@ -29,25 +27,17 @@ export function ShowLogDetailsButton({ value }: { value: unknown }) {
   }
 
   const loadLogData = async () => {
-    try {
-      setLoadStatusMsg(uiText.table.detailsBtn.loadStatus.loading);
-      const logData = await monitoringAPI<LogEntryFull>({
-        type: "get",
-        endpoint: `Logs/${value}`,
-      });
+    setLoadStatusMsg(uiText.table.detailsBtn.loadStatus.loading);
+    const logData = await fetchLogDetails(value);
 
-      if (isMonitoringAPIError(logData)) {
-        throw new Error(logData.message);
-      }
-
-      setVisible(true);
-      setLog(logData);
+    if (isMonitoringAPIError(logData)) {
       setLoadStatusMsg(uiText.table.detailsBtn.loadStatus.loaded);
-    } catch (err) {
-      setVisible(false);
-      setLoadStatusMsg(uiText.table.detailsBtn.loadStatus.error);
-      console.error(err);
+      setError(logData.data[0].msg);
+      return;
     }
+
+    setLog(logData);
+    setLoadStatusMsg(uiText.table.detailsBtn.loadStatus.loaded);
   };
 
   const makeReadableDate = (dateStr: Date) => {
@@ -69,7 +59,8 @@ export function ShowLogDetailsButton({ value }: { value: unknown }) {
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[80vh] flex flex-col p-4 md:p-8 overflow-hidden">
-        {visible && log && (
+        {error && <div>{error}</div>}
+        {log && (
           <>
             <div className="pb-2">
               <DialogHeader>

@@ -16,6 +16,7 @@ interface ImportMetaEnv {
   readonly VITE_YM_ID: string;
   readonly VITE_AUTH_BACKEND_URL: string;
   readonly VITE_MONITORING_BACKEND_URL: string;
+  readonly VITE_KC_CLIENT: string;
 }
 
 interface ImportMeta {
