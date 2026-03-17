@@ -119,7 +119,7 @@ export function TagFormButton({
         setErrors((oldErr) => ({
           ...oldErr,
           root: res.data.map((error) => error.msg),
-        }));          
+        }));
         setLoadStatusMsg(uiText.table.loadStatus.loaded);
         return;
       }
