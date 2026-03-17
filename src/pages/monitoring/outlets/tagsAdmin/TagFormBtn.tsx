@@ -31,6 +31,7 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -232,25 +233,13 @@ export function TagFormButton({
       return;
     }
 
-    const finalUrl = formData.url?.trim() || null;
-    const payload = (!tagId
-      ? {
-          name: formData.name,
-          url: finalUrl,
-          category: formData.category,
-        }
-      : {
-          name: formData.name,
-          url: finalUrl,
-        }) as unknown as TagDataForm;
+    const payload: TagDataForm = {
+      name: formData.name,
+      url: formData.url?.trim() || undefined,
+      category: (!tagId ? formData.category : {}) as TagCategory,
+    };
 
-    let res = null;
-
-    if (!tagId) {
-      res = await addTag(payload);
-    } else {
-      res = await updateTag(tagId, payload);
-    }
+    const res = tagId ? await updateTag(tagId, payload) : await addTag(payload);
 
     setIsLoading(false);
 
@@ -318,7 +307,7 @@ export function TagFormButton({
               </DialogTitle>
             </DialogHeader>
           </div>
-          <div className="grid grid-cols-1 gap-6 [&>p]:m-0 [&>p]:flex [&>p]:flex-col [&>p>span]:first:font-semibold [&>p>span]:first:text-primary">
+          <DialogDescription className="grid grid-cols-1 gap-6 [&>p]:m-0 [&>p]:flex [&>p]:flex-col [&>p>span]:first:font-semibold [&>p>span]:first:text-primary">
             <form
               action=""
               onReset={handleFormReset}
@@ -467,25 +456,29 @@ export function TagFormButton({
                 className="bg-red-50 p-4 mt-2 rounded-lg outline-2 outline-accent"
               />
 
-              <div className="flex flex-row-reverse flex-wrap justify-between gap-4 mt-2">
-                <Button
-                  type="submit"
-                  disabled={isLoading || (!tagId && tagCategories.length === 0)}
-                >
-                  {getSubmitButtonText()}
-                </Button>
-                {!tagId && (
+              <DialogFooter>
+                <div className="flex flex-row-reverse flex-wrap justify-between gap-4 mt-2">
                   <Button
-                    type="reset"
-                    variant="outline_destructive"
-                    disabled={isLoading}
+                    type="submit"
+                    disabled={
+                      isLoading || (!tagId && tagCategories.length === 0)
+                    }
                   >
-                    {uiText.restartForm}
+                    {getSubmitButtonText()}
                   </Button>
-                )}
-              </div>
+                  {!tagId && (
+                    <Button
+                      type="reset"
+                      variant="outline_destructive"
+                      disabled={isLoading}
+                    >
+                      {uiText.restartForm}
+                    </Button>
+                  )}
+                </div>
+              </DialogFooter>
             </form>
-          </div>
+          </DialogDescription>
         </DialogContent>
       </Dialog>
       {tagId && (
@@ -507,7 +500,7 @@ export function TagFormButton({
                 <DialogTitle>{uiText.table.deleteBtn.dialog.title}</DialogTitle>
               </DialogHeader>
             </div>
-            <div className="grid grid-cols-1 gap-6 [&>p]:m-0 [&>p]:flex [&>p]:flex-col [&>p>span]:first:font-semibold [&>p>span]:first:text-primary">
+            <DialogDescription className="grid grid-cols-1 gap-6 [&>p]:m-0 [&>p]:flex [&>p]:flex-col [&>p>span]:first:font-semibold [&>p>span]:first:text-primary">
               <>
                 {uiText.table.deleteBtn.dialog.description(formData.name)}
                 <ErrorsList
@@ -515,7 +508,7 @@ export function TagFormButton({
                   className="bg-red-50 p-4 mt-2 rounded-lg outline-2 outline-accent"
                 />
               </>
-            </div>
+            </DialogDescription>
             <DialogFooter>
               <DialogClose asChild>
                 <Button variant="outline">
