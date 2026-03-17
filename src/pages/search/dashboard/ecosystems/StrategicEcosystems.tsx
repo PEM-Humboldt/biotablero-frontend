@@ -3,7 +3,7 @@ import { IconTooltip } from "@ui/Tooltips";
 import { ShortInfo } from "@composites/ShortInfo";
 import TextBoxes from "@ui/TextBoxes";
 import EcosystemsBox from "pages/search/dashboard/ecosystems/EcosystemsBox";
-import { SEPAData } from "pages/search/types/ecosystems";
+import { SEData } from "pages/search/types/ecosystems";
 import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { formatNumber } from "@utils/format";
 import { transformSEAreas } from "pages/search/dashboard/ecosystems/transformData";
@@ -20,7 +20,7 @@ const getPercentage = (part: number, total: number): number =>
   parseFloat(((part * 100) / total).toFixed(2));
 
 interface Props {
-  SEAreas: SEPAData[];
+  SEAreas: SEData[];
   SETotalArea: number;
   areaHa: number;
   activeSE: string;

@@ -1,4 +1,8 @@
-import { SEPAData, SEPADataExt } from "pages/search/types/ecosystems";
+import {
+  SEData,
+  SEDataExtended,
+  SEPAData,
+} from "pages/search/types/ecosystems";
 import { MetricTypesMap } from "pages/search/types/metrics";
 
 export const transformPAValues = (
@@ -57,7 +61,7 @@ export const transformCoverageValues = (
 };
 
 export const transformSEValues = (
-  seRawData: SEPADataExt,
+  seRawData: SEDataExtended,
   SETotalArea: number,
 ) => {
   if (!seRawData) return [];
@@ -79,11 +83,11 @@ export const transformSEValues = (
 };
 
 export const transformSEAreas = (
-  rawData: Array<SEPAData>,
+  rawData: Array<SEData>,
   generalArea: number,
 ) => {
   if (!rawData) return [];
-  const transformedSEAData: Array<SEPADataExt> = rawData.map((obj) => ({
+  const transformedSEAData: Array<SEDataExtended> = rawData.map((obj) => ({
     ...obj,
     percentage: obj.area / generalArea,
   }));
