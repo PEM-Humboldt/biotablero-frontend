@@ -1,6 +1,6 @@
 import type { ODataColumn } from "@appTypes/odata";
 import type { TagEntryShort } from "pages/monitoring/types/odataResponse";
-import { TagFormButton } from "pages/monitoring/outlets/tagsAdmin/TagFormBtn";
+import { TagTableButtons } from "pages/monitoring/outlets/tagsAdmin/TagTableBtns";
 
 export const getTableContent = (
   onActionSuccess: () => void,
@@ -13,7 +13,7 @@ export const getTableContent = (
     source: "id",
     type: "action",
     actions: ({ value }) => (
-      <TagFormButton value={value} onActionSuccess={onActionSuccess} />
+      <TagTableButtons value={value} onActionSuccess={onActionSuccess} />
     ),
     label: "Detalles",
   },
