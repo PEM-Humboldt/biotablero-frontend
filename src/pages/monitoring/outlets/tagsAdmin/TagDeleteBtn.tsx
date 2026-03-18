@@ -3,15 +3,15 @@ import { useState } from "react";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { Button } from "@ui/shadCN/component/button";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@ui/shadCN/component/dialog";
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@ui/shadCN/component/alert-dialog";
 import { uiText } from "pages/monitoring/outlets/tagsAdmin/layout/uiText";
 import type {
   TagDataForm,
@@ -85,8 +85,8 @@ export function TagDeleteButton({
 
   return (
     <>
-      <Dialog open={openDialogAlert} onOpenChange={setOpenDialogAlert}>
-        <DialogTrigger asChild>
+      <AlertDialog open={openDialogAlert} onOpenChange={setOpenDialogAlert}>
+        <AlertDialogTrigger asChild>
           <Button
             onClick={() => void fetchTag()}
             disabled={loadStatusMsg !== null}
@@ -96,14 +96,16 @@ export function TagDeleteButton({
               ? loadStatusMsg
               : uiText.table.deleteBtn.defaultText}
           </Button>
-        </DialogTrigger>
-        <DialogContent className="max-h-[80vh] max-w-[60vh] flex flex-col p-4 md:p-8 overflow-hidden">
+        </AlertDialogTrigger>
+        <AlertDialogContent className="max-h-[80vh] max-w-[60vh] flex flex-col p-4 md:p-8 overflow-hidden">
           <div className="pb-2">
-            <DialogHeader>
-              <DialogTitle>{uiText.table.deleteBtn.dialog.title}</DialogTitle>
-            </DialogHeader>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                {uiText.table.deleteBtn.dialog.title}
+              </AlertDialogTitle>
+            </AlertDialogHeader>
           </div>
-          <DialogDescription className="grid grid-cols-1 gap-6 [&>p]:m-0 [&>p]:flex [&>p]:flex-col [&>p>span]:first:font-semibold [&>p>span]:first:text-primary">
+          <AlertDialogDescription className="grid grid-cols-1 gap-6 [&>p]:m-0 [&>p]:flex [&>p]:flex-col [&>p>span]:first:font-semibold [&>p>span]:first:text-primary">
             <>
               {uiText.table.deleteBtn.dialog.description(formData.name)}
               <ErrorsList
@@ -111,19 +113,19 @@ export function TagDeleteButton({
                 className="bg-red-50 p-4 mt-2 rounded-lg outline-2 outline-accent"
               />
             </>
-          </DialogDescription>
-          <DialogFooter>
-            <DialogClose asChild>
+          </AlertDialogDescription>
+          <AlertDialogFooter>
+            <AlertDialogCancel asChild>
               <Button variant="outline">
                 {uiText.table.deleteBtn.actionBtns.cancel}
               </Button>
-            </DialogClose>
+            </AlertDialogCancel>
             <Button onClick={() => void removeTag()}>
               {uiText.table.deleteBtn.actionBtns.confirm}
             </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }
