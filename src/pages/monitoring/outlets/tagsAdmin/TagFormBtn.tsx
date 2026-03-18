@@ -37,17 +37,18 @@ import {
   DialogTrigger,
 } from "@ui/shadCN/component/dialog";
 import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
-import { getTagCategories } from "pages/monitoring/api/services/tags";
 import type { ApiRequestError } from "@appTypes/api";
 
 export function TagFormButton({
   value: tagId,
+  tagCategories,
   onActionSuccess,
   getTagAction,
   createTagAction,
   editTagAction,
 }: {
   value?: number;
+  tagCategories?: TagCategory[];
   onActionSuccess: () => void;
   getTagAction: (id: number) => () => Promise<ApiRequestError | TagDataForm>;
   createTagAction?: (
@@ -61,7 +62,6 @@ export function TagFormButton({
   const [isLoading, setIsLoading] = useState(false);
   const [loadStatusMsg, setLoadStatusMsg] = useState<string | null>(null);
   const [formData, setFormData] = useState<TagDataForm>(makeInitialInfo());
-  const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
   const [openDialogForm, setOpenDialogForm] = useState(false);
 
   if (!tagId && !createTagAction) {
@@ -87,27 +87,6 @@ export function TagFormButton({
       setFormData(result);
       setLoadStatusMsg(uiText.table.loadStatus.loaded);
     }
-  };
-
-  const fetchTagCategories = async () => {
-    handleFormReset();
-    setLoadStatusMsg(uiText.table.loadStatus.loading);
-    const result = await getTagCategories();
-    setIsLoading(false);
-
-    if (isMonitoringAPIError(result)) {
-      setErrors({ root: [result.message] });
-      return;
-    }
-
-    setTagCategories(
-      result.map((category) => ({
-        ...category,
-        name: translateTagCategory(category.name),
-      })),
-    );
-
-    setLoadStatusMsg(uiText.table.loadStatus.loaded);
   };
 
   useEffect(() => {
@@ -271,10 +250,7 @@ export function TagFormButton({
         )}
         {!tagId && (
           <DialogTrigger asChild>
-            <Button
-              onClick={() => void fetchTagCategories()}
-              disabled={loadStatusMsg !== null}
-            >
+            <Button disabled={loadStatusMsg !== null}>
               {loadStatusMsg !== null ? loadStatusMsg : uiText.tag.createNew}
               <PlusIcon />
             </Button>
@@ -332,7 +308,7 @@ export function TagFormButton({
                     >
                       {uiText.form.defaultCategoryTitle}
                     </NativeSelectOption>
-                    {tagCategories.map((category) => (
+                    {(tagCategories ?? []).map((category) => (
                       <NativeSelectOption
                         key={`tag_category_${category.id}`}
                         value={category.id}
@@ -344,7 +320,7 @@ export function TagFormButton({
                 </div>
               )}
 
-              {!!tagId && (
+              {tagId && (
                 <div>
                   <label
                     htmlFor="categoryName"
@@ -434,7 +410,7 @@ export function TagFormButton({
                   <Button
                     type="submit"
                     disabled={
-                      isLoading || (!tagId && tagCategories.length === 0)
+                      isLoading || (!tagId && tagCategories?.length === 0)
                     }
                   >
                     {getSubmitButtonText()}

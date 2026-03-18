@@ -5,6 +5,7 @@ import {
   addTag,
   deleteTag,
   getTagById,
+  getTagCategories,
   getTags,
   updateTag,
 } from "pages/monitoring/api/services/tags";
@@ -23,7 +24,7 @@ import { getTableContent } from "pages/monitoring/outlets/tagsAdmin/layout/table
 import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
 import { TagFormButton } from "pages/monitoring/outlets/tagsAdmin/TagFormBtn";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import type { TagDataForm } from "pages/monitoring/types/tagData";
+import type { TagCategory, TagDataForm } from "pages/monitoring/types/tagData";
 
 function parseEntry(rawODataTag: ODataTag): TagEntryShort {
   return {
@@ -51,6 +52,7 @@ export function TagsAdmin() {
   });
   const prevSearchParamsRef = useRef(searchParams);
   const [refetchTrigger, setRefetchTrigger] = useState(0);
+  const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
 
   const tagActions =
     (action: "get" | "create" | "edit" | "delete") =>
@@ -82,6 +84,21 @@ export function TagsAdmin() {
       }
     };
 
+  const fetchTagCategories = async () => {
+    const result = await getTagCategories();
+
+    if (isMonitoringAPIError(result)) {
+      return;
+    }
+
+    setTagCategories(
+      result.map((category) => ({
+        ...category,
+        name: translateTagCategory(category.name),
+      })),
+    );
+  };
+
   useEffect(() => {
     const filterChange = async () => {
       if (prevSearchParamsRef.current !== searchParams) {
@@ -99,6 +116,7 @@ export function TagsAdmin() {
         skip: skip,
       };
 
+      await fetchTagCategories();
       const updatedTags = await getTags(newSearchParams);
       if (isMonitoringAPIError(updatedTags)) {
         setTags(null);
@@ -106,6 +124,7 @@ export function TagsAdmin() {
       }
 
       setTags(updatedTags);
+
       setLoadMsg({
         message: null,
         type: "normal",
@@ -123,6 +142,7 @@ export function TagsAdmin() {
         <h3>{uiText.title}</h3>
         <div className="max-w-[500px] text-right text-base">
           <TagFormButton
+            tagCategories={tagCategories}
             onActionSuccess={() => setRefetchTrigger((prev) => prev + 1)}
             getTagAction={tagActions("get")}
             createTagAction={tagActions("create")()}
