@@ -18,27 +18,31 @@ import type {
   TagDataFormErr,
 } from "pages/monitoring/types/tagData";
 import { makeInitialInfo } from "pages/monitoring/outlets/tagsAdmin/utils/formObjectUpdate";
-import { deleteTag, getTagById } from "pages/monitoring/api/services/tags";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { toast } from "sonner";
 import { UserRoundCheck } from "lucide-react";
+import type { ApiRequestError } from "@appTypes/api";
 
 export function TagDeleteButton({
   value: tagId,
   onActionSuccess,
+  getTagAction,
+  deleteTagAction,
 }: {
   value: number;
-  onActionSuccess?: () => void;
+  onActionSuccess: () => void;
+  getTagAction: (id: number) => () => Promise<ApiRequestError | TagDataForm>;
+  deleteTagAction: (id: number) => () => Promise<ApiRequestError | TagDataForm>;
 }) {
   const [openDialogAlert, setOpenDialogAlert] = useState(false);
   const [loadStatusMsg, setLoadStatusMsg] = useState<string | null>(null);
   const [formData, setFormData] = useState<TagDataForm>(makeInitialInfo());
   const [errors, setErrors] = useState<Partial<TagDataFormErr>>({});
 
-  const fetchTag = async () => {
+  const getTag = async () => {
     handleFormReset();
     setLoadStatusMsg(uiText.table.loadStatus.loading);
-    const result = await getTagById(tagId);
+    const result = await getTagAction(tagId)();
 
     if (isMonitoringAPIError(result)) {
       setErrors({ root: [result.message] });
@@ -58,7 +62,7 @@ export function TagDeleteButton({
   const removeTag = async () => {
     if (tagId) {
       setLoadStatusMsg(uiText.table.loadStatus.loading);
-      const res = await deleteTag(tagId);
+      const res = await deleteTagAction(tagId)();
 
       if (isMonitoringAPIError(res)) {
         setErrors((oldErr) => ({
@@ -88,7 +92,7 @@ export function TagDeleteButton({
       <AlertDialog open={openDialogAlert} onOpenChange={setOpenDialogAlert}>
         <AlertDialogTrigger asChild>
           <Button
-            onClick={() => void fetchTag()}
+            onClick={() => void getTag()}
             disabled={loadStatusMsg !== null}
             variant="ghost"
           >

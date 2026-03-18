@@ -37,19 +37,25 @@ import {
   DialogTrigger,
 } from "@ui/shadCN/component/dialog";
 import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
-import {
-  addTag,
-  getTagById,
-  getTagCategories,
-  updateTag,
-} from "pages/monitoring/api/services/tags";
+import { getTagCategories } from "pages/monitoring/api/services/tags";
+import type { ApiRequestError } from "@appTypes/api";
 
 export function TagFormButton({
   value: tagId,
   onActionSuccess,
+  getTagAction,
+  createTagAction,
+  editTagAction,
 }: {
   value?: number;
-  onActionSuccess?: () => void;
+  onActionSuccess: () => void;
+  getTagAction: (id: number) => () => Promise<ApiRequestError | TagDataForm>;
+  createTagAction?: (
+    tag: TagDataForm,
+  ) => Promise<ApiRequestError | TagDataForm>;
+  editTagAction?: (
+    id: number,
+  ) => (tag: TagDataForm) => Promise<ApiRequestError | TagDataForm>;
 }) {
   const [errors, setErrors] = useState<Partial<TagDataFormErr>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -58,11 +64,19 @@ export function TagFormButton({
   const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
   const [openDialogForm, setOpenDialogForm] = useState(false);
 
-  const fetchTag = async () => {
+  if (!tagId && !createTagAction) {
+    throw new Error("'createTagAction' should be defined");
+  }
+
+  if (tagId && !editTagAction) {
+    throw new Error("'editTagAction' should be defined");
+  }
+
+  const getTag = async () => {
     if (tagId) {
       handleFormReset();
       setLoadStatusMsg(uiText.table.loadStatus.loading);
-      const result = await getTagById(tagId);
+      const result = await getTagAction(tagId)();
       setIsLoading(false);
 
       if (isMonitoringAPIError(result)) {
@@ -70,12 +84,7 @@ export function TagFormButton({
         return;
       }
 
-      setFormData({
-        name: result.name || "",
-        url: result.url || "",
-        category: result.category || { id: 0, name: "" },
-      });
-
+      setFormData(result);
       setLoadStatusMsg(uiText.table.loadStatus.loaded);
     }
   };
@@ -201,7 +210,17 @@ export function TagFormButton({
       category: (!tagId ? formData.category : {}) as TagCategory,
     };
 
-    const res = tagId ? await updateTag(tagId, payload) : await addTag(payload);
+    const res: TagDataForm | ApiRequestError = {} as ApiRequestError;
+
+    if (tagId) {
+      if (editTagAction) {
+        await editTagAction(tagId)(payload);
+      }
+    } else {
+      if (createTagAction) {
+        await createTagAction(payload);
+      }
+    }
 
     setIsLoading(false);
 
@@ -240,7 +259,7 @@ export function TagFormButton({
         {tagId && (
           <DialogTrigger asChild>
             <Button
-              onClick={() => void fetchTag()}
+              onClick={() => void getTag()}
               disabled={loadStatusMsg !== null}
               variant="ghost"
             >

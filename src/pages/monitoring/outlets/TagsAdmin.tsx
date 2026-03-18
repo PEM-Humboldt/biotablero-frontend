@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 
 import { uiText } from "pages/monitoring/outlets/tagsAdmin/layout/uiText";
-import { getTags } from "pages/monitoring/api/services/tags";
+import {
+  addTag,
+  deleteTag,
+  getTagById,
+  getTags,
+  updateTag,
+} from "pages/monitoring/api/services/tags";
 import type { LoadStatusMsgBarProp } from "@ui/loadStatusSecction";
 import { LoadStatusMsgBar } from "@ui/loadStatusSecction";
 import type { ODataParams } from "@appTypes/odata";
@@ -17,6 +23,7 @@ import { getTableContent } from "pages/monitoring/outlets/tagsAdmin/layout/table
 import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
 import { TagFormButton } from "pages/monitoring/outlets/tagsAdmin/TagFormBtn";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import type { TagDataForm } from "pages/monitoring/types/tagData";
 
 function parseEntry(rawODataTag: ODataTag): TagEntryShort {
   return {
@@ -44,6 +51,36 @@ export function TagsAdmin() {
   });
   const prevSearchParamsRef = useRef(searchParams);
   const [refetchTrigger, setRefetchTrigger] = useState(0);
+
+  const tagActions =
+    (action: "get" | "create" | "edit" | "delete") =>
+    (id?: number) =>
+    (tag?: TagDataForm) => {
+      if (!id && (action == "get" || action == "edit" || action == "delete")) {
+        throw new Error("Tag identifier sholud be defined");
+      }
+
+      if (
+        !tag &&
+        (action == "create" || action == "edit" || action == "delete")
+      ) {
+        throw new Error("Tag identifier sholud be defined");
+      }
+
+      const tagIdNumber: number = id ?? 0;
+      const tagObject: TagDataForm = tag ?? ({} as TagDataForm);
+
+      switch (action) {
+        case "get":
+          return getTagById(tagIdNumber);
+        case "create":
+          return addTag(tagObject);
+        case "edit":
+          return updateTag(tagIdNumber, tagObject);
+        case "delete":
+          return deleteTag(tagIdNumber);
+      }
+    };
 
   useEffect(() => {
     const filterChange = async () => {
@@ -87,6 +124,8 @@ export function TagsAdmin() {
         <div className="max-w-[500px] text-right text-base">
           <TagFormButton
             onActionSuccess={() => setRefetchTrigger((prev) => prev + 1)}
+            getTagAction={tagActions("get")}
+            createTagAction={tagActions("create")()}
           />
         </div>
       </header>
@@ -98,8 +137,9 @@ export function TagsAdmin() {
             <p>{uiText.noDataAvailable}</p>
           ) : (
             <ODataTable
-              cols={getTableContent(() =>
-                setRefetchTrigger((prev) => prev + 1),
+              cols={getTableContent(
+                () => setRefetchTrigger((prev) => prev + 1),
+                tagActions,
               )}
               values={parseODataTags(tags)}
               className="table-tags"
