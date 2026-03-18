@@ -1,17 +1,16 @@
-import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
-import { FormTS } from "pages/monitoring/outlets/initiatives/territoryStorys/FormTS";
 import { useEffect, useState } from "react";
+
 import { Button } from "@ui/shadCN/component/button";
-import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
-import { BookPlus, NotebookPen, NotebookText } from "lucide-react";
 import { cn } from "@ui/shadCN/lib/utils";
 
-enum PanelState {
-  CREATE = "create",
-  READ = "read",
-  MANAGE = "manage",
-}
+import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
+import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
+import { PanelState } from "pages/monitoring/outlets/initiatives/types/territoryStory";
+import {
+  panelAccessButtons,
+  panelView,
+} from "pages/monitoring/outlets/initiatives/layout/territoryStoryPanels";
 
 export function TerritoryStorys() {
   const { userStateInInitiative } = useInitiativeCTX();
@@ -30,11 +29,7 @@ export function TerritoryStorys() {
     };
   }, [userStateInInitiative]);
 
-  const views = {
-    [PanelState.READ]: <div>lea papito</div>,
-    [PanelState.CREATE]: <FormTS />,
-    [PanelState.MANAGE]: <div>edita quedita</div>,
-  };
+  const PanelComponent = panelView[panel];
 
   return (
     <div className="flex flex-col items-center">
@@ -44,8 +39,7 @@ export function TerritoryStorys() {
           <div className="bg-primary p-4 pl-8 ">busqueda</div>
           <div className={cn(panel !== PanelState.READ ? "bg-[#f5f5f5]" : "")}>
             <ToggleTSAdminActions currentPanel={panel} goToPanel={setPanel} />
-
-            {views[panel]}
+            <PanelComponent />
           </div>
         </main>
         <aside className="bg-accent">barra lateral</aside>
@@ -70,49 +64,23 @@ function ToggleTSAdminActions({
     return null;
   }
 
-  const allPanels = new Map([
-    [
-      PanelState.READ,
-      {
-        label: "Leer",
-        sr: "Volver al modo lectura",
-        icon: NotebookText,
-      },
-    ],
-    [
-      PanelState.MANAGE,
-      {
-        label: "Editar",
-        sr: "Ir al panel de administración",
-        icon: NotebookPen,
-      },
-    ],
-    [
-      PanelState.CREATE,
-      {
-        label: "Crear",
-        sr: "Abrir el panel para la creación de relatos",
-        icon: BookPlus,
-      },
-    ],
-  ]);
-
-  const otherPanels = [...allPanels].filter(([key, _]) => key !== currentPanel);
+  const panelsAvailable = [...panelAccessButtons].filter(
+    ([key, _]) => key !== currentPanel,
+  );
 
   return (
     <div className="p-4 flex justify-end gap-2">
       <ButtonGroup>
-        {otherPanels.map(([panelKey, _]) => {
-          const config = allPanels.get(panelKey)!;
+        {panelsAvailable.map(([panelKey, btnSettings]) => {
           return (
             <Button
-              key={panelKey}
+              key={`panelSelector_${panelKey}`}
               variant="outline"
               onClick={() => goToPanel(panelKey)}
             >
-              <span className="sr-only">{config.sr}</span>
-              <span aria-hidden="true">{config.label}</span>
-              <config.icon />
+              <span className="sr-only">{btnSettings.sr}</span>
+              <span aria-hidden="true">{btnSettings.label}</span>
+              <btnSettings.icon />
             </Button>
           );
         })}

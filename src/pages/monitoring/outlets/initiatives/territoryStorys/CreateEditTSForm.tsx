@@ -1,5 +1,3 @@
-import { availableTransformers } from "@composites/RichTextEditor";
-import { type EditorState } from "lexical";
 import {
   useCallback,
   useEffect,
@@ -7,21 +5,25 @@ import {
   useState,
   type FormEvent,
 } from "react";
+import { type EditorState } from "lexical";
+import { BookOpenCheck } from "lucide-react";
+import { toast } from "sonner";
+
+import { fromLexicalEditorStateRefToMarkdown } from "@utils/textParser";
+import { availableTransformers } from "@composites/RichTextEditor";
 import { KeywordInput } from "@composites/keywordInput";
-import { YoutubeVideoInput } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/YoutubeVideoInput";
-import type {
-  ImageObjectTS,
-  TerritoryStoryForm,
-  TerritoryStoryFull,
-  VideoObjectTS,
-} from "pages/monitoring/types/territoryStory";
-import { ImagesInput } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/ImagesInput";
+import type { ApiRequestError } from "@appTypes/api";
+
 import {
   TERRITORY_STORY_KEYWORD_MAX_LENGTH,
   TERRITORY_STORY_KEYWORDS_MAX_AMOUNT,
 } from "@config/monitoring";
-import { TitleInput } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/TitleInput";
-import { SubmitStory } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/SubmitStory";
+import {
+  deleteTerritoryStoryImage,
+  deleteTerritoryStoryVideo,
+  postTerritoryStoryImage,
+  postTerritoryStoryVideo,
+} from "pages/monitoring/api/services/assets";
 import {
   createTerritoryStory,
   disableTerritoryStory,
@@ -29,35 +31,24 @@ import {
   enableTerritoryStory,
   getTerritoryStory,
 } from "pages/monitoring/api/services/territoryStory";
-import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
-import type { ApiRequestError } from "@appTypes/api";
-import {
-  deleteTerritoryStoryImage,
-  deleteTerritoryStoryVideo,
-  postTerritoryStoryImage,
-  postTerritoryStoryVideo,
-} from "pages/monitoring/api/services/assets";
-import { toast } from "sonner";
-import { BookOpenCheck } from "lucide-react";
+import type {
+  ImageObjectTS,
+  TerritoryStoryForm,
+  TerritoryStoryFull,
+  VideoObjectTS,
+} from "pages/monitoring/types/territoryStory";
 import type { RequestData } from "pages/monitoring/api/types/definitions";
 import { TextEditor } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/TextEditor";
-import { fromLexicalEditorStateRefToMarkdown } from "@utils/textParser";
+import { TitleInput } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/TitleInput";
+import { SubmitStory } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/SubmitStory";
+import { ImagesInput } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/ImagesInput";
+import { YoutubeVideoInput } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/YoutubeVideoInput";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { uiText } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/layout/uiText";
+import { createErrorObjectParser } from "pages/monitoring/utils/errorObjectParser";
 
-const initializeTSForm = (
-  territoryStory?: TerritoryStoryFull,
-): TerritoryStoryForm => ({
-  title: territoryStory?.title ?? "",
-  text: territoryStory?.text ?? "",
-  restricted: territoryStory?.restricted ?? false,
-  enabled: territoryStory?.enabled ?? true,
-  keywords: territoryStory?.keywords.split(",") ?? ([] as string[]),
-  images: territoryStory?.images ?? ([] as ImageObjectTS[]),
-  videos: territoryStory?.videos ?? ([] as VideoObjectTS[]),
-});
-
-// TODO: COnfirmar con César sobre la Capitalización de campos
+// NOTE: Maniobra mientras se unifica el retorno de los campos de error a lowercase
 const TS_ERROR_FIELDS = [
   "Keywords",
   "Images",
@@ -72,25 +63,25 @@ type FormError = { [K in TSErrorFields]?: string[] } & {
   root?: string[];
 };
 
-function isFormErrorKey(key: string): key is TSErrorFields {
-  return (TS_ERROR_FIELDS as readonly string[]).includes(key);
-}
+const makeApiResponseErrorObject = createErrorObjectParser(TS_ERROR_FIELDS);
 
-export function makeApiResponseErrorObject(errors: ApiRequestError): FormError {
-  return errors.data.reduce<FormError>((errObject, current) => {
-    const key =
-      current?.field && isFormErrorKey(current.field) ? current.field : "root";
+const initializeTSForm = (
+  territoryStory?: TerritoryStoryFull,
+): TerritoryStoryForm => ({
+  title: territoryStory?.title ?? "",
+  text: territoryStory?.text ?? "",
+  restricted: territoryStory?.restricted ?? false,
+  enabled: territoryStory?.enabled ?? true,
+  keywords: territoryStory?.keywords.split(",") ?? ([] as string[]),
+  images: territoryStory?.images ?? ([] as ImageObjectTS[]),
+  videos: territoryStory?.videos ?? ([] as VideoObjectTS[]),
+});
 
-    if (!errObject[key]) {
-      errObject[key] = [];
-    }
-
-    errObject[key].push(current.msg);
-    return errObject;
-  }, {});
-}
-
-export function FormTS({ territoryStoryId }: { territoryStoryId?: number }) {
+export function CreateEditTSForm({
+  territoryStoryId,
+}: {
+  territoryStoryId?: number;
+}) {
   const [formKey, setFormKey] = useState(0);
   const [story, setStory] = useState<TerritoryStoryForm>(initializeTSForm());
   const [isLoading, setIsLoading] = useState(false);
@@ -269,7 +260,17 @@ export function FormTS({ territoryStoryId }: { territoryStoryId?: number }) {
       return;
     }
 
-    successToast(territoryStoryId === undefined, res.title);
+    const toastText =
+      territoryStoryId === undefined
+        ? uiText.toast.creation
+        : uiText.toast.update;
+
+    toast(toastText.title, {
+      position: "bottom-right",
+      description: toastText.description(res.title),
+      icon: <BookOpenCheck className="size-8 text-primary" />,
+      className: "px-6! gap-6! border-2! border-primary!",
+    });
   };
 
   const handleReset = async (e: FormEvent<HTMLFormElement>) => {
@@ -350,14 +351,4 @@ export function FormTS({ territoryStoryId }: { territoryStoryId?: number }) {
       </form>
     </div>
   );
-}
-
-function successToast(itsNewStory: boolean, storyName: string) {
-  const text = itsNewStory ? uiText.toast.creation : uiText.toast.update;
-  toast(text.title, {
-    position: "bottom-right",
-    description: text.description(storyName),
-    icon: <BookOpenCheck className="size-8 text-primary" />,
-    className: "px-6! gap-6! border-2! border-primary!",
-  });
 }
