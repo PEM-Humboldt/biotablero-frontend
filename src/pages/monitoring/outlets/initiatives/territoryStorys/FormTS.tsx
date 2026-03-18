@@ -90,11 +90,7 @@ export function makeApiResponseErrorObject(errors: ApiRequestError): FormError {
   }, {});
 }
 
-export function FormTS({
-  territoryStoryId = 9,
-}: {
-  territoryStoryId?: number;
-}) {
+export function FormTS({ territoryStoryId }: { territoryStoryId?: number }) {
   const [formKey, setFormKey] = useState(0);
   const [story, setStory] = useState<TerritoryStoryForm>(initializeTSForm());
   const [isLoading, setIsLoading] = useState(false);
@@ -289,16 +285,14 @@ export function FormTS({
   return isLoading ? (
     <div>{uiText.loading}</div>
   ) : (
-    <main className="page-main">
-      <header>
-        <h3>{territoryStoryId ? uiText.edit : uiText.create}</h3>
-      </header>
+    <div className="p-8 pt-0 space-y-4">
+      <h3>{territoryStoryId ? uiText.edit : uiText.create}</h3>
 
       <form
         key={formKey}
         onSubmit={(e) => void handleSubmit(e)}
         onReset={(e) => void handleReset(e)}
-        className="w-full flex flex-col gap-3 lg:gap-6 p-6"
+        className="w-full flex flex-col gap-3 lg:gap-6"
       >
         <TitleInput
           title={story.title}
@@ -354,7 +348,7 @@ export function FormTS({
           text={{ ...uiText.submitStory }}
         />
       </form>
-    </main>
+    </div>
   );
 }
 
@@ -367,34 +361,3 @@ function successToast(itsNewStory: boolean, storyName: string) {
     className: "px-6! gap-6! border-2! border-primary!",
   });
 }
-
-// async function saveVideoChanges(
-//   territoryStoryId: number,
-//   initialVideos: VideoObjectTS[], // Lo que vino de getTerritoryHistoryVideos
-//   draftVideos: VideoDraft[], // El estado actual de tus tarjetas
-// ) {
-//   // 1. Identificar ELIMINACIONES
-//   const draftDbIds = new Set(draftVideos.map((v) => v.dbId).filter(Boolean));
-//   const toDelete = initialVideos.filter((v) => !draftDbIds.has(v.id));
-//
-//   // 2. Identificar CREACIONES
-//   const toCreate = draftVideos.filter((v) => !v.dbId);
-//
-//   // 3. Ejecutar peticiones
-//   const tasks: Promise<any>[] = [];
-//
-//   // Agregar eliminaciones
-//   toDelete.forEach((v) => {
-//     tasks.push(deleteTerritoryHistoryVideo(v.id));
-//   });
-//
-//   // Agregar creaciones
-//   toCreate.forEach((v) => {
-//     tasks.push(postTerritoryHistoryVideo(territoryStoryId, v.url));
-//   });
-//
-//   // Ejecutar todo en paralelo
-//   const results = await Promise.allSettled(tasks);
-//
-//   return results;
-// }
