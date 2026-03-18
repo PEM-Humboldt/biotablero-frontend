@@ -1,4 +1,4 @@
-import { type Dispatch, type SetStateAction, useMemo } from "react";
+import { type Dispatch, type SetStateAction } from "react";
 import { Link } from "react-router";
 import { Info } from "lucide-react";
 
@@ -10,15 +10,12 @@ import {
   CarouselPrevious,
 } from "@ui/shadCN/component/carousel";
 import { Button } from "@ui/shadCN/component/button";
-import { useUserCTX } from "@hooks/UserContext";
 import { cn } from "@ui/shadCN/lib/utils";
 
 import backgroundImage from "pages/home/assets/biotablero-slider.webp";
 
-import {
-  type DisplayModule,
-  displayModules,
-} from "core/layout/mainLayout/modules";
+import { type DisplayModule } from "core/layout/mainLayout/modules";
+import { useVisibleModules } from "@hooks/useVisibleModules";
 
 type CarrouselProps = {
   activeTab: number | null;
@@ -26,11 +23,7 @@ type CarrouselProps = {
 };
 
 export function ModulesCarousel({ activeTab, setActiveTab }: CarrouselProps) {
-  const { user } = useUserCTX();
-
-  const modules = useMemo<DisplayModule[]>(() => {
-    return displayModules(user?.username, user?.company?.name);
-  }, [user?.username, user?.company?.name]);
+  const modules = useVisibleModules();
 
   const handleClick = (id: number) => {
     if (activeTab === id) {
@@ -48,6 +41,7 @@ export function ModulesCarousel({ activeTab, setActiveTab }: CarrouselProps) {
       <h3 className="text-center p-6 text-5xl uppercase font-light bg-grey-light">
         Explora nuestros módulos
       </h3>
+
       <div className="flex justify-center px-12 py-6 md:py-12 lg:py-20">
         <Carousel className="w-full max-w-[1200px] mx-2">
           <CarouselContent className="-ml-[5%]">
@@ -64,6 +58,7 @@ export function ModulesCarousel({ activeTab, setActiveTab }: CarrouselProps) {
               </CarouselItem>
             ))}
           </CarouselContent>
+
           <CarouselPrevious variant="carousel" />
           <CarouselNext variant="carousel" />
         </Carousel>
