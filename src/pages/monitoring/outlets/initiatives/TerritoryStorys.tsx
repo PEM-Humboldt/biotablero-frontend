@@ -11,6 +11,7 @@ import {
   panelAccessButtons,
   panelView,
 } from "pages/monitoring/outlets/initiatives/layout/territoryStoryPanels";
+import { TerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
 
 export function TerritoryStorys() {
   const { userStateInInitiative } = useInitiativeCTX();
@@ -33,17 +34,23 @@ export function TerritoryStorys() {
 
   return (
     <div className="flex flex-col items-center">
-      <header className="justify-end p-4 bg-grey w-full">Imagen del RT</header>
-      <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr] w-full max-w-[1600px]">
-        <main>
-          <div className="bg-primary p-4 pl-8 ">busqueda</div>
-          <div className={cn(panel !== PanelState.READ ? "bg-[#f5f5f5]" : "")}>
-            <ToggleTSAdminActions currentPanel={panel} goToPanel={setPanel} />
-            <PanelComponent />
-          </div>
-        </main>
-        <aside className="bg-accent">barra lateral</aside>
-      </div>
+      <TerritoryStorysCTX>
+        <header className="justify-end p-4 bg-grey w-full">
+          Imagen del RT
+        </header>
+        <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr] w-full max-w-[1600px]">
+          <main>
+            <div className="bg-primary p-4 pl-8 ">busqueda</div>
+            <div
+              className={cn(panel !== PanelState.READ ? "bg-[#f5f5f5]" : "")}
+            >
+              <ToggleTSAdminActions currentPanel={panel} goToPanel={setPanel} />
+              <PanelComponent />
+            </div>
+          </main>
+          <aside className="bg-accent">barra lateral</aside>
+        </div>
+      </TerritoryStorysCTX>
     </div>
   );
 }

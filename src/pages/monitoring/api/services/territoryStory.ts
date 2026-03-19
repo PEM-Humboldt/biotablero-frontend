@@ -11,7 +11,7 @@ export function getTerritoryStoriesFromInitiative(initiativeId: number) {
   );
 }
 
-export function getTerritoryStory(territoryStoryId: number) {
+export async function getTerritoryStory(territoryStoryId: number) {
   const res = monitoringAPI<TerritoryStoryFull>({
     type: "get",
     endpoint: `TerritoryStory/${territoryStoryId}`,
@@ -20,7 +20,7 @@ export function getTerritoryStory(territoryStoryId: number) {
   return res;
 }
 
-export function createTerritoryStory(data: RequestData) {
+export async function createTerritoryStory(data: RequestData) {
   const res = monitoringAPI<TerritoryStoryFull>({
     type: "post",
     endpoint: "TerritoryStory",
@@ -30,7 +30,7 @@ export function createTerritoryStory(data: RequestData) {
   return res;
 }
 
-export function editTerritoryStoryGeneralInfo(
+export async function editTerritoryStoryGeneralInfo(
   territoryStoryId: number,
   data: { [K in "title" | "text" | "keywords" | "restricted"]?: string },
 ) {
@@ -43,7 +43,7 @@ export function editTerritoryStoryGeneralInfo(
   return res;
 }
 
-export function enableTerritoryStory(territoryStoryId: number) {
+export async function enableTerritoryStory(territoryStoryId: number) {
   const res = monitoringAPI({
     type: "post",
     endpoint: `TerritoryStory/Enable/${territoryStoryId}`,
@@ -52,7 +52,7 @@ export function enableTerritoryStory(territoryStoryId: number) {
   return res;
 }
 
-export function disableTerritoryStory(territoryStoryId: number) {
+export async function disableTerritoryStory(territoryStoryId: number) {
   const res = monitoringAPI({
     type: "delete",
     endpoint: `TerritoryStory/Disable/${territoryStoryId}`,

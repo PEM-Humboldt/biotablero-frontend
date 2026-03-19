@@ -1,3 +1,18 @@
+import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
+import { Link, useParams } from "react-router";
+
 export function ReadTS() {
-  return <div>lea papito</div>;
+  const { storys, currentStory } = useTerritoryStorysCTX();
+  const { initiativeId } = useParams();
+  const baseUrl = `/Monitoreo/Iniciativas/${initiativeId}/Relatos/`;
+
+  return (
+    <ul>
+      {storys.map((story) => (
+        <li>
+          <Link to={`${baseUrl}${story.id}`}>{story.title}</Link>
+        </li>
+      ))}
+    </ul>
+  );
 }

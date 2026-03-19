@@ -3,6 +3,7 @@ import type {
   JoinRequestStatus,
   UserLevel,
 } from "pages/monitoring/types/catalog";
+import { ImageObjectTS, VideoObjectTS } from "./territoryStory";
 
 // NOTE: Logs
 export interface ODataLogEntryShort extends HasId {
@@ -116,6 +117,13 @@ export type TerritoryStoryShort = {
   enabled: boolean;
   featuredContent: boolean;
   likes: number;
+
+  // NOTE: Hablar con César por si el contenido puede acotarse
+  authorUserName: string;
+  creationDate: string;
+  keywords: string;
+  images?: ImageObjectTS[];
+  videos?: Omit<VideoObjectTS, "territoryStoryId">[];
 };
 
 export type ODataLog = ODataResponse<ODataLogEntryShort>;
