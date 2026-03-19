@@ -38,27 +38,27 @@ export function TagDeleteButton({
   const [errors, setErrors] = useState<Partial<TagDataFormErr>>({});
   const [openDialogAlert, setOpenDialogAlert] = useState(false);
 
-  const getTag = async () => {
-    handleFormReset();
-    setLoadStatusMsg(uiText.table.loadStatus.loading);
-    const result = await getTagById(tagId);
-
-    if (isMonitoringAPIError(result)) {
-      setErrors({ root: [result.message] });
-      return;
-    }
-
-    setFormData(result);
-    setLoadStatusMsg(uiText.table.loadStatus.loaded);
-  };
-
   useEffect(() => {
+    const getTag = async () => {
+      handleFormReset();
+      setLoadStatusMsg(uiText.table.loadStatus.loading);
+      const result = await getTagById(tagId);
+
+      if (isMonitoringAPIError(result)) {
+        setErrors({ root: [result.message] });
+        return;
+      }
+
+      setFormData(result);
+      setLoadStatusMsg(uiText.table.loadStatus.loaded);
+    };
+
     if (openDialogAlert) {
       void getTag();
     } else {
       handleFormReset();
     }
-  }, [openDialogAlert]);
+  }, [tagId, openDialogAlert]);
 
   const handleFormReset = () => {
     setFormData(makeInitialInfo());

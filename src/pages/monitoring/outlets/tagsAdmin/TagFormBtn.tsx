@@ -98,7 +98,7 @@ export function TagFormButton({
     } else {
       handleFormReset();
     }
-  }, [openDialogForm]);
+  }, [tagId, openDialogForm]);
 
   const handleFormReset = () => {
     setFormData(makeInitialInfo());
