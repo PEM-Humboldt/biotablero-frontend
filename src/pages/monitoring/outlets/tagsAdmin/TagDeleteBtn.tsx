@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { Button } from "@ui/shadCN/component/button";
@@ -22,37 +22,43 @@ import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { toast } from "sonner";
 import { UserRoundCheck } from "lucide-react";
 import type { ApiRequestError } from "@appTypes/api";
+import { getTagById } from "pages/monitoring/api/services/tags";
 
 export function TagDeleteButton({
   value: tagId,
   onActionSuccess,
-  getTagAction,
   deleteTagAction,
 }: {
   value: number;
   onActionSuccess: () => void;
-  getTagAction: (id: number) => () => Promise<ApiRequestError | TagDataForm>;
   deleteTagAction: (id: number) => () => Promise<ApiRequestError | TagDataForm>;
 }) {
-  const [openDialogAlert, setOpenDialogAlert] = useState(false);
   const [loadStatusMsg, setLoadStatusMsg] = useState<string | null>(null);
   const [formData, setFormData] = useState<TagDataForm>(makeInitialInfo());
   const [errors, setErrors] = useState<Partial<TagDataFormErr>>({});
+  const [openDialogAlert, setOpenDialogAlert] = useState(false);
 
   const getTag = async () => {
     handleFormReset();
     setLoadStatusMsg(uiText.table.loadStatus.loading);
-    const result = await getTagAction(tagId)();
+    const result = await getTagById(tagId);
 
     if (isMonitoringAPIError(result)) {
       setErrors({ root: [result.message] });
       return;
     }
 
-    setFormData(makeInitialInfo());
-
+    setFormData(result);
     setLoadStatusMsg(uiText.table.loadStatus.loaded);
   };
+
+  useEffect(() => {
+    if (openDialogAlert) {
+      void getTag();
+    } else {
+      handleFormReset();
+    }
+  }, [openDialogAlert]);
 
   const handleFormReset = () => {
     setFormData(makeInitialInfo());
@@ -62,6 +68,7 @@ export function TagDeleteButton({
   const removeTag = async () => {
     if (tagId) {
       setLoadStatusMsg(uiText.table.loadStatus.loading);
+      
       const res = await deleteTagAction(tagId)();
 
       if (isMonitoringAPIError(res)) {
@@ -92,7 +99,6 @@ export function TagDeleteButton({
       <AlertDialog open={openDialogAlert} onOpenChange={setOpenDialogAlert}>
         <AlertDialogTrigger asChild>
           <Button
-            onClick={() => void getTag()}
             disabled={loadStatusMsg !== null}
             variant="ghost"
           >

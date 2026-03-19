@@ -4,7 +4,6 @@ import { uiText } from "pages/monitoring/outlets/tagsAdmin/layout/uiText";
 import {
   addTag,
   deleteTag,
-  getTagById,
   getTagCategories,
   getTags,
   updateTag,
@@ -55,26 +54,26 @@ export function TagsAdmin() {
   const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
 
   const tagActions =
-    (action: "get" | "create" | "edit" | "delete") =>
+    (action: "create" | "edit" | "delete") =>
     (id?: number) =>
     (tag?: TagDataForm) => {
-      if (!id && (action == "get" || action == "edit" || action == "delete")) {
-        throw new Error("Tag identifier sholud be defined");
+      if (!id && (action == "edit" || action == "delete")) {
+        throw new Error("Tag identifier should be defined");
       }
 
       if (
         !tag &&
-        (action == "create" || action == "edit" || action == "delete")
+        (action == "create" || action == "edit")
       ) {
-        throw new Error("Tag identifier sholud be defined");
+        throw new Error("Tag object should be defined");
       }
 
       const tagIdNumber: number = id ?? 0;
       const tagObject: TagDataForm = tag ?? ({} as TagDataForm);
 
       switch (action) {
-        case "get":
-          return getTagById(tagIdNumber);
+        // case "get":
+        //   return getTagById(tagIdNumber);
         case "create":
           return addTag(tagObject);
         case "edit":
@@ -144,7 +143,6 @@ export function TagsAdmin() {
           <TagFormButton
             tagCategories={tagCategories}
             onActionSuccess={() => setRefetchTrigger((prev) => prev + 1)}
-            getTagAction={tagActions("get")}
             createTagAction={tagActions("create")()}
           />
         </div>

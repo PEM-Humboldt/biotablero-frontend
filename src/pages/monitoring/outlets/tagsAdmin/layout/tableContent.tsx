@@ -7,7 +7,7 @@ import type { TagDataForm } from "pages/monitoring/types/tagData";
 export const getTableContent = (
   onActionSuccess: () => void,
   tagActions: (
-    action: "get" | "create" | "edit" | "delete",
+    action: "create" | "edit" | "delete",
   ) => (
     id?: number,
   ) => (tag?: TagDataForm) => Promise<TagDataForm | ApiRequestError>,
@@ -17,6 +17,7 @@ export const getTableContent = (
   { name: "Url", source: "url", type: "text" },
   {
     name: "Acciones",
+    label: "Acciones",
     source: "id",
     type: "action",
     actions: ({ value }) => (
@@ -26,6 +27,5 @@ export const getTableContent = (
         tagActions={tagActions}
       />
     ),
-    label: "Detalles",
   },
 ];

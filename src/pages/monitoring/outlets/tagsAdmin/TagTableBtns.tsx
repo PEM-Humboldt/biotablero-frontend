@@ -11,7 +11,7 @@ export function TagTableButtons({
   value?: unknown;
   onActionSuccess: () => void;
   tagActions: (
-    action: "get" | "create" | "edit" | "delete",
+    action: "create" | "edit" | "delete",
   ) => (
     id?: number,
   ) => (tag?: TagDataForm) => Promise<TagDataForm | ApiRequestError>;
@@ -31,13 +31,11 @@ export function TagTableButtons({
       <TagFormButton
         value={tagId}
         onActionSuccess={onActionSuccess}
-        getTagAction={tagActions("get")}
         editTagAction={tagActions("edit")}
       />
       <TagDeleteButton
         value={tagId}
         onActionSuccess={onActionSuccess}
-        getTagAction={tagActions("get")}
         deleteTagAction={tagActions("delete")}
       />
     </>

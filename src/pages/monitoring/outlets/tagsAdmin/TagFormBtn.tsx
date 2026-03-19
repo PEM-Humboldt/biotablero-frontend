@@ -38,19 +38,18 @@ import {
 } from "@ui/shadCN/component/dialog";
 import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
 import type { ApiRequestError } from "@appTypes/api";
+import { getTagById } from "pages/monitoring/api/services/tags";
 
 export function TagFormButton({
   value: tagId,
   tagCategories,
   onActionSuccess,
-  getTagAction,
   createTagAction,
   editTagAction,
 }: {
   value?: number;
   tagCategories?: TagCategory[];
   onActionSuccess: () => void;
-  getTagAction: (id: number) => () => Promise<ApiRequestError | TagDataForm>;
   createTagAction?: (
     tag: TagDataForm,
   ) => Promise<ApiRequestError | TagDataForm>;
@@ -72,31 +71,38 @@ export function TagFormButton({
     throw new Error("'editTagAction' should be defined");
   }
 
-  const getTag = async () => {
-    if (tagId) {
-      handleFormReset();
-      setLoadStatusMsg(uiText.table.loadStatus.loading);
-      const result = await getTagAction(tagId)();
-      setIsLoading(false);
-
-      if (isMonitoringAPIError(result)) {
-        setErrors({ root: [result.message] });
-        return;
-      }
-
-      setFormData(result);
-      setLoadStatusMsg(uiText.table.loadStatus.loaded);
-    }
-  };
-
   useEffect(() => {
-    if (tagId) {
+    if (tagId && openDialogForm) {
       setIsLoading(true);
+
+      const getTag = async () => {
+        if (tagId) {
+          setLoadStatusMsg(uiText.table.loadStatus.loading);
+          const result = await getTagById(tagId);
+
+          handleFormReset();
+
+          if (isMonitoringAPIError(result)) {
+            setErrors({ root: [result.message] });
+            return;
+          }
+
+          setFormData(result);          
+          setIsLoading(false);
+          setLoadStatusMsg(uiText.table.loadStatus.loaded);
+        }
+      };
+      
+      void getTag();
     } else {
-      setFormData(makeInitialInfo());
-      setErrors({});
+      handleFormReset();
     }
-  }, [tagId]);
+  }, [openDialogForm]);
+
+  const handleFormReset = () => {
+    setFormData(makeInitialInfo());
+    setErrors({});
+  };
 
   const validateField = useCallback(
     (
@@ -118,11 +124,6 @@ export function TagFormButton({
     },
     [],
   );
-
-  const handleFormReset = () => {
-    setFormData(makeInitialInfo());
-    setErrors({});
-  };
 
   const categoryOnBlur = () => {
     if (tagId) {
@@ -227,9 +228,9 @@ export function TagFormButton({
 
   const getSubmitButtonText = () => {
     if (isLoading) {
-      return !tagId ? uiText.tag.creatingNew : "Actualizando...";
+      return !tagId ? uiText.tag.creating : "Actualizando...";
     }
-    return !tagId ? uiText.tag.createNew : "Actualizar etiqueta";
+    return !tagId ? uiText.tag.create : "Actualizar etiqueta";
   };
 
   return (
@@ -238,7 +239,6 @@ export function TagFormButton({
         {tagId && (
           <DialogTrigger asChild>
             <Button
-              onClick={() => void getTag()}
               disabled={loadStatusMsg !== null}
               variant="ghost"
             >
@@ -251,7 +251,7 @@ export function TagFormButton({
         {!tagId && (
           <DialogTrigger asChild>
             <Button disabled={loadStatusMsg !== null}>
-              {loadStatusMsg !== null ? loadStatusMsg : uiText.tag.createNew}
+              {loadStatusMsg !== null ? loadStatusMsg : uiText.tag.create}
               <PlusIcon />
             </Button>
           </DialogTrigger>
@@ -260,7 +260,7 @@ export function TagFormButton({
           <div className="pb-2">
             <DialogHeader>
               <DialogTitle>
-                {!tagId ? "Nueva etiqueta" : "Editar etiqueta"}
+                {!tagId ? uiText.tag.createTitle : uiText.tag.editTitle}
               </DialogTitle>
             </DialogHeader>
           </div>

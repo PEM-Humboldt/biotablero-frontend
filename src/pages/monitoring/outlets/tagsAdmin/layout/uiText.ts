@@ -36,8 +36,10 @@ export const uiText = {
   },
 
   tag: {
-    createNew: "Crear etiqueta",
-    creatingNew: "Creando etiqueta...",
+    createTitle: "Nueva etiqueta",
+    create: "Crear etiqueta",
+    creating: "Creando etiqueta...",
+    editTitle: "Editar etiqueta",
   },
 
   form: {
