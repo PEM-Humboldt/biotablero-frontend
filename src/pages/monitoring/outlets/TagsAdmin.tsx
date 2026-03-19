@@ -53,35 +53,17 @@ export function TagsAdmin() {
   const [refetchTrigger, setRefetchTrigger] = useState(0);
   const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
 
-  const tagActions =
-    (action: "create" | "edit" | "delete") =>
-    (id?: number) =>
-    (tag?: TagDataForm) => {
-      if (!id && (action == "edit" || action == "delete")) {
-        throw new Error("Tag identifier should be defined");
-      }
+  const tagCreateAction = (tag: TagDataForm) => {
+    return addTag(tag);
+  }
 
-      if (
-        !tag &&
-        (action == "create" || action == "edit")
-      ) {
-        throw new Error("Tag object should be defined");
-      }
+  const tagEditAction = (id: number, tag: TagDataForm) => {
+    return updateTag(id, tag);
+  }
 
-      const tagIdNumber: number = id ?? 0;
-      const tagObject: TagDataForm = tag ?? ({} as TagDataForm);
-
-      switch (action) {
-        // case "get":
-        //   return getTagById(tagIdNumber);
-        case "create":
-          return addTag(tagObject);
-        case "edit":
-          return updateTag(tagIdNumber, tagObject);
-        case "delete":
-          return deleteTag(tagIdNumber);
-      }
-    };
+  const tagDeleteAction = (id: number) => {
+    return deleteTag(id);
+  }
 
   const fetchTagCategories = async () => {
     const result = await getTagCategories();
@@ -143,7 +125,7 @@ export function TagsAdmin() {
           <TagFormButton
             tagCategories={tagCategories}
             onActionSuccess={() => setRefetchTrigger((prev) => prev + 1)}
-            createTagAction={tagActions("create")()}
+            createTagAction={tagCreateAction}
           />
         </div>
       </header>
@@ -157,7 +139,8 @@ export function TagsAdmin() {
             <ODataTable
               cols={getTableContent(
                 () => setRefetchTrigger((prev) => prev + 1),
-                tagActions,
+                tagEditAction,
+                tagDeleteAction,
               )}
               values={parseODataTags(tags)}
               className="table-tags"

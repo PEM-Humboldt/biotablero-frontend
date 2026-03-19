@@ -6,15 +6,13 @@ import type { ApiRequestError } from "@appTypes/api";
 export function TagTableButtons({
   value: tagId,
   onActionSuccess,
-  tagActions,
+  tagEditAction,
+  tagDeleteAction,
 }: {
   value?: unknown;
   onActionSuccess: () => void;
-  tagActions: (
-    action: "create" | "edit" | "delete",
-  ) => (
-    id?: number,
-  ) => (tag?: TagDataForm) => Promise<TagDataForm | ApiRequestError>;
+  tagEditAction: (id: number, tag: TagDataForm) => Promise<TagDataForm | ApiRequestError>;
+  tagDeleteAction: (id: number) => Promise<TagDataForm | ApiRequestError>;
 }) {
   if (typeof tagId !== "number") {
     throw new Error(
@@ -22,21 +20,17 @@ export function TagTableButtons({
     );
   }
 
-  if (!tagActions) {
-    throw new Error("'tagActions' should be defined");
-  }
-
   return (
     <>
       <TagFormButton
         value={tagId}
         onActionSuccess={onActionSuccess}
-        editTagAction={tagActions("edit")}
+        editTagAction={tagEditAction}
       />
       <TagDeleteButton
         value={tagId}
         onActionSuccess={onActionSuccess}
-        deleteTagAction={tagActions("delete")}
+        deleteTagAction={tagDeleteAction}
       />
     </>
   );

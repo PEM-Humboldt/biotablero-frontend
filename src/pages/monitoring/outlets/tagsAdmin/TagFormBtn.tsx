@@ -50,12 +50,8 @@ export function TagFormButton({
   value?: number;
   tagCategories?: TagCategory[];
   onActionSuccess: () => void;
-  createTagAction?: (
-    tag: TagDataForm,
-  ) => Promise<ApiRequestError | TagDataForm>;
-  editTagAction?: (
-    id: number,
-  ) => (tag: TagDataForm) => Promise<ApiRequestError | TagDataForm>;
+  createTagAction?: (tag: TagDataForm) => Promise<ApiRequestError | TagDataForm>;
+  editTagAction?: (id: number, tag: TagDataForm) => Promise<ApiRequestError | TagDataForm>;
 }) {
   const [errors, setErrors] = useState<Partial<TagDataFormErr>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -194,7 +190,7 @@ export function TagFormButton({
 
     if (tagId) {
       if (editTagAction) {
-        await editTagAction(tagId)(payload);
+        await editTagAction(tagId, payload);
       }
     } else {
       if (createTagAction) {

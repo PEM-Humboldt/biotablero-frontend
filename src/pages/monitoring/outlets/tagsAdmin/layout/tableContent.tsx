@@ -6,11 +6,8 @@ import type { TagDataForm } from "pages/monitoring/types/tagData";
 
 export const getTableContent = (
   onActionSuccess: () => void,
-  tagActions: (
-    action: "create" | "edit" | "delete",
-  ) => (
-    id?: number,
-  ) => (tag?: TagDataForm) => Promise<TagDataForm | ApiRequestError>,
+  tagEditAction: (id: number, tag: TagDataForm) => Promise<TagDataForm | ApiRequestError>,
+  tagDeleteAction: (id: number) => Promise<TagDataForm | ApiRequestError>,
 ): ODataColumn<TagEntryShort>[] => [
   { name: "Categoría", source: "categoryName", type: "text", sortBy: true },
   { name: "Nombre", source: "name", type: "text", sortBy: true },
@@ -24,7 +21,8 @@ export const getTableContent = (
       <TagTableButtons
         value={value}
         onActionSuccess={onActionSuccess}
-        tagActions={tagActions}
+        tagEditAction={tagEditAction}
+        tagDeleteAction={tagDeleteAction}
       />
     ),
   },

@@ -31,7 +31,7 @@ export function TagDeleteButton({
 }: {
   value: number;
   onActionSuccess: () => void;
-  deleteTagAction: (id: number) => () => Promise<ApiRequestError | TagDataForm>;
+  deleteTagAction: (id: number) => Promise<ApiRequestError | TagDataForm>;
 }) {
   const [loadStatusMsg, setLoadStatusMsg] = useState<string | null>(null);
   const [formData, setFormData] = useState<TagDataForm>(makeInitialInfo());
@@ -69,7 +69,7 @@ export function TagDeleteButton({
     if (tagId) {
       setLoadStatusMsg(uiText.table.loadStatus.loading);
       
-      const res = await deleteTagAction(tagId)();
+      const res = await deleteTagAction(tagId);
 
       if (isMonitoringAPIError(res)) {
         setErrors((oldErr) => ({
