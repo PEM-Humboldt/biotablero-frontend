@@ -50,8 +50,13 @@ export function TagFormButton({
   value?: number;
   tagCategories?: TagCategory[];
   onActionSuccess: () => void;
-  createTagAction?: (tag: TagDataForm) => Promise<ApiRequestError | TagDataForm>;
-  editTagAction?: (id: number, tag: TagDataForm) => Promise<ApiRequestError | TagDataForm>;
+  createTagAction?: (
+    tag: TagDataForm,
+  ) => Promise<ApiRequestError | TagDataForm>;
+  editTagAction?: (
+    id: number,
+    tag: TagDataForm,
+  ) => Promise<ApiRequestError | TagDataForm>;
 }) {
   const [errors, setErrors] = useState<Partial<TagDataFormErr>>({});
   const [isLoading, setIsLoading] = useState(false);
@@ -83,12 +88,12 @@ export function TagFormButton({
             return;
           }
 
-          setFormData(result);          
+          setFormData(result);
           setIsLoading(false);
           setLoadStatusMsg(uiText.table.loadStatus.loaded);
         }
       };
-      
+
       void getTag();
     } else {
       handleFormReset();
@@ -234,10 +239,7 @@ export function TagFormButton({
       <Dialog open={openDialogForm} onOpenChange={setOpenDialogForm}>
         {tagId && (
           <DialogTrigger asChild>
-            <Button
-              disabled={loadStatusMsg !== null}
-              variant="ghost"
-            >
+            <Button disabled={loadStatusMsg !== null} variant="ghost">
               {loadStatusMsg !== null
                 ? loadStatusMsg
                 : uiText.table.editBtn.defaultText}

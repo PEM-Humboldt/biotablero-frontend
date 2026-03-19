@@ -55,15 +55,15 @@ export function TagsAdmin() {
 
   const tagCreateAction = (tag: TagDataForm) => {
     return addTag(tag);
-  }
+  };
 
   const tagEditAction = (id: number, tag: TagDataForm) => {
     return updateTag(id, tag);
-  }
+  };
 
   const tagDeleteAction = (id: number) => {
     return deleteTag(id);
-  }
+  };
 
   const fetchTagCategories = async () => {
     const result = await getTagCategories();

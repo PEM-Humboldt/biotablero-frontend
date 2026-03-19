@@ -6,7 +6,10 @@ import type { TagDataForm } from "pages/monitoring/types/tagData";
 
 export const getTableContent = (
   onActionSuccess: () => void,
-  tagEditAction: (id: number, tag: TagDataForm) => Promise<TagDataForm | ApiRequestError>,
+  tagEditAction: (
+    id: number,
+    tag: TagDataForm,
+  ) => Promise<TagDataForm | ApiRequestError>,
   tagDeleteAction: (id: number) => Promise<TagDataForm | ApiRequestError>,
 ): ODataColumn<TagEntryShort>[] => [
   { name: "Categoría", source: "categoryName", type: "text", sortBy: true },

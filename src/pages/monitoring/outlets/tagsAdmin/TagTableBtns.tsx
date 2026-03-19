@@ -11,7 +11,10 @@ export function TagTableButtons({
 }: {
   value?: unknown;
   onActionSuccess: () => void;
-  tagEditAction: (id: number, tag: TagDataForm) => Promise<TagDataForm | ApiRequestError>;
+  tagEditAction: (
+    id: number,
+    tag: TagDataForm,
+  ) => Promise<TagDataForm | ApiRequestError>;
   tagDeleteAction: (id: number) => Promise<TagDataForm | ApiRequestError>;
 }) {
   if (typeof tagId !== "number") {

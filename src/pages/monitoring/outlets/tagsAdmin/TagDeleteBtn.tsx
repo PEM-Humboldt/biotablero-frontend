@@ -68,7 +68,7 @@ export function TagDeleteButton({
   const removeTag = async () => {
     if (tagId) {
       setLoadStatusMsg(uiText.table.loadStatus.loading);
-      
+
       const res = await deleteTagAction(tagId);
 
       if (isMonitoringAPIError(res)) {
@@ -98,10 +98,7 @@ export function TagDeleteButton({
     <>
       <AlertDialog open={openDialogAlert} onOpenChange={setOpenDialogAlert}>
         <AlertDialogTrigger asChild>
-          <Button
-            disabled={loadStatusMsg !== null}
-            variant="ghost"
-          >
+          <Button disabled={loadStatusMsg !== null} variant="ghost">
             {loadStatusMsg !== null
               ? loadStatusMsg
               : uiText.table.deleteBtn.defaultText}
