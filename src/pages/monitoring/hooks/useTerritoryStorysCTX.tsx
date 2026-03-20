@@ -39,8 +39,8 @@ export function TerritoryStorysCTX({ children }: { children: ReactNode }) {
   const [errors, setErrors] = useState<string[]>([]);
   const [searchStorysParams, setStorysSearchParams] = useState<ODataParams>({
     top: 20,
-    orderby: "creationDate desc",
   });
+
   const [storys, setStorys] = useState<TerritoryStoryShort[]>([]);
   const [currentStory, setCurrentStory] = useState<TerritoryStoryFull | null>(
     null,

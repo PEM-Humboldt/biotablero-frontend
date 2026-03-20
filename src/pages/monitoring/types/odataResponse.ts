@@ -108,6 +108,34 @@ export type UserInInitiative = {
   users: InitiativeUser[];
 };
 
+interface TerritoryStoryImageObject extends HasId {
+  territoryStoryId: number;
+  fileUrl: string;
+  description: string;
+  featuredContent: boolean;
+}
+
+interface TerritoryStoryVideoObject extends HasId {
+  territoryStoryId: number;
+  fileUrl: string;
+}
+
+export interface ODataTerritoryStoryObject extends HasId {
+  initiativeId: number;
+  authorUserName: string;
+  title: string;
+  text: string;
+  keywords: string;
+  creationDate: string;
+  restricted: boolean;
+  enabled: boolean;
+  featuredContent: boolean;
+  likes: number;
+  iLikedIt: boolean;
+  images: TerritoryStoryImageObject[];
+  videos: TerritoryStoryVideoObject[];
+}
+
 export type TerritoryStoryShort = {
   id: number;
   initiativeId: number;

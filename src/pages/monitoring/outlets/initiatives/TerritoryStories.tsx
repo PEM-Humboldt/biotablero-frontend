@@ -12,6 +12,7 @@ import {
   panelView,
 } from "pages/monitoring/outlets/initiatives/layout/territoryStoryPanels";
 import { TerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
+import { TSSearchBar } from "./territoryStories/TSSearchBar";
 
 export function TerritoryStories() {
   const { userStateInInitiative } = useInitiativeCTX();
@@ -40,7 +41,7 @@ export function TerritoryStories() {
         </header>
         <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr] w-full max-w-[1600px]">
           <main>
-            <div className="bg-primary p-4 pl-8 ">busqueda</div>
+            <TSSearchBar />
             <div
               className={cn(panel !== PanelState.READ ? "bg-[#f5f5f5]" : "")}
             >
