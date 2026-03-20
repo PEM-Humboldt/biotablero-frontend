@@ -185,10 +185,10 @@ export function ImagesInput({
             <span className="sr-only">{text.image.input}</span>
           </LabelAndErrors>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 py-0.5 gap-4">
             <div
               className={cn(
-                "relative group mt-1 overflow-hidden rounded-xl border border-primary border-dashed bg-white min-h-40 h-full transition-all focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-primary",
+                "relative group overflow-hidden rounded-xl border border-primary border-dashed bg-white min-h-40 h-full transition-all focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-primary",
                 stagedImage
                   ? "border-primary bg-muted"
                   : "border-muted-foreground/30 hover:border-primary cursor-pointer",

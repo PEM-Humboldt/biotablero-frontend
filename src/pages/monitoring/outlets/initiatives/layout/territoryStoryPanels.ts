@@ -1,8 +1,8 @@
 import { BookPlus, NotebookPen, NotebookText } from "lucide-react";
 
-import { CreateEditTSForm } from "pages/monitoring/outlets/initiatives/territoryStorys/CreateEditTSForm";
-import { ReadTS } from "pages/monitoring/outlets/initiatives/territoryStorys/ReadTS";
-import { ManageTS } from "pages/monitoring/outlets/initiatives/territoryStorys/ManageTS";
+import { CreateEditTSForm } from "pages/monitoring/outlets/initiatives/territoryStories/CreateEditTSForm";
+import { ReadTS } from "pages/monitoring/outlets/initiatives/territoryStories/ReadTS";
+import { ManageTS } from "pages/monitoring/outlets/initiatives/territoryStories/ManageTS";
 import { PanelState } from "pages/monitoring/outlets/initiatives/types/territoryStory";
 
 export const panelView = {

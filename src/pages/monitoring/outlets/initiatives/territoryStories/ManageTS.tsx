@@ -1,12 +1,4 @@
-import {
-  Accordion,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-  AccordionToggle,
-} from "@ui/shadCN/component/accordion";
 import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
-import { Link, useParams } from "react-router";
 import { Button } from "@ui/shadCN/component/button";
 import {
   Eye,
@@ -120,14 +112,15 @@ export function ManageTS() {
           </div>
 
           {editingId === story.id && (
-            <CreateEditTSForm
-              territoryStoryId={story.id}
-              onEditSuccess={() => {
-                void updateStorys();
-                setEditingId(null);
-              }}
-              className="bg-muted p-8 pt-2"
-            />
+            <div className="bg-muted">
+              <CreateEditTSForm
+                territoryStoryId={story.id}
+                onEditSuccess={() => {
+                  void updateStorys();
+                  setEditingId(null);
+                }}
+              />
+            </div>
           )}
         </div>
       ))}

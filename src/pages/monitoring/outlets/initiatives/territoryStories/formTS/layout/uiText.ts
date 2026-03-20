@@ -1,7 +1,6 @@
 export const uiText = {
   loading: "Cargando...",
   create: "Crear relato del territorio",
-  edit: "Editar relato del territorio",
 
   errors: {
     createdButErrImageUpload:
@@ -83,21 +82,21 @@ export const uiText = {
   },
 
   submitStory: {
-    title: "Configuración del relato",
+    title: "Visibilidad del relato",
     restricted: {
       ariaLabel: "Restricción de público",
       title: {
         restricted:
-          "El relato sólo está disponible a quienes hacen parte de la iniciativa",
-        unrestricted: "El relato es público",
+          "El relato estará disponible sólo para quienes hacen parte de la iniciativa",
+        unrestricted: "El relato será público",
       },
       sr: {
         restricted: "Modo privado activo",
         unrestricted: "Modo público activo",
       },
       label: {
-        restricted: "Sólo para personas en la iniciativa",
-        unrestricted: "Cualquier persona puede leerlo",
+        restricted: "Restringido",
+        unrestricted: "Público",
       },
     },
     submit: {

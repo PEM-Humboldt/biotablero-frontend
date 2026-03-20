@@ -37,16 +37,15 @@ import type {
   VideoObjectTS,
 } from "pages/monitoring/types/territoryStory";
 import type { RequestData } from "pages/monitoring/api/types/definitions";
-import { TextEditor } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/TextEditor";
-import { TitleInput } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/TitleInput";
-import { SubmitStory } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/SubmitStory";
-import { ImagesInput } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/ImagesInput";
-import { YoutubeVideoInput } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/YoutubeVideoInput";
+import { TextEditor } from "pages/monitoring/outlets/initiatives/territoryStories/formTS/TextEditor";
+import { TitleInput } from "pages/monitoring/outlets/initiatives/territoryStories/formTS/TitleInput";
+import { SubmitStory } from "pages/monitoring/outlets/initiatives/territoryStories/formTS/SubmitStory";
+import { ImagesInput } from "pages/monitoring/outlets/initiatives/territoryStories/formTS/ImagesInput";
+import { YoutubeVideoInput } from "pages/monitoring/outlets/initiatives/territoryStories/formTS/YoutubeVideoInput";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
-import { uiText } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/layout/uiText";
+import { uiText } from "pages/monitoring/outlets/initiatives/territoryStories/formTS/layout/uiText";
 import { createErrorObjectParser } from "pages/monitoring/utils/errorObjectParser";
-import { cn } from "@ui/shadCN/lib/utils";
 
 // NOTE: Maniobra mientras se unifica el retorno de los campos de error a lowercase
 const TS_ERROR_FIELDS = [
@@ -83,11 +82,9 @@ const initializeTSForm = (
 export function CreateEditTSForm({
   territoryStoryId,
   onEditSuccess,
-  className,
 }: {
   territoryStoryId?: number;
   onEditSuccess?: () => void;
-  className: string;
 }) {
   const [formKey, setFormKey] = useState(0);
   const [story, setStory] = useState<TerritoryStoryForm>(initializeTSForm());
@@ -303,8 +300,11 @@ export function CreateEditTSForm({
       key={formKey}
       onSubmit={(e) => void handleSubmit(e)}
       onReset={(e) => void handleReset(e)}
-      className={cn("w-full flex flex-col gap-3 lg:gap-6", className)}
+      className="w-full flex flex-col gap-3 lg:gap-6 p-8 pt-2"
     >
+      {territoryStoryId === undefined && (
+        <h3 className="text-primary">{uiText.create}</h3>
+      )}
       <TitleInput
         title={story.title}
         titleUpdater={updateField("title")}

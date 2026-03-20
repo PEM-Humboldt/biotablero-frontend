@@ -7,7 +7,7 @@ import {
   UsersRound,
 } from "lucide-react";
 import { Profile } from "pages/monitoring/outlets/initiatives/Profile";
-import { TerritoryStorys } from "pages/monitoring/outlets/initiatives/TerritoryStorys";
+import { TerritoryStories } from "pages/monitoring/outlets/initiatives/TerritoryStories";
 
 export const initiativeTabs = new Map<
   string,
@@ -38,7 +38,7 @@ export const initiativeTabs = new Map<
     {
       label: "Relatos del territorio",
       slug: "Relatos",
-      component: TerritoryStorys,
+      component: TerritoryStories,
       icon: MessageSquareText,
     },
   ],

@@ -13,7 +13,7 @@ import {
 } from "pages/monitoring/outlets/initiatives/layout/territoryStoryPanels";
 import { TerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
 
-export function TerritoryStorys() {
+export function TerritoryStories() {
   const { userStateInInitiative } = useInitiativeCTX();
   const [panel, setPanel] = useState<PanelState>(PanelState.READ);
 
