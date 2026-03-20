@@ -8,7 +8,6 @@ import { matchColor } from "pages/search/utils/matchColor";
 import { transformSEValues } from "pages/search/dashboard/ecosystems/transformData";
 import { SEPADataExt } from "pages/search/types/ecosystems";
 import SmallStackedBar from "@composites/charts/SmallStackedBar";
-import colorPalettes from "pages/search/utils/colorPalettes";
 
 interface Props {
   SETotalArea: number;
@@ -64,9 +63,7 @@ class EcosystemsBox extends React.Component<Props, State> {
                   customMessage="Sin áreas protegidas"
                   data={transformSEValues(SEValues, SETotalArea)}
                   units="ha"
-                  colors={(key: string) =>
-                    matchColor("se")(key) || colorPalettes.default[0]
-                  }
+                  colors={matchColor("se")}
                 />
               )}
               {!stopLoad && activeSE === SEValues.type && (

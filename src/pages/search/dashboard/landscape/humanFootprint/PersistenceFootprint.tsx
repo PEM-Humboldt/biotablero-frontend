@@ -17,7 +17,6 @@ import LargeStackedBar from "@composites/charts/LargeStackedBar";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { ShapeLayer } from "pages/search/types/layers";
 import { PersistenceFootprintController } from "pages/search/dashboard/landscape/humanFootprint/PersistenceFootprintController";
-import colorPalettes from "pages/search/utils/colorPalettes";
 
 const getLabel = {
   estable_natural: "Estable Natural",
@@ -162,13 +161,11 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
         <div>
           <LargeStackedBar
             data={hfPersistence}
-            loadStatus={message}
+            message={message}
             labelX="Hectáreas"
             labelY="Persistencia Huella Humana"
             units="ha"
-            colors={(key: string | number) =>
-              matchColor("hfPersistence")(key) || colorPalettes.default[0]
-            }
+            colors={matchColor("hfPersistence")}
             padding={0.25}
             onClickGraphHandler={(selected) => this.highlightFeature(selected)}
           />

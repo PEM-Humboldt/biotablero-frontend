@@ -6,7 +6,6 @@ import TextBoxes from "@ui/TextBoxes";
 import { matchColor } from "pages/search/utils/matchColor";
 import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { formatNumber } from "@utils/format";
-import colorPalettes from "pages/search/utils/colorPalettes";
 
 /**
  * Calculate percentage for a given value according to total
@@ -83,9 +82,7 @@ export function ProtectedAreas({
           loadStatus={messages}
           data={PAAreas}
           units="ha"
-          colors={(key: string) =>
-            matchColor("pa", true)(key) || colorPalettes.default[0]
-          }
+          colors={matchColor("pa", true)}
           scaleType={PADivergentData ? "symlog" : "linear"}
         />
       </div>
