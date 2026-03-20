@@ -1,6 +1,11 @@
-import axios, { CancelToken } from "axios";
+import axios from "axios";
 
 class RestAPI {
+  static backEndKey =
+    window._env_?.VITE_BACKEND_KEY || import.meta.env.VITE_BACKEND_KEY;
+  static backEndUrl =
+    window._env_?.VITE_BACKEND_URL || import.meta.env.VITE_BACKEND_URL;
+
   /** ******************* */
   /** COMPENSATION MODULE */
   /** ******************* */
@@ -182,11 +187,11 @@ class RestAPI {
     const config = {
       ...options,
       headers: {
-        Authorization: `apiKey ${import.meta.env.VITE_BACKEND_KEY}`,
+        Authorization: `apiKey ${this.backEndKey}`,
       },
     };
     return axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}/${endpoint}`, config)
+      .get(`${this.backEndUrl}/${endpoint}`, config)
       .then((res) => {
         if (completeRes) {
           return res;
@@ -214,15 +219,11 @@ class RestAPI {
   static makePostRequest(endpoint, requestBody) {
     const config = {
       headers: {
-        Authorization: `apiKey ${import.meta.env.VITE_BACKEND_KEY}`,
+        Authorization: `apiKey ${this.backEndKey}`,
       },
     };
     return axios
-      .post(
-        `${import.meta.env.VITE_BACKEND_URL}/${endpoint}`,
-        requestBody,
-        config,
-      )
+      .post(`${this.backEndUrl}/${endpoint}`, requestBody, config)
       .then((res) => res.data)
       .catch((error) => {
         let message = "Bad POST response. Try later";

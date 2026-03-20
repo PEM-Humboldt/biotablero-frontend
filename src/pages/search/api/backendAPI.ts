@@ -699,11 +699,14 @@ class BackendAPI {
     const config = {
       ...options,
       headers: {
-        Authorization: `apiKey ${import.meta.env.VITE_BACKEND_KEY}`,
+        Authorization: `apiKey ${window._env_?.VITE_BACKEND_KEY || import.meta.env.VITE_BACKEND_KEY}`,
       },
     };
     return axios
-      .get(`${import.meta.env.VITE_BACKEND_URL}/${endpoint}`, config)
+      .get(
+        `${window._env_?.VITE_BACKEND_URL || import.meta.env.VITE_BACKEND_URL}/${endpoint}`,
+        config,
+      )
       .then((res) => {
         if (completeRes) {
           return res;

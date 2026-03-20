@@ -93,7 +93,7 @@ Es recomendable usar como versión de la imagen el valor del release actual en [
 Una vez esté creada la imagen, se despliega de la siguiente manera:
 
 ```sh
-docker run -d  -p <puerto host>:5000 --name <nombre contenedor> biotablero-front:<version imagen>
+docker run -d  -p <puerto host>:5000 --env-file .env.local --name <nombre contenedor> biotablero-front:<version imagen>
 ```
 
 ## 3. Utilitarios

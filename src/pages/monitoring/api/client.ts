@@ -8,7 +8,9 @@ import { isResponseRequestError, refreshAccessToken } from "@api/auth";
 import type { ExtendedAxiosReqConfig } from "pages/monitoring/api/types/definitions";
 
 const monitoringClient = axios.create({
-  baseURL: import.meta.env.VITE_MONITORING_BACKEND_URL,
+  baseURL:
+    window._env_?.VITE_MONITORING_BACKEND_URL ||
+    import.meta.env.VITE_MONITORING_BACKEND_URL,
 });
 
 monitoringClient.interceptors.request.use(
