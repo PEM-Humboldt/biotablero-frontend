@@ -12,7 +12,6 @@ import { toast } from "sonner";
 import { fromLexicalEditorStateRefToMarkdown } from "@utils/textParser";
 import { availableTransformers } from "@composites/RichTextEditor";
 import { KeywordInput } from "@composites/keywordInput";
-import type { ApiRequestError } from "@appTypes/api";
 
 import {
   TERRITORY_STORY_KEYWORD_MAX_LENGTH,
@@ -47,6 +46,7 @@ import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { uiText } from "pages/monitoring/outlets/initiatives/territoryStorys/formTS/layout/uiText";
 import { createErrorObjectParser } from "pages/monitoring/utils/errorObjectParser";
+import { cn } from "@ui/shadCN/lib/utils";
 
 // NOTE: Maniobra mientras se unifica el retorno de los campos de error a lowercase
 const TS_ERROR_FIELDS = [
@@ -72,15 +72,22 @@ const initializeTSForm = (
   text: territoryStory?.text ?? "",
   restricted: territoryStory?.restricted ?? false,
   enabled: territoryStory?.enabled ?? true,
-  keywords: territoryStory?.keywords.split(",") ?? ([] as string[]),
+  keywords:
+    territoryStory?.keywords !== undefined
+      ? territoryStory.keywords.split(",")
+      : ([] as string[]),
   images: territoryStory?.images ?? ([] as ImageObjectTS[]),
   videos: territoryStory?.videos ?? ([] as VideoObjectTS[]),
 });
 
 export function CreateEditTSForm({
   territoryStoryId,
+  onEditSuccess,
+  className,
 }: {
   territoryStoryId?: number;
+  onEditSuccess?: () => void;
+  className: string;
 }) {
   const [formKey, setFormKey] = useState(0);
   const [story, setStory] = useState<TerritoryStoryForm>(initializeTSForm());
@@ -126,8 +133,10 @@ export function CreateEditTSForm({
       return;
     }
 
-    storyToUpdate.current = initializeTSForm(res);
-    setStory(initializeTSForm(res));
+    const storyObject = initializeTSForm(res);
+
+    storyToUpdate.current = storyObject;
+    setStory(storyObject);
     setIsLoading(false);
   }, [territoryStoryId]);
 
@@ -271,6 +280,10 @@ export function CreateEditTSForm({
       icon: <BookOpenCheck className="size-8 text-primary" />,
       className: "px-6! gap-6! border-2! border-primary!",
     });
+
+    if (onEditSuccess) {
+      onEditSuccess();
+    }
   };
 
   const handleReset = async (e: FormEvent<HTMLFormElement>) => {
@@ -286,69 +299,65 @@ export function CreateEditTSForm({
   return isLoading ? (
     <div>{uiText.loading}</div>
   ) : (
-    <div className="p-8 pt-0 space-y-4">
-      <h3>{territoryStoryId ? uiText.edit : uiText.create}</h3>
+    <form
+      key={formKey}
+      onSubmit={(e) => void handleSubmit(e)}
+      onReset={(e) => void handleReset(e)}
+      className={cn("w-full flex flex-col gap-3 lg:gap-6", className)}
+    >
+      <TitleInput
+        title={story.title}
+        titleUpdater={updateField("title")}
+        text={{ ...uiText.titleInput }}
+        errors={errors.Title ?? []}
+        setErrors={updateError("Title")}
+      />
 
-      <form
-        key={formKey}
-        onSubmit={(e) => void handleSubmit(e)}
-        onReset={(e) => void handleReset(e)}
-        className="w-full flex flex-col gap-3 lg:gap-6"
-      >
-        <TitleInput
-          title={story.title}
-          titleUpdater={updateField("title")}
-          text={{ ...uiText.titleInput }}
-          errors={errors.Title ?? []}
-          setErrors={updateError("Title")}
-        />
+      <TextEditor
+        textToLoad={story.text}
+        textStateRef={textToPull}
+        className="bg-background"
+        text={{ ...uiText.textEditor }}
+        errors={errors.Text ?? []}
+        setErrors={updateError("Text")}
+      />
 
-        <TextEditor
-          textToLoad={story.text}
-          textStateRef={textToPull}
-          className="bg-background"
-          text={{ ...uiText.textEditor }}
-          errors={errors.Text ?? []}
-          setErrors={updateError("Text")}
-        />
+      <KeywordInput
+        keywordsList={story.keywords}
+        updateKeywordsList={updateField("keywords")}
+        keywordsLimit={TERRITORY_STORY_KEYWORDS_MAX_AMOUNT}
+        keywordMaxLength={TERRITORY_STORY_KEYWORD_MAX_LENGTH}
+        separators={[" ", ",", "\n"]}
+        keywordRefinement={(kw) =>
+          `${kw.charAt(0).toLocaleUpperCase()}${kw.slice(1)}`
+        }
+        inputTxt={{ ...uiText.keywords }}
+        errors={errors.Keywords ?? []}
+        setErrors={updateError("Keywords")}
+      />
 
-        <KeywordInput
-          keywordsList={story.keywords}
-          updateKeywordsList={updateField("keywords")}
-          keywordsLimit={TERRITORY_STORY_KEYWORDS_MAX_AMOUNT}
-          keywordMaxLength={TERRITORY_STORY_KEYWORD_MAX_LENGTH}
-          separators={[" ", ",", "\n"]}
-          keywordRefinement={(kw) =>
-            `${kw.charAt(0).toLocaleUpperCase()}${kw.slice(1)}`
-          }
-          inputTxt={{ ...uiText.keywords }}
-          errors={errors.Keywords ?? []}
-          setErrors={updateError("Keywords")}
-        />
+      <ImagesInput
+        images={story.images}
+        updateImages={updateField("images")}
+        errors={errors.Images ?? []}
+        setErrors={updateError("Images")}
+        text={{ ...uiText.imagesInput }}
+      />
 
-        <ImagesInput
-          images={story.images}
-          updateImages={updateField("images")}
-          errors={errors.Images ?? []}
-          setErrors={updateError("Images")}
-          text={{ ...uiText.imagesInput }}
-        />
+      <YoutubeVideoInput
+        videos={story.videos}
+        updateVideos={updateField("videos")}
+        errors={errors.Videos ?? []}
+        setErrors={updateError("Videos")}
+        text={{ ...uiText.videosInput }}
+      />
 
-        <YoutubeVideoInput
-          videos={story.videos}
-          updateVideos={updateField("videos")}
-          errors={errors.Videos ?? []}
-          setErrors={updateError("Videos")}
-          text={{ ...uiText.videosInput }}
-        />
-
-        <SubmitStory
-          restricted={story.restricted}
-          setRestricted={updateField("restricted")}
-          submitErrors={errors.root ?? []}
-          text={{ ...uiText.submitStory }}
-        />
-      </form>
-    </div>
+      <SubmitStory
+        restricted={story.restricted}
+        setRestricted={updateField("restricted")}
+        submitErrors={errors.root ?? []}
+        text={{ ...uiText.submitStory }}
+      />
+    </form>
   );
 }
