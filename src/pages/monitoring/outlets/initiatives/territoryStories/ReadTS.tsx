@@ -9,10 +9,8 @@ export function ReadTS() {
   return (
     <ul>
       {storys.map((story) => (
-        <li>
-          <Link key={story.id} to={`${baseUrl}${story.id}`}>
-            {story.title}
-          </Link>
+        <li key={story.id}>
+          <Link to={`${baseUrl}${story.id}`}>{story.title}</Link>
         </li>
       ))}
     </ul>

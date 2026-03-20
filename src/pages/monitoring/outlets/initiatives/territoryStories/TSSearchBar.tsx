@@ -47,7 +47,7 @@ export function TSSearchBar() {
         return otherParams;
       }
 
-      return { ...otherParams, orderby: `creationDate ${nextValue}` };
+      return { ...otherParams, skip: 0, orderby: `creationDate ${nextValue}` };
     });
   };
 
