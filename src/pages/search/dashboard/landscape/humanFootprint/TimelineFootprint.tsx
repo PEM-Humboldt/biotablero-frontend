@@ -21,6 +21,7 @@ import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CartesianMarkerProps } from "@nivo/core";
 import { TimelineFootprintController } from "pages/search/dashboard/landscape/humanFootprint/TimelineFootprintController";
 import { ShapeLayer } from "pages/search/types/layers";
+import colorPalettes from "pages/search/utils/colorPalettes";
 
 type SEKeys = Record<"paramo" | "dryForest" | "wetland" | "aTotal", string>;
 
@@ -283,9 +284,11 @@ class TimelineFootprint extends React.Component<Props, State> {
         <p>Haz clic en un ecosistema para ver su comportamiento</p>
         <div>
           <Lines
-            colors={matchColor("hfTimeline")}
+            colors={(key: string | number) =>
+              matchColor("hfTimeline")(key) || colorPalettes.default[0]
+            }
             data={hfTimeline}
-            message={message}
+            loadStatus={message}
             markers={changeValues}
             onClickGraphHandler={(selectedKey) => {
               this.setSelectedEcosystem(selectedKey);

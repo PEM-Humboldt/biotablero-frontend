@@ -22,6 +22,7 @@ import { textsObject } from "pages/search/types/texts";
 import LargeStackedBar from "@composites/charts/LargeStackedBar";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { ShapeLayer } from "pages/search/types/layers";
+import colorPalettes from "pages/search/utils/colorPalettes";
 
 const getLabel = {
   unprot: "No protegida",
@@ -290,11 +291,13 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
           <div className="svgPointer">
             <LargeStackedBar
               data={currentPAConnParamo}
-              message={paramo}
+              loadStatus={paramo}
               labelX="Hectáreas"
               labelY="Conectividad Áreas Protegidas Páramo"
               units="ha"
-              colors={matchColor("currentPAConn")}
+              colors={(key: string | number) =>
+                matchColor("currentPAConn")(key) || colorPalettes.default[0]
+              }
               padding={0.25}
               onClickGraphHandler={() => {
                 this.setState({ selectedEcosystem: "paramo" });
@@ -308,7 +311,9 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
               <h5
                 className="innerInfoH5"
                 style={{
-                  backgroundColor: matchColor("timelinePAConn")("prot"),
+                  backgroundColor:
+                    matchColor("timelinePAConn")("prot") ||
+                    colorPalettes.default[0],
                 }}
               >
                 {`${formatNumber(protParamo, 2)}%`}
@@ -331,11 +336,13 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
           <div className="svgPointer">
             <LargeStackedBar
               data={currentPAConnDryForest}
-              message={dryForest}
+              loadStatus={dryForest}
               labelX="Hectáreas"
               labelY="Conectividad Áreas Protegidas Bosque Seco Tropical"
               units="ha"
-              colors={matchColor("currentPAConn")}
+              colors={(key: string | number) =>
+                matchColor("currentPAConn")(key) || colorPalettes.default[0]
+              }
               padding={0.25}
               onClickGraphHandler={() => {
                 this.setState({ selectedEcosystem: "dryForest" });
@@ -349,7 +356,9 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
               <h5
                 className="innerInfoH5"
                 style={{
-                  backgroundColor: matchColor("timelinePAConn")("prot"),
+                  backgroundColor:
+                    matchColor("timelinePAConn")("prot") ||
+                    colorPalettes.default[0],
                 }}
               >
                 {`${formatNumber(protDryForest, 2)}%`}
@@ -372,11 +381,13 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
           <div className="svgPointer">
             <LargeStackedBar
               data={currentPAConnWetland}
-              message={wetland}
+              loadStatus={wetland}
               labelX="Hectáreas"
               labelY="Conectividad Áreas Protegidas Humedal"
               units="ha"
-              colors={matchColor("currentPAConn")}
+              colors={(key: string | number) =>
+                matchColor("currentPAConn")(key) || colorPalettes.default[0]
+              }
               padding={0.25}
               onClickGraphHandler={() => {
                 this.setState({ selectedEcosystem: "wetland" });
@@ -390,7 +401,9 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
               <h5
                 className="innerInfoH5"
                 style={{
-                  backgroundColor: matchColor("timelinePAConn")("prot"),
+                  backgroundColor:
+                    matchColor("timelinePAConn")("prot") ||
+                    colorPalettes.default[0],
                 }}
               >
                 {`${formatNumber(protWetland, 2)}%`}

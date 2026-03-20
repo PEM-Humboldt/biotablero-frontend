@@ -20,6 +20,7 @@ import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import LargeStackedBar from "@composites/charts/LargeStackedBar";
 import { CurrentPAConnectivityController } from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivityController";
 import { ShapeLayer } from "pages/search/types/layers";
+import colorPalettes from "pages/search/utils/colorPalettes";
 
 const getLabel = {
   unprot: "No protegida",
@@ -245,11 +246,13 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
           <div>
             <LargeStackedBar
               data={currentPAConnData}
-              message={conn}
+              loadStatus={conn}
               labelX="Hectáreas"
               labelY="Conectividad Áreas Protegidas"
               units="ha"
-              colors={matchColor("currentPAConn")}
+              colors={(key: string | number) =>
+                matchColor("currentPAConn")(key) || colorPalettes.default[0]
+              }
               padding={0.25}
             />
             <TextBoxes
@@ -268,7 +271,9 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
               <h5
                 className="innerInfoH5"
                 style={{
-                  backgroundColor: matchColor("timelinePAConn")("prot"),
+                  backgroundColor:
+                    matchColor("timelinePAConn")("prot") ||
+                    colorPalettes.default[0],
                 }}
               >
                 {`${formatNumber(prot, 2)}%`}
@@ -300,7 +305,9 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
               keys={graphData.keys}
               tooltips={graphData.tooltips}
               loadStatus={dpcMess}
-              colors={matchColor("dpc")}
+              colors={(key: string | number) =>
+                matchColor("dpc")(key) || colorPalettes.default[0]
+              }
               onClickHandler={(selected: string) => {
                 this.highlightFeature(selected);
               }}

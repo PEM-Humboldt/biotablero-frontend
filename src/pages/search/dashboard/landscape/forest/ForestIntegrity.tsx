@@ -21,6 +21,7 @@ import SmallStackedBar from "@composites/charts/SmallStackedBar";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { ShapeLayer } from "pages/search/types/layers";
 import { ForestIntegrityController } from "pages/search/dashboard/landscape/forest/ForestIntegrityController";
+import colorPalettes from "pages/search/utils/colorPalettes";
 
 type SCIHFCats = `${(typeof SCICats)[number]}-${(typeof HFCats)[number]}`;
 /**
@@ -283,10 +284,12 @@ class ForestIntegrity extends React.Component<Props, FIState> {
         </SquareBorderLegend>
         <div>
           <Pie
-            message={loading}
+            loadStatus={loading}
             data={Object.values(SciHfCats)}
             units="ha"
-            colors={matchColor("SciHf")}
+            colors={(key: string) =>
+              matchColor("SciHf")(key) || colorPalettes.default[0]
+            }
             onClickHandler={(selected: string) => {
               this.setState({ selectedCategory: selected as SCIHFCats });
               this.clickOnGraph(selected);
@@ -325,7 +328,9 @@ class ForestIntegrity extends React.Component<Props, FIState> {
                 loadStatus={loading}
                 data={ProtectedAreas[selectedCategory]}
                 units="ha"
-                colors={matchColor("pa", true)}
+                colors={(key: string) =>
+                  matchColor("pa", true)(key) || colorPalettes.default[0]
+                }
               />
             </div>
           </>

@@ -16,6 +16,7 @@ import SmallStackedBar from "@composites/charts/SmallStackedBar";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { EcosystemsController } from "pages/search/dashboard/EcosystemsController";
 import { RasterLayer } from "pages/search/types/layers";
+import colorPalettes from "pages/search/utils/colorPalettes";
 
 export interface PAData {
   area: number;
@@ -143,7 +144,9 @@ class EcosystemDetails extends React.Component<Props, State> {
               customMessage="No hay información disponible de coberturas"
               data={coverageData}
               units="ha"
-              colors={matchColor("coverage")}
+              colors={(key: string) =>
+                matchColor("coverage")(key) || colorPalettes.default[0]
+              }
               onClickGraphHandler={(selected) => {
                 this.clickOnGraph(selected);
               }}
@@ -156,7 +159,9 @@ class EcosystemDetails extends React.Component<Props, State> {
               customMessage="Sin áreas protegidas"
               data={paData}
               units="ha"
-              colors={matchColor("pa", true)}
+              colors={(key: string) =>
+                matchColor("pa", true)(key) || colorPalettes.default[0]
+              }
             />
           </h3>
         </div>

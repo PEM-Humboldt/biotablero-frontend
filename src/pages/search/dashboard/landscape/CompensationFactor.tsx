@@ -17,6 +17,7 @@ import LargeStackedBar from "@composites/charts/LargeStackedBar";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CompensationFactorController } from "pages/search/dashboard/landscape/CompensationFactorController";
 import { ShapeLayer } from "pages/search/types/layers";
+import colorPalettes from "pages/search/utils/colorPalettes";
 
 interface cfDataExt extends cfData {
   label: string;
@@ -254,11 +255,13 @@ class CompensationFactor extends React.Component<
           </div>
           <LargeStackedBar
             data={fc}
-            message={fcMess}
+            loadStatus={fcMess}
             labelX="Hectáreas"
             labelY="Factor de Compensación"
             units="ha"
-            colors={matchColor("fc")}
+            colors={(key: string | number) =>
+              matchColor("fc")(key) || colorPalettes.default[0]
+            }
             padding={0.25}
           />
           <TextBoxes
@@ -288,11 +291,13 @@ class CompensationFactor extends React.Component<
           )}
           <LargeStackedBar
             data={biomes}
-            message={biomesMess}
+            loadStatus={biomesMess}
             labelX="Hectáreas"
             labelY="Biomas"
             units="ha"
-            colors={matchColor("biomas")}
+            colors={(key: string | number) =>
+              matchColor("biomas")(key) || colorPalettes.default[0]
+            }
             padding={0.3}
           />
           <TextBoxes
@@ -322,11 +327,13 @@ class CompensationFactor extends React.Component<
           )}
           <LargeStackedBar
             data={bioticUnits}
-            message={bioticUnitsMess}
+            loadStatus={bioticUnitsMess}
             labelX="Hectáreas"
             labelY="Regiones Bióticas"
             units="ha"
-            colors={matchColor("bioticReg")}
+            colors={(key: string | number) =>
+              matchColor("bioticReg")(key) || colorPalettes.default[0]
+            }
             padding={0.3}
           />
           <TextBoxes
