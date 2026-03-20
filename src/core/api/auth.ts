@@ -73,7 +73,10 @@ async function makeAuthRequest(
     const { data }: { data: unknown } = await axios.post(url, body, config);
 
     if (!isResponseAuthData(data)) {
-      return { status: 500, message: "Unknown server error" };
+      return {
+        status: 500,
+        message: "Unknown server error",
+      } as ApiRequestError;
     }
 
     return data;
@@ -82,10 +85,13 @@ async function makeAuthRequest(
       return {
         status: err.response.status,
         message: err?.message || "Wrong request",
-      };
+      } as ApiRequestError;
     }
 
-    return { status: 503, message: "Couldn't connect with the server" };
+    return {
+      status: 503,
+      message: "Couldn't connect with the server",
+    } as ApiRequestError;
   }
 }
 
