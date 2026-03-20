@@ -1,5 +1,5 @@
 import { type SearchBarComponent } from "@appTypes/odata";
-import { ODataInitiativeShortEntry } from "pages/monitoring/types/odataResponse";
+import { type ODataInitiativeShortEntry } from "pages/monitoring/types/requestParams";
 import {
   getColombianDepartments,
   getMunicipalitiesByDepartment,
