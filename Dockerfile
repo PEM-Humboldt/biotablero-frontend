@@ -28,5 +28,9 @@ COPY --from=build /app/dist ./dist
 
 RUN npm install -g serve@~13.0.0
 
+COPY generate-env.sh /generate-env.sh
+RUN chmod +x /generate-env.sh
+
 EXPOSE 5000
+ENTRYPOINT ["/generate-env.sh"]
 CMD [ "serve", "-p", "5000", "-s", "dist" ]
