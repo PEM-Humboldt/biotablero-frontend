@@ -77,14 +77,18 @@ export function YoutubeVideoInput({
   }, [videoCardsInfo]);
 
   const loadVideoCards = useCallback(async (videosToLoad: VideoObjectTS[]) => {
-    if (videosToLoad.length === 0) return;
+    if (videosToLoad.length === 0) {
+      return;
+    }
 
     setIsLoading(true);
     const newCardsInfo: YoutubeVideoCardInfo[] = [];
 
     for (const video of videosToLoad) {
       const videoId = getCleanYoutubeId(video.fileUrl);
-      if (currentVideosIds.current.has(videoId ?? "")) continue;
+      if (currentVideosIds.current.has(videoId ?? "")) {
+        continue;
+      }
 
       const videoInfo = await getVideo(videoId);
       if (isYoutubeVideoMetadata(videoInfo)) {
@@ -203,7 +207,7 @@ export function YoutubeVideoInput({
             <div className="flex w-full justify-between text-primary font-normal px-2 mt-2">
               {text.videosPool.title}
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
               {videoCardsInfo.map((video) => (
                 <VideoPreviewCard
                   key={video.youtubeId}
@@ -240,7 +244,7 @@ function VideoPreviewCard({
   };
 }) {
   return (
-    <div className="flex gap-2 p-2 rounded-lg bg-background/50 space-y-2">
+    <div className="flex gap-2 p-2 rounded-lg bg-muted transition-all duration-300 ease-in-out hover:outline hover:outline-primary hover:bg-background">
       <img
         src={videoInfo.thumbnail}
         alt=""
@@ -258,23 +262,25 @@ function VideoPreviewCard({
             {videoInfo.author}
           </span>
         </div>
-        <div className="flex items-center">
+        <div className="flex gap-2 justify-between items-center">
           <Button
             asChild
-            variant="link"
-            className="p-0! h-8 mr-auto text-primary"
+            variant="outline"
+            size={text.openBtn.label === "" ? "icon-sm" : "sm"}
             title={text.openBtn.title}
             type="button"
           >
             <a href={videoInfo.url} target="_blank">
-              {text.openBtn.label}
-              <ExternalLink />
+              <span aria-hidden="true" className="flex gap-2 items-center">
+                {text.openBtn.label !== "" && text.openBtn.label}
+                <ExternalLink className="size-4" />
+              </span>
             </a>
           </Button>
           <Button
             onClick={() => removeVideo(videoInfo.url)}
             size="icon-sm"
-            variant="ghost"
+            variant="outline_destructive"
             title={text.removeBtn.title}
             type="button"
           >

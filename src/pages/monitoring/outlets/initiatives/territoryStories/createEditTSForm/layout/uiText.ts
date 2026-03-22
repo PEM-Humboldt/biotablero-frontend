@@ -42,10 +42,10 @@ export const uiText = {
     add: "Adjuntar imagen",
     imagesPool: {
       title: "Imágenes adjuntas",
-      descriptionTileSR: (description: string) =>
+      descriptionTitleSR: (description: string) =>
         `Descripcion para la imagen: ${description}`,
-      removeTitle: "Borrar la imagen",
-      removeSR: "Borrar",
+      remove: { label: "", title: "Borrar la imagen", sr: "Borrar" },
+      feature: { label: "", title: "Marcar como destacada", sr: "Destacar" },
       quotaReached: "Limite de imágenes alcanzado",
     },
   },

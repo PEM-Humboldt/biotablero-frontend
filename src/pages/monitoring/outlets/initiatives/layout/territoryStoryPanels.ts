@@ -14,14 +14,29 @@ export const panelView = {
 export const panelAccessButtons = new Map([
   [
     PanelState.READ,
-    { label: "Leer", sr: "Ir al panel de lectura", icon: NotebookText },
+    {
+      label: "Leer",
+      title: "Ir al panel de lectura",
+      sr: "Ir al panel de lectura",
+      icon: NotebookText,
+    },
   ],
   [
     PanelState.MANAGE,
-    { label: "Editar", sr: "Ir al panel de administración", icon: NotebookPen },
+    {
+      label: "Editar",
+      title: "Ir al panel de administración",
+      sr: "Ir al panel de administración",
+      icon: NotebookPen,
+    },
   ],
   [
     PanelState.CREATE,
-    { label: "Crear", sr: "Crear un relato", icon: BookPlus },
+    {
+      label: "Crear",
+      title: "Crear un relato",
+      sr: "Crear un relato",
+      icon: BookPlus,
+    },
   ],
 ]);

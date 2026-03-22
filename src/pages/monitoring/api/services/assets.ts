@@ -1,7 +1,10 @@
 import type { ImageUploadInfo } from "pages/monitoring/api/types/definitions";
 import { monitoringAPI } from "pages/monitoring/api/core";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import type { VideoObjectTS } from "pages/monitoring/types/territoryStory";
+import type {
+  ImageObjectTS,
+  VideoObjectTS,
+} from "pages/monitoring/types/territoryStory";
 
 /**
  * Uploads a collection of images to their respective API endpoints.
@@ -87,7 +90,7 @@ export async function postTerritoryStoryImage(
   formData.append("Description", description);
   formData.append("File", file);
 
-  const res = await monitoringAPI({
+  const res = await monitoringAPI<ImageObjectTS>({
     type: "post",
     endpoint: "TerritoryStoryImage",
     options: { data: formData, headers: { accept: "*/*" } },
@@ -100,6 +103,15 @@ export async function deleteTerritoryStoryImage(imageInTSId: number) {
   const res = await monitoringAPI({
     type: "delete",
     endpoint: `TerritoryStoryImage/${imageInTSId}`,
+  });
+
+  return res;
+}
+
+export async function setImageAsFeatured(imageInTSId: number) {
+  const res = await monitoringAPI<ImageObjectTS>({
+    type: "post",
+    endpoint: `TerritoryStoryImage/FeaturedContent/${imageInTSId}`,
   });
 
   return res;

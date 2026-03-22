@@ -12,7 +12,7 @@ import { LabelAndErrors } from "@ui/LabelingWithErrors";
 import type { ImageObjectTS } from "pages/monitoring/types/territoryStory";
 import { type ChangeEvent, useEffect, useRef, useState } from "react";
 import { cn } from "@ui/shadCN/lib/utils";
-import { ImageUp, Trash, Trash2 } from "lucide-react";
+import { ImageUp, Trash, Trash2, Star } from "lucide-react";
 import { Button } from "@ui/shadCN/component/button";
 import { ImgValidator } from "@utils/imgValidator";
 import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
@@ -42,9 +42,9 @@ type ImagesInputProps = {
     imagesPool: {
       quotaReached: string;
       title: string;
-      descriptionTileSR: (description: string) => string;
-      removeTitle: string;
-      removeSR: string;
+      descriptionTitleSR: (description: string) => string;
+      remove: { label: string; title: string; sr: string };
+      feature: { label: string; title: string; sr: string };
     };
   };
 };
@@ -165,6 +165,18 @@ export function ImagesInput({
     updateImages(filtered);
   };
 
+  const featureImage = (index: number) => {
+    const featured = imageCards.map((current, i) => {
+      return {
+        ...current,
+        featuredContent: index === i && current.featuredContent !== true,
+      };
+    });
+
+    setImageCards(featured);
+    updateImages(featured);
+  };
+
   return (
     <fieldset>
       <legend className="flex w-full justify-between text-primary font-normal px-2">
@@ -227,7 +239,7 @@ export function ImagesInput({
                     onClick={() => setStagedImage(null)}
                   >
                     <span className="sr-only">{text.image.removeSR}</span>
-                    <Trash2 aria-hidden="true" />
+                    <Trash aria-hidden="true" />
                   </Button>
                 </div>
               )}
@@ -291,17 +303,14 @@ export function ImagesInput({
             <div className="flex w-full justify-between text-primary font-normal px-2 mt-2">
               {text.imagesPool.title}
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {imageCards.map((img, index) => (
                 <ImageCard
                   key={img.fileUrl}
                   imageInfo={img}
+                  featureImage={() => featureImage(index)}
                   removeImage={() => removeImage(index)}
-                  text={{
-                    descriptionTitleSR: text.imagesPool.descriptionTileSR,
-                    removeTitle: text.imagesPool.removeTitle,
-                    removeSR: text.imagesPool.removeSR,
-                  }}
+                  text={{ ...text.imagesPool }}
                 />
               ))}
             </div>
@@ -324,24 +333,48 @@ export function ImagesInput({
 function ImageCard({
   imageInfo,
   removeImage,
+  featureImage,
   text,
 }: {
   imageInfo: ImageObjectTS;
   removeImage: () => void;
+  featureImage: () => void;
   text: {
     descriptionTitleSR: (description: string) => string;
-    removeTitle: string;
-    removeSR: string;
+    remove: { label: string; title: string; sr: string };
+    feature: { label: string; title: string; sr: string };
   };
 }) {
   return (
-    <div className="flex gap-2 p-2 rounded-lg bg-background/50 space-y-2">
-      <img
-        src={imageInfo.fileUrl}
-        alt={imageInfo.description}
-        className="border border-primary/50 h-30 object-contain rounded"
-      />
-      <div className="flex flex-col w-full gap-2 justify-between">
+    <div className="flex gap-2 p-2 rounded-lg bg-background/50 transition-all duration-300 ease-in-out hover:outline hover:outline-primary hover:bg-background">
+      <div className="relative flex-1">
+        <img
+          src={imageInfo.fileUrl}
+          alt={imageInfo.description}
+          className="border border-primary/50 h-30 w-full object-cover rounded"
+        />
+
+        <Button
+          onClick={() => featureImage()}
+          size={text.feature.label === "" ? "icon-sm" : "sm"}
+          variant="outline"
+          title={text.feature.title}
+          type="button"
+          className="absolute bottom-2 right-2"
+        >
+          <span className="sr-only">{text.feature.sr}</span>
+          <span aria-hidden="true" className="flex gap-2 items-center">
+            {text.feature.label !== "" && text.feature.label}
+            <Star
+              className={cn(
+                "size-4",
+                imageInfo?.featuredContent ? "fill-primary" : "",
+              )}
+            />
+          </span>
+        </Button>
+      </div>
+      <div className="flex-1 flex flex-col w-full gap-2 justify-between">
         <div>
           <span className="sr-only">
             {text.descriptionTitleSR(imageInfo.description)}
@@ -350,14 +383,17 @@ function ImageCard({
         </div>
         <Button
           onClick={() => removeImage()}
-          size="icon-sm"
-          variant="ghost"
-          title={text.removeTitle}
+          size={text.remove.label === "" ? "icon-sm" : "sm"}
+          variant="outline_destructive"
+          title={text.remove.title}
           type="button"
           className="self-end"
         >
-          <span className="sr-only">{text.removeSR}</span>
-          <Trash />
+          <span className="sr-only">{text.remove.sr}</span>
+          <span aria-hidden="true" className="flex gap-2">
+            {text.feature.label !== "" && text.remove.label}
+            <Trash />
+          </span>
         </Button>
       </div>
     </div>

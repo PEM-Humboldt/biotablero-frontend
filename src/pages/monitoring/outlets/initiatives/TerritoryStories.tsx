@@ -43,7 +43,7 @@ export function TerritoryStories() {
           <main>
             <TSSearchBar />
             <div
-              className={cn(panel !== PanelState.READ ? "bg-[#f5f5f5]" : "")}
+              className={cn(panel !== PanelState.READ ? "bg-grey-form" : "")}
             >
               <ToggleTSAdminActions currentPanel={panel} goToPanel={setPanel} />
               <PanelComponent />
@@ -85,6 +85,7 @@ function ToggleTSAdminActions({
               key={`panelSelector_${panelKey}`}
               variant="outline"
               onClick={() => goToPanel(panelKey)}
+              title={btnSettings.title}
             >
               <span className="sr-only">{btnSettings.sr}</span>
               <span aria-hidden="true">{btnSettings.label}</span>

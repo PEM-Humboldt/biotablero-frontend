@@ -22,6 +22,7 @@ import {
   deleteTerritoryStoryVideo,
   postTerritoryStoryImage,
   postTerritoryStoryVideo,
+  setImageAsFeatured,
 } from "pages/monitoring/api/services/assets";
 import {
   createTerritoryStory,
@@ -37,14 +38,14 @@ import type {
   VideoObjectTS,
 } from "pages/monitoring/types/territoryStory";
 import type { RequestData } from "pages/monitoring/api/types/definitions";
-import { TextEditor } from "pages/monitoring/outlets/initiatives/territoryStories/formTS/TextEditor";
-import { TitleInput } from "pages/monitoring/outlets/initiatives/territoryStories/formTS/TitleInput";
-import { SubmitStory } from "pages/monitoring/outlets/initiatives/territoryStories/formTS/SubmitStory";
-import { ImagesInput } from "pages/monitoring/outlets/initiatives/territoryStories/formTS/ImagesInput";
-import { YoutubeVideoInput } from "pages/monitoring/outlets/initiatives/territoryStories/formTS/YoutubeVideoInput";
+import { TextEditor } from "pages/monitoring/outlets/initiatives/territoryStories/createEditTSForm/TextEditor";
+import { TitleInput } from "pages/monitoring/outlets/initiatives/territoryStories/createEditTSForm/TitleInput";
+import { SubmitStory } from "pages/monitoring/outlets/initiatives/territoryStories/createEditTSForm/SubmitStory";
+import { ImagesInput } from "pages/monitoring/outlets/initiatives/territoryStories/createEditTSForm/ImagesInput";
+import { YoutubeVideoInput } from "pages/monitoring/outlets/initiatives/territoryStories/createEditTSForm/YoutubeVideoInput";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
-import { uiText } from "pages/monitoring/outlets/initiatives/territoryStories/formTS/layout/uiText";
+import { uiText } from "pages/monitoring/outlets/initiatives/territoryStories/createEditTSForm/layout/uiText";
 import { createErrorObjectParser } from "pages/monitoring/utils/errorObjectParser";
 
 // NOTE: Maniobra mientras se unifica el retorno de los campos de error a lowercase
@@ -159,13 +160,39 @@ export function CreateEditTSForm({
     );
 
     const resRemoveImages = await Promise.all(removeImages);
-    if (isMonitoringAPIError(resRemoveImages)) {
-      return makeApiResponseErrorObject(resRemoveImages);
+    const removeError = resRemoveImages.find((res) =>
+      isMonitoringAPIError(res),
+    );
+    if (removeError) {
+      return makeApiResponseErrorObject(removeError);
     }
 
     const resPostImages = await Promise.all(postImages);
-    if (isMonitoringAPIError(resPostImages)) {
-      return makeApiResponseErrorObject(resPostImages);
+    const postError = resPostImages.find((res) => isMonitoringAPIError(res));
+    if (postError) {
+      return makeApiResponseErrorObject(postError);
+    }
+
+    const imageToSetFeatured = story.images.find((img) => img.featuredContent);
+
+    if (imageToSetFeatured) {
+      let featImageId: number = -1;
+
+      if (imageToSetFeatured.id) {
+        featImageId = imageToSetFeatured.id;
+      } else {
+        const imgIndex = imagesToAdd.findIndex((img) => img.featuredContent);
+        featImageId = (resPostImages as ImageObjectTS[])[imgIndex].id!;
+      }
+
+      if (featImageId === -1) {
+        return null;
+      }
+
+      const resFeatImage = await setImageAsFeatured(featImageId);
+      if (isMonitoringAPIError(resFeatImage)) {
+        return makeApiResponseErrorObject(resFeatImage);
+      }
     }
 
     return null;
@@ -261,6 +288,7 @@ export function CreateEditTSForm({
     const resEnabledStatus = story.enabled
       ? await enableTerritoryStory(res.id)
       : await disableTerritoryStory(res.id);
+
     if (isMonitoringAPIError(resEnabledStatus)) {
       setErrors(makeApiResponseErrorObject(resEnabledStatus));
       return;

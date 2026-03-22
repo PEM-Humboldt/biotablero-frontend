@@ -8,6 +8,8 @@ import {
   Pencil,
   Star,
   PencilOff,
+  type LucideIcon,
+  StarOff,
 } from "lucide-react";
 import { CreateEditTSForm } from "pages/monitoring/outlets/initiatives/territoryStories/CreateEditTSForm";
 import { useEffect, useState } from "react";
@@ -41,17 +43,18 @@ export function ManageTS() {
     setEditingId(editingId === storyId ? null : storyId);
   };
 
-  const handlePublic = (storyId: number | null) => {
+  const handleRestricted = (storyId: number | null) => {
     setEditingId(editingId === storyId ? null : storyId);
   };
 
-  const handleRestricted = (storyId: number | null) => {
+  const handleEnable = (storyId: number | null) => {
     setEditingId(editingId === storyId ? null : storyId);
   };
 
   const handleFeatured = (storyId: number | null) => {
     setEditingId(editingId === storyId ? null : storyId);
   };
+
   const isAdmin = userStateInInitiative === UserStateInInitiative.USER_LEADER;
 
   return (
@@ -62,83 +65,133 @@ export function ManageTS() {
 
         return (
           <div
-            key={story.id}
+            key={`${story.id}_${story.title}`}
             className={cn(
-              "rounded-lg overflow-hidden",
-              story.enabled
-                ? "bg-muted hover:bg-primary"
-                : "bg-red-50 hover:bg-accent",
-              editingId === story.id ? "shadow-lg border border-input" : "",
+              editingId === story.id
+                ? "shadow-lg rounded-lg overflow-hidden outline outline-primary/20"
+                : "",
             )}
-            data-state={editingId ? true : false}
           >
-            <div className="px-4 py-2 flex items-center justify-between text-base">
-              <div className="text-primary hover:text-background">
+            <div
+              className={cn(
+                "flex gap-2 justify-between px-4 py-2 rounded-lg overflow-hidden",
+                "bg-muted text-primary hover:bg-background hover:outline hover:outline-primary",
+                !story.enabled &&
+                  "bg-red-50 outline outline-accent hover:outline-accent",
+                editingId === story.id
+                  ? "rounded-b-none bg-primary/20 hover:bg-primary/20 hover:outline-none border-b border-b-primary/20"
+                  : "",
+              )}
+            >
+              <div className="">
                 {editingId === story.id ? (
-                  <div>Editando</div>
+                  <>
+                    <div className="font-normal mr-4 capitalize">
+                      {story.title}
+                    </div>
+                    <div className="font-light">Editando...</div>
+                  </>
                 ) : (
                   <>
-                    <span className="font-normal mr-4">{story.title}</span>
-                    <span className="font-light"> escrito por: </span>
-                    <span className="font-normal">{story.authorUserName}</span>
+                    <div className="font-normal mr-4 capitalize">
+                      {story.title}
+                    </div>
+                    <div className="font-light">
+                      escrito por {story.authorUserName} el{" "}
+                      {new Date(story.creationDate).toLocaleDateString()}
+                    </div>
                   </>
                 )}
               </div>
 
               <div className="flex items-center gap-1">
-                {story.enabled && userAuthorized && (
-                  <Button
-                    variant="ghost-clean"
-                    size="icon"
-                    className="hover:text-background"
-                    onClick={() => handleEdit(story.id)}
-                  >
-                    {editingId === story.id ? <PencilOff /> : <Pencil />}
-                  </Button>
+                {!story.enabled && (
+                  <span className="font-normal">Relato no publicado</span>
                 )}
+                <ConditionalButtonSwitch
+                  condition={story.enabled && userAuthorized}
+                  enabled={editingId === story.id}
+                  onClick={() => handleEdit(story.id)}
+                  text={{
+                    disable: {
+                      sr: "Cancelar edición",
+                      title: "Cancelar edición",
+                      label: "",
+                      icon: PencilOff,
+                    },
+                    enable: {
+                      sr: "Editar relato",
+                      title: "Editar relato",
+                      label: "",
+                      icon: Pencil,
+                    },
+                  }}
+                />
 
-                {userAuthorized && (
-                  <Button
-                    variant="ghost-clean"
-                    size="icon"
-                    className="hover:text-background"
-                    onClick={() => handleRestricted(story.id)}
-                  >
-                    {story.restricted ? <LockKeyhole /> : <LockKeyholeOpen />}
-                  </Button>
-                )}
+                <ConditionalButtonSwitch
+                  condition={userAuthorized}
+                  enabled={story.enabled}
+                  onClick={() => handleEnable(story.id)}
+                  text={{
+                    disable: {
+                      sr: "Ocultar relato",
+                      title: "Ocultar relato",
+                      label: "",
+                      icon: Eye,
+                    },
+                    enable: {
+                      sr: "Publicar relato",
+                      title: "Publicar relato",
+                      label: "",
+                      icon: EyeClosed,
+                    },
+                  }}
+                />
 
-                {userAuthorized && (
-                  <Button
-                    variant="ghost-clean"
-                    size="icon"
-                    className="hover:text-background"
-                    onClick={() => handlePublic(story.id)}
-                  >
-                    {story.enabled ? <Eye /> : <EyeClosed />}
-                  </Button>
-                )}
+                <ConditionalButtonSwitch
+                  condition={story.enabled && userAuthorized}
+                  enabled={story.restricted}
+                  onClick={() => handleRestricted(story.id)}
+                  text={{
+                    disable: {
+                      sr: "Marcar como público",
+                      title: "Marcar como público",
+                      label: "",
+                      icon: LockKeyhole,
+                    },
+                    enable: {
+                      sr: "Marcar como privado",
+                      title: "Marcar como privado",
+                      label: "",
+                      icon: LockKeyholeOpen,
+                    },
+                  }}
+                />
 
-                {isAdmin && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-destructive"
-                    onClick={() => handleFeatured(story.id)}
-                  >
-                    <Star
-                      className={cn(
-                        "h-4 w-4",
-                        story.featuredContent ? "fill-accent" : "",
-                      )}
-                    />
-                  </Button>
-                )}
+                <ConditionalButtonSwitch
+                  condition={story.enabled && isAdmin}
+                  enabled={story.featuredContent}
+                  onClick={() => handleFeatured(story.id)}
+                  text={{
+                    disable: {
+                      sr: "Quitar como destacado",
+                      title: "Quitar como destacado",
+                      label: "",
+                      icon: StarOff,
+                    },
+                    enable: {
+                      sr: "Marcar como relato destacado",
+                      title: "Marcar como relato destacado",
+                      label: "",
+                      icon: Star,
+                    },
+                  }}
+                />
               </div>
             </div>
 
             {editingId === story.id && (
-              <div className="bg-muted">
+              <div className="bg-grey-form">
                 <CreateEditTSForm
                   territoryStoryId={story.id}
                   onEditSuccess={() => {
@@ -159,5 +212,43 @@ export function ManageTS() {
         paginated={3}
       />
     </div>
+  );
+}
+
+function ConditionalButtonSwitch({
+  condition = true,
+  enabled,
+  onClick,
+  text,
+  className = "",
+}: {
+  condition?: boolean;
+  enabled: boolean;
+  onClick: () => void;
+  text: {
+    enable: { sr: string; label: string; title: string; icon: LucideIcon };
+    disable: { sr: string; label: string; title: string; icon: LucideIcon };
+  };
+  className?: string;
+}) {
+  const texts = text[enabled ? "disable" : "enable"];
+  const Icon = texts.icon;
+
+  return (
+    condition && (
+      <Button
+        variant="ghost"
+        size={texts.label !== "" ? "default" : "icon"}
+        onClick={onClick}
+        title={texts.title}
+        className={className}
+      >
+        <span className="sr-only">{texts.sr}</span>
+        <span aria-hidden="true">
+          {texts.label}
+          <Icon />
+        </span>
+      </Button>
+    )
   );
 }
