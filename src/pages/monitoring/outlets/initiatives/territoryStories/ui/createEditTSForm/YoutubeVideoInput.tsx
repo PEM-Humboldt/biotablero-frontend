@@ -6,6 +6,12 @@ import {
   useRef,
   useCallback,
 } from "react";
+import { ExternalLink, Trash } from "lucide-react";
+
+import { LabelAndErrors } from "@ui/LabelingWithErrors";
+import { Button } from "@ui/shadCN/component/button";
+import { Input } from "@ui/shadCN/component/input";
+import { TERRITORY_STORY_YT_VID_MAX_AMOUNT } from "@config/monitoring";
 
 import {
   getCleanYoutubeId,
@@ -15,11 +21,6 @@ import {
 } from "pages/monitoring/api/services/youtube";
 import { isYoutubeVideoMetadata } from "pages/monitoring/api/types/guards";
 import type { VideoObjectTS } from "pages/monitoring/types/territoryStory";
-import { LabelAndErrors } from "@ui/LabelingWithErrors";
-import { Button } from "@ui/shadCN/component/button";
-import { ExternalLink, Trash } from "lucide-react";
-import { TERRITORY_STORY_YT_VID_MAX_AMOUNT } from "@config/monitoring";
-import { Input } from "@ui/shadCN/component/input";
 
 type YoutubeVideoInputProps = {
   videos: VideoObjectTS[];

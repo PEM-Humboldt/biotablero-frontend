@@ -1,15 +1,7 @@
 import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
 import { Button } from "@ui/shadCN/component/button";
-import {
-  Eye,
-  EyeClosed,
-  Pencil,
-  Star,
-  PencilOff,
-  type LucideIcon,
-  StarOff,
-} from "lucide-react";
-import { CreateEditTSForm } from "pages/monitoring/outlets/initiatives/territoryStories/CreateEditTSForm";
+import { type LucideIcon } from "lucide-react";
+import { CreateEditTSForm } from "pages/monitoring/outlets/initiatives/territoryStories/ui/CreateEditTSForm";
 import { useEffect, useState } from "react";
 import { cn } from "@ui/shadCN/lib/utils";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
@@ -25,6 +17,7 @@ import {
 } from "pages/monitoring/api/services/territoryStory";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import type { PanelComponentProp } from "pages/monitoring/outlets/initiatives/types/territoryStory";
+import { uiText } from "pages/monitoring/outlets/initiatives/territoryStories/layout/uiText";
 
 export function ManageTS({ moveToPanel: _ }: PanelComponentProp) {
   const {
@@ -98,7 +91,7 @@ export function ManageTS({ moveToPanel: _ }: PanelComponentProp) {
 
   return isLoading ? (
     <div className="bg-primary/10 p-8 mx-4 rounded-lg border border-primary text-4xl text-primary text-center">
-      Cargando...
+      {uiText.loading}
     </div>
   ) : (
     <div className="p-4 pt-0 space-y-3">
@@ -106,6 +99,12 @@ export function ManageTS({ moveToPanel: _ }: PanelComponentProp) {
         errorItems={[...errors, ...manageErrors]}
         className="bg-accent/10 p-8 rounded-lg border border-accent"
       />
+
+      {storys.length === 0 && (
+        <div className="bg-muted p-10 text-2xl rounded-lg text-primary text-center">
+          {uiText.noStorys}
+        </div>
+      )}
 
       {storys.map((story) => {
         const userAuthorized =
@@ -137,7 +136,7 @@ export function ManageTS({ moveToPanel: _ }: PanelComponentProp) {
                     <div className="font-normal text-lg mr-4 capitalize">
                       {story.title}
                     </div>
-                    <div className="font-light">Editando...</div>
+                    <div className="font-light">{uiText.editMode}</div>
                   </>
                 ) : (
                   <>
@@ -145,9 +144,10 @@ export function ManageTS({ moveToPanel: _ }: PanelComponentProp) {
                       {story.title}
                     </div>
                     <div className="font-light">
-                      Por{" "}
+                      {uiText.storyBy}
                       <span className="font-normal">
-                        {story.authorUserName},{" "}
+                        {story.authorUserName}
+                        {uiText.storyByDateSeparator}
                       </span>
                       <time
                         dateTime={new Date(
@@ -175,66 +175,29 @@ export function ManageTS({ moveToPanel: _ }: PanelComponentProp) {
 
               <div className="flex items-center gap-1">
                 {!story.enabled && (
-                  <span className="font-normal">Relato no publicado</span>
+                  <span className="font-normal">
+                    {uiText.label.disabledStory}
+                  </span>
                 )}
                 <ConditionalButtonSwitch
                   condition={story.enabled && userAuthorized}
                   enabled={editingId === story.id}
                   onClick={() => handleEdit(story.id)}
-                  text={{
-                    disable: {
-                      sr: "Cancelar edición",
-                      title: "Cancelar edición",
-                      label: "",
-                      icon: PencilOff,
-                    },
-                    enable: {
-                      sr: "Editar relato",
-                      title: "Editar relato",
-                      label: "",
-                      icon: Pencil,
-                    },
-                  }}
+                  text={{ ...uiText.label.editButton }}
                 />
 
                 <ConditionalButtonSwitch
                   condition={userAuthorized}
                   enabled={story.enabled}
                   onClick={() => void handleEnable(story.id, story.enabled)}
-                  text={{
-                    disable: {
-                      sr: "Ocultar relato",
-                      title: "Ocultar relato",
-                      label: "",
-                      icon: Eye,
-                    },
-                    enable: {
-                      sr: "Publicar relato",
-                      title: "Publicar relato",
-                      label: "",
-                      icon: EyeClosed,
-                    },
-                  }}
+                  text={{ ...uiText.label.enableButton }}
                 />
 
                 <ConditionalButtonSwitch
                   condition={story.enabled && isAdmin}
                   enabled={story.featuredContent}
                   onClick={() => void handleFeatured(story.id)}
-                  text={{
-                    disable: {
-                      sr: "Quitar como destacado",
-                      title: "Quitar como destacado",
-                      label: "",
-                      icon: StarOff,
-                    },
-                    enable: {
-                      sr: "Marcar como relato destacado",
-                      title: "Marcar como relato destacado",
-                      label: "",
-                      icon: Star,
-                    },
-                  }}
+                  text={{ ...uiText.label.featuredButton }}
                 />
               </div>
             </div>

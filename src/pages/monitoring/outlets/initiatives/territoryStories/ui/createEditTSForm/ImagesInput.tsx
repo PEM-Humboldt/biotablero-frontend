@@ -1,3 +1,14 @@
+import { type ChangeEvent, useEffect, useRef, useState } from "react";
+import { ImageUp, Trash, Star } from "lucide-react";
+import TextareaAutosize from "react-textarea-autosize";
+
+import { LabelAndErrors } from "@ui/LabelingWithErrors";
+import { cn } from "@ui/shadCN/lib/utils";
+import { Button } from "@ui/shadCN/component/button";
+import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
+import { ImgValidator } from "@utils/imgValidator";
+import { inputLengthCount, inputWarnColor } from "@utils/ui";
+import { StrValidator } from "@utils/strValidator";
 import {
   INITIATIVES_IMG_ALLOWED_FORMATS,
   TERRITORY_STORY_IMG_DESCRIPTION_MAX_LENGTH,
@@ -8,17 +19,8 @@ import {
   TERRITORY_STORY_IMG_MIN_WIDTH,
   TERRITORY_STORY_IMG_MAX_AMOUNT,
 } from "@config/monitoring";
-import { LabelAndErrors } from "@ui/LabelingWithErrors";
+
 import type { ImageObjectTS } from "pages/monitoring/types/territoryStory";
-import { type ChangeEvent, useEffect, useRef, useState } from "react";
-import { cn } from "@ui/shadCN/lib/utils";
-import { ImageUp, Trash, Trash2, Star } from "lucide-react";
-import { Button } from "@ui/shadCN/component/button";
-import { ImgValidator } from "@utils/imgValidator";
-import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
-import TextareaAutosize from "react-textarea-autosize";
-import { inputLengthCount, inputWarnColor } from "@utils/ui";
-import { StrValidator } from "@utils/strValidator";
 
 type ImagesInputProps = {
   images: ImageObjectTS[];
@@ -200,7 +202,7 @@ export function ImagesInput({
           <div className="grid grid-cols-2 py-0.5 gap-4">
             <div
               className={cn(
-                "relative group overflow-hidden rounded-xl border border-primary border-dashed bg-white min-h-40 h-full transition-all focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-primary",
+                "relative group overflow-hidden rounded-xl border border-primary border-dashed bg-background min-h-40 h-full transition-all focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-primary",
                 stagedImage
                   ? "border-primary bg-muted"
                   : "border-muted-foreground/30 hover:border-primary cursor-pointer",

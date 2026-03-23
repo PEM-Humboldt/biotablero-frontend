@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router";
 
 import { Button } from "@ui/shadCN/component/button";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
@@ -13,7 +14,6 @@ import {
 } from "pages/monitoring/outlets/initiatives/layout/territoryStoryPanels";
 import { TerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
 import { TSSearchBar } from "pages/monitoring/outlets/initiatives/territoryStories/TSSearchBar";
-import { useNavigate, useParams } from "react-router";
 
 export function TerritoryStories() {
   const { userStateInInitiative } = useInitiativeCTX();
@@ -52,17 +52,17 @@ export function TerritoryStories() {
           Imagen del RT
         </header>
         <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr] w-full max-w-[1600px]">
-          <main>
-            <TSSearchBar />
-            <div
-              className={cn(panel !== PanelState.READ ? "bg-grey-form" : "")}
-            >
-              <ToggleTSAdminActions
-                currentPanel={panel}
-                goToPanel={handlePanelChange}
-              />
-              <PanelComponent moveToPanel={setPanel} />
-            </div>
+          <main className={cn(panel !== PanelState.READ ? "bg-grey-form" : "")}>
+            <ToggleTSAdminActions
+              currentPanel={panel}
+              goToPanel={handlePanelChange}
+            />
+
+            {panel !== PanelState.CREATE && (
+              <TSSearchBar className="px-4 pt-2 pb-8" />
+            )}
+
+            <PanelComponent moveToPanel={setPanel} />
           </main>
           <aside className="bg-accent">barra lateral</aside>
         </div>
@@ -92,7 +92,7 @@ function ToggleTSAdminActions({
   );
 
   return (
-    <div className="p-4 flex justify-end gap-2">
+    <div className="p-4 pb-0 flex justify-end gap-2">
       <ButtonGroup>
         {panelsAvailable.map(([panelKey, btnSettings]) => {
           return (

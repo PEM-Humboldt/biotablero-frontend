@@ -38,15 +38,15 @@ import type {
   VideoObjectTS,
 } from "pages/monitoring/types/territoryStory";
 import type { RequestData } from "pages/monitoring/api/types/definitions";
-import { TextEditor } from "pages/monitoring/outlets/initiatives/territoryStories/createEditTSForm/TextEditor";
-import { TitleInput } from "pages/monitoring/outlets/initiatives/territoryStories/createEditTSForm/TitleInput";
-import { SubmitStory } from "pages/monitoring/outlets/initiatives/territoryStories/createEditTSForm/SubmitStory";
-import { ImagesInput } from "pages/monitoring/outlets/initiatives/territoryStories/createEditTSForm/ImagesInput";
-import { YoutubeVideoInput } from "pages/monitoring/outlets/initiatives/territoryStories/createEditTSForm/YoutubeVideoInput";
+import { TextEditor } from "pages/monitoring/outlets/initiatives/territoryStories/ui/createEditTSForm/TextEditor";
+import { TitleInput } from "pages/monitoring/outlets/initiatives/territoryStories/ui/createEditTSForm/TitleInput";
+import { SubmitStory } from "pages/monitoring/outlets/initiatives/territoryStories/ui/createEditTSForm/SubmitStory";
+import { ImagesInput } from "pages/monitoring/outlets/initiatives/territoryStories/ui/createEditTSForm/ImagesInput";
+import { YoutubeVideoInput } from "pages/monitoring/outlets/initiatives/territoryStories/ui/createEditTSForm/YoutubeVideoInput";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
-import { uiText } from "pages/monitoring/outlets/initiatives/territoryStories/createEditTSForm/layout/uiText";
 import { createErrorObjectParser } from "pages/monitoring/utils/errorObjectParser";
+import { uiText } from "pages/monitoring/outlets/initiatives/territoryStories/ui/createEditTSForm/layout/uiText";
 
 // NOTE: Maniobra mientras se unifica el retorno de los campos de error a lowercase
 const TS_ERROR_FIELDS = [

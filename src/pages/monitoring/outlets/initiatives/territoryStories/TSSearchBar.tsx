@@ -3,58 +3,16 @@ import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorys
 import { searchBarItems } from "pages/monitoring/outlets/initiatives/territoryStories/tsSearchBar/layout/searchBarItems";
 import { Button } from "@ui/shadCN/component/button";
 import { useState } from "react";
-import {
-  Calendar1,
-  CalendarArrowDown,
-  CalendarArrowUp,
-  UserRound,
-  UsersRound,
-} from "lucide-react";
 import { cn } from "@ui/shadCN/lib/utils";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
 import { useUserCTX } from "@hooks/UserContext";
+import {
+  uiElement,
+  orderStateSecuence,
+} from "pages/monitoring/outlets/initiatives/territoryStories/layout/searBarUI";
 
-const orderState = ["none", "desc", "asc"] as const;
-
-const orderConfigs = {
-  none: {
-    label: "",
-    title: "Del más reciente al más antíguo",
-    sr: "Ordenar del relato más reciente al más antíguo",
-    icon: Calendar1,
-  },
-  sort: {
-    desc: {
-      label: "",
-      title: "Del más antíguo al más reciente",
-      sr: "Ordenar del relato más antíguo al más reciente",
-      icon: CalendarArrowDown,
-    },
-    asc: {
-      label: "",
-      title: "Quitar orden",
-      sr: "Quitar el orden",
-      icon: CalendarArrowUp,
-    },
-  },
-  userFilter: {
-    enabled: {
-      label: "",
-      title: "mostrar los relatos de todos",
-      sr: "mostrar los relatos de todos los participantes",
-      icon: UserRound,
-    },
-    disabled: {
-      label: "",
-      title: "Mostrar solo mis relatos",
-      sr: "Mostrar solo mis relatos",
-      icon: UsersRound,
-    },
-  },
-};
-
-export function TSSearchBar() {
+export function TSSearchBar({ className }: { className: string }) {
   const { user } = useUserCTX();
   const { setStorysSearchParams } = useTerritoryStorysCTX();
   const { userStateInInitiative } = useInitiativeCTX();
@@ -65,23 +23,21 @@ export function TSSearchBar() {
     userStateInInitiative === UserStateInInitiative.USER_PARTICIPANT ||
     userStateInInitiative === UserStateInInitiative.USER_LEADER;
 
-  const currentSortKey = orderState[orderDate];
+  const currentSortKey = orderStateSecuence[orderDate];
   const currentDateSort =
-    currentSortKey === "none"
-      ? orderConfigs.none
-      : orderConfigs.sort[currentSortKey];
+    currentSortKey === "none" ? uiElement.none : uiElement.sort[currentSortKey];
 
   const DateSortIcon = currentDateSort.icon;
 
   const currentUserFilter = myStories
-    ? orderConfigs.userFilter.enabled
-    : orderConfigs.userFilter.disabled;
+    ? uiElement.userFilter.enabled
+    : uiElement.userFilter.disabled;
 
   const UserFilterIcon = currentUserFilter.icon;
 
   const handleOnChangeOrder = () => {
     const nextIndex = (orderDate + 1) % 3;
-    const nextValue = orderState[nextIndex];
+    const nextValue = orderStateSecuence[nextIndex];
 
     setOrderDate(nextIndex);
 
@@ -100,7 +56,7 @@ export function TSSearchBar() {
     : undefined;
 
   return (
-    <div className="flex gap-2 items-end px-4 py-2 bg-grey ">
+    <div className={cn("flex gap-2 items-end", className)}>
       <ODataSearchBar
         components={searchBarItems}
         setSearchParams={setStorysSearchParams}

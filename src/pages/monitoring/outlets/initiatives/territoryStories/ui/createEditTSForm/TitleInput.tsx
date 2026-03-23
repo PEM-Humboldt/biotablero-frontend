@@ -1,16 +1,18 @@
-import { TERRITORY_STORY_TITLE_MAX_LENGTH } from "@config/monitoring";
+import { useRef } from "react";
+import { useParams } from "react-router";
+
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@ui/shadCN/component/input-group";
-import { inputLengthCount, inputWarnColor } from "@utils/ui";
 import { LabelAndErrors } from "@ui/LabelingWithErrors";
+import { inputLengthCount, inputWarnColor } from "@utils/ui";
 import { StrValidator } from "@utils/strValidator";
+import { TERRITORY_STORY_TITLE_MAX_LENGTH } from "@config/monitoring";
+
 import { validationExemption } from "pages/monitoring/ui/initiativesAdmin/utils/fieldClientValidations";
-import { useRef } from "react";
-import { storyTitleNotExist } from "pages/monitoring/outlets/initiatives/territoryStories/utils/validations";
-import { useParams } from "react-router";
+import { storyTitleNotExist } from "pages/monitoring/outlets/initiatives/territoryStories/utils/validations.ts";
 
 export function TitleInput({
   title,
