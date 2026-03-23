@@ -12,11 +12,14 @@ import {
   panelView,
 } from "pages/monitoring/outlets/initiatives/layout/territoryStoryPanels";
 import { TerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
-import { TSSearchBar } from "./territoryStories/TSSearchBar";
+import { TSSearchBar } from "pages/monitoring/outlets/initiatives/territoryStories/TSSearchBar";
+import { useNavigate, useParams } from "react-router";
 
 export function TerritoryStories() {
   const { userStateInInitiative } = useInitiativeCTX();
   const [panel, setPanel] = useState<PanelState>(PanelState.READ);
+  const navigate = useNavigate();
+  const { initiativeId, tabSection } = useParams();
 
   useEffect(() => {
     if (
@@ -33,6 +36,15 @@ export function TerritoryStories() {
 
   const PanelComponent = panelView[panel];
 
+  const handlePanelChange = (newPanel: PanelState) => {
+    void navigate(
+      initiativeId && tabSection
+        ? `/Monitoreo/Iniciativas/${initiativeId}/${tabSection}`
+        : "/Monitoreo/Iniciativas",
+    );
+    setPanel(newPanel);
+  };
+
   return (
     <div className="flex flex-col items-center">
       <TerritoryStorysCTX>
@@ -45,7 +57,10 @@ export function TerritoryStories() {
             <div
               className={cn(panel !== PanelState.READ ? "bg-grey-form" : "")}
             >
-              <ToggleTSAdminActions currentPanel={panel} goToPanel={setPanel} />
+              <ToggleTSAdminActions
+                currentPanel={panel}
+                goToPanel={handlePanelChange}
+              />
               <PanelComponent />
             </div>
           </main>

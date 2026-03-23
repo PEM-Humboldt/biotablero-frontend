@@ -356,9 +356,6 @@ export function CreateEditTSForm({
         keywordsLimit={TERRITORY_STORY_KEYWORDS_MAX_AMOUNT}
         keywordMaxLength={TERRITORY_STORY_KEYWORD_MAX_LENGTH}
         separators={[" ", ",", "\n"]}
-        keywordRefinement={(kw) =>
-          `${kw.charAt(0).toLocaleUpperCase()}${kw.slice(1)}`
-        }
         inputTxt={{ ...uiText.keywords }}
         errors={errors.Keywords ?? []}
         setErrors={updateError("Keywords")}

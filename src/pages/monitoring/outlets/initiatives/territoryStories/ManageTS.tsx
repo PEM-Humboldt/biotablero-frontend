@@ -19,6 +19,7 @@ import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
 import { useUserCTX } from "@hooks/UserContext";
 import { TablePager } from "@composites/TablePager";
 import { TERRITORY_STORIES_PER_PAGE } from "@config/monitoring";
+import { ErrorsList } from "@ui/LabelingWithErrors";
 
 export function ManageTS() {
   const {
@@ -28,10 +29,14 @@ export function ManageTS() {
     setCurrentPage,
     updateStorys,
     setStorysSearchParams,
+    isLoading,
+    errors,
   } = useTerritoryStorysCTX();
   const { userStateInInitiative } = useInitiativeCTX();
   const { user } = useUserCTX();
   const [editingId, setEditingId] = useState<number | null>(null);
+
+  console.log(isLoading);
 
   useEffect(() => {
     if (userStateInInitiative === UserStateInInitiative.USER_PARTICIPANT) {
@@ -57,8 +62,17 @@ export function ManageTS() {
 
   const isAdmin = userStateInInitiative === UserStateInInitiative.USER_LEADER;
 
-  return (
+  return isLoading ? (
+    <div className="bg-primary/10 p-8 mx-4 rounded-lg border border-primary text-4xl text-primary text-center">
+      Cargando...
+    </div>
+  ) : (
     <div className="p-4 pt-0 space-y-3">
+      <ErrorsList
+        errorItems={errors}
+        className="bg-accent/10 p-8 rounded-lg border border-accent"
+      />
+
       {storys.map((story) => {
         const userAuthorized =
           isAdmin || story.authorUserName === user?.username;
@@ -86,19 +100,40 @@ export function ManageTS() {
               <div className="">
                 {editingId === story.id ? (
                   <>
-                    <div className="font-normal mr-4 capitalize">
+                    <div className="font-normal text-lg mr-4 capitalize">
                       {story.title}
                     </div>
                     <div className="font-light">Editando...</div>
                   </>
                 ) : (
                   <>
-                    <div className="font-normal mr-4 capitalize">
+                    <div className="font-normal text-lg mr-4 capitalize">
                       {story.title}
                     </div>
                     <div className="font-light">
-                      escrito por {story.authorUserName} el{" "}
-                      {new Date(story.creationDate).toLocaleDateString()}
+                      Por{" "}
+                      <span className="font-normal">
+                        {story.authorUserName},{" "}
+                      </span>
+                      <time
+                        dateTime={new Date(
+                          story.creationDate,
+                        ).toLocaleDateString()}
+                      >
+                        {new Date(story.creationDate).toLocaleDateString()}
+                      </time>
+                      {story.keywords !== undefined && (
+                        <ul className="inline-flex gap-2 ml-2">
+                          {story.keywords.split(",").map((kw) => (
+                            <li
+                              key={`kw_${kw}`}
+                              className="bg-background text-sm border border-primary/30 px-2 rounded-full"
+                            >
+                              {kw}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
                   </>
                 )}

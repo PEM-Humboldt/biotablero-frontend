@@ -100,12 +100,12 @@ export function TSSearchBar() {
     : undefined;
 
   return (
-    <div className="flex gap-2 items-end px-4 py-2 bg-grey">
+    <div className="flex gap-2 items-end px-4 py-2 bg-grey ">
       <ODataSearchBar
         components={searchBarItems}
         setSearchParams={setStorysSearchParams}
         filterInjection={filterByMyUser}
-        className="p-0 flex-1 gap-0 m-0"
+        className="p-0 gap-0 m-0 w-1/2 min-w-[250px] shrink-0"
       />
 
       <Button
