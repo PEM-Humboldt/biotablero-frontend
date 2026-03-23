@@ -3,8 +3,6 @@ import { Button } from "@ui/shadCN/component/button";
 import {
   Eye,
   EyeClosed,
-  LockKeyhole,
-  LockKeyholeOpen,
   Pencil,
   Star,
   PencilOff,
@@ -20,6 +18,12 @@ import { useUserCTX } from "@hooks/UserContext";
 import { TablePager } from "@composites/TablePager";
 import { TERRITORY_STORIES_PER_PAGE } from "@config/monitoring";
 import { ErrorsList } from "@ui/LabelingWithErrors";
+import {
+  disableTerritoryStory,
+  enableTerritoryStory,
+  setFeaturedStory,
+} from "pages/monitoring/api/services/territoryStory";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
 export function ManageTS() {
   const {
@@ -35,8 +39,7 @@ export function ManageTS() {
   const { userStateInInitiative } = useInitiativeCTX();
   const { user } = useUserCTX();
   const [editingId, setEditingId] = useState<number | null>(null);
-
-  console.log(isLoading);
+  const [manageErrors, setManageErrors] = useState<string[]>([]);
 
   useEffect(() => {
     if (userStateInInitiative === UserStateInInitiative.USER_PARTICIPANT) {
@@ -48,16 +51,26 @@ export function ManageTS() {
     setEditingId(editingId === storyId ? null : storyId);
   };
 
-  const handleRestricted = (storyId: number | null) => {
-    setEditingId(editingId === storyId ? null : storyId);
+  const handleEnable = async (storyId: number, isEnabled: boolean) => {
+    const res = isEnabled
+      ? await disableTerritoryStory(storyId)
+      : await enableTerritoryStory(storyId);
+
+    if (isMonitoringAPIError(res)) {
+      setManageErrors(res.data.map((err) => err.msg));
+    }
+
+    await updateStorys();
   };
 
-  const handleEnable = (storyId: number | null) => {
-    setEditingId(editingId === storyId ? null : storyId);
-  };
+  const handleFeatured = async (storyId: number) => {
+    const res = await setFeaturedStory(storyId);
 
-  const handleFeatured = (storyId: number | null) => {
-    setEditingId(editingId === storyId ? null : storyId);
+    if (isMonitoringAPIError(res)) {
+      setManageErrors(res.data.map((err) => err.msg));
+    }
+
+    await updateStorys();
   };
 
   const isAdmin = userStateInInitiative === UserStateInInitiative.USER_LEADER;
@@ -69,7 +82,7 @@ export function ManageTS() {
   ) : (
     <div className="p-4 pt-0 space-y-3">
       <ErrorsList
-        errorItems={errors}
+        errorItems={[...errors, ...manageErrors]}
         className="bg-accent/10 p-8 rounded-lg border border-accent"
       />
 
@@ -166,7 +179,7 @@ export function ManageTS() {
                 <ConditionalButtonSwitch
                   condition={userAuthorized}
                   enabled={story.enabled}
-                  onClick={() => handleEnable(story.id)}
+                  onClick={() => void handleEnable(story.id, story.enabled)}
                   text={{
                     disable: {
                       sr: "Ocultar relato",
@@ -184,29 +197,9 @@ export function ManageTS() {
                 />
 
                 <ConditionalButtonSwitch
-                  condition={story.enabled && userAuthorized}
-                  enabled={story.restricted}
-                  onClick={() => handleRestricted(story.id)}
-                  text={{
-                    disable: {
-                      sr: "Marcar como público",
-                      title: "Marcar como público",
-                      label: "",
-                      icon: LockKeyhole,
-                    },
-                    enable: {
-                      sr: "Marcar como privado",
-                      title: "Marcar como privado",
-                      label: "",
-                      icon: LockKeyholeOpen,
-                    },
-                  }}
-                />
-
-                <ConditionalButtonSwitch
                   condition={story.enabled && isAdmin}
                   enabled={story.featuredContent}
-                  onClick={() => handleFeatured(story.id)}
+                  onClick={() => void handleFeatured(story.id)}
                   text={{
                     disable: {
                       sr: "Quitar como destacado",
@@ -230,8 +223,8 @@ export function ManageTS() {
                 <CreateEditTSForm
                   territoryStoryId={story.id}
                   onEditSuccess={() => {
-                    void updateStorys();
                     setEditingId(null);
+                    void updateStorys();
                   }}
                 />
               </div>

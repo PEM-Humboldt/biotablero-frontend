@@ -44,7 +44,7 @@ export async function editTerritoryStoryGeneralInfo(
 }
 
 export async function enableTerritoryStory(territoryStoryId: number) {
-  const res = monitoringAPI({
+  const res = monitoringAPI<null>({
     type: "post",
     endpoint: `TerritoryStory/Enable/${territoryStoryId}`,
   });
@@ -53,9 +53,18 @@ export async function enableTerritoryStory(territoryStoryId: number) {
 }
 
 export async function disableTerritoryStory(territoryStoryId: number) {
-  const res = monitoringAPI({
+  const res = monitoringAPI<null>({
     type: "delete",
     endpoint: `TerritoryStory/Disable/${territoryStoryId}`,
+  });
+
+  return res;
+}
+
+export async function setFeaturedStory(territoryStoryId: number) {
+  const res = monitoringAPI<TerritoryStoryFull>({
+    type: "post",
+    endpoint: `TerritoryStory/FeaturedContent/${territoryStoryId}`,
   });
 
   return res;
