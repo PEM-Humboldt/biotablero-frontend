@@ -61,7 +61,7 @@ export function TerritoryStories() {
                 currentPanel={panel}
                 goToPanel={handlePanelChange}
               />
-              <PanelComponent />
+              <PanelComponent moveToPanel={setPanel} />
             </div>
           </main>
           <aside className="bg-accent">barra lateral</aside>

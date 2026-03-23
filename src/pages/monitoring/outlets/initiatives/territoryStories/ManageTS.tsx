@@ -24,8 +24,9 @@ import {
   setFeaturedStory,
 } from "pages/monitoring/api/services/territoryStory";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import type { PanelComponentProp } from "pages/monitoring/outlets/initiatives/types/territoryStory";
 
-export function ManageTS() {
+export function ManageTS({ moveToPanel: _ }: PanelComponentProp) {
   const {
     storys,
     storysAmount,
@@ -46,6 +47,26 @@ export function ManageTS() {
       setStorysSearchParams((oldParams) => ({ ...oldParams, filter: "" }));
     }
   }, [setStorysSearchParams, userStateInInitiative]);
+
+  useEffect(() => {
+    if (editingId !== null) {
+      const scrollTimeout = setTimeout(() => {
+        const editCard = document.getElementById(`edit_${editingId}`);
+
+        if (editCard) {
+          editCard.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+
+        // NOTE: tiempo suficiente para que todos los cambios de id hayan
+        // sucedido cuando se pasa de edicion de una id a otra
+      }, 100);
+
+      return () => clearTimeout(scrollTimeout);
+    }
+  }, [editingId]);
 
   const handleEdit = (storyId: number | null) => {
     setEditingId(editingId === storyId ? null : storyId);
@@ -219,7 +240,10 @@ export function ManageTS() {
             </div>
 
             {editingId === story.id && (
-              <div className="bg-grey-form">
+              <div
+                id={`edit_${editingId}`}
+                className="bg-grey-form scroll-mt-10"
+              >
                 <CreateEditTSForm
                   territoryStoryId={story.id}
                   onEditSuccess={() => {
