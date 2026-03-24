@@ -1225,14 +1225,42 @@ div[class*="eaRHYv"] {
 .ecoest {
   margin: 25px 12px 10px;
   border: 1px solid #ea495f;
-  padding: 0 15px;
+  padding: 15px;           /* 👈 padding normal */
+  position: relative;      /* 👈 necesario */
 }
-.minus20 {
-  margin-top: -20px !important;
-  margin-left: -27px !important;
+.ecoest-header {
+  position: absolute;
+  top: 0;
+  left: -15px;
+
+  transform: translateY(-50%); /* 👈 lo sube justo a la línea del borde */
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 0 8px;
+}
+.ecoest-header h4 {
+  margin: 0;
+}
+.ecoest-info-icon {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+    background: #fff; /* 👈 clave para tapar el borde detrás */
+  color: #bbbbbb;
+; 
+}
+.ecoest-info-icon:hover {
+  color: #e84a5f;
+}
+.ecoest-info-icon.activeBox {
+  color: #e84a5f;
 }
 .minusperc {
   margin-left: -17px !important;
+  margin-top: 0px !important;
 }
 .graficaeco {
   max-width: 600px;
