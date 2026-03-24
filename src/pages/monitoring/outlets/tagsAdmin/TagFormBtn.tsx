@@ -30,7 +30,6 @@ import { PlusIcon, UserRoundCheck } from "lucide-react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -229,205 +228,202 @@ export function TagFormButton({
 
   const getSubmitButtonText = () => {
     if (isLoading) {
-      return !tagId ? uiText.tag.creating : "Actualizando...";
+      return !tagId ? uiText.tag.creating : uiText.tag.updating;
     }
-    return !tagId ? uiText.tag.create : "Actualizar etiqueta";
+    return !tagId ? uiText.tag.create : uiText.tag.update;
   };
 
   return (
-    <>
-      <Dialog open={openDialogForm} onOpenChange={setOpenDialogForm}>
-        {tagId && (
-          <DialogTrigger asChild>
-            <Button disabled={loadStatusMsg !== null} variant="ghost">
-              {loadStatusMsg !== null
-                ? loadStatusMsg
-                : uiText.table.editBtn.defaultText}
-            </Button>
-          </DialogTrigger>
-        )}
-        {!tagId && (
-          <DialogTrigger asChild>
-            <Button disabled={loadStatusMsg !== null}>
-              {loadStatusMsg !== null ? loadStatusMsg : uiText.tag.create}
-              <PlusIcon />
-            </Button>
-          </DialogTrigger>
-        )}
-        <DialogContent className="max-h-[80vh] max-w-[60vh] flex flex-col p-4 md:p-8 overflow-hidden">
-          <div className="pb-2">
-            <DialogHeader>
-              <DialogTitle>
-                {!tagId ? uiText.tag.createTitle : uiText.tag.editTitle}
-              </DialogTitle>
-            </DialogHeader>
-          </div>
-          <DialogDescription className="grid grid-cols-1 gap-6 [&>p]:m-0 [&>p]:flex [&>p]:flex-col [&>p>span]:first:font-semibold [&>p>span]:first:text-primary">
-            <form
-              action=""
-              onReset={handleFormReset}
-              onSubmit={(e) => void handleSubmit(e)}
-              className="flex flex-col gap-2 p-6"
-            >
-              {!tagId && (
-                <div>
-                  <LabelAndErrors
-                    htmlFor="category"
-                    errID="errors_category"
-                    validationErrors={errors.category ?? []}
-                    className="mb-1 text-sm font-medium"
+    <Dialog open={openDialogForm} onOpenChange={setOpenDialogForm}>
+      {tagId && (
+        <DialogTrigger asChild>
+          <Button disabled={loadStatusMsg !== null} variant="ghost">
+            {loadStatusMsg !== null
+              ? loadStatusMsg
+              : uiText.table.editBtn.defaultText}
+          </Button>
+        </DialogTrigger>
+      )}
+      {!tagId && (
+        <DialogTrigger asChild>
+          <Button disabled={loadStatusMsg !== null}>
+            {loadStatusMsg !== null ? loadStatusMsg : uiText.tag.create}
+            <PlusIcon />
+          </Button>
+        </DialogTrigger>
+      )}
+      <DialogContent className="max-h-[80vh] max-w-[60vh] flex flex-col p-4 md:p-8 overflow-hidden">
+        <div className="pb-2">
+          <DialogHeader>
+            <DialogTitle>
+              {!tagId ? uiText.tag.createTitle : uiText.tag.editTitle}
+            </DialogTitle>
+          </DialogHeader>
+        </div>
+        <div className="grid grid-cols-1 gap-6 [&>p]:m-0 [&>p]:flex [&>p]:flex-col [&>p>span]:first:font-semibold [&>p>span]:first:text-primary">
+          <form
+            action=""
+            onReset={handleFormReset}
+            onSubmit={(e) => void handleSubmit(e)}
+            className="flex flex-col gap-2 p-6"
+          >
+            {!tagId && (
+              <div>
+                <LabelAndErrors
+                  htmlFor="category"
+                  errID="errors_category"
+                  validationErrors={errors.category ?? []}
+                  className="mb-1 text-sm font-medium"
+                >
+                  {uiText.form.selectCategoryLabel}{" "}
+                  {!tagId && <span aria-hidden="true">*</span>}
+                </LabelAndErrors>
+                <NativeSelect
+                  id="category"
+                  value={formData.category.id || ""}
+                  onChange={(e) =>
+                    setFormData((old) => ({
+                      ...old,
+                      category: {
+                        id: Number(e.target.value),
+                        name: "",
+                      },
+                    }))
+                  }
+                  onBlur={categoryOnBlur}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 mt-1"
+                  aria-invalid={errors.category !== undefined}
+                  aria-describedby={
+                    errors.category ? "errors_category" : undefined
+                  }
+                >
+                  <NativeSelectOption
+                    key={"tag_category_default"}
+                    value=""
+                    disabled
                   >
-                    {uiText.form.selectCategoryLabel}{" "}
-                    {!tagId && <span aria-hidden="true">*</span>}
-                  </LabelAndErrors>
-                  <NativeSelect
-                    id="category"
-                    value={formData.category.id || ""}
-                    onChange={(e) =>
-                      setFormData((old) => ({
-                        ...old,
-                        category: {
-                          id: Number(e.target.value),
-                          name: "",
-                        },
-                      }))
-                    }
-                    onBlur={categoryOnBlur}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 mt-1"
-                    aria-invalid={errors.category !== undefined}
-                    aria-describedby={
-                      errors.category ? "errors_category" : undefined
-                    }
-                  >
+                    {uiText.form.defaultCategoryTitle}
+                  </NativeSelectOption>
+                  {(tagCategories ?? []).map((category) => (
                     <NativeSelectOption
-                      key={"tag_category_default"}
-                      value=""
-                      disabled
+                      key={`tag_category_${category.id}`}
+                      value={category.id}
                     >
-                      {uiText.form.defaultCategoryTitle}
+                      {category.name}
                     </NativeSelectOption>
-                    {(tagCategories ?? []).map((category) => (
-                      <NativeSelectOption
-                        key={`tag_category_${category.id}`}
-                        value={category.id}
-                      >
-                        {category.name}
-                      </NativeSelectOption>
-                    ))}
-                  </NativeSelect>
-                </div>
-              )}
+                  ))}
+                </NativeSelect>
+              </div>
+            )}
 
-              {tagId && (
-                <div>
-                  <label
-                    htmlFor="categoryName"
-                    className="mb-1 text-sm font-medium"
-                  >
-                    {uiText.form.category}
-                  </label>
-                  <div>{translateTagCategory(formData.category.name)}</div>
-                </div>
-              )}
-
+            {tagId && (
               <div>
-                <LabelAndErrors
-                  htmlFor="name"
-                  errID="errors_name"
-                  validationErrors={errors.name ?? []}
+                <label
+                  htmlFor="categoryName"
                   className="mb-1 text-sm font-medium"
                 >
-                  {uiText.form.nameLabel}
-                  <span aria-hidden="true">*</span>
-                </LabelAndErrors>
-                <InputGroup>
-                  <InputGroupInput
-                    id="name"
-                    type="text"
-                    placeholder="Nombre de la etiqueta"
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData((old) => ({ ...old, name: e.target.value }))
-                    }
-                    onBlur={nameOnBlur}
-                    disabled={isLoading}
-                    aria-invalid={errors.name !== undefined}
-                    aria-describedby={errors.name ? "errors_name" : undefined}
-                    maxLength={TAG_NAME_MAX_LENGTH}
-                  />
-                  <InputGroupAddon
-                    align="block-end"
-                    className={`${inputWarnColor(formData.name, TAG_NAME_MAX_LENGTH, 0.95)} flex-row-reverse`}
-                  >
-                    {inputLengthCount(formData.name, TAG_NAME_MAX_LENGTH)}
-                  </InputGroupAddon>
-                </InputGroup>
+                  {uiText.form.category}
+                </label>
+                <div>{translateTagCategory(formData.category.name)}</div>
               </div>
+            )}
 
-              <div>
-                <LabelAndErrors
-                  htmlFor="url"
-                  errID="errors_url"
-                  validationErrors={errors.url ?? []}
-                  className="mb-1 text-sm font-medium"
+            <div>
+              <LabelAndErrors
+                htmlFor="name"
+                errID="errors_name"
+                validationErrors={errors.name ?? []}
+                className="mb-1 text-sm font-medium"
+              >
+                {uiText.form.nameLabel}
+                <span aria-hidden="true">*</span>
+              </LabelAndErrors>
+              <InputGroup>
+                <InputGroupInput
+                  id="name"
+                  type="text"
+                  placeholder={uiText.form.placeholders.tagName}
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData((old) => ({ ...old, name: e.target.value }))
+                  }
+                  onBlur={nameOnBlur}
+                  disabled={isLoading}
+                  aria-invalid={errors.name !== undefined}
+                  aria-describedby={errors.name ? "errors_name" : undefined}
+                  maxLength={TAG_NAME_MAX_LENGTH}
+                />
+                <InputGroupAddon
+                  align="block-end"
+                  className={`${inputWarnColor(formData.name, TAG_NAME_MAX_LENGTH, 0.95)} flex-row-reverse`}
                 >
-                  {uiText.form.urlLabel}
-                  <span aria-hidden="true">*</span>
-                </LabelAndErrors>
-                <InputGroup>
-                  <InputGroupInput
-                    id="url"
-                    type="text"
-                    placeholder="https://ejemplo.co"
-                    value={formData.url ?? ""}
-                    onChange={(e) =>
-                      setFormData((old) => ({ ...old, url: e.target.value }))
-                    }
-                    onBlur={urlOnBlur}
-                    disabled={isLoading}
-                    aria-invalid={errors.url !== undefined}
-                    aria-describedby={errors.url ? "errors_url" : undefined}
-                    maxLength={TAG_URL_MAX_LENGTH}
-                  />
-                  <InputGroupAddon
-                    align="block-end"
-                    className={`${inputWarnColor(formData.url ?? "", TAG_URL_MAX_LENGTH, 0.95)} flex-row-reverse`}
-                  >
-                    {inputLengthCount(formData.url ?? "", TAG_URL_MAX_LENGTH)}
-                  </InputGroupAddon>
-                </InputGroup>
-              </div>
+                  {inputLengthCount(formData.name, TAG_NAME_MAX_LENGTH)}
+                </InputGroupAddon>
+              </InputGroup>
+            </div>
 
-              <ErrorsList
-                errorItems={errors.root ?? []}
-                className="bg-red-50 p-4 mt-2 rounded-lg outline-2 outline-accent"
-              />
+            <div>
+              <LabelAndErrors
+                htmlFor="url"
+                errID="errors_url"
+                validationErrors={errors.url ?? []}
+                className="mb-1 text-sm font-medium"
+              >
+                {uiText.form.urlLabel}
+              </LabelAndErrors>
+              <InputGroup>
+                <InputGroupInput
+                  id="url"
+                  type="text"
+                  placeholder={uiText.form.placeholders.tagUrl}
+                  value={formData.url ?? ""}
+                  onChange={(e) =>
+                    setFormData((old) => ({ ...old, url: e.target.value }))
+                  }
+                  onBlur={urlOnBlur}
+                  disabled={isLoading}
+                  aria-invalid={errors.url !== undefined}
+                  aria-describedby={errors.url ? "errors_url" : undefined}
+                  maxLength={TAG_URL_MAX_LENGTH}
+                />
+                <InputGroupAddon
+                  align="block-end"
+                  className={`${inputWarnColor(formData.url ?? "", TAG_URL_MAX_LENGTH, 0.95)} flex-row-reverse`}
+                >
+                  {inputLengthCount(formData.url ?? "", TAG_URL_MAX_LENGTH)}
+                </InputGroupAddon>
+              </InputGroup>
+            </div>
 
-              <DialogFooter>
-                <div className="flex flex-row-reverse flex-wrap justify-between gap-4 mt-2">
+            <ErrorsList
+              errorItems={errors.root ?? []}
+              className="bg-red-50 p-4 mt-2 rounded-lg outline-2 outline-accent"
+            />
+
+            <DialogFooter>
+              <div className="flex flex-row-reverse flex-wrap justify-between gap-4 mt-2">
+                <Button
+                  type="submit"
+                  disabled={
+                    isLoading || (!tagId && tagCategories?.length === 0)
+                  }
+                >
+                  {getSubmitButtonText()}
+                </Button>
+                {!tagId && (
                   <Button
-                    type="submit"
-                    disabled={
-                      isLoading || (!tagId && tagCategories?.length === 0)
-                    }
+                    type="reset"
+                    variant="outline_destructive"
+                    disabled={isLoading}
                   >
-                    {getSubmitButtonText()}
+                    {uiText.restartForm}
                   </Button>
-                  {!tagId && (
-                    <Button
-                      type="reset"
-                      variant="outline_destructive"
-                      disabled={isLoading}
-                    >
-                      {uiText.restartForm}
-                    </Button>
-                  )}
-                </div>
-              </DialogFooter>
-            </form>
-          </DialogDescription>
-        </DialogContent>
-      </Dialog>
-    </>
+                )}
+              </div>
+            </DialogFooter>
+          </form>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

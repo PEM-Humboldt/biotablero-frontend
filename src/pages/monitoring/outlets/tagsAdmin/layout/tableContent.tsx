@@ -10,7 +10,6 @@ export const getTableContent = (
     id: number,
     tag: TagDataForm,
   ) => Promise<TagDataForm | ApiRequestError>,
-  tagDeleteAction: (id: number) => Promise<TagDataForm | ApiRequestError>,
 ): ODataColumn<TagEntryShort>[] => [
   { name: "Categoría", source: "categoryName", type: "text", sortBy: true },
   { name: "Nombre", source: "name", type: "text", sortBy: true },
@@ -25,7 +24,6 @@ export const getTableContent = (
         value={value}
         onActionSuccess={onActionSuccess}
         tagEditAction={tagEditAction}
-        tagDeleteAction={tagDeleteAction}
       />
     ),
   },

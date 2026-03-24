@@ -7,7 +7,6 @@ export function TagTableButtons({
   value: tagId,
   onActionSuccess,
   tagEditAction,
-  tagDeleteAction,
 }: {
   value?: unknown;
   onActionSuccess: () => void;
@@ -15,7 +14,6 @@ export function TagTableButtons({
     id: number,
     tag: TagDataForm,
   ) => Promise<TagDataForm | ApiRequestError>;
-  tagDeleteAction: (id: number) => Promise<TagDataForm | ApiRequestError>;
 }) {
   if (typeof tagId !== "number") {
     throw new Error(
@@ -33,7 +31,6 @@ export function TagTableButtons({
       <TagDeleteButton
         value={tagId}
         onActionSuccess={onActionSuccess}
-        deleteTagAction={tagDeleteAction}
       />
     </>
   );

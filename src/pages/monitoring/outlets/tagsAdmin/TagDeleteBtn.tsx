@@ -6,7 +6,6 @@ import {
   AlertDialog,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -21,17 +20,14 @@ import { makeInitialInfo } from "pages/monitoring/outlets/tagsAdmin/utils/formOb
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { toast } from "sonner";
 import { UserRoundCheck } from "lucide-react";
-import type { ApiRequestError } from "@appTypes/api";
-import { getTagById } from "pages/monitoring/api/services/tags";
+import { deleteTag, getTagById } from "pages/monitoring/api/services/tags";
 
 export function TagDeleteButton({
   value: tagId,
   onActionSuccess,
-  deleteTagAction,
 }: {
   value: number;
   onActionSuccess: () => void;
-  deleteTagAction: (id: number) => Promise<ApiRequestError | TagDataForm>;
 }) {
   const [loadStatusMsg, setLoadStatusMsg] = useState<string | null>(null);
   const [formData, setFormData] = useState<TagDataForm>(makeInitialInfo());
@@ -69,7 +65,7 @@ export function TagDeleteButton({
     if (tagId) {
       setLoadStatusMsg(uiText.table.loadStatus.loading);
 
-      const res = await deleteTagAction(tagId);
+      const res = await deleteTag(tagId);
 
       if (isMonitoringAPIError(res)) {
         setErrors((oldErr) => ({
@@ -95,44 +91,40 @@ export function TagDeleteButton({
   };
 
   return (
-    <>
-      <AlertDialog open={openDialogAlert} onOpenChange={setOpenDialogAlert}>
-        <AlertDialogTrigger asChild>
-          <Button disabled={loadStatusMsg !== null} variant="ghost">
-            {loadStatusMsg !== null
-              ? loadStatusMsg
-              : uiText.table.deleteBtn.defaultText}
-          </Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent className="max-h-[80vh] max-w-[60vh] flex flex-col p-4 md:p-8 overflow-hidden">
-          <div className="pb-2">
-            <AlertDialogHeader>
-              <AlertDialogTitle>
-                {uiText.table.deleteBtn.dialog.title}
-              </AlertDialogTitle>
-            </AlertDialogHeader>
-          </div>
-          <AlertDialogDescription className="grid grid-cols-1 gap-6 [&>p]:m-0 [&>p]:flex [&>p]:flex-col [&>p>span]:first:font-semibold [&>p>span]:first:text-primary">
-            <>
-              {uiText.table.deleteBtn.dialog.description(formData.name)}
-              <ErrorsList
-                errorItems={errors.root ?? []}
-                className="bg-red-50 p-4 mt-2 rounded-lg outline-2 outline-accent"
-              />
-            </>
-          </AlertDialogDescription>
-          <AlertDialogFooter>
-            <AlertDialogCancel asChild>
-              <Button variant="outline">
-                {uiText.table.deleteBtn.actionBtns.cancel}
-              </Button>
-            </AlertDialogCancel>
-            <Button onClick={() => void removeTag()}>
-              {uiText.table.deleteBtn.actionBtns.confirm}
+    <AlertDialog open={openDialogAlert} onOpenChange={setOpenDialogAlert}>
+      <AlertDialogTrigger asChild>
+        <Button disabled={loadStatusMsg !== null} variant="ghost">
+          {loadStatusMsg !== null
+            ? loadStatusMsg
+            : uiText.table.deleteBtn.defaultText}
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent className="max-h-[80vh] max-w-[60vh] flex flex-col p-4 md:p-8 overflow-hidden">
+        <div className="pb-2">
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {uiText.table.deleteBtn.dialog.title}
+            </AlertDialogTitle>
+          </AlertDialogHeader>
+        </div>
+        <div className="grid grid-cols-1 gap-6 [&>p]:m-0 [&>p]:flex [&>p]:flex-col [&>p>span]:first:font-semibold [&>p>span]:first:text-primary">
+          {uiText.table.deleteBtn.dialog.description(formData.name)}
+          <ErrorsList
+            errorItems={errors.root ?? []}
+            className="bg-red-50 p-4 mt-2 rounded-lg outline-2 outline-accent"
+          />
+        </div>
+        <AlertDialogFooter>
+          <AlertDialogCancel asChild>
+            <Button variant="outline">
+              {uiText.table.deleteBtn.actionBtns.cancel}
             </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
+          </AlertDialogCancel>
+          <Button onClick={() => void removeTag()}>
+            {uiText.table.deleteBtn.actionBtns.confirm}
+          </Button>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

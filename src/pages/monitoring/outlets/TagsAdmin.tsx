@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { uiText } from "pages/monitoring/outlets/tagsAdmin/layout/uiText";
 import {
   addTag,
-  deleteTag,
   getTagCategories,
   getTags,
   updateTag,
@@ -59,10 +58,6 @@ export function TagsAdmin() {
 
   const tagEditAction = (id: number, tag: TagDataForm) => {
     return updateTag(id, tag);
-  };
-
-  const tagDeleteAction = (id: number) => {
-    return deleteTag(id);
   };
 
   const fetchTagCategories = async () => {
@@ -140,7 +135,6 @@ export function TagsAdmin() {
               cols={getTableContent(
                 () => setRefetchTrigger((prev) => prev + 1),
                 tagEditAction,
-                tagDeleteAction,
               )}
               values={parseODataTags(tags)}
               className="table-tags"

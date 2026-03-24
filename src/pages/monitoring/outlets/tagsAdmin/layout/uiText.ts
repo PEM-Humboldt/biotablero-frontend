@@ -40,6 +40,8 @@ export const uiText = {
     create: "Crear etiqueta",
     creating: "Creando etiqueta...",
     editTitle: "Editar etiqueta",
+    update: "Actualizar etiqueta",
+    updating: "Actualizando...",
   },
 
   form: {
@@ -53,6 +55,11 @@ export const uiText = {
       categoryIdRequired: "Se requiere seleccionar una categoría",
       nameRequired: "La etiqueta requiere un nombre",
     },
+
+    placeholders: {
+      tagName: "Nombre de la etiqueta",
+      tagUrl: "https://ejemplo.co",
+    }
   },
 
   toast: {
