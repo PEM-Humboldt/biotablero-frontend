@@ -18,7 +18,7 @@ export interface seDetails {
 
 export type SEKey = "paramo" | "tropicalDryForest" | "wetland";
 
-export const SE_LABELS: Record<SEKey, string> = {
+export const SELabels: Record<SEKey, string> = {
   paramo: "Páramo",
   tropicalDryForest: "Bosque Seco Tropical",
   wetland: "Humedal",
