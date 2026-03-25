@@ -16,7 +16,9 @@ export interface seDetails {
   total_area: string;
 }
 
-export type SEKey = "paramo" | "tropicalDryForest" | "wetland";
+export const SETypes = ["paramo", "tropicalDryForest", "wetland"] as const;
+
+export type SEKey = (typeof SETypes)[number];
 
 export const SELabels: Record<SEKey, string> = {
   paramo: "Páramo",
@@ -28,8 +30,5 @@ export interface SEData {
   type: SEKey;
   area: number;
   values: Record<string, number>;
-}
-
-export interface SEDataExtended extends SEData {
   percentage: number;
 }

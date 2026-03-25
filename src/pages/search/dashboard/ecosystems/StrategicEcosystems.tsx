@@ -97,7 +97,7 @@ export function StrategicEcosystems({
     controller.setArea(areaTypeId, areaIdId);
 
     controller
-      .getStrategicEcosystemsValues()
+      .getStrategicEcosystemsValues(areaHa)
       .then((res) => {
         dispatch({ type: "LOAD_SUCCESS", payload: res });
       })

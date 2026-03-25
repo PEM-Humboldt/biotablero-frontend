@@ -1,6 +1,5 @@
 import SearchAPI from "pages/search/api/searchAPI";
-import { CancelTokenSource } from "axios";
-import { SEData } from "pages/search/types/ecosystems";
+import { SEData, SETypes } from "pages/search/types/ecosystems";
 
 /**
  * Controller for Strategic Ecosystems Component
@@ -26,30 +25,29 @@ export class StrategicEcosystemsController {
    *
    * @returns { Promise<SmallStackedBarData[]>}
    */
-  async getStrategicEcosystemsValues(): Promise<SEData[]> {
-    const keys = ["paramo", "tropicalDryForest", "wetland"] as const;
-
-    const requests = keys.map((key) =>
-      SearchAPI.requestMetricsValues<typeof key>(key, this.areaId),
+  async getStrategicEcosystemsValues(areaHa: number): Promise<SEData[]> {
+    const requests = SETypes.map((key) =>
+      SearchAPI.requestMetricsValues(key, this.areaId),
     );
 
     const responses = await Promise.all(requests);
 
-    const result: SEData[] = responses.map((res, index) => {
+    return responses.map((res, index) => {
       const { id, ...values } = res;
 
-      const totalArea = Object.values(values).reduce(
+      const SEArea = Object.values(values).reduce(
         (acc, value) => acc + value,
         0,
       );
 
+      const percentage = areaHa > 0 ? SEArea / areaHa : 0;
+
       return {
-        type: keys[index],
-        area: Number(totalArea),
+        type: SETypes[index],
+        area: Number(SEArea),
+        percentage,
         values,
       };
     });
-
-    return result;
   }
 }
