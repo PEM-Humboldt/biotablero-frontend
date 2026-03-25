@@ -161,7 +161,7 @@ export function StrategicEcosystems({
         <div className="ecosystems">
           {areas.map((SEValues) => {
             const hasArea = SEValues.area > 0;
-            const SEData = transformSEValues(SEValues, SETotalArea);
+            const SEChartData = transformSEValues(SEValues, SETotalArea);
 
             return (
               <div className="mb10" key={SEValues.type}>
@@ -193,7 +193,7 @@ export function StrategicEcosystems({
                 {hasArea && (
                   <SmallStackedBar
                     loadStatus={null}
-                    data={SEData}
+                    data={SEChartData}
                     units="ha"
                     colors={(key) =>
                       matchColor("se")(key) || colorPalettes.default[0]
