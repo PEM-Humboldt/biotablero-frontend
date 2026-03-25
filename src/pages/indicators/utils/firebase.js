@@ -5,26 +5,17 @@ import {
   doc,
   getDocs,
   getDoc,
-  query,
-  where,
 } from "firebase/firestore/lite";
 
-const {
-  VITE_API_KEY: apiKey,
-  VITE_DOMAIN: authDomain,
-  VITE_PROJECT_ID: projectId,
-  VITE_STORAGE_BUCKET: storageBucket,
-  VITE_SENDER_ID: messagingSenderId,
-  VITE_APP_ID: appId,
-} = import.meta.env;
-
 const config = {
-  apiKey,
-  authDomain,
-  projectId,
-  storageBucket,
-  messagingSenderId,
-  appId,
+  apiKey: window._env_?.VITE_API_KEY || import.meta.env.VITE_API_KEY,
+  authDomain: window._env_?.VITE_DOMAIN || import.meta.env.VITE_DOMAIN,
+  projectId: window._env_?.VITE_PROJECT_ID || import.meta.env.VITE_PROJECT_ID,
+  storageBucket:
+    window._env_?.VITE_STORAGE_BUCKET || import.meta.env.VITE_STORAGE_BUCKET,
+  messagingSenderId:
+    window._env_?.VITE_SENDER_ID || import.meta.env.VITE_SENDER_ID,
+  appId: window._env_?.VITE_APP_ID || import.meta.env.VITE_APP_ID,
 };
 
 let firestore = null;
