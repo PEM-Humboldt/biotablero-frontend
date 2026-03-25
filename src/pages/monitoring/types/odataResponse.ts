@@ -107,7 +107,24 @@ export type UserInInitiative = {
   users: InitiativeUser[];
 };
 
+// NOTE: Etiquetas
+export interface ODataTag extends HasId {
+  id: number;
+  name: string;
+  url?: string;
+  category: {
+    id: number;
+    name: string;
+  };
+  categoryName: string;
+}
+
+export interface TagEntryShort extends Omit<ODataTag, "categoryName"> {
+  categoryName: string;
+}
+
 export type ODataLog = ODataResponse<ODataLogEntryShort>;
 export type ODataInitiative = ODataResponse<ODataInitiativeShortEntry>;
 export type ODataUserRequest = ODataResponse<ODataInitiativeUserRequest>;
 export type ODataUserInfo = ODataResponse<ODataUser>;
+export type ODataTagInfo = ODataResponse<ODataTag>;

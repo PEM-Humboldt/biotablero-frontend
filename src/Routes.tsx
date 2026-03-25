@@ -12,6 +12,7 @@ import type { UserType } from "@appTypes/user";
 import { Logs } from "pages/monitoring/outlets/Logs";
 import { InitiativesAdmin } from "pages/monitoring/outlets/InitiativesAdmin";
 import { InitiativesManagement } from "pages/monitoring/outlets/InitiativesManagement";
+import { TagsAdmin } from "pages/monitoring/outlets/TagsAdmin";
 
 const randomNum = (_user: UserType) => {
   return new Promise((resolve) => {
@@ -86,6 +87,15 @@ export const routes = createBrowserRouter([
           {
             path: "administrarIniciativas",
             Component: InitiativesAdmin,
+            loader: () =>
+              checkNLoad({
+                requirements: { roles: ["Admin"] },
+                redirectPath: "/Monitoreo",
+              }),
+          },
+          {
+            path: "administrarEtiquetas",
+            Component: TagsAdmin,
             loader: () =>
               checkNLoad({
                 requirements: { roles: ["Admin"] },
