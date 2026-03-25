@@ -30,6 +30,7 @@ import { PlusIcon, UserRoundCheck } from "lucide-react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -253,11 +254,14 @@ export function TagFormButton({
         </DialogTrigger>
       )}
       <DialogContent className="max-h-[80vh] max-w-[60vh] flex flex-col p-4 md:p-8 overflow-hidden">
-        <div className="pb-2">
+        <div>
           <DialogHeader>
             <DialogTitle>
               {!tagId ? uiText.tag.createTitle : uiText.tag.editTitle}
             </DialogTitle>
+            <DialogDescription>
+              {uiText.tag.createOrUpdateDescription}
+            </DialogDescription>
           </DialogHeader>
         </div>
         <div className="grid grid-cols-1 gap-6 [&>p]:m-0 [&>p]:flex [&>p]:flex-col [&>p>span]:first:font-semibold [&>p>span]:first:text-primary">
@@ -265,7 +269,7 @@ export function TagFormButton({
             action=""
             onReset={handleFormReset}
             onSubmit={(e) => void handleSubmit(e)}
-            className="flex flex-col gap-2 p-6"
+            className="flex flex-col gap-2"
           >
             {!tagId && (
               <div>

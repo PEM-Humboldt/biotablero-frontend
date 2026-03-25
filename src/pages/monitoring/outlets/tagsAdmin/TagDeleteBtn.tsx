@@ -6,6 +6,7 @@ import {
   AlertDialog,
   AlertDialogCancel,
   AlertDialogContent,
+  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -105,10 +106,12 @@ export function TagDeleteButton({
             <AlertDialogTitle>
               {uiText.table.deleteBtn.dialog.title}
             </AlertDialogTitle>
+            <AlertDialogDescription>
+              {uiText.table.deleteBtn.dialog.description(formData.name)}
+            </AlertDialogDescription>
           </AlertDialogHeader>
         </div>
         <div className="grid grid-cols-1 gap-6 [&>p]:m-0 [&>p]:flex [&>p]:flex-col [&>p>span]:first:font-semibold [&>p>span]:first:text-primary">
-          {uiText.table.deleteBtn.dialog.description(formData.name)}
           <ErrorsList
             errorItems={errors.root ?? []}
             className="bg-red-50 p-4 mt-2 rounded-lg outline-2 outline-accent"

@@ -39,6 +39,7 @@ export const uiText = {
     createTitle: "Nueva etiqueta",
     create: "Crear etiqueta",
     creating: "Creando etiqueta...",
+    createOrUpdateDescription: "Ingresa la nueva información",
     editTitle: "Editar etiqueta",
     update: "Actualizar etiqueta",
     updating: "Actualizando...",
