@@ -23,7 +23,6 @@ import colorPalettes from "pages/search/utils/colorPalettes";
 type State = {
   SEAreas: SEData[];
   SETotalArea: number;
-  activeSE: string;
   loading: boolean;
   noData: boolean;
   toggleInfo: () => void;
@@ -33,7 +32,6 @@ type State = {
 const initialState: State = {
   SEAreas: [],
   SETotalArea: 0,
-  activeSE: "",
   loading: true,
   noData: false,
   toggleInfo: () => {},
@@ -58,9 +56,6 @@ function reducer(state: State, action: Action): State {
 
     case "LOAD_FAIL":
       return { ...state, loading: false, noData: true };
-
-    case "SET_ACTIVE":
-      return { ...state, activeSE: action.payload };
 
     case "TOGGLE_INFO_GRAPH":
       return {
@@ -88,8 +83,7 @@ export function StrategicEcosystems({
 }: Props) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const { SEAreas, SETotalArea, activeSE, loading, noData, showInfoGraph } =
-    state;
+  const { SEAreas, SETotalArea, loading, noData, showInfoGraph } = state;
 
   const controller = new StrategicEcosystemsController();
 
@@ -172,20 +166,7 @@ export function StrategicEcosystems({
                 </div>
 
                 {hasArea && (
-                  <button
-                    className={`icongraph2 ${
-                      activeSE === SEValues.type
-                        ? "rotate-false"
-                        : "rotate-true"
-                    }`}
-                    type="button"
-                    onClick={() =>
-                      dispatch({
-                        type: "SET_ACTIVE",
-                        payload: SEValues.type,
-                      })
-                    }
-                  >
+                  <button className="rotate-false" type="button">
                     <ExpandMoreIcon />
                   </button>
                 )}
