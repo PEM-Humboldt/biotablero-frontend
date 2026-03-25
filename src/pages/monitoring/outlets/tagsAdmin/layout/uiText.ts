@@ -54,12 +54,13 @@ export const uiText = {
     validation: {
       categoryIdRequired: "Se requiere seleccionar una categoría",
       nameRequired: "La etiqueta requiere un nombre",
+      invalidUrl: "URL inválida",
     },
 
     placeholders: {
       tagName: "Nombre de la etiqueta",
       tagUrl: "https://ejemplo.co",
-    }
+    },
   },
 
   toast: {

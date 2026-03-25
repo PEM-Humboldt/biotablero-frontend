@@ -190,15 +190,15 @@ export function TagFormButton({
       category: (!tagId ? formData.category : {}) as TagCategory,
     };
 
-    const res: TagDataForm | ApiRequestError = {} as ApiRequestError;
+    let res: TagDataForm | ApiRequestError = {} as ApiRequestError;
 
     if (tagId) {
       if (editTagAction) {
-        await editTagAction(tagId, payload);
+        res = await editTagAction(tagId, payload);
       }
     } else {
       if (createTagAction) {
-        await createTagAction(payload);
+        res = await createTagAction(payload);
       }
     }
 

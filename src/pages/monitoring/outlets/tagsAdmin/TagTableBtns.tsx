@@ -28,10 +28,7 @@ export function TagTableButtons({
         onActionSuccess={onActionSuccess}
         editTagAction={tagEditAction}
       />
-      <TagDeleteButton
-        value={tagId}
-        onActionSuccess={onActionSuccess}
-      />
+      <TagDeleteButton value={tagId} onActionSuccess={onActionSuccess} />
     </>
   );
 }
