@@ -226,12 +226,11 @@ export function TagFormButton({
     onActionSuccess?.();
   };
 
-  const submitButtonText = () => {
+  const getSubmitButtonText = () => {
     if (isLoading) {
       return !tagId ? uiText.tag.creating : uiText.tag.updating;
-    } else {
-      return !tagId ? uiText.tag.create : uiText.tag.update;
     }
+    return !tagId ? uiText.tag.create : uiText.tag.update;
   };
 
   return (
@@ -409,7 +408,7 @@ export function TagFormButton({
                     isLoading || (!tagId && tagCategories?.length === 0)
                   }
                 >
-                  {submitButtonText()}
+                  {getSubmitButtonText()}
                 </Button>
                 {!tagId && (
                   <Button
