@@ -90,9 +90,7 @@ export function Combobox<T>({
             className={cn(!maxItems ? "overflow-y-auto max-h-[300px]" : "")}
             style={maxItems ? { maxHeight: `${45 * maxItems}px` } : undefined}
           >
-            {uiText.itemNotFound !== "" && (
-              <CommandEmpty>{uiText.itemNotFound}</CommandEmpty>
-            )}
+            <CommandEmpty>{uiText.itemNotFound}</CommandEmpty>
             <CommandGroup>
               {items.map((item) => {
                 const itemValueStr = String(item[itemValue]);

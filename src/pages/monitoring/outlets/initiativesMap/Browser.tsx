@@ -15,7 +15,6 @@ import { JoinInitiativeRequestButton } from "pages/monitoring/ui/JoinInitiativeR
 
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { ComboboxOData } from "@ui/ComboboxOData";
-import { InitiativeFullInfo } from "pages/monitoring/types/initiative";
 
 export function Browser() {
   // NOTE: Esto es para poder probar el botón de solicitud de ingreso,
@@ -28,7 +27,6 @@ export function Browser() {
   const [value, setValue] = useState<string>("");
   const [value2, setValue2] = useState<string>("");
 
-  console.log(value);
   useEffect(() => {
     const fetchInitiatives = async () => {
       const initiatives = await getInitiatives({ orderby: "id desc" });

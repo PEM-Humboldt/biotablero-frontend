@@ -14,6 +14,7 @@ type ComboboxODataProps<T> = {
   setValue: React.Dispatch<React.SetStateAction<string>>;
   sources: (keyof T)[];
   oDataEntity?: string;
+  loadOnEmpty?: boolean;
   sourceProcess: (oDataResponse: T[]) => { value: string; label: string }[];
   fixedSearchParams?: ODataParams;
   maxItems: number; // items de top
@@ -38,6 +39,7 @@ type ComboboxODataProps<T> = {
  * @param endpoint - The API path for the OData service.
  * @param sources - Entity fields used to build the `contains` filter logic.
  * @param oDataEntity - Optional collection name for nested `any()` lambda queries.
+ * @param loadOnEmpty - Optional, if true load load the items returned by the endpoint with no filter, it defaults to false.
  * @param sourceProcess - Callback to transform OData items into `{ value, label }` format.
  * @param fixedSearchParams - Static parameters (like $expand) merged into every request.
  * @param maxItems - The $top limit for API results.
@@ -59,6 +61,7 @@ export function ComboboxOData<T>({
   endpoint,
   sources,
   oDataEntity,
+  loadOnEmpty = false,
   sourceProcess,
   fixedSearchParams,
   maxItems,
@@ -69,9 +72,11 @@ export function ComboboxOData<T>({
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [items, setItems] = useState<{ value: string; label: string }[]>([]);
-  const [searchParams, setSearchParams] = useState<ODataParams>(
-    fixedSearchParams ?? {},
-  );
+  const [writing, setWriting] = useState(false);
+  const [searchParams, setSearchParams] = useState<ODataParams>({
+    ...(fixedSearchParams ?? {}),
+    top: maxItems,
+  });
 
   const makeODataSearchString = (searchValue: string) => {
     if (searchValue === "") {
@@ -95,7 +100,7 @@ export function ComboboxOData<T>({
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!searchParams.filter) {
+      if (loadOnEmpty && !searchParams.filter) {
         setItems([]);
         return;
       }
@@ -109,6 +114,7 @@ export function ComboboxOData<T>({
         options: { oData: searchParams },
       });
 
+      setWriting(false);
       if (isMonitoringAPIError(res)) {
         setErrors(res.data.map((err) => err.msg));
         setIsLoading(false);
@@ -121,11 +127,11 @@ export function ComboboxOData<T>({
     };
 
     void fetchData();
-  }, [endpoint, searchParams, sourceProcess]);
+  }, [endpoint, loadOnEmpty, searchParams, sourceProcess]);
 
   const handleSearch = useRef(
     debouncer((searchString: string) => {
-      if (searchString.trim() === "") {
+      if (loadOnEmpty && searchString.trim() === "") {
         setItems([]);
         setSearchParams((prev) => {
           const { filter: _, ...rest } = prev;
@@ -133,6 +139,7 @@ export function ComboboxOData<T>({
         });
         return;
       }
+
       setSearchParams((oldParams) => ({
         ...oldParams,
         top: maxItems,
@@ -150,7 +157,10 @@ export function ComboboxOData<T>({
         value={value}
         setValue={setValue}
         maxItems={maxItems}
-        onSearchChange={handleSearch}
+        onSearchChange={(w) => {
+          setWriting(true);
+          handleSearch(w);
+        }}
         keys={{ forValue: "value", forLabel: "label" }}
         uiText={{
           itemNotFound: !searchParams.filter ? "" : uiText.itemNotFound,
@@ -159,7 +169,7 @@ export function ComboboxOData<T>({
         }}
         disabled={disabled || isLoading}
         className={className}
-        icon={isLoading ? Ellipsis : Search}
+        icon={writing ? Ellipsis : Search}
       />
     </>
   );
