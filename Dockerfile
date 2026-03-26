@@ -1,18 +1,26 @@
+ARG NODE_IMG_TAG=22-alpine
+ARG BUILD_CMD=build
+
 # Build stage
-FROM node:22-alpine AS build
+FROM node:$NODE_IMG_TAG AS build
 
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 ENV NPM_CONFIG_LOGLEVEL=warn
 WORKDIR /app
 
-COPY . .
+COPY package.json .
+COPY pnpm-lock.yaml .
 
 RUN pnpm install --frozen-lockfile
-RUN pnpm build
+
+COPY . .
+
+ARG BUILD_CMD
+RUN pnpm $BUILD_CMD
 
 # Release stage
-FROM node:22-alpine AS release
+FROM node:$NODE_IMG_TAG AS release
 
 WORKDIR /app
 
@@ -20,5 +28,9 @@ COPY --from=build /app/dist ./dist
 
 RUN npm install -g serve@~13.0.0
 
+COPY generate-env.sh /generate-env.sh
+RUN chmod +x /generate-env.sh
+
 EXPOSE 5000
+ENTRYPOINT ["/generate-env.sh"]
 CMD [ "serve", "-p", "5000", "-s", "dist" ]

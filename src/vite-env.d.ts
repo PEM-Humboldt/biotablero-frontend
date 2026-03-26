@@ -19,6 +19,10 @@ interface ImportMetaEnv {
   readonly VITE_KC_CLIENT: string;
 }
 
+interface Window {
+  _env_: ImportMetaEnv;
+}
+
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }

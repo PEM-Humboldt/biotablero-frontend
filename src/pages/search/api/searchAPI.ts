@@ -5,6 +5,10 @@ import { MetricTypesMap, MetricsTypes } from "pages/search/types/metrics";
 import * as geojson from "geojson";
 
 class SearchAPI {
+  static readonly backEndUrl =
+    window._env_?.VITE_SEARCH_BACKEND_URL ||
+    import.meta.env.VITE_SEARCH_BACKEND_URL;
+
   /**
    * Check if search backend is up
    */
@@ -124,7 +128,7 @@ class SearchAPI {
       ...options,
     };
     return axios
-      .get(`${import.meta.env.VITE_SEARCH_BACKEND_URL}/${endpoint}`, config)
+      .get(`${this.backEndUrl}/${endpoint}`, config)
       .then((res) => {
         if (completeRes) {
           return res;
@@ -158,11 +162,7 @@ class SearchAPI {
       ...options,
     };
     return axios
-      .post(
-        `${import.meta.env.VITE_SEARCH_BACKEND_URL}/${endpoint}`,
-        requestBody,
-        config,
-      )
+      .post(`${this.backEndUrl}/${endpoint}`, requestBody, config)
       .then((res) => res.data)
       .catch((error) => {
         let message = "Bad POST response. Try later";

@@ -78,7 +78,7 @@ class GeoServerAPI {
    * Request the base layer 'Regiones_geb'
    */
   static getRequestURL() {
-    return `${import.meta.env.VITE_GEOSERVER_URL}`;
+    return `${window._env_?.VITE_GEOSERVER_URL || import.meta.env.VITE_GEOSERVER_URL}`;
   }
 
   /**
