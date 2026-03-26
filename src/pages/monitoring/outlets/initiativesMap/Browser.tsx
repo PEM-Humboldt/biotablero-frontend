@@ -72,12 +72,14 @@ export function Browser() {
             label: item.name,
           }))
         }
+        loadOnEmpty={false}
         fixedSearchParams={{ orderby: "name asc" }}
         maxItems={4}
         uiText={{
           itemNotFound: "no se encuentra la iniciativa",
           trigger: "Buscar iniciativa",
           inputPlaceholder: "Escribe el nombre de la iniciativa",
+          onEmptySearch: "Escribe para iniciar la búsqueda",
         }}
       />
 
@@ -92,6 +94,7 @@ export function Browser() {
             label: item.name,
           }))
         }
+        loadOnEmpty={true}
         fixedSearchParams={{ orderby: "name asc" }}
         maxItems={4}
         uiText={{

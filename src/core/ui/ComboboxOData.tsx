@@ -23,6 +23,7 @@ type ComboboxODataProps<T> = {
     itemNotFound: string;
     trigger: string;
     inputPlaceholder: string;
+    onEmptySearch?: string;
   };
   className?: string;
 };
@@ -61,7 +62,7 @@ export function ComboboxOData<T>({
   endpoint,
   sources,
   oDataEntity,
-  loadOnEmpty = false,
+  loadOnEmpty = true,
   sourceProcess,
   fixedSearchParams,
   maxItems,
@@ -100,7 +101,7 @@ export function ComboboxOData<T>({
 
   useEffect(() => {
     const fetchData = async () => {
-      if (loadOnEmpty && !searchParams.filter) {
+      if (!loadOnEmpty && !searchParams.filter) {
         setItems([]);
         return;
       }
@@ -131,7 +132,7 @@ export function ComboboxOData<T>({
 
   const handleSearch = useRef(
     debouncer((searchString: string) => {
-      if (loadOnEmpty && searchString.trim() === "") {
+      if (!loadOnEmpty && searchString.trim() === "") {
         setItems([]);
         setSearchParams((prev) => {
           const { filter: _, ...rest } = prev;
@@ -163,7 +164,10 @@ export function ComboboxOData<T>({
         }}
         keys={{ forValue: "value", forLabel: "label" }}
         uiText={{
-          itemNotFound: !searchParams.filter ? "" : uiText.itemNotFound,
+          itemNotFound:
+            !loadOnEmpty && !searchParams.filter
+              ? (uiText?.onEmptySearch ?? "")
+              : uiText.itemNotFound,
           trigger: uiText.trigger,
           inputPlaceholder: uiText.inputPlaceholder,
         }}
