@@ -5,6 +5,10 @@ import { MetricTypesMap, MetricsTypes } from "pages/search/types/metrics";
 import * as geojson from "geojson";
 
 class SearchAPI {
+  static readonly backEndUrl =
+    window._env_?.VITE_SEARCH_BACKEND_URL ||
+    import.meta.env.VITE_SEARCH_BACKEND_URL;
+
   /**
    * Check if search backend is up
    */
@@ -96,37 +100,16 @@ class SearchAPI {
   static requestMetricsLayer(
     metricId: MetricsTypes,
     itemId: string,
-    category: number,
+    class_id: string,
     polygonId: number,
   ): RasterAPIObject {
     const source = axios.CancelToken.source();
     return {
       request: SearchAPI.makeGetRequest(
-        `metrics/${metricId}/layer?item_id=${itemId}&polygon_id=${polygonId}&category=${category}`,
+        `metrics/${metricId}/layer?item_id=${itemId}&polygon_id=${polygonId}&class_id=${class_id}`,
       ),
       source: source,
     };
-  }
-
-  /**
-   * Get layer image data
-   * @param url Layer image url
-   * @returns Blob image data
-   */
-  static getLayerData(response: { layer: string }): Promise<Blob> {
-    return axios
-      .get(response.layer, {
-        responseType: "blob",
-      })
-      .then((response) => {
-        return response.data;
-      })
-      .catch((error) => {
-        let message = "Bad GET response. Try later";
-        if (error.request && error.request.statusText === "")
-          message = "no-data-available";
-        return Promise.reject(message);
-      });
   }
 
   /** ************** */
@@ -145,7 +128,7 @@ class SearchAPI {
       ...options,
     };
     return axios
-      .get(`${import.meta.env.VITE_SEARCH_BACKEND_URL}/${endpoint}`, config)
+      .get(`${this.backEndUrl}/${endpoint}`, config)
       .then((res) => {
         if (completeRes) {
           return res;
@@ -179,11 +162,7 @@ class SearchAPI {
       ...options,
     };
     return axios
-      .post(
-        `${import.meta.env.VITE_SEARCH_BACKEND_URL}/${endpoint}`,
-        requestBody,
-        config,
-      )
+      .post(`${this.backEndUrl}/${endpoint}`, requestBody, config)
       .then((res) => res.data)
       .catch((error) => {
         let message = "Bad POST response. Try later";

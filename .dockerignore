@@ -21,3 +21,9 @@ node_modules
 packages/**/.cache
 packages/**/node_modules
 packages/**/dist
+
+.env**
+.dist/
+.vscode/
+.sonarqube/
+LICENSE

@@ -52,7 +52,7 @@ export function ImagesUpdater({
 
   const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    if (isLoading || !sectionInfo.current) {
+    if (isLoading || !sectionInfo.current || !initiativeId) {
       return;
     }
 

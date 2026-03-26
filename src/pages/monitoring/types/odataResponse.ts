@@ -154,8 +154,27 @@ export type TerritoryStoryShort = {
   videos?: Omit<VideoObjectTS, "territoryStoryId">[];
 };
 
+// NOTE: Etiquetas
+interface TagCategory extends HasId {
+  id: number;
+  name: string;
+}
+
+export interface ODataTag extends HasId {
+  id: number;
+  name: string;
+  url?: string;
+  category: TagCategory;
+  categoryName: string;
+}
+
+export interface TagEntryShort extends Omit<ODataTag, "categoryName"> {
+  categoryName: string;
+}
+
 export type ODataLog = ODataResponse<ODataLogEntryShort>;
 export type ODataInitiative = ODataResponse<ODataInitiativeShortEntry>;
 export type ODataUserRequest = ODataResponse<ODataInitiativeUserRequest>;
 export type ODataUserInfo = ODataResponse<ODataUser>;
 export type ODataTerritoryStory = ODataResponse<TerritoryStoryShort>;
+export type ODataTagInfo = ODataResponse<ODataTag>;

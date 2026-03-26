@@ -22,7 +22,7 @@ interface Props {
   messages: MessageWrapperType;
   areaIdStr: string;
   onClickGraph: (id: string) => void;
-  resetActiveSE: () => void;
+  resetActiveSE?: () => void;
 }
 
 export function Coverage({

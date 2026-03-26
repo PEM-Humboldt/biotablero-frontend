@@ -11,7 +11,7 @@ import { checkNLoad } from "@utils/userLoader";
 import { Logs } from "pages/monitoring/outlets/Logs";
 import { InitiativesAdmin } from "pages/monitoring/outlets/InitiativesAdmin";
 import { InitiativesManagement } from "pages/monitoring/outlets/InitiativesManagement";
-import { InitiativeError } from "pages/monitoring/outlets/initiatives/InitiativeError";
+import { TagsAdmin } from "pages/monitoring/outlets/TagsAdmin";
 
 export const routes = createBrowserRouter([
   {
@@ -58,6 +58,15 @@ export const routes = createBrowserRouter([
           {
             path: "administrarIniciativas",
             Component: InitiativesAdmin,
+            loader: () =>
+              checkNLoad({
+                requirements: { roles: ["Admin"] },
+                redirectPath: "/Monitoreo",
+              }),
+          },
+          {
+            path: "administrarEtiquetas",
+            Component: TagsAdmin,
             loader: () =>
               checkNLoad({
                 requirements: { roles: ["Admin"] },

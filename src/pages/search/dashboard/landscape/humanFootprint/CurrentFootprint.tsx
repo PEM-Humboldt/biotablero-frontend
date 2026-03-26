@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useReducer } from "react";
+import { useContext, useEffect, useReducer } from "react";
 
 import InfoIcon from "@mui/icons-material/Info";
 
@@ -11,7 +11,6 @@ import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
 import { matchColor } from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
-import SearchAPI from "pages/search/api/searchAPI";
 import TextBoxes from "@ui/TextBoxes";
 
 import {
@@ -24,12 +23,13 @@ import { CurrentFootprintController } from "pages/search/dashboard/landscape/hum
 import { RasterLayer } from "pages/search/types/layers";
 import { textsObject } from "pages/search/types/texts";
 import colorPalettes from "pages/search/utils/colorPalettes";
+import { formatNumber } from "@utils/format";
 
 interface State {
   showInfoGraph: boolean;
   period: string;
   hfCurrent: LargeStackedBarData[];
-  hfCurrentValue: string;
+  hfCurrentValue: number;
   hfCurrentCategory: string;
   message: MessageWrapperType;
   texts: { hfCurrent: textsObject };
@@ -38,17 +38,20 @@ interface State {
 
 type Action =
   | { type: "TOGGLE_INFO_GRAPH" }
-  | { type: "SET_PERIOD"; payload: string }
-  | { type: "SET_HF_CURRENT"; payload: LargeStackedBarData[] }
-  | { type: "SET_MESSAGE"; payload: MessageWrapperType }
-  | { type: "SET_TEXTS"; payload: textsObject }
-  | { type: "SET_LAYERS"; payload: RasterLayer[] };
+  | {
+      type: "AVERAGE_SUCCEEDED";
+      payload: { id: string; average: number; category: string };
+    }
+  | { type: "CURRENTHF_LAYERS_SUCCEEDED"; payload: RasterLayer[] }
+  | { type: "CURRENTHF_VALUES_SUCCEEDED"; payload: LargeStackedBarData[] }
+  | { type: "CURRENTHF_VALUES_FAILED" }
+  | { type: "SET_TEXTS"; payload: textsObject };
 
 const initialState: State = {
   showInfoGraph: true,
   period: "",
   hfCurrent: [],
-  hfCurrentValue: "0",
+  hfCurrentValue: 0,
   hfCurrentCategory: "",
   message: "loading",
   texts: {
@@ -70,22 +73,25 @@ function reducer(state: State, action: Action): State {
         showInfoGraph: !state.showInfoGraph,
       };
 
-    case "SET_PERIOD":
+    case "AVERAGE_SUCCEEDED":
       return {
         ...state,
-        period: action.payload,
+        period: action.payload.id,
+        hfCurrentValue: action.payload.average,
+        hfCurrentCategory: action.payload.category,
       };
 
-    case "SET_HF_CURRENT":
+    case "CURRENTHF_VALUES_SUCCEEDED":
       return {
         ...state,
         hfCurrent: action.payload,
+        message: null,
       };
 
-    case "SET_MESSAGE":
+    case "CURRENTHF_VALUES_FAILED":
       return {
         ...state,
-        message: action.payload,
+        message: "no-data",
       };
 
     case "SET_TEXTS":
@@ -94,7 +100,7 @@ function reducer(state: State, action: Action): State {
         texts: { hfCurrent: action.payload },
       };
 
-    case "SET_LAYERS":
+    case "CURRENTHF_LAYERS_SUCCEEDED":
       return {
         ...state,
         layers: action.payload,
@@ -124,46 +130,57 @@ export function CurrentFootprint() {
     hfCurrent,
     hfCurrentValue,
     hfCurrentCategory,
-    message,
     texts,
     layers,
   } = state;
 
   const controller = new CurrentFootprintController();
 
-  const areaTypeId = areaType!.id;
-  const areaIdId = areaId!.id.toString();
+  if (!areaType || !areaId) {
+    context.setLoadingLayer(false);
+    return;
+  }
+
+  const areaTypeId = areaType.id;
+  const areaIdId = areaId.id;
+
+  controller.setArea(areaTypeId, areaIdId);
 
   useEffect(() => {
     setLoadingLayer(true);
-    controller.setArea(areaTypeId, areaIdId);
 
-    SearchAPI.requestMetricsValues<"currentHF">("currentHF", Number(areaIdId))
-      .then((res) => {
-        const obtainedPeriod = res?.id ?? "";
+    controller.getCurrentHFAverage().then((res) => {
+      dispatch({ type: "AVERAGE_SUCCEEDED", payload: res });
+    });
+    controller
+      .getCurrentHFValues()
+      .then((currentHFValues) => {
+        controller
+          .getCurrentHFLayers()
+          .then((layersRes) => {
+            dispatch({
+              type: "CURRENTHF_LAYERS_SUCCEEDED",
+              payload: layersRes,
+            });
+            setRasterLayers(layersRes);
+            setLoadingLayer(false);
+            setMapTitle({
+              name: `HH promedio · ${period}`,
+            });
+          })
+          .catch((e) => {
+            if (e.toString() !== "Error: request canceled") {
+              setLayerError(e.toString());
+            }
+          });
 
         dispatch({
-          type: "SET_HF_CURRENT",
-          payload: controller.transformData(res),
+          type: "CURRENTHF_VALUES_SUCCEEDED",
+          payload: currentHFValues,
         });
-
-        dispatch({
-          type: "SET_PERIOD",
-          payload: obtainedPeriod,
-        });
-
-        dispatch({
-          type: "SET_MESSAGE",
-          payload: null,
-        });
-
-        switchLayer(obtainedPeriod);
       })
       .catch(() => {
-        dispatch({
-          type: "SET_MESSAGE",
-          payload: "no-data",
-        });
+        dispatch({ type: "CURRENTHF_VALUES_FAILED" });
       });
 
     BackendAPI.requestSectionTexts("hfCurrent")
@@ -176,12 +193,7 @@ export function CurrentFootprint() {
       .catch(() => {
         dispatch({
           type: "SET_TEXTS",
-          payload: {
-            info: "",
-            cons: "",
-            meto: "",
-            quote: "",
-          },
+          payload: { info: "", cons: "", meto: "", quote: "" },
         });
       });
 
@@ -189,27 +201,6 @@ export function CurrentFootprint() {
       controller.cancelActiveRequests();
     };
   }, [areaTypeId, areaIdId]);
-
-  const switchLayer = (period: string) => {
-    setLoadingLayer(true);
-
-    controller
-      .getCurrentHFLayers(period)
-      .then((layersRes) => {
-        dispatch({ type: "SET_LAYERS", payload: layersRes });
-        setRasterLayers(layersRes);
-        setLoadingLayer(false);
-
-        setMapTitle({
-          name: `HH promedio · ${period}`,
-        });
-      })
-      .catch((e) => {
-        if (e.toString() !== "Error: request canceled") {
-          setLayerError(e.toString());
-        }
-      });
-  };
 
   const toggleInfoGraph = () => {
     dispatch({ type: "TOGGLE_INFO_GRAPH" });
@@ -246,7 +237,7 @@ export function CurrentFootprint() {
       )}
 
       <div>
-        <h6>Huella humana promedio · 2018</h6>
+        <h6>Huella humana promedio · {period}</h6>
         <h5
           style={{
             backgroundColor:
@@ -254,7 +245,7 @@ export function CurrentFootprint() {
               colorPalettes.default[0],
           }}
         >
-          {hfCurrentValue}
+          {formatNumber(hfCurrentValue, 2)}
         </h5>
       </div>
 

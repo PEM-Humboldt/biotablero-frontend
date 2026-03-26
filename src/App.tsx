@@ -6,11 +6,15 @@ import "core/styles/main.css";
 import "core/styles/legacy.css";
 
 export function App() {
-  const yandexMetrikaId = Number(import.meta.env.VITE_YM_ID);
+  const yandexMetrikaId = Number(
+    window._env_?.VITE_YM_ID || import.meta.env.VITE_YM_ID,
+  );
+  const viteEnvironment =
+    window._env_?.VITE_ENVIRONMENT || import.meta.env.VITE_ENVIRONMENT;
 
   return (
     <>
-      {import.meta.env.VITE_ENVIRONMENT === "production" && (
+      {viteEnvironment === "production" && (
         <YMInitializer
           accounts={yandexMetrikaId ? [yandexMetrikaId] : []}
           options={{

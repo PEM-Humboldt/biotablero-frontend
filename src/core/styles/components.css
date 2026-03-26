@@ -28,7 +28,7 @@
     }
   }
 
-  /* NOTE: Para la tabla del log */
+  /* NOTE: Para la tabla de logs */
   .table-logs {
     @apply border border-primary/30 rounded-lg mb-2 overflow-hidden;
 
@@ -104,6 +104,47 @@
   .editor-nested-listitem > ol {
     margin-top: 4px;
     margin-bottom: 4px;
+  }
+  /* NOTE: Para la tabla de etiquetas */
+  .table-tags {
+    @apply border border-primary/30 rounded-lg mb-2 overflow-hidden;
+
+    & > table {
+      @apply table-fixed w-full bg-white;
+
+      & thead {
+        @apply bg-muted/30 [&_th]:py-1 border-b border-b-primary/30 text-left text-primary [&_th]:font-normal [&_th]:text-base;
+      }
+
+      & tr {
+        @apply hover:bg-muted;
+      }
+
+      & td,
+      & th {
+        @apply px-3 py-1;
+
+        /* NOTE: Col categoría */
+        &:first-child {
+          @apply w-[15%];
+        }
+
+        /* NOTE: Col nombre */
+        &:nth-child(2) {
+          @apply w-[25%];
+        }
+
+        /* NOTE: Col url */
+        &:nth-child(3) {
+          @apply w-[40%];
+        }
+
+        /* NOTE: Col acción */
+        &:last-child {
+          @apply w-[20%] text-center;
+        }
+      }
+    }
   }
 
   /* NOTE: Para inputs de lista */

@@ -57,10 +57,13 @@ async function makeAuthRequest(
   endpoint: string,
   params: AuthParams,
 ): Promise<AuthData | ApiRequestError> {
-  const url = `${import.meta.env.VITE_AUTH_BACKEND_URL}${endpoint}`;
+  const url = `${window._env_?.VITE_AUTH_BACKEND_URL || import.meta.env.VITE_AUTH_BACKEND_URL}${endpoint}`;
 
   const body = new URLSearchParams();
-  body.append("client_id", "bt-mc-client");
+  body.append(
+    "client_id",
+    window._env_?.VITE_KC_CLIENT || import.meta.env.VITE_KC_CLIENT,
+  );
   Object.entries(params).forEach(([key, value]) => body.append(key, value));
 
   const config = {

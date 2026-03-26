@@ -54,3 +54,8 @@ export const TERRITORY_STORY_IMG_MAX_HEIGHT = 900; // size in pixels
 export const TERRITORY_STORY_IMG_MIN_WIDTH = 300; // size in pixels
 export const TERRITORY_STORY_IMG_MIN_HEIGHT = 300; // size in pixels
 export const TERRITORY_STORY_YT_VID_MAX_AMOUNT = 6;
+
+// Tag admin
+export const TAG_NAME_MAX_LENGTH = 40;
+export const TAG_URL_MAX_LENGTH = 150;
+export const TAG_RECORDS_PER_PAGE = 20;
