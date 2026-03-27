@@ -25,6 +25,11 @@ export type ImagesData = {
   bannerUrl?: File | string | null;
 };
 
+export type TagData = {
+  id: number;
+  name: string;
+};
+
 export type LocationDataBasic = {
   locationId: number;
   locality?: string;

@@ -7,6 +7,7 @@ import type {
   ContactSRC,
   UserSRC,
   InitiativeAditionalInfo,
+  TagData,
 } from "pages/monitoring/types/initiative";
 import type { LocationCompleteInfo } from "pages/monitoring/types/odataResponse";
 
@@ -16,6 +17,7 @@ export type InitiativeDataForm = {
   contacts: InitiativeContact[];
   users: UserData[];
   images: ImagesData;
+  tags: TagData[];
 };
 
 // NOTE: tipos para los errores
@@ -30,6 +32,7 @@ export type InitiativeDataFormErr = {
   contacts: string[];
   users: string[];
   images: ErrorsImages;
+  tags: string[];
 };
 
 export type CardInfoGrouped = {

@@ -98,3 +98,21 @@ export async function deleteTag(id: number) {
 
   return res;
 }
+
+export async function addTagToInitiative(initiativeId: number, tagId: number) {
+  const res = await monitoringAPI({
+    type: "post",
+    endpoint: `InitiativeTag?initiativeId=${initiativeId}&tagId=${tagId}`,
+  });
+
+  return res;
+}
+
+export async function removeTagFromInitiative(tagInInitiativeId: number) {
+  const res = await monitoringAPI({
+    type: "delete",
+    endpoint: `InitiativeTag/${tagInInitiativeId}`,
+  });
+
+  return res;
+}

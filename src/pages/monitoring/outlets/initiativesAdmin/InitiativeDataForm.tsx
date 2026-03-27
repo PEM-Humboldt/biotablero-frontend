@@ -34,6 +34,8 @@ import {
 } from "pages/monitoring/ui/initiativesAdmin/utils/formObjectUpdate";
 import { fetchAndMakeLocationObj } from "pages/monitoring/ui/initiativesAdmin/utils/builders";
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
+import { addTagToInitiative } from "pages/monitoring/api/services/tags";
+import { TagsManger } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/TagsManager";
 
 export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
   const [formID, setformID] = useState(0);
@@ -68,7 +70,7 @@ export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
       return;
     }
 
-    const { general, images, ...rest } = { ...initiative.current };
+    const { general, images, tags, ...rest } = { ...initiative.current };
 
     const cleanGeneral = Object.fromEntries(
       Object.entries(general).filter(([_, value]) => Boolean(value)),
@@ -87,6 +89,17 @@ export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
       setIsLoading(false);
       return;
     }
+
+    const tagsToAdd = tags.map((tag) => addTagToInitiative(res.id, tag.id));
+    const tagsAdded = await Promise.all(tagsToAdd);
+    tagsAdded.forEach((tag) => {
+      if (isMonitoringAPIError(tag)) {
+        setErrors((oldErr) => ({
+          ...oldErr,
+          tags: [...(oldErr.tags ?? []), ...tag.data.map((t) => t.msg)],
+        }));
+      }
+    });
 
     const imagesToUpload = [
       { file: images.imageUrl, path: `initiative/UploadImage/${res.id}` },
@@ -175,6 +188,13 @@ export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
             validationErrors={errors?.users ?? []}
           />
         </div>
+
+        <TagsManger
+          title={uiText.initiative.module.images.title}
+          sectionInfo={initiative.current.tags}
+          sectionUpdater={handleFormUpdate("tags")}
+          validationErrorsObj={errors?.tags ?? []}
+        />
 
         <ImagesInput
           title={uiText.initiative.module.images.title}
