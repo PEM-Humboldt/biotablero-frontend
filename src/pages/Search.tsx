@@ -149,7 +149,7 @@ export function Search() {
 
     if (!searchState.areaType) {
       if (search !== "") {
-        void navigate(pathname);
+        void navigate({ pathname, search: "" }, { replace: true });
       }
       return;
     }
@@ -161,7 +161,7 @@ export function Search() {
     }
 
     if (params !== search) {
-      void navigate(params);
+      void navigate({ pathname, search: params }, { replace: true });
     }
   }, [searchState.areaType, searchState.areaId, search, navigate, pathname]);
 
@@ -173,6 +173,7 @@ export function Search() {
       newHeader: { title: "", subtitle: "" },
     });
     searchDispatch({ type: SearchUpdated.GO_BACK });
+    void navigate({ pathname, search: "" }, { replace: true });
   };
 
   const handleShowDrawControls = useCallback(
