@@ -17,6 +17,7 @@ type ComboboxODataProps<T> = {
   loadOnEmpty?: boolean;
   sourceProcess: (oDataResponse: T[]) => { value: string; label: string }[];
   fixedSearchParams?: ODataParams;
+  fixedFilter?: string;
   maxItems: number; // items de top
   disabled?: boolean;
   uiText: {
@@ -43,6 +44,7 @@ type ComboboxODataProps<T> = {
  * @param loadOnEmpty - Optional, if true load load the items returned by the endpoint with no filter, it defaults to false.
  * @param sourceProcess - Callback to transform OData items into `{ value, label }` format.
  * @param fixedSearchParams - Static parameters (like $expand) merged into every request.
+ * @param fixedFilter - Odata filter string injected with precedence to all querys
  * @param maxItems - The $top limit for API results.
  * @param disabled - Disables user interaction and visual state.
  * @param uiText - I18n object for not found messages, trigger labels, and placeholders.
@@ -65,6 +67,7 @@ export function ComboboxOData<T>({
   loadOnEmpty = true,
   sourceProcess,
   fixedSearchParams,
+  fixedFilter,
   maxItems,
   disabled,
   uiText,
@@ -81,7 +84,7 @@ export function ComboboxOData<T>({
 
   const makeODataSearchString = (searchValue: string) => {
     if (searchValue === "") {
-      return "";
+      return fixedFilter ? fixedFilter : "";
     }
 
     const alias = "l";
@@ -94,9 +97,17 @@ export function ComboboxOData<T>({
       filterStrings.push(base);
     }
 
-    return prefix
-      ? `${oDataEntity}/any(${alias}: ${filterStrings.join(" or ")})`
-      : filterStrings.join(" or ");
+    let lookFor: string = "";
+
+    if (filterStrings.length > 0) {
+      lookFor = prefix
+        ? `${oDataEntity}/any(${alias}: ${filterStrings.join(" or ")})`
+        : filterStrings.join(" or ");
+    }
+
+    return fixedFilter
+      ? `${fixedFilter} and ${!oDataEntity ? `(${lookFor})` : lookFor}`
+      : lookFor;
   };
 
   useEffect(() => {
