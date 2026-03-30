@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ODataParams, ODataResponse } from "@appTypes/odata";
 import { debouncer } from "@utils/debouncer";
 import { Combobox } from "@ui/ComboBox";
@@ -79,67 +79,78 @@ export function ComboboxOData<T>({
   const [writing, setWriting] = useState(false);
   const [searchParams, setSearchParams] = useState<ODataParams>({
     ...(fixedSearchParams ?? {}),
+    ...(fixedFilter ? { filter: fixedFilter } : {}),
     top: maxItems,
   });
 
-  const makeODataSearchString = (searchValue: string) => {
-    if (searchValue === "") {
-      return fixedFilter ? fixedFilter : "";
+  const makeODataSearchString = useCallback(
+    (searchValue: string) => {
+      if (searchValue === "") {
+        return fixedFilter ? fixedFilter : "";
+      }
+
+      const alias = "l";
+      const prefix = oDataEntity ? `${alias}/` : "";
+      const filterStrings: string[] = [];
+
+      for (const source of sources) {
+        const normalizaedSource = `tolower(${prefix}${source as string})`;
+        const base = `contains(${normalizaedSource}, '${searchValue.toLowerCase()}')`;
+        filterStrings.push(base);
+      }
+
+      let lookFor: string = "";
+
+      if (filterStrings.length > 0) {
+        lookFor = prefix
+          ? `${oDataEntity}/any(${alias}: ${filterStrings.join(" or ")})`
+          : filterStrings.join(" or ");
+      }
+
+      return fixedFilter
+        ? `${fixedFilter} and ${!oDataEntity ? `(${lookFor})` : lookFor}`
+        : lookFor;
+    },
+    [fixedFilter, oDataEntity, sources],
+  );
+
+  const fetchData = useCallback(async () => {
+    if (!loadOnEmpty && !searchParams.filter) {
+      setItems([]);
+      return;
     }
 
-    const alias = "l";
-    const prefix = oDataEntity ? `${alias}/` : "";
-    const filterStrings: string[] = [];
+    setIsLoading(true);
+    setErrors([]);
 
-    for (const source of sources) {
-      const normalizaedSource = `tolower(${prefix}${source as string})`;
-      const base = `contains(${normalizaedSource}, '${searchValue.toLowerCase()}')`;
-      filterStrings.push(base);
+    const res = await monitoringAPI<ODataResponse<T>>({
+      type: "get",
+      endpoint: endpoint,
+      options: { oData: searchParams },
+    });
+
+    setWriting(false);
+    if (isMonitoringAPIError(res)) {
+      setErrors(res.data.map((err) => err.msg));
+      setIsLoading(false);
+      setItems([]);
+      return;
     }
 
-    let lookFor: string = "";
-
-    if (filterStrings.length > 0) {
-      lookFor = prefix
-        ? `${oDataEntity}/any(${alias}: ${filterStrings.join(" or ")})`
-        : filterStrings.join(" or ");
-    }
-
-    return fixedFilter
-      ? `${fixedFilter} and ${!oDataEntity ? `(${lookFor})` : lookFor}`
-      : lookFor;
-  };
+    setIsLoading(false);
+    setItems(sourceProcess(res.value));
+  }, [endpoint, loadOnEmpty, searchParams, sourceProcess]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (!loadOnEmpty && !searchParams.filter) {
-        setItems([]);
-        return;
-      }
+    setSearchParams((prev) => ({
+      ...prev,
+      filter: makeODataSearchString(""),
+    }));
+  }, [makeODataSearchString]);
 
-      setIsLoading(true);
-      setErrors([]);
-
-      const res = await monitoringAPI<ODataResponse<T>>({
-        type: "get",
-        endpoint: endpoint,
-        options: { oData: searchParams },
-      });
-
-      setWriting(false);
-      if (isMonitoringAPIError(res)) {
-        setErrors(res.data.map((err) => err.msg));
-        setIsLoading(false);
-        setItems([]);
-        return;
-      }
-
-      setIsLoading(false);
-      setItems(sourceProcess(res.value));
-    };
-
+  useEffect(() => {
     void fetchData();
-  }, [endpoint, loadOnEmpty, searchParams, sourceProcess]);
+  }, [fetchData]);
 
   const handleSearch = useRef(
     debouncer((searchString: string) => {
