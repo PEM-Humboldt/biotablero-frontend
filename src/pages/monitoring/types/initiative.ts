@@ -2,6 +2,7 @@ import type { UserLevel } from "pages/monitoring/types/catalog";
 import type {
   LocationCompleteInfo,
   ODataInitiativeShortEntry,
+  TagInInitiative,
 } from "pages/monitoring/types/odataResponse";
 
 export type GeneralInfo = {
@@ -17,7 +18,7 @@ export type InitiativeAditionalInfo = {
   coordinate: [number, number];
   polygonArea: number;
   enabled: boolean;
-  tags: string[];
+  tags: TagInInitiative[];
 };
 
 export type ImagesData = {
@@ -80,6 +81,12 @@ export type LocationObj = {
   municipality: string | null;
   locality: string | null;
 };
+
+export function isTagInInitiative(
+  tag: TagData | TagInInitiative,
+): tag is TagInInitiative {
+  return "initiativeTagId" in tag;
+}
 
 export function isLocationObj(location: unknown): location is LocationObj {
   return (

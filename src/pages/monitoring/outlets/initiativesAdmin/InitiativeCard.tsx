@@ -33,8 +33,9 @@ import { UsersInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataF
 import { ContactInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/ContactInput";
 import { GeneralInfoUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/GeneralInfoUpdater";
 import { ImagesUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/ImagesUpdater";
-import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
+import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 import { AdminInitiativeUpdateCtx } from "pages/monitoring/ui/initiativesAdmin/hooks/useAdminUpdateContext";
+import { TagsUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/TagsUpdater";
 
 export function InitiativeCard({
   initiative,
@@ -103,13 +104,14 @@ export function InitiativeCard({
     if (!cardInfo) {
       return null;
     }
-    const { locations, users, contacts, ...rest } = cardInfo;
+    const { locations, users, contacts, tags, ...rest } = cardInfo;
     const { imageUrl, bannerUrl, ...general } = rest;
     return {
       id: general.id,
       general,
       locations,
       contacts,
+      tags,
 
       users: users.filter((user) => user.level.id === RoleInInitiative.LEADER),
       images: { imageUrl, bannerUrl },
@@ -209,6 +211,8 @@ export function InitiativeCard({
             backEndpoint="InitiativeUser"
           />
         </div>
+
+        <TagsUpdater title={uiText.initiative.module.images.title} />
 
         <ImagesUpdater
           title={uiText.initiative.module.images.title}

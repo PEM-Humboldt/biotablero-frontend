@@ -40,11 +40,12 @@ export type InitiativeDataFormErr = {
 
 export type CardInfoGrouped = {
   id: number;
-  general: GeneralInfo & Omit<InitiativeAditionalInfo, "id">;
+  general: GeneralInfo & Omit<InitiativeAditionalInfo, "id" | "tags">;
   locations: LocationCompleteInfo[];
   contacts: ContactSRC[];
   users: UserSRC[];
   images: ImagesData;
+  tags: TagInInitiative[];
 };
 
 // NOTE: Interfaz de los componentes del formulario

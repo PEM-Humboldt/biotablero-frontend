@@ -1,34 +1,40 @@
 import { useMemo, useState } from "react";
-import type { TagData } from "pages/monitoring/types/initiative";
+import { CirclePlus, XIcon } from "lucide-react";
+
 import { ComboboxOData } from "@ui/ComboboxOData";
+import { Button } from "@ui/shadCN/component/button";
+import { ErrorsList, LegendAndErrors } from "@ui/LabelingWithErrors";
+import { cn } from "@ui/shadCN/lib/utils";
+
+import {
+  isTagInInitiative,
+  type TagData,
+} from "pages/monitoring/types/initiative";
 import type {
   ODataTag,
   TagInInitiative,
 } from "pages/monitoring/types/odataResponse";
-import { Button } from "@ui/shadCN/component/button";
-import { ErrorsList, LegendAndErrors } from "@ui/LabelingWithErrors";
 import { PlainInputContainer } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/PlainInputContainer";
-import { CirclePlus, XIcon } from "lucide-react";
 import { initiativeTagCategories } from "pages/monitoring/ui/initiativesAdmin/layout/initiativeTagCategoties";
 import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
-import { cn } from "@ui/shadCN/lib/utils";
-
-function isTagInInitiative(
-  tag: TagData | TagInInitiative,
-): tag is TagInInitiative {
-  return "initiativeTagId" in tag;
-}
+import {
+  addTagToInitiative,
+  removeTagFromInitiative,
+} from "pages/monitoring/api/services/tags";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
 export function TagsManger({
   title,
   sectionInfo,
   sectionUpdater,
   validationErrors,
+  initiativeId,
 }: {
   title?: string;
   sectionInfo: (TagData | TagInInitiative)[];
   sectionUpdater: (value: (TagData | TagInInitiative)[]) => void;
   validationErrors: string[];
+  initiativeId: number | null;
 }) {
   const [tags, setTags] = useState<
     Record<number, (TagData | TagInInitiative)[]>
@@ -87,6 +93,7 @@ export function TagsManger({
               onTagsChange={updateTags(tagCategory)}
               maxTagsAmount={tagGroup.maxTagsAmount}
               texts={tagGroup.uiText}
+              initiativeId={initiativeId}
             />
           );
         })}
@@ -102,6 +109,7 @@ function TagSelector({
   onTagsChange,
   maxTagsAmount,
   texts,
+  initiativeId,
 }: {
   managerTitle: string;
   tagCategoryId: number;
@@ -109,6 +117,7 @@ function TagSelector({
   onTagsChange: (tags: (TagData | TagInInitiative)[]) => void;
   maxTagsAmount: number;
   texts: { itemNotFound: string; trigger: string; inputPlaceholder: string };
+  initiativeId: number | null;
 }) {
   const [value, setValue] = useState<string>("");
 
@@ -124,17 +133,39 @@ function TagSelector({
     return `${categoryPart}${exclusionPart}`;
   }, [tagCategoryId, selectedTags]);
 
-  const addTag = () => {
+  const addTag = async () => {
     if (value === "") {
       return;
     }
 
-    const [id, label] = value.split("|");
-    onTagsChange([...selectedTags, { id: Number(id), name: label }]);
+    const [tagId, label] = value.split("|");
+    let newTag: TagData | TagInInitiative = {
+      id: Number(tagId),
+      name: label,
+    };
+
+    if (initiativeId) {
+      const res = await addTagToInitiative(initiativeId, Number(tagId));
+      if (isMonitoringAPIError(res)) {
+        return;
+      }
+
+      newTag = res;
+    }
+
+    onTagsChange([...selectedTags, newTag]);
     setValue("");
   };
 
-  const removeTag = (tagId: number) => {
+  const removeTag = async (tagId: number, tagIdInInitiative: number | null) => {
+    if (tagIdInInitiative) {
+      const res = await removeTagFromInitiative(tagIdInInitiative);
+
+      if (isMonitoringAPIError(res)) {
+        return;
+      }
+    }
+
     onTagsChange(
       selectedTags.filter((tag) =>
         isTagInInitiative(tag) ? tag.tag.id !== tagId : tag.id !== tagId,
@@ -142,7 +173,7 @@ function TagSelector({
     );
   };
 
-  const handleTagCreation = (items: ODataTag[]) => {
+  const handleTagValueCreation = (items: ODataTag[]) => {
     return items.map((item) => ({
       value: `${item.id}|${item.name}`,
       label: item.name,
@@ -171,7 +202,8 @@ function TagSelector({
           )}
         >
           {selectedTags.map((t) => {
-            const tag = isTagInInitiative(t) ? t.tag : t;
+            const isUpdate = isTagInInitiative(t);
+            const tag = isUpdate ? t.tag : t;
 
             return (
               <li
@@ -185,7 +217,9 @@ function TagSelector({
                 <Button
                   type="button"
                   variant="link"
-                  onClick={() => removeTag(tag.id)}
+                  onClick={() =>
+                    void removeTag(tag.id, isUpdate ? t.initiativeTagId : null)
+                  }
                   className="w-6! h-6! text-primary-foreground"
                   title={uiTexts.removeTagBtn.title}
                 >
@@ -206,7 +240,7 @@ function TagSelector({
             setValue={setValue}
             endpoint="Tag"
             sources={["name"]}
-            sourceProcess={handleTagCreation}
+            sourceProcess={handleTagValueCreation}
             fixedSearchParams={{ orderby: "name asc" }}
             fixedFilter={filter}
             maxItems={maxTagsAmount}
@@ -215,7 +249,7 @@ function TagSelector({
           />
 
           <Button
-            onClick={addTag}
+            onClick={() => void addTag()}
             type="button"
             variant="outline"
             size="icon"

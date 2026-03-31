@@ -11,9 +11,10 @@ import {
 import type { UserItem } from "pages/monitoring/types/catalog";
 import { createInitiative } from "pages/monitoring/api/services/initiatives";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import type {
-  InitiativeContact,
-  LocationObj,
+import {
+  isTagInInitiative,
+  type InitiativeContact,
+  type LocationObj,
 } from "pages/monitoring/types/initiative";
 import type {
   InitiativeDataForm,
@@ -27,15 +28,16 @@ import { FormListManager } from "pages/monitoring/ui/initiativesAdmin/initiative
 import { LocationInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/LocationInput";
 import { ContactInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/ContactInput";
 import { UsersInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/UsersInput";
+import { TagsManger } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/TagsManager";
 import { ImagesInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/ImagesInput";
 import {
   makeInitialInfo,
   setFormField,
 } from "pages/monitoring/ui/initiativesAdmin/utils/formObjectUpdate";
 import { fetchAndMakeLocationObj } from "pages/monitoring/ui/initiativesAdmin/utils/builders";
+import { uiText as componentText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 import { addTagToInitiative } from "pages/monitoring/api/services/tags";
-import { TagsManger } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/TagsManager";
 
 export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
   const [formID, setformID] = useState(0);
@@ -59,23 +61,19 @@ export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
     event.preventDefault();
     setIsLoading(true);
 
-    // const currentErrors = validateFormClient(
-    //   initiative.current,
-    //   newInitiativeValidations,
-    // );
-    // setErrors(currentErrors);
-    //
-    // if (Object.keys(currentErrors).length > 0) {
-    //   setIsLoading(false);
-    //   return;
-    // }
+    const currentErrors = validateFormClient(
+      initiative.current,
+      newInitiativeValidations,
+    );
+    setErrors(currentErrors);
+
+    if (Object.keys(currentErrors).length > 0) {
+      setIsLoading(false);
+      return;
+    }
 
     const { general, images, tags, ...rest } = { ...initiative.current };
 
-    console.log(tags);
-
-    setIsLoading(false);
-    return;
     const cleanGeneral = Object.fromEntries(
       Object.entries(general).filter(([_, value]) => Boolean(value)),
     ) as Record<string, string>;
@@ -94,7 +92,9 @@ export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
       return;
     }
 
-    const tagsToAdd = tags.map((tag) => addTagToInitiative(res.id, tag.id));
+    const tagsToAdd = tags.map((tag) =>
+      addTagToInitiative(res.id, isTagInInitiative(tag) ? tag.tag.id : tag.id),
+    );
     const tagsAdded = await Promise.all(tagsToAdd);
     tagsAdded.forEach((tag) => {
       if (isMonitoringAPIError(tag)) {
@@ -139,22 +139,31 @@ export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
         className="flex flex-col gap-2 p-6"
       >
         <GeneralInfoInput
-          title={uiText.initiative.module.general.title}
+          title={componentText.initiative.module.general.title}
           sectionInfo={initiative.current.general}
           sectionUpdater={handleFormUpdate("general")}
           validationErrorsObj={errors?.general ?? {}}
         />
 
         <FormListManager
-          title={uiText.initiative.module.locations.title}
+          title={componentText.initiative.module.locations.title}
           initiativeSection={initiative.current.locations}
           AddItemComponent={LocationInput}
           maxItems={INITIATIVE_LOCATIONS_MAX_AMOUNT}
           renderCols={
             new Map<string, keyof LocationObj>([
-              [uiText.initiative.module.locations.tableCol[0], "department"],
-              [uiText.initiative.module.locations.tableCol[1], "municipality"],
-              [uiText.initiative.module.locations.tableCol[2], "locality"],
+              [
+                componentText.initiative.module.locations.tableCol[0],
+                "department",
+              ],
+              [
+                componentText.initiative.module.locations.tableCol[1],
+                "municipality",
+              ],
+              [
+                componentText.initiative.module.locations.tableCol[2],
+                "locality",
+              ],
             ])
           }
           renderRowCallback={fetchAndMakeLocationObj}
@@ -164,14 +173,14 @@ export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
 
         <div className="flex flex-col md:flex-row gap-2 items-start *:w-full">
           <FormListManager
-            title={uiText.initiative.module.contacts.title}
+            title={componentText.initiative.module.contacts.title}
             initiativeSection={initiative.current.contacts}
             AddItemComponent={ContactInput}
             maxItems={INITIATIVE_CONTACTS_MAX_AMOUNT}
             renderCols={
               new Map<string, keyof InitiativeContact>([
-                [uiText.initiative.module.contacts.tableCol[0], "email"],
-                [uiText.initiative.module.contacts.tableCol[1], "phone"],
+                [componentText.initiative.module.contacts.tableCol[0], "email"],
+                [componentText.initiative.module.contacts.tableCol[1], "phone"],
               ])
             }
             sectionUpdater={handleFormUpdate("contacts")}
@@ -179,13 +188,16 @@ export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
           />
 
           <FormListManager
-            title={uiText.initiative.module.users.title}
+            title={componentText.initiative.module.users.title}
             initiativeSection={initiative.current.users}
             AddItemComponent={UsersInput}
             maxItems={INITIATIVE_LEADERS_MAX_AMOUNT}
             renderCols={
               new Map<string, keyof UserItem>([
-                [uiText.initiative.module.contacts.tableCol[0], "userName"],
+                [
+                  componentText.initiative.module.contacts.tableCol[0],
+                  "userName",
+                ],
               ])
             }
             sectionUpdater={handleFormUpdate("users")}
@@ -194,26 +206,14 @@ export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
         </div>
 
         <TagsManger
-          title={uiText.initiative.module.images.title}
-          sectionInfo={[
-            {
-              initiativeTagId: 7,
-              tag: {
-                id: 2,
-                name: "Especies",
-                category: {
-                  id: 3,
-                  name: "BiologicalGroup",
-                },
-              },
-            },
-          ]}
+          title={componentText.initiative.module.tags.title}
+          sectionInfo={initiative.current.tags}
           sectionUpdater={handleFormUpdate("tags")}
-          validationErrorsObj={errors?.tags ?? []}
+          validationErrors={errors?.tags ?? []}
         />
 
         <ImagesInput
-          title={uiText.initiative.module.images.title}
+          title={componentText.initiative.module.images.title}
           sectionInfo={initiative.current.images}
           sectionUpdater={handleFormUpdate("images")}
           validationErrorsObj={errors?.images ?? {}}
