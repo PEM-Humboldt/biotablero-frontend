@@ -15,252 +15,252 @@ overrides:
 
 dependencies:
   '@appigram/react-yandex-metrika':
-    specifier: ^2.8.9
-    version: 2.8.10(react@18.3.1)
+    specifier: 2.8.9
+    version: 2.8.9(react@18.3.1)
   '@emotion/react':
-    specifier: ~11.14.0
+    specifier: 11.14.0
     version: 11.14.0(@types/react@18.3.24)(react@18.3.1)
   '@emotion/styled':
-    specifier: ~11.14.1
+    specifier: 11.14.1
     version: 11.14.1(@emotion/react@11.14.0)(@types/react@18.3.24)(react@18.3.1)
   '@material-ui/core':
-    specifier: ^4.12.4
+    specifier: 4.12.4
     version: 4.12.4(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
   '@material-ui/icons':
-    specifier: ^4.11.3
+    specifier: 4.11.3
     version: 4.11.3(@material-ui/core@4.12.4)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
   '@mui/icons-material':
-    specifier: ~5.8.3
-    version: 5.8.4(@mui/material@5.8.7)(@types/react@18.3.24)(react@18.3.1)
+    specifier: 5.8.3
+    version: 5.8.3(@mui/material@5.8.3)(@types/react@18.3.24)(react@18.3.1)
   '@mui/material':
-    specifier: ~5.8.3
-    version: 5.8.7(@emotion/react@11.14.0)(@emotion/styled@11.14.1)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
+    specifier: 5.8.3
+    version: 5.8.3(@emotion/react@11.14.0)(@emotion/styled@11.14.1)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
   '@mui/styles':
-    specifier: ~5.8.3
-    version: 5.8.7(@types/react@18.3.24)(react@18.3.1)
+    specifier: 5.8.3
+    version: 5.8.3(@types/react@18.3.24)(react@18.3.1)
   '@nivo/axes':
-    specifier: ~0.79.0
+    specifier: 0.79.0
     version: 0.79.0(@nivo/core@0.79.0)(prop-types@15.8.1)(react-dom@18.3.1)(react@18.3.1)
   '@nivo/bar':
-    specifier: ~0.79.1
+    specifier: 0.79.1
     version: 0.79.1(@nivo/core@0.79.0)(prop-types@15.8.1)(react-dom@18.3.1)(react@18.3.1)
   '@nivo/bullet':
-    specifier: ~0.79.1
+    specifier: 0.79.1
     version: 0.79.1(@nivo/core@0.79.0)(prop-types@15.8.1)(react-dom@18.3.1)(react@18.3.1)
   '@nivo/core':
-    specifier: ~0.79.0
+    specifier: 0.79.0
     version: 0.79.0(@nivo/tooltip@0.79.0)(prop-types@15.8.1)(react-dom@18.3.1)(react@18.3.1)
   '@nivo/line':
-    specifier: ~0.79.1
+    specifier: 0.79.1
     version: 0.79.1(@nivo/core@0.79.0)(prop-types@15.8.1)(react-dom@18.3.1)(react@18.3.1)
   '@nivo/pie':
-    specifier: ~0.79.1
+    specifier: 0.79.1
     version: 0.79.1(@nivo/core@0.79.0)(prop-types@15.8.1)(react-dom@18.3.1)(react@18.3.1)
   '@nivo/scales':
-    specifier: ^0.84.0
+    specifier: 0.84.0
     version: 0.84.0
   '@nivo/scatterplot':
-    specifier: ^0.84.0
+    specifier: 0.84.0
     version: 0.84.0(prop-types@15.8.1)(react-dom@18.3.1)(react@18.3.1)
   '@nivo/tooltip':
-    specifier: ~0.79.0
+    specifier: 0.79.0
     version: 0.79.0(@nivo/core@0.79.0)(react-dom@18.3.1)(react@18.3.1)
   '@radix-ui/react-accordion':
-    specifier: ^1.2.12
+    specifier: 1.2.12
     version: 1.2.12(@types/react-dom@18.3.7)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
   '@radix-ui/react-alert-dialog':
-    specifier: ^1.1.15
+    specifier: 1.1.15
     version: 1.1.15(@types/react-dom@18.3.7)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
   '@radix-ui/react-dialog':
-    specifier: ^1.1.15
+    specifier: 1.1.15
     version: 1.1.15(@types/react-dom@18.3.7)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
   '@radix-ui/react-label':
-    specifier: ^2.1.8
+    specifier: 2.1.8
     version: 2.1.8(@types/react-dom@18.3.7)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
   '@radix-ui/react-navigation-menu':
-    specifier: ^1.2.14
+    specifier: 1.2.14
     version: 1.2.14(@types/react-dom@18.3.7)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
   '@radix-ui/react-popover':
-    specifier: ^1.1.15
+    specifier: 1.1.15
     version: 1.1.15(@types/react-dom@18.3.7)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
   '@radix-ui/react-separator':
-    specifier: ^1.1.8
+    specifier: 1.1.8
     version: 1.1.8(@types/react-dom@18.3.7)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
   '@radix-ui/react-slot':
-    specifier: ^1.2.4
+    specifier: 1.2.4
     version: 1.2.4(@types/react@18.3.24)(react@18.3.1)
   '@radix-ui/react-tabs':
-    specifier: ^1.1.13
+    specifier: 1.1.13
     version: 1.1.13(@types/react-dom@18.3.7)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
   '@radix-ui/react-tooltip':
-    specifier: ^1.2.8
+    specifier: 1.2.8
     version: 1.2.8(@types/react-dom@18.3.7)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
   '@react-spring/web':
-    specifier: ~9.3.1
-    version: 9.3.2(react-dom@18.3.1)(react@18.3.1)
+    specifier: 9.3.1
+    version: 9.3.1(react-dom@18.3.1)(react@18.3.1)
   '@tailwindcss/vite':
-    specifier: ^4.1.17
+    specifier: 4.1.17
     version: 4.1.17(vite@7.1.5)
   '@vx/responsive':
-    specifier: ~0.0.199
+    specifier: 0.0.199
     version: 0.0.199(react@18.3.1)
   axios:
-    specifier: ~1.12.0
-    version: 1.12.2
+    specifier: 1.12.0
+    version: 1.12.0
   class-variance-authority:
-    specifier: ^0.7.1
+    specifier: 0.7.1
     version: 0.7.1
   clsx:
-    specifier: ^2.1.1
+    specifier: 2.1.1
     version: 2.1.1
   cmdk:
-    specifier: ^1.1.1
+    specifier: 1.1.1
     version: 1.1.1(@types/react-dom@18.3.7)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
   embla-carousel-react:
-    specifier: ^8.6.0
+    specifier: 8.6.0
     version: 8.6.0(react@18.3.1)
   firebase:
-    specifier: ~12.2.1
+    specifier: 12.2.1
     version: 12.2.1
   leaflet:
     specifier: 1.9.4
     version: 1.9.4
   leaflet-draw:
-    specifier: ^1.0.4
+    specifier: 1.0.4
     version: 1.0.4
   lucide-react:
-    specifier: ^0.553.0
+    specifier: 0.553.0
     version: 0.553.0(react@18.3.1)
   next-themes:
-    specifier: ^0.4.6
+    specifier: 0.4.6
     version: 0.4.6(react-dom@18.3.1)(react@18.3.1)
   prop-types:
     specifier: 15.8.1
     version: 15.8.1
   react:
-    specifier: ~18.3.1
+    specifier: 18.3.1
     version: 18.3.1
   react-dom:
-    specifier: ~18.3.1
+    specifier: 18.3.1
     version: 18.3.1(react@18.3.1)
   react-ga4:
-    specifier: ^2.1.0
+    specifier: 2.1.0
     version: 2.1.0
   react-json-to-csv:
-    specifier: ~1.2.0
+    specifier: 1.2.0
     version: 1.2.0
   react-leaflet:
-    specifier: ^4.2.1
+    specifier: 4.2.1
     version: 4.2.1(leaflet@1.9.4)(react-dom@18.3.1)(react@18.3.1)
   react-leaflet-draw:
-    specifier: ^0.20.6
+    specifier: 0.20.6
     version: 0.20.6(leaflet-draw@1.0.4)(leaflet@1.9.4)(prop-types@15.8.1)(react-leaflet@4.2.1)(react@18.3.1)
   react-router:
-    specifier: ^7.9.1
+    specifier: 7.9.1
     version: 7.9.1(react-dom@18.3.1)(react@18.3.1)
   react-textarea-autosize:
-    specifier: ^8.5.9
+    specifier: 8.5.9
     version: 8.5.9(@types/react@18.3.24)(react@18.3.1)
   sonner:
-    specifier: ^2.0.7
+    specifier: 2.0.7
     version: 2.0.7(react-dom@18.3.1)(react@18.3.1)
   styled-components:
-    specifier: ~5.3.11
+    specifier: 5.3.11
     version: 5.3.11(@babel/core@7.28.4)(react-dom@18.3.1)(react-is@19.1.1)(react@18.3.1)
   tailwind-merge:
-    specifier: ^3.4.0
+    specifier: 3.4.0
     version: 3.4.0
   tailwindcss:
-    specifier: ^4.1.17
+    specifier: 4.1.17
     version: 4.1.17
   tailwindcss-animate:
-    specifier: ^1.0.7
+    specifier: 1.0.7
     version: 1.0.7(tailwindcss@4.1.17)
 
 devDependencies:
   '@eslint/js':
-    specifier: ^9.35.0
+    specifier: 9.35.0
     version: 9.35.0
   '@types/geojson':
-    specifier: ^7946.0.14
-    version: 7946.0.16
+    specifier: 7946.0.14
+    version: 7946.0.14
   '@types/leaflet':
-    specifier: ~1.9.16
-    version: 1.9.20
+    specifier: 1.9.16
+    version: 1.9.16
   '@types/leaflet-draw':
-    specifier: ~1.0.11
-    version: 1.0.13
+    specifier: 1.0.11
+    version: 1.0.11
   '@types/node':
-    specifier: ~22.12.0
+    specifier: 22.12.0
     version: 22.12.0
   '@types/react':
-    specifier: ~18.3.24
+    specifier: 18.3.24
     version: 18.3.24
   '@types/react-dom':
     specifier: '18'
     version: 18.3.7(@types/react@18.3.24)
   '@types/react-json-to-csv':
-    specifier: ^1.0.0
-    version: 1.2.4
+    specifier: 1.0.0
+    version: 1.0.0
   '@types/react-router-dom':
-    specifier: ^5.3.3
+    specifier: 5.3.3
     version: 5.3.3
   '@types/styled-components':
-    specifier: ^5.1.34
+    specifier: 5.1.34
     version: 5.1.34
   '@vitejs/plugin-react':
-    specifier: ~5.0.2
+    specifier: 5.0.2
     version: 5.0.2(vite@7.1.5)
   eslint:
-    specifier: ~9.35.0
+    specifier: 9.35.0
     version: 9.35.0
   eslint-config-prettier:
-    specifier: ~10.1.8
+    specifier: 10.1.8
     version: 10.1.8(eslint@9.35.0)
   eslint-import-resolver-typescript:
-    specifier: ^4.4.4
+    specifier: 4.4.4
     version: 4.4.4(eslint-plugin-import@2.32.0)(eslint@9.35.0)
   eslint-plugin-import:
-    specifier: ^2.32.0
+    specifier: 2.32.0
     version: 2.32.0(@typescript-eslint/parser@8.43.0)(eslint-import-resolver-typescript@4.4.4)(eslint@9.35.0)
   eslint-plugin-jsx-a11y:
-    specifier: ^6.10.2
+    specifier: 6.10.2
     version: 6.10.2(eslint@9.35.0)
   eslint-plugin-prettier:
-    specifier: ~5.5.4
+    specifier: 5.5.4
     version: 5.5.4(eslint-config-prettier@10.1.8)(eslint@9.35.0)(prettier@3.6.2)
   eslint-plugin-react:
-    specifier: ^7.37.5
+    specifier: 7.37.5
     version: 7.37.5(eslint@9.35.0)
   eslint-plugin-react-hooks:
-    specifier: ^5.2.0
+    specifier: 5.2.0
     version: 5.2.0(eslint@9.35.0)
   globals:
-    specifier: ^16.4.0
+    specifier: 16.4.0
     version: 16.4.0
   prettier:
     specifier: 3.6.2
     version: 3.6.2
   typescript:
-    specifier: ~5.9.2
+    specifier: 5.9.2
     version: 5.9.2
   typescript-eslint:
-    specifier: ^8.43.0
+    specifier: 8.43.0
     version: 8.43.0(eslint@9.35.0)(typescript@5.9.2)
   vite:
-    specifier: ~7.1.5
+    specifier: 7.1.5
     version: 7.1.5(@types/node@22.12.0)
   vite-plugin-svgr:
-    specifier: ~4.5.0
+    specifier: 4.5.0
     version: 4.5.0(typescript@5.9.2)(vite@7.1.5)
   vite-tsconfig-paths:
-    specifier: ~5.1.4
+    specifier: 5.1.4
     version: 5.1.4(typescript@5.9.2)(vite@7.1.5)
 
 packages:
 
-  /@appigram/react-yandex-metrika@2.8.10(react@18.3.1):
-    resolution: {integrity: sha512-niZobpdTR1fUUEzPCCMB/G+Y6vM/kXm/ZJ7MZTTCrKl98lEJ8iKTaCxZRvjp8lpfWGM/9+wKHG7qYixEwdK74w==}
+  /@appigram/react-yandex-metrika@2.8.9(react@18.3.1):
+    resolution: {integrity: sha512-Ltkmtr1lCDDeejuuE78F49pVBBndRtVc84andeQDz0x3zWqz4xiYRpy2JzzH/4/Y0dDHcSkc4hek+1AJmwEfGA==}
     peerDependencies:
       react: '*'
     dependencies:
@@ -1594,8 +1594,8 @@ packages:
       react-is: 17.0.2
     dev: false
 
-  /@mui/base@5.0.0-alpha.88(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-uL7ej2F/3GUnZewsDQSHUVHoSBT3AQcTIdfdy6QeCHy7X26mtbcIvTRcjl2PzbbNQplppavSTibPiQG/giJ+ng==}
+  /@mui/base@5.0.0-alpha.84(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-uDx+wGVytS+ZHiWHyzUyijY83GSIXJpzSJ0PGc/8/s+8nBzeHvaPKrAyJz15ASLr52hYRA6PQGqn0eRAsB7syQ==}
     engines: {node: '>=12.0.0'}
     deprecated: This package has been replaced by @base-ui-components/react
     peerDependencies:
@@ -1619,8 +1619,8 @@ packages:
       react-is: 17.0.2
     dev: false
 
-  /@mui/icons-material@5.8.4(@mui/material@5.8.7)(@types/react@18.3.24)(react@18.3.1):
-    resolution: {integrity: sha512-9Z/vyj2szvEhGWDvb+gG875bOGm8b8rlHBKOD1+nA3PcgC3fV6W1AU6pfOorPeBfH2X4mb9Boe97vHvaSndQvA==}
+  /@mui/icons-material@5.8.3(@mui/material@5.8.3)(@types/react@18.3.24)(react@18.3.1):
+    resolution: {integrity: sha512-dAdhimSLKOV0Q8FR7AYGEaCrTUh9OV7zU4Ueo5REoUt4cC3Vy+UBKDjZk66x5ezaYb63AFgQIFwtnZj3B/QDbQ==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       '@mui/material': ^5.0.0
@@ -1631,13 +1631,13 @@ packages:
         optional: true
     dependencies:
       '@babel/runtime': 7.28.4
-      '@mui/material': 5.8.7(@emotion/react@11.14.0)(@emotion/styled@11.14.1)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
+      '@mui/material': 5.8.3(@emotion/react@11.14.0)(@emotion/styled@11.14.1)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
       '@types/react': 18.3.24
       react: 18.3.1
     dev: false
 
-  /@mui/material@5.8.7(@emotion/react@11.14.0)(@emotion/styled@11.14.1)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-Oo62UhrgEi+BMLr3nUEASJgScE2/hhq14CbBUmrVV3GQlEGtqMZsy26Vb0AqEmphFeN3TXlsbM9aeW5yq8ZFlw==}
+  /@mui/material@5.8.3(@emotion/react@11.14.0)(@emotion/styled@11.14.1)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-8UecY/W9SMtEZm5PMCUcMbujajVP6fobu0BgBPiIWwwWRblZVEzqprY6v1P2me7qCyrve4L4V/rqAKPKhVHOSg==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       '@emotion/react': ^11.5.0
@@ -1656,7 +1656,7 @@ packages:
       '@babel/runtime': 7.28.4
       '@emotion/react': 11.14.0(@types/react@18.3.24)(react@18.3.1)
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0)(@types/react@18.3.24)(react@18.3.1)
-      '@mui/base': 5.0.0-alpha.88(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
+      '@mui/base': 5.0.0-alpha.84(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
       '@mui/system': 5.18.0(@emotion/react@11.14.0)(@emotion/styled@11.14.1)(@types/react@18.3.24)(react@18.3.1)
       '@mui/types': 7.4.6(@types/react@18.3.24)
       '@mui/utils': 5.17.1(@types/react@18.3.24)(react@18.3.1)
@@ -1664,6 +1664,7 @@ packages:
       '@types/react-transition-group': 4.4.12(@types/react@18.3.24)
       clsx: 1.2.1
       csstype: 3.1.3
+      hoist-non-react-statics: 3.3.2
       prop-types: 15.8.1
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -1711,8 +1712,8 @@ packages:
       react: 18.3.1
     dev: false
 
-  /@mui/styles@5.8.7(@types/react@18.3.24)(react@18.3.1):
-    resolution: {integrity: sha512-TMP3TL7P/9tJXOkthUHT9uuuBf4d0PzkrzHyU3q3qyoMBs0sMyoSsNOJAKkbG5DUCcSEGbmbarYItHH4Y/6vOg==}
+  /@mui/styles@5.8.3(@types/react@18.3.24)(react@18.3.1):
+    resolution: {integrity: sha512-O0FGaKYajtIC2H42bhh6CvqQsH5WVodsYx3joga+heojta2D2TRIOxtPX4v2VG8D3TvhcggrSsERF6S9sAvl3Q==}
     engines: {node: '>=12.0.0'}
     deprecated: Deprecated, check the migration instruction in https://mui.com/material-ui/migration/migrating-from-jss/
     peerDependencies:
@@ -3138,20 +3139,6 @@ packages:
       react-dom: 18.3.1(react@18.3.1)
     dev: false
 
-  /@react-spring/web@9.3.2(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-zzM95rqanap6s0udRCoI4gerONjQjyI6I0h23UZ0X36w5sXmuzv/tBtjGPbsASo377EGM7tRIg9po1KHwb6yQg==}
-    peerDependencies:
-      react: ^16.8.0  || ^17.0.0
-      react-dom: ^16.8.0  || ^17.0.0
-    dependencies:
-      '@react-spring/animated': 9.3.2(react@18.3.1)
-      '@react-spring/core': 9.3.2(react@18.3.1)
-      '@react-spring/shared': 9.3.2(react@18.3.1)
-      '@react-spring/types': 9.3.2
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-    dev: false
-
   /@react-spring/web@9.7.5(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-lmvqGwpe+CSttsWNZVr+Dg62adtKhauGwLyGE/RRyZ8AAMLgb9x3NDMA5RMElXo+IMyTkPp7nxTB8ZQlmhb6JQ==}
     peerDependencies:
@@ -3704,8 +3691,8 @@ packages:
   /@types/estree@1.0.8:
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
 
-  /@types/geojson@7946.0.16:
-    resolution: {integrity: sha512-6C8nqWur3j98U6+lXDfTUWIfgvZU+EumvpHKcYjujKH7woYyLj2sUmff0tRhrqM7BohUw7Pz3ZB1jj2gW9Fvmg==}
+  /@types/geojson@7946.0.14:
+    resolution: {integrity: sha512-WCfD5Ht3ZesJUsONdhvm84dmzWOiOzOAqOncN0++w0lBw1o8OuDNJF2McvvCef/yBqb/HYRahp1BYtODFQ8bRg==}
     dev: true
 
   /@types/history@4.7.11:
@@ -3729,16 +3716,16 @@ packages:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
     dev: true
 
-  /@types/leaflet-draw@1.0.13:
-    resolution: {integrity: sha512-YU82kilOaU+wPNbqKCCDfHH3hqepN6XilrBwG/mSeZ/z4ewumaRCOah44s3FMxSu/Aa0SVa3PPJvhIZDUA09mw==}
+  /@types/leaflet-draw@1.0.11:
+    resolution: {integrity: sha512-dyedtNm3aSmnpi6FM6VSl28cQuvP+MD7pgpXyO3Q1ZOCvrJKmzaDq0P3YZTnnBs61fQCKSnNYmbvCkDgFT9FHQ==}
     dependencies:
-      '@types/leaflet': 1.9.20
+      '@types/leaflet': 1.9.16
     dev: true
 
-  /@types/leaflet@1.9.20:
-    resolution: {integrity: sha512-rooalPMlk61LCaLOvBF2VIf9M47HgMQqi5xQ9QRi7c8PkdIe0WrIi5IxXUXQjAdL0c+vcQ01mYWbthzmp9GHWw==}
+  /@types/leaflet@1.9.16:
+    resolution: {integrity: sha512-wzZoyySUxkgMZ0ihJ7IaUIblG8Rdc8AbbZKLneyn+QjYsj5q1QU7TEKYqwTr10BGSzY5LI7tJk9Ifo+mEjdFRw==}
     dependencies:
-      '@types/geojson': 7946.0.16
+      '@types/geojson': 7946.0.14
     dev: true
 
   /@types/lodash@4.17.20:
@@ -3764,8 +3751,8 @@ packages:
     dependencies:
       '@types/react': 18.3.24
 
-  /@types/react-json-to-csv@1.2.4:
-    resolution: {integrity: sha512-zWD3nzp63HiWkxz/ZNaE1gfVlkZCVZvYbEofD99jCvFuxE7wVuu8H99DdHwdaEptwR4D8RAWUB5s5D5gNUaxhA==}
+  /@types/react-json-to-csv@1.0.0:
+    resolution: {integrity: sha512-qhGpu8I9VJOBzXalnNHENBY+BvlekD/WLHObJE9hp6gT83/ihO4Zf6SY1t6cR1rYzHURTrZNPwKF9GXyPZ16gw==}
     dependencies:
       '@types/react': 18.3.24
     dev: true
@@ -4305,8 +4292,8 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
-  /axios@1.12.2:
-    resolution: {integrity: sha512-vMJzPewAlRyOgxV2dU0Cuz2O8zzzx9VYtbJOaBgXFeLc4IV/Eg50n4LowmehOOR61S8ZMpc2K5Sa7g6A4jfkUw==}
+  /axios@1.12.0:
+    resolution: {integrity: sha512-oXTDccv8PcfjZmPGlWsPSwtOJCZ/b6W5jAMCNcfwJbCzDckwG0jrYJFaWH1yvivfCXjVzV/SPDEhMB3Q+DSurg==}
     dependencies:
       follow-redirects: 1.15.11
       form-data: 4.0.4
