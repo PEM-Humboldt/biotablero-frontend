@@ -25,30 +25,5 @@ export const uiText = {
       disabledPresentation: ", Iniciativa inactiva",
       locationPresentation: "Iniciativa ubicada en:",
     },
-
-    module: {
-      general: {
-        title: "Información general",
-      },
-
-      locations: {
-        title: "Ubicación de la iniciativa",
-        tableCol: ["Departamento", "Municipio", "Vereda"],
-      },
-
-      contacts: {
-        title: "Información de contacto",
-        tableCol: ["Correo", "Teléfono"],
-      },
-
-      users: {
-        title: "líderezas y líderes de la iniciativa",
-        tableCol: ["Nombre"],
-      },
-
-      images: {
-        title: "Imágenes",
-      },
-    },
   },
 };

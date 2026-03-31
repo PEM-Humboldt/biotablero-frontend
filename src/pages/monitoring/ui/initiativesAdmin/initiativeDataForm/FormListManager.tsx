@@ -39,7 +39,7 @@ export function FormListManager<T, R extends object>({
   initiativeSection,
   AddItemComponent,
   maxItems,
-  renderCols: renderMap,
+  renderCols,
   renderRowCallback,
   sectionUpdater,
   validationErrors,
@@ -93,7 +93,7 @@ export function FormListManager<T, R extends object>({
           editItem={handleEdit}
           deleteItem={handleDelete}
           rowInfoCallback={renderRowCallback}
-          render={renderMap}
+          render={renderCols}
           edit={updateItem === null}
           disabled={false}
         />
