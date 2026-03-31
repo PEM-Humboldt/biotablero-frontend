@@ -249,7 +249,7 @@ export function CurrentFootprint() {
         </h5>
       </div>
 
-      <h6>Natural, Baja, Media y Alta</h6>
+      <h6>Natural, Baja, Media, Alta y Muy Alta</h6>
 
       <LargeStackedBar
         data={hfCurrent}

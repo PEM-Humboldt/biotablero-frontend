@@ -8,6 +8,22 @@ import { MetricTypesMap } from "pages/search/types/metrics";
 import SearchAPI from "pages/search/api/searchAPI";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import LayerAPI from "pages/search/api/layerAPI";
+
+type HFCategory = keyof Omit<MetricTypesMap["currentHF"], "id">;
+
+type HFRange = {
+  max: number;
+  label: HFCategory;
+};
+
+const HFCategoriesRanges: HFRange[] = [
+  { max: 0, label: "Natural" },
+  { max: 15, label: "Baja" },
+  { max: 30, label: "Media" },
+  { max: 50, label: "Alta" },
+  { max: Infinity, label: "Muy Alta" },
+];
+
 export class CurrentFootprintController {
   areaType: string = "";
   areaId: number = 0;
@@ -32,14 +48,25 @@ export class CurrentFootprintController {
       "currentHF_average",
       this.areaId,
     ).then((averageValues) => {
-      // TODO: Asignar una categoría al promedi opara poder darle color, los
-      // rangos varíaron con respecto a las clasificaciones que teníamos antes
-      const category = "Baja";
+      const average = Number(averageValues.average);
+
       return {
         ...averageValues,
-        category,
+        category: this.getHFCategory(average),
       };
     });
+  }
+
+  private getHFCategory(value: number): HFCategory {
+    if (Number.isNaN(value)) return "Natural";
+
+    for (const range of HFCategoriesRanges) {
+      if (value <= range.max) {
+        return range.label;
+      }
+    }
+
+    return "Natural";
   }
 
   /**
@@ -134,13 +161,17 @@ export class CurrentFootprintController {
    *
    */
   highlightShapeFeature = (event: L.LeafletMouseEvent) => {
-    type TooltipLabel = Record<"natural" | "baja" | "media" | "alta", string>;
+    type TooltipLabel = Record<
+      "natural" | "baja" | "media" | "alta" | "muy_alta",
+      string
+    >;
 
     const tooltipLabel: TooltipLabel = {
       natural: "Natural",
       baja: "Baja",
       media: "Media",
       alta: "Alta",
+      muy_alta: "Muy Alta",
     };
 
     const feature = event.target;
