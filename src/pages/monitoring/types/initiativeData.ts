@@ -9,7 +9,10 @@ import type {
   InitiativeAditionalInfo,
   TagData,
 } from "pages/monitoring/types/initiative";
-import type { LocationCompleteInfo } from "pages/monitoring/types/odataResponse";
+import type {
+  LocationCompleteInfo,
+  TagInInitiative,
+} from "pages/monitoring/types/odataResponse";
 
 export type InitiativeDataForm = {
   general: GeneralInfo;
@@ -17,7 +20,7 @@ export type InitiativeDataForm = {
   contacts: InitiativeContact[];
   users: UserData[];
   images: ImagesData;
-  tags: TagData[];
+  tags: (TagData | TagInInitiative)[];
 };
 
 // NOTE: tipos para los errores

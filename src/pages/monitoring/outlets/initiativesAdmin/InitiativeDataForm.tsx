@@ -59,19 +59,23 @@ export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
     event.preventDefault();
     setIsLoading(true);
 
-    const currentErrors = validateFormClient(
-      initiative.current,
-      newInitiativeValidations,
-    );
-    setErrors(currentErrors);
-
-    if (Object.keys(currentErrors).length > 0) {
-      setIsLoading(false);
-      return;
-    }
+    // const currentErrors = validateFormClient(
+    //   initiative.current,
+    //   newInitiativeValidations,
+    // );
+    // setErrors(currentErrors);
+    //
+    // if (Object.keys(currentErrors).length > 0) {
+    //   setIsLoading(false);
+    //   return;
+    // }
 
     const { general, images, tags, ...rest } = { ...initiative.current };
 
+    console.log(tags);
+
+    setIsLoading(false);
+    return;
     const cleanGeneral = Object.fromEntries(
       Object.entries(general).filter(([_, value]) => Boolean(value)),
     ) as Record<string, string>;
@@ -191,7 +195,19 @@ export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
 
         <TagsManger
           title={uiText.initiative.module.images.title}
-          sectionInfo={initiative.current.tags}
+          sectionInfo={[
+            {
+              initiativeTagId: 7,
+              tag: {
+                id: 2,
+                name: "Especies",
+                category: {
+                  id: 3,
+                  name: "BiologicalGroup",
+                },
+              },
+            },
+          ]}
           sectionUpdater={handleFormUpdate("tags")}
           validationErrorsObj={errors?.tags ?? []}
         />
