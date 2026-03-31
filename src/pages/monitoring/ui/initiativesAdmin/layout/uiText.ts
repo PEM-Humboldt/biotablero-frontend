@@ -165,6 +165,7 @@ export const uiText = {
         addTagBtn: { sr: "Agregar etiqueta", title: "Agregar" },
         counter: (current: number, total: number) =>
           `${current} de ${total} etiquetas`,
+        noTagsOfThisContext: "No se han asignado etiquetas de este contexto",
       },
 
       images: {

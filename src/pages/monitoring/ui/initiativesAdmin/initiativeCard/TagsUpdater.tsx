@@ -1,57 +1,34 @@
-import {
-  type MouseEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import { cn } from "@ui/shadCN/lib/utils";
 
-import type {
-  CardInfoGrouped,
-  InitiativeDataFormErr,
-} from "pages/monitoring/types/initiativeData";
-import { ErrorsList } from "@ui/LabelingWithErrors";
+import type { CardInfoGrouped } from "pages/monitoring/types/initiativeData";
 import { EditModeButton } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/EditModeButton";
-import { ImagePreview } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/ImagePreview";
-import { ImagesInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/ImagesInput";
-import { Button } from "@ui/shadCN/component/button";
-import { uploadImages } from "pages/monitoring/api/services/assets";
-import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 import { useInitiativeDataCTX } from "pages/monitoring/ui/initiativesAdmin/hooks/useAdminUpdateContext";
-import { TagsManger } from "../initiativeDataForm/TagsManager";
+import { TagsManger } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/TagsManager";
+import type { TagInInitiative } from "pages/monitoring/types/odataResponse";
+import { initiativeTagCategories } from "pages/monitoring/ui/initiativesAdmin/layout/initiativeTagCategoties";
+import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 
 type TagsUpdaterProps = {
   title: string;
 };
+
 export function TagsUpdater({ title }: TagsUpdaterProps) {
   const { initiative, updater, currentEdit, setCurrentEdit } =
     useInitiativeDataCTX();
-  const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<Partial<InitiativeDataFormErr>>({});
-  const [forceRender, setForceRender] = useState(0);
+  const tagsInfo = useRef<CardInfoGrouped["tags"] | null>(null);
 
-  const sectionInfo = useRef<CardInfoGrouped["tags"] | null>(null);
   const initiativeId = initiative?.id ?? null;
   const editThis = currentEdit === "tags";
 
   const reset = useCallback(() => {
-    sectionInfo.current = initiative ? [...initiative.tags] : null;
-    setForceRender((n) => n + 1);
+    tagsInfo.current = initiative ? [...initiative.tags] : null;
   }, [initiative]);
 
   useEffect(() => {
     reset();
   }, [reset]);
-
-  const handleSubmit = async (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-  };
-
-  const updateInfo = useCallback((newInfo: CardInfoGrouped["tags"]) => {
-    sectionInfo.current = { ...sectionInfo.current, ...newInfo };
-  }, []);
 
   const editPanelAction = () => {
     setCurrentEdit!((curEdit) => (curEdit === "tags" ? "none" : "tags"));
@@ -77,18 +54,64 @@ export function TagsUpdater({ title }: TagsUpdaterProps) {
 
       {!editThis ? (
         <div className="flex gap-x-8 gap-y-4 flex-wrap items-end *:flex-[1_1_350px]">
-          previsual
+          <TagsList sectionInfo={tagsInfo.current ?? []} />
         </div>
       ) : (
         <form aria-labelledby={`${initiativeId}_tags`}>
           <TagsManger
-            sectionInfo={sectionInfo.current ?? []}
-            sectionUpdater={updateInfo}
+            sectionInfo={tagsInfo.current ?? []}
+            sectionUpdater={() => void updater!()}
             validationErrors={[]}
             initiativeId={initiativeId}
           />
         </form>
       )}
+    </div>
+  );
+}
+
+function TagsList({ sectionInfo }: { sectionInfo: TagInInitiative[] | null }) {
+  const tags = useMemo(() => {
+    return initiativeTagCategories.reduce<Record<number, TagInInitiative[]>>(
+      (all, category) => {
+        all[category.tagCategoryId] =
+          sectionInfo !== null
+            ? sectionInfo.filter((t) => {
+                return t.tag.category.id === category.tagCategoryId;
+              })
+            : [];
+        return all;
+      },
+      {},
+    );
+  }, [sectionInfo]);
+
+  return (
+    <div className="flex gap-10">
+      {initiativeTagCategories.map((tagGroup) => {
+        const tagCategoryId = tagGroup.tagCategoryId;
+        return (
+          <div className="flex-1" key={`tagGroup_${tagCategoryId}`}>
+            <h4 className="text-base font-light m-0">{tagGroup.title}</h4>
+            {tags[tagCategoryId] && tags[tagCategoryId].length ? (
+              <ul className="flex flex-wrap gap-2">
+                {tags[tagCategoryId].map((tag) => (
+                  <li
+                    key={`tag-render_${tag.tag.id}`}
+                    className="flex border border-primary px-2 bg-muted text-primary font-normal rounded"
+                  >
+                    {tag.tag.name}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <span className="text-primary">
+                {uiText.initiative.module.tags.noTagsOfThisContext}
+              </span>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

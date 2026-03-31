@@ -83,14 +83,14 @@ export function TagsManger({
 
       <div className="flex gap-10">
         {initiativeTagCategories.map((tagGroup) => {
-          const tagCategory = tagGroup.tagCategoryId;
+          const tagCategoryId = tagGroup.tagCategoryId;
           return (
             <TagSelector
-              key={`tagCategory_${tagCategory}`}
+              key={`tagCategory_${tagCategoryId}`}
               managerTitle={tagGroup.title}
-              tagCategoryId={tagCategory}
-              selectedTags={tags[tagCategory] ?? []}
-              onTagsChange={updateTags(tagCategory)}
+              tagCategoryId={tagCategoryId}
+              selectedTags={tags[tagCategoryId] ?? []}
+              onTagsChange={updateTags(tagCategoryId)}
               maxTagsAmount={tagGroup.maxTagsAmount}
               texts={tagGroup.uiText}
               initiativeId={initiativeId}
@@ -120,6 +120,7 @@ function TagSelector({
   initiativeId: number | null;
 }) {
   const [value, setValue] = useState<string>("");
+  const [errors, setErrors] = useState<string[]>([]);
 
   const filter = useMemo(() => {
     const categoryPart = `category/id eq ${tagCategoryId}`;
@@ -138,6 +139,7 @@ function TagSelector({
       return;
     }
 
+    setErrors([]);
     const [tagId, label] = value.split("|");
     let newTag: TagData | TagInInitiative = {
       id: Number(tagId),
@@ -147,6 +149,7 @@ function TagSelector({
     if (initiativeId) {
       const res = await addTagToInitiative(initiativeId, Number(tagId));
       if (isMonitoringAPIError(res)) {
+        setErrors(res.data.map((err) => err.msg));
         return;
       }
 
@@ -158,10 +161,12 @@ function TagSelector({
   };
 
   const removeTag = async (tagId: number, tagIdInInitiative: number | null) => {
+    setErrors([]);
     if (tagIdInInitiative) {
       const res = await removeTagFromInitiative(tagIdInInitiative);
 
       if (isMonitoringAPIError(res)) {
+        setErrors(res.data.map((err) => err.msg));
         return;
       }
     }
@@ -232,6 +237,7 @@ function TagSelector({
         </ul>
       )}
 
+      <ErrorsList errorItems={errors} />
       {selectedTags.length < maxTagsAmount && (
         <div className="flex gap-2">
           <ComboboxOData<ODataTag>

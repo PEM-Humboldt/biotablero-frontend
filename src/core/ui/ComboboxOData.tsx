@@ -114,33 +114,6 @@ export function ComboboxOData<T>({
     [fixedFilter, oDataEntity, sources],
   );
 
-  const fetchData = useCallback(async () => {
-    if (!loadOnEmpty && !searchParams.filter) {
-      setItems([]);
-      return;
-    }
-
-    setIsLoading(true);
-    setErrors([]);
-
-    const res = await monitoringAPI<ODataResponse<T>>({
-      type: "get",
-      endpoint: endpoint,
-      options: { oData: searchParams },
-    });
-
-    setWriting(false);
-    if (isMonitoringAPIError(res)) {
-      setErrors(res.data.map((err) => err.msg));
-      setIsLoading(false);
-      setItems([]);
-      return;
-    }
-
-    setIsLoading(false);
-    setItems(sourceProcess(res.value));
-  }, [endpoint, loadOnEmpty, searchParams, sourceProcess]);
-
   useEffect(() => {
     setSearchParams((prev) => ({
       ...prev,
@@ -149,8 +122,35 @@ export function ComboboxOData<T>({
   }, [makeODataSearchString]);
 
   useEffect(() => {
+    const fetchData = async () => {
+      if (!loadOnEmpty && !searchParams.filter) {
+        setItems([]);
+        return;
+      }
+
+      setIsLoading(true);
+      setErrors([]);
+
+      const res = await monitoringAPI<ODataResponse<T>>({
+        type: "get",
+        endpoint: endpoint,
+        options: { oData: searchParams },
+      });
+
+      setWriting(false);
+      if (isMonitoringAPIError(res)) {
+        setErrors(res.data.map((err) => err.msg));
+        setIsLoading(false);
+        setItems([]);
+        return;
+      }
+
+      setIsLoading(false);
+      setItems(sourceProcess(res.value));
+    };
+
     void fetchData();
-  }, [fetchData]);
+  }, [endpoint, loadOnEmpty, searchParams, sourceProcess]);
 
   const handleSearch = useRef(
     debouncer((searchString: string) => {

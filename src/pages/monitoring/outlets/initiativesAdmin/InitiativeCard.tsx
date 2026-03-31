@@ -104,8 +104,8 @@ export function InitiativeCard({
     if (!cardInfo) {
       return null;
     }
-    const { locations, users, contacts, tags, ...rest } = cardInfo;
-    const { imageUrl, bannerUrl, ...general } = rest;
+    const { locations, users, contacts, ...rest } = cardInfo;
+    const { imageUrl, bannerUrl, tags, ...general } = rest;
     return {
       id: general.id,
       general,

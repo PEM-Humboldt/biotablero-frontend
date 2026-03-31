@@ -29,6 +29,7 @@ import { GeneralInfoUpdater } from "pages/monitoring/ui/initiativesAdmin/initiat
 import { uiText } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
 
 import { LeaderInitiativeUpdateCtx } from "pages/monitoring/ui/initiativesAdmin/hooks/useAdminUpdateContext";
+import { TagsUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/TagsUpdater";
 
 export function InitiativeInfoUpdater({
   initiativeId,
@@ -111,12 +112,13 @@ export function InitiativeInfoUpdater({
       return null;
     }
     const { locations, users, contacts, ...rest } = initiativeInfo;
-    const { imageUrl, bannerUrl, ...general } = rest;
+    const { imageUrl, bannerUrl, tags, ...general } = rest;
     return {
       id: general.id,
       general,
       locations,
       contacts,
+      tags,
       users,
       images: { imageUrl, bannerUrl },
     };
@@ -169,6 +171,8 @@ export function InitiativeInfoUpdater({
         <GeneralInfoUpdater
           title={uiText.tabsContent.initiativeManagement.general.title}
         />
+
+        <TagsUpdater title={"carrapicho"} />
 
         <FormListUpdater
           title={uiText.tabsContent.initiativeManagement.locations.title}
