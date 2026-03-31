@@ -158,6 +158,15 @@ export const uiText = {
         },
       },
 
+      tags: {
+        title: "Etiquetas para la iniciativa",
+        activeTags: "Etiquetas activas",
+        removeTagBtn: { sr: "Eliminar etiqueta", title: "Eliminar" },
+        addTagBtn: { sr: "Agregar etiqueta", title: "Agregar" },
+        counter: (current: number, total: number) =>
+          `${current} de ${total} etiquetas`,
+      },
+
       images: {
         title: "Imágenes",
         imageUrl: {
