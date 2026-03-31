@@ -173,7 +173,10 @@ export function ComboboxOData<T>({
 
   return (
     <>
-      <ErrorsList errorItems={errors} />
+      <ErrorsList
+        errorItems={errors}
+        className="bg-accent/10 p-4 border border-accent rounded-lg"
+      />
       <Combobox
         id={id}
         items={items}
