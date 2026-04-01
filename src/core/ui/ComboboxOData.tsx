@@ -10,7 +10,7 @@ import { Ellipsis, Search } from "lucide-react";
 type ComboboxODataProps<T> = {
   id?: string;
   endpoint: string;
-  value: number | string;
+  value: number;
   setValue: React.Dispatch<React.SetStateAction<string>>;
   sources: (keyof T)[];
   oDataEntity?: string;
@@ -40,7 +40,7 @@ type ComboboxODataProps<T> = {
  * @param endpoint - The API path for the OData service.
  * @param sources - Entity fields used to build the `contains` filter logic.
  * @param oDataEntity - Optional collection name for nested `any()` lambda queries.
- * @param loadOnEmpty - Optional, if true load load the items returned by the endpoint with no filter, it defaults to false.
+ * @param loadOnEmpty - Optional, if true load the items returned by the endpoint with no filter, it defaults to true.
  * @param sourceProcess - Callback to transform OData items into `{ value, label }` format.
  * @param fixedSearchParams - Static parameters (like $expand) merged into every request.
  * @param maxItems - The $top limit for API results.

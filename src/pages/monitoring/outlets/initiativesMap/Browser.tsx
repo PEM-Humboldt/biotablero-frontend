@@ -76,7 +76,7 @@ export function Browser() {
         fixedSearchParams={{ orderby: "name asc" }}
         maxItems={4}
         uiText={{
-          itemNotFound: "no se encuentra la iniciativa",
+          itemNotFound: "No se encuentra la iniciativa",
           trigger: "Buscar iniciativa",
           inputPlaceholder: "Escribe el nombre de la iniciativa",
           onEmptySearch: "Escribe para iniciar la búsqueda",
@@ -98,7 +98,7 @@ export function Browser() {
         fixedSearchParams={{ orderby: "name asc" }}
         maxItems={4}
         uiText={{
-          itemNotFound: "no se encuentra el tag",
+          itemNotFound: "No se encuentra el tag",
           trigger: "Buscar tag",
           inputPlaceholder: "Escribe el nombre del tag",
         }}
