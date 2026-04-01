@@ -1,3 +1,8 @@
+import {
+  INITIATIVE_TAGS_LIMIT_CULTURAL_CTX,
+  INITIATIVE_TAGS_LIMIT_POLITICAL_CTX,
+} from "@config/monitoring";
+
 export const initiativeTagCategories: {
   tagCategoryId: number;
   title: string;
@@ -7,7 +12,7 @@ export const initiativeTagCategories: {
   {
     tagCategoryId: 3,
     title: "Contexto político",
-    maxTagsAmount: 10,
+    maxTagsAmount: INITIATIVE_TAGS_LIMIT_POLITICAL_CTX,
     uiText: {
       itemNotFound:
         "No hay coincidencias, para solicitar la creación de esa etiqueta, escribe a info@biotablero.humboldt.org.co",
@@ -18,7 +23,7 @@ export const initiativeTagCategories: {
   {
     tagCategoryId: 2,
     title: "Contexto social",
-    maxTagsAmount: 2,
+    maxTagsAmount: INITIATIVE_TAGS_LIMIT_CULTURAL_CTX,
     uiText: {
       itemNotFound:
         "No hay coincidencias, para solicitar la creación de esa etiqueta, escribe a info@biotablero.humboldt.org.co",

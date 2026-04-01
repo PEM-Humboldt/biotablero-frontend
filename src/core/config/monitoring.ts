@@ -25,6 +25,9 @@ export const INITIATIVE_CONTACTS_MIN_AMOUNT = 1;
 export const INITIATIVE_EMAIL_MAX_LENGHT = 120;
 export const INITIATIVE_PHONE_MAX_LENGHT = 10;
 
+export const INITIATIVE_TAGS_LIMIT_POLITICAL_CTX = 10;
+export const INITIATIVE_TAGS_LIMIT_CULTURAL_CTX = 3;
+
 export const INITIATIVES_IMG_ALLOWED_FORMATS: ImageMimeType[] = [
   "image/jpeg",
   "image/png",
