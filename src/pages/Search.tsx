@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useReducer } from "react";
+import { useCallback, useEffect, useReducer, useRef } from "react";
 import { useNavigate, useLocation, useOutletContext } from "react-router";
 import L from "leaflet";
 import type * as geojson from "geojson";
 
 import { LegacyCTX, SearchCTX } from "pages/search/hooks/SearchContext";
 import SearchAPI from "pages/search/api/searchAPI";
-import type { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
+import type { AreaIdBasic } from "pages/search/types/dashboard";
 import { MapViewer } from "pages/search/MapViewer";
 import GeoServerAPI from "@api/geoServer";
 import { Dashboard } from "pages/search/Dashboard";
@@ -13,7 +13,6 @@ import Selector from "pages/search/Selector";
 import type { UiManager } from "core/layout/MainLayout";
 import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 import {
-  type SearchActions,
   searchInitialState,
   searchReducer,
   SearchUpdated,
@@ -27,6 +26,7 @@ export function Search() {
   );
   const navigate = useNavigate();
   const { search, pathname } = useLocation();
+  const skipURLRead = useRef(false);
 
   useEffect(() => {
     layoutDispatch({
@@ -40,6 +40,11 @@ export function Search() {
   }, [layoutDispatch]);
 
   useEffect(() => {
+    if (skipURLRead.current) {
+      skipURLRead.current = false;
+      return;
+    }
+
     const query = new URLSearchParams(search);
     const areaTypeURL = query.get("area_type");
     const areaIdURL = query.get("area_id");
@@ -137,43 +142,38 @@ export function Search() {
     void syncDrawConsole();
   }, [searchState.areaId, searchState.areaLayer.json, searchState.areaType]);
 
-  const handleUpdateURL = useCallback(
-    (areaType: AreaType | undefined, areaId: AreaIdBasic | undefined) => {
-      if (areaType === undefined) {
-        void navigate(pathname);
-        return;
-      }
+  useEffect(() => {
+    if (skipURLRead.current) {
+      return;
+    }
 
-      let urlNewParams = `?area_type=${areaType.id}`;
-      if (areaId !== undefined) {
-        urlNewParams += `&area_id=${areaId.id}`;
+    if (!searchState.areaType) {
+      if (search !== "") {
+        void navigate({ pathname, search: "" }, { replace: true });
       }
+      return;
+    }
 
-      void navigate(urlNewParams);
-    },
-    [navigate, pathname],
-  );
+    let params = `?area_type=${searchState.areaType.id}`;
 
-  const searchDispatchComplete = useCallback(
-    (action: SearchActions) => {
-      searchDispatch(action);
-      if (action.type === SearchUpdated.AREA_TYPE) {
-        handleUpdateURL(action.areaType, undefined);
-      }
-      if (action.type === SearchUpdated.AREA_ID) {
-        handleUpdateURL(searchState.areaType, action.areaId);
-      }
-    },
-    [handleUpdateURL, searchState.areaType],
-  );
+    if (searchState.areaId) {
+      params += `&area_id=${searchState.areaId.id}`;
+    }
+
+    if (params !== search) {
+      void navigate({ pathname, search: params }, { replace: true });
+    }
+  }, [searchState.areaType, searchState.areaId, search, navigate, pathname]);
 
   const handleGoBackClick = () => {
+    skipURLRead.current = true;
+
     layoutDispatch({
       type: LayoutUpdated.HEADER_NAMES,
       newHeader: { title: "", subtitle: "" },
     });
     searchDispatch({ type: SearchUpdated.GO_BACK });
-    void navigate(pathname);
+    void navigate({ pathname, search: "" }, { replace: true });
   };
 
   const handleShowDrawControls = useCallback(
@@ -197,7 +197,7 @@ export function Search() {
     searchState.areaHa !== undefined;
 
   return (
-    <SearchCTX state={searchState} dispatch={searchDispatchComplete}>
+    <SearchCTX state={searchState} dispatch={searchDispatch}>
       <LegacyCTX>
         <div className="flex h-full">
           <MapViewer
