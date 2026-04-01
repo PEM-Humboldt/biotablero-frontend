@@ -3,8 +3,7 @@ import LayerAPI from "pages/search/api/layerAPI";
 import { RasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
 import { MetricsUtils } from "pages/search/utils/metrics";
-import { transformCoverageValues } from "./ecosystems/transformData";
-import { SEData } from "pages/search/types/ecosystems";
+import { transformCoverageValues } from "pages/search/dashboard/ecosystems/transformData";
 
 /**
  * Controller for Ecosystems Component
