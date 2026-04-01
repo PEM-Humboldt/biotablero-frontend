@@ -14,6 +14,7 @@ import {
 } from "pages/monitoring/outlets/initiatives/layout/territoryStoryPanels";
 import { TerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
 import { TSSearchBar } from "pages/monitoring/outlets/initiatives/territoryStories/TSSearchBar";
+import { HeaderTS } from "pages/monitoring/outlets/initiatives/territoryStories/HeaderTS";
 
 export function TerritoryStories() {
   const { userStateInInitiative } = useInitiativeCTX();
@@ -48,9 +49,8 @@ export function TerritoryStories() {
   return (
     <div className="flex flex-col items-center">
       <TerritoryStorysCTX>
-        <header className="justify-end p-4 bg-grey w-full">
-          Imagen del RT
-        </header>
+        <HeaderTS />
+
         <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr] w-full max-w-[1600px]">
           <main className={cn(panel !== PanelState.READ ? "bg-grey-form" : "")}>
             <ToggleTSAdminActions
