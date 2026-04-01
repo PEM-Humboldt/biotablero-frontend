@@ -25,7 +25,6 @@ type State = {
   SETotalArea: number;
   loading: boolean;
   noData: boolean;
-  toggleInfo: () => void;
   showInfoGraph: boolean;
 };
 
@@ -34,7 +33,6 @@ const initialState: State = {
   SETotalArea: 0,
   loading: true,
   noData: false,
-  toggleInfo: () => {},
   showInfoGraph: false,
 };
 
@@ -93,16 +91,19 @@ export function StrategicEcosystems({
     controller
       .getStrategicEcosystemsValues(areaHa)
       .then((res) => {
-        dispatch({ type: "LOAD_SUCCESS", payload: res });
+        dispatch({
+          type: "LOAD_SUCCESS",
+          payload: transformSEAreas(res, areaHa),
+        });
       })
       .catch(() => {
         dispatch({ type: "LOAD_FAIL" });
       });
-  }, [areaTypeId, areaIdId]);
+  }, [areaTypeId, areaIdId, areaHa]);
 
-  const percentage = Number(((SETotalArea * 100) / areaHa).toFixed(2));
-
-  const areas = transformSEAreas(SEAreas, areaHa);
+  const percentage = Number(
+    (areaHa > 0 ? (SETotalArea * 100) / areaHa : 0).toFixed(2),
+  );
 
   /**
    * Toggles the display of a specific help section.
@@ -154,7 +155,7 @@ export function StrategicEcosystems({
 
       {!loading && !noData && (
         <div className="ecosystems">
-          {areas.map((SEValues) => {
+          {SEAreas.map((SEValues) => {
             const hasArea = SEValues.area > 0;
             const SEChartData = transformSEValues(SEValues, SETotalArea);
 

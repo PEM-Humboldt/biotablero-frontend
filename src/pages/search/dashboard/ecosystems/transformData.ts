@@ -82,7 +82,7 @@ export const transformSEAreas = (
   if (!rawData) return [];
   const transformedSEAData: Array<SEData> = rawData.map((obj) => ({
     ...obj,
-    percentage: obj.area / generalArea,
+    percentage: generalArea > 0 ? obj.area / generalArea : 0,
   }));
   return transformedSEAData;
 };
