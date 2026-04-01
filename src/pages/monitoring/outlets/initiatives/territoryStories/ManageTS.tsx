@@ -21,7 +21,7 @@ import { uiText } from "pages/monitoring/outlets/initiatives/territoryStories/la
 
 export function ManageTS({ moveToPanel: _ }: PanelComponentProp) {
   const {
-    storys,
+    stories: storys,
     storysAmount,
     currentPage,
     setCurrentPage,

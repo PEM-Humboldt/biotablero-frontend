@@ -24,7 +24,7 @@ import {
 import { TERRITORY_STORIES_PER_PAGE } from "@config/monitoring";
 
 type StoryContextValues = {
-  storys: TerritoryStoryShort[];
+  stories: TerritoryStoryShort[];
   storysAmount: number;
   currentStory: TerritoryStoryFull | null;
   currentPage: number;
@@ -49,7 +49,7 @@ export function TerritoryStorysCTX({ children }: { children: ReactNode }) {
   const storysAmount = useRef(0);
   const prevSearchParamsRef = useRef(searchStorysParams);
 
-  const [storys, setStorys] = useState<TerritoryStoryShort[]>([]);
+  const [stories, setStorys] = useState<TerritoryStoryShort[]>([]);
   const [currentStory, setCurrentStory] = useState<TerritoryStoryFull | null>(
     null,
   );
@@ -114,7 +114,7 @@ export function TerritoryStorysCTX({ children }: { children: ReactNode }) {
   return (
     <StorysCTX.Provider
       value={{
-        storys,
+        stories,
         storysAmount: storysAmount.current,
         currentPage,
         setCurrentPage,

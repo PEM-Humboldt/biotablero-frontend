@@ -59,7 +59,7 @@ export function TerritoryStories() {
             />
 
             {panel !== PanelState.CREATE && (
-              <TSSearchBar className="px-4 pt-2 pb-8" />
+              <TSSearchBar className="p-4 pt-2 " />
             )}
 
             <PanelComponent moveToPanel={setPanel} />
