@@ -112,6 +112,7 @@ export function StrategicEcosystems({
   const toggleInfo = () => {
     dispatch({ type: "TOGGLE_INFO_GRAPH" });
   };
+
   return (
     <div className="ecoest">
       <div className="ecoest-header">
