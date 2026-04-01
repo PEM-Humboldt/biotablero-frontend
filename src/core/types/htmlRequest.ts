@@ -10,5 +10,6 @@ export type RequestBody = {
     | number
     | number[]
     | RequestBody
-    | RequestBody[];
+    | RequestBody[]
+    | boolean;
 };

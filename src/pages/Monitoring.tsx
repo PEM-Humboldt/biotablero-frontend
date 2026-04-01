@@ -6,9 +6,10 @@ import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 import { UserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 import { SidebarProvider, SidebarTrigger } from "@ui/shadCN/component/sidebar";
 import { MonitoringSidebar } from "pages/monitoring/layout/sidebar";
+import { CurrentInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 
 export function Monitoring() {
-  const { layoutDispatch } = useOutletContext<UiManager>();
+  const { layoutDispatch, layoutState } = useOutletContext<UiManager>();
 
   useEffect(() => {
     layoutDispatch({
@@ -22,13 +23,15 @@ export function Monitoring() {
 
   return (
     <UserInMonitoringCTX>
-      <SidebarProvider defaultOpen={false}>
-        <div className="relative">
-          <MonitoringSidebar className="pt-14" />
-          <SidebarTrigger className="absolute -right-4 top-4 z-10" />
-        </div>
-        <Outlet />
-      </SidebarProvider>
+      <CurrentInitiativeCTX>
+        <SidebarProvider defaultOpen={false}>
+          <div className="relative">
+            <MonitoringSidebar className="pt-14" />
+            <SidebarTrigger className="absolute -right-4 top-4 z-10" />
+          </div>
+          <Outlet context={{ layoutState, layoutDispatch }} />
+        </SidebarProvider>
+      </CurrentInitiativeCTX>
     </UserInMonitoringCTX>
   );
 }

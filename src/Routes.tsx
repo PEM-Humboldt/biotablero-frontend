@@ -5,30 +5,13 @@ import { Home } from "pages/Home";
 import { Indicators } from "pages/Indicators";
 import { Portfolio } from "pages/Portfolio";
 import { InitiativesMap } from "pages/monitoring/outlets/InitiativesMap";
-import { Dashboard } from "pages/monitoring/outlets/Dashboard";
+import { Initiatives } from "pages/monitoring/outlets/Initiatives";
 
 import { checkNLoad } from "@utils/userLoader";
-import type { UserType } from "@appTypes/user";
 import { Logs } from "pages/monitoring/outlets/Logs";
 import { InitiativesAdmin } from "pages/monitoring/outlets/InitiativesAdmin";
 import { InitiativesManagement } from "pages/monitoring/outlets/InitiativesManagement";
 import { TagsAdmin } from "pages/monitoring/outlets/TagsAdmin";
-
-const randomNum = (_user: UserType) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(Math.floor(Math.random() * 10_000));
-    }, 3000);
-  });
-};
-
-const randomNumCritical = (_user: UserType) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(Math.floor(Math.random() * 10_000));
-    }, 1000);
-  });
-};
 
 export const routes = createBrowserRouter([
   {
@@ -55,23 +38,11 @@ export const routes = createBrowserRouter([
         children: [
           { index: true, Component: InitiativesMap },
           {
-            path: "dashboard",
-            loader: () =>
-              checkNLoad({
-                requirements: {},
-                redirectPath: "/Monitoreo",
-              }),
+            path: "Iniciativas/:initiativeId?/:tabSection?/:detailItem?",
             children: [
               {
                 index: true,
-                Component: Dashboard,
-                loader: () =>
-                  checkNLoad({
-                    requirements: {},
-                    redirectPath: "/Monitoreo",
-                    fetchData: randomNum,
-                    fetchCriticalData: randomNumCritical,
-                  }),
+                Component: Initiatives,
               },
             ],
           },

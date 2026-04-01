@@ -19,12 +19,14 @@ export function LabelAndErrors({
   validationErrors,
   children,
   className,
+  required,
 }: {
   htmlFor: string;
   errID: string;
   validationErrors: string[];
   children: ReactNode;
   className?: string;
+  required?: boolean;
 }) {
   return (
     <div
@@ -33,8 +35,9 @@ export function LabelAndErrors({
         className,
       )}
     >
-      <label htmlFor={htmlFor} className="w-full has-[.sr-only]:sr-only">
+      <label htmlFor={htmlFor} className="w-full ">
         {children}
+        {required && <span aria-hidden="true"> *</span>}
       </label>
 
       <ErrorsList errId={errID} errorItems={validationErrors} />

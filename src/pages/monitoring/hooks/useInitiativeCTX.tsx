@@ -21,6 +21,7 @@ import {
   UserStateInInitiative,
 } from "pages/monitoring/types/userJoinRequest";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
+import { useParams } from "react-router";
 
 type CurrentInitiativeCTXProps = {
   initiativeId: number | null;
@@ -46,6 +47,7 @@ export function CurrentInitiativeCTX({
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useUserCTX();
   const { joinRequestsByInitiativeId } = useUserInMonitoringCTX();
+  const { initiativeId } = useParams();
 
   const fetchInitiative = useCallback(async (initiativeId?: number) => {
     if (initiativeId === undefined) {
@@ -69,8 +71,9 @@ export function CurrentInitiativeCTX({
   }, []);
 
   useEffect(() => {
-    void fetchInitiative(initialInitiative);
-  }, [initialInitiative, fetchInitiative]);
+    const id = Number.isNaN(initiativeId) ? undefined : Number(initiativeId);
+    void fetchInitiative(id || initialInitiative);
+  }, [initialInitiative, fetchInitiative, initiativeId]);
 
   const userStateInInitiative = useMemo<UserStateInInitiative>(() => {
     if (!initiative) {

@@ -52,7 +52,9 @@ export function SearchField<T>({
 
     case "text":
     case "number":
-      return <Input onChange={onUpdateSearch} {...commonParams} />;
+      return (
+        <Input onChange={onUpdateSearch} autoComplete="off" {...commonParams} />
+      );
 
     case "date":
       return <Input onInput={onUpdateSearch} {...commonParams} />;
