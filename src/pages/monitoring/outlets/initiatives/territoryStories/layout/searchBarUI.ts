@@ -32,8 +32,8 @@ export const uiElement = {
   userFilter: {
     enabled: {
       label: "",
-      title: "mostrar los relatos de todos",
-      sr: "mostrar los relatos de todos los participantes",
+      title: "Mostrar los relatos de todos",
+      sr: "Mostrar los relatos de todos los participantes",
       icon: UserRound,
     },
     disabled: {

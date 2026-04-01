@@ -20,7 +20,7 @@ export const blockTypes: Map<SupportedBlockTypes, string> = new Map([
   ["p", "Párrafo"],
   ...headingRange.map((range): [SupportedBlockTypes, string] => [
     `h${range + HEADINGS_OFFSET}`,
-    `Titulo nivel ${range} (Ctrl+Alt+${range})`,
+    `Título nivel ${range} (Ctrl+Alt+${range})`,
   ]),
 ]);
 

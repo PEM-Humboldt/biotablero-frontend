@@ -104,7 +104,7 @@ export const getYoutubeVideoMetadata = async (
       return {
         status: 500,
         message: "Unknown error",
-        data: [],
+        data: [{ msg: "Error del servicio de Youtube, intenta más tarde" }],
       };
     }
 

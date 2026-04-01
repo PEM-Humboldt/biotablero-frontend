@@ -173,7 +173,7 @@ export function KeywordInput({
         {source && source.length > 0 && (
           <datalist id="keywords_source">
             {source.map((s) => (
-              <option value={s}></option>
+              <option key={s} value={s} />
             ))}
           </datalist>
         )}

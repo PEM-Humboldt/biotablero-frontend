@@ -10,7 +10,7 @@ import { useUserCTX } from "@hooks/UserContext";
 import {
   uiElement,
   orderStateSecuence,
-} from "pages/monitoring/outlets/initiatives/territoryStories/layout/searBarUI";
+} from "pages/monitoring/outlets/initiatives/territoryStories/layout/searchBarUI";
 
 export function TSSearchBar({ className }: { className: string }) {
   const { user } = useUserCTX();

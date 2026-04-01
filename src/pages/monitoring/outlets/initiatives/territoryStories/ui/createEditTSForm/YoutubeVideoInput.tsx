@@ -19,7 +19,10 @@ import {
   type YoutubeVideoCardInfo,
   type YoutubeVideoMetadata,
 } from "pages/monitoring/api/services/youtube";
-import { isYoutubeVideoMetadata } from "pages/monitoring/api/types/guards";
+import {
+  isMonitoringAPIError,
+  isYoutubeVideoMetadata,
+} from "pages/monitoring/api/types/guards";
 import type { VideoObjectTS } from "pages/monitoring/types/territoryStory";
 
 type YoutubeVideoInputProps = {
@@ -54,6 +57,7 @@ export function YoutubeVideoInput({
   text,
 }: YoutubeVideoInputProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const [localErrors, setLocalErrors] = useState<string[]>([]);
   const [videoUrlOrID, setVideoUrlOrID] = useState<string>("");
   const [videoCardsInfo, setVideoCardsInfo] = useState<YoutubeVideoCardInfo[]>(
     [],
@@ -66,6 +70,13 @@ export function YoutubeVideoInput({
     const videoMetadata = await getYoutubeVideoMetadata(
       getCleanYoutubeId(UrlOrID ?? ""),
     );
+    if (isMonitoringAPIError(videoMetadata)) {
+      setIsLoading(false);
+      setLocalErrors((oldErr) => [
+        ...oldErr,
+        ...videoMetadata.data.map((err) => err.msg),
+      ]);
+    }
 
     setIsLoading(false);
     return videoMetadata;
@@ -83,6 +94,7 @@ export function YoutubeVideoInput({
     }
 
     setIsLoading(true);
+    setLocalErrors([]);
     const newCardsInfo: YoutubeVideoCardInfo[] = [];
 
     for (const video of videosToLoad) {
@@ -109,13 +121,9 @@ export function YoutubeVideoInput({
     }
   }, [videos, loadVideoCards, videoCardsInfo.length]);
 
-  useEffect(() => {
-    currentVideosIds.current = new Set(
-      videoCardsInfo.map((vC) => vC.youtubeId),
-    );
-  }, [videoCardsInfo]);
-
   const addVideo = async () => {
+    setLocalErrors([]);
+
     if (currentVideosIds.current.has(getCleanYoutubeId(videoUrlOrID) ?? "")) {
       setErrors([text.errorsYoutubeFeedback.alreadyUploaded]);
       return;
@@ -173,7 +181,7 @@ export function YoutubeVideoInput({
           <div>
             <LabelAndErrors
               errID="errors_youtubeVideo"
-              validationErrors={errors ?? []}
+              validationErrors={[...errors, ...localErrors]}
               htmlFor="youtubeVideoInput"
               className="m-0 p-0"
             >

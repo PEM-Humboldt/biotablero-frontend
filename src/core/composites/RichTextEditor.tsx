@@ -1,7 +1,6 @@
 import { useState, type MutableRefObject } from "react";
 import { $getRoot, type EditorState } from "lexical";
 
-// import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
@@ -146,7 +145,6 @@ export function RichTextEditor({
       <LinkPlugin />
       <HistoryPlugin />
       <CustomShortcuts />
-      {/* <AutoFocusPlugin /> */}
       <OnChangePlugin onChange={handleOnChange} />
       <MarkdownShortcutPlugin transformers={editorTransformers} />
       <LoadTextPlugin text={textToLoad} />

@@ -71,7 +71,19 @@ export function ImagesInput({
 
   useEffect(() => {
     setImageCards(images);
-  }, [images]);
+
+    return () => {
+      if (stagedImage?.preview) {
+        URL.revokeObjectURL(stagedImage?.preview);
+      }
+
+      imageCards.forEach((img) => {
+        if (img.fileUrl.startsWith("blob:")) {
+          URL.revokeObjectURL(img.fileUrl);
+        }
+      });
+    };
+  }, [images, imageCards, stagedImage]);
 
   const handleFileSelect = async (e: ChangeEvent<HTMLInputElement>) => {
     const fileInput = e.target.files?.[0];
@@ -97,6 +109,10 @@ export function ImagesInput({
       setErrors(errors);
       setStagedImage(null);
       return;
+    }
+
+    if (stagedImage?.preview) {
+      URL.revokeObjectURL(stagedImage.preview);
     }
 
     setStagedImage({
@@ -162,6 +178,13 @@ export function ImagesInput({
   };
 
   const removeImage = (index: number) => {
+    setErrors([]);
+
+    const img = imageCards[index];
+    if (img.fileUrl.startsWith("blob:")) {
+      URL.revokeObjectURL(img.fileUrl);
+    }
+
     const filtered = imageCards.filter((_, i) => i !== index);
     setImageCards(filtered);
     updateImages(filtered);
@@ -238,7 +261,10 @@ export function ImagesInput({
                     type="button"
                     variant="outline_destructive"
                     className="bg-white shadow-md h-9 w-9"
-                    onClick={() => setStagedImage(null)}
+                    onClick={() => {
+                      URL.revokeObjectURL(stagedImage.preview);
+                      setStagedImage(null);
+                    }}
                   >
                     <span className="sr-only">{text.image.removeSR}</span>
                     <Trash aria-hidden="true" />

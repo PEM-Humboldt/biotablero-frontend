@@ -1,10 +1,4 @@
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import {
-  $createHeadingNode,
-  HeadingNode,
-  HeadingTagType,
-} from "@lexical/rich-text";
-import { $setBlocksType } from "@lexical/selection";
+import { useEffect } from "react";
 import {
   $getSelection,
   $isRangeSelection,
@@ -13,11 +7,14 @@ import {
   OUTDENT_CONTENT_COMMAND,
   COMMAND_PRIORITY_EDITOR,
   COMMAND_PRIORITY_CRITICAL,
-  FORMAT_TEXT_COMMAND,
   KEY_DOWN_COMMAND,
 } from "lexical";
-import { useEffect } from "react";
-import { HEADINGS_OFFSET } from "./layout/uiTextAndSettings";
+
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { $createHeadingNode, type HeadingTagType } from "@lexical/rich-text";
+import { $setBlocksType } from "@lexical/selection";
+
+import { HEADINGS_OFFSET } from "@composites/richTextEditor/layout/uiTextAndSettings";
 
 export function CustomShortcuts() {
   return (
