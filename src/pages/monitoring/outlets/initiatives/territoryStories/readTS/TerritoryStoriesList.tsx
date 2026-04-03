@@ -4,10 +4,9 @@ import { useMemo } from "react";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
-import { getFeaturedImage } from "../utils/getFeaturedImage";
+import { getFeaturedImage } from "pages/monitoring/outlets/initiatives/territoryStories/utils/getFeaturedImage";
 import { Button } from "@ui/shadCN/component/button";
 import { CirclePlus, ThumbsUp } from "lucide-react";
-import { parseSimpleMarkdown } from "@utils/textParser";
 
 export function TerritoryStoriesList() {
   const { stories, errors, isLoading } = useTerritoryStorysCTX();
@@ -15,7 +14,7 @@ export function TerritoryStoriesList() {
   const { initiativeId } = useParams();
   const baseUrl = `/Monitoreo/Iniciativas/${initiativeId}/Relatos/`;
 
-  const userHasAcces = [
+  const userHasAccess = [
     UserStateInInitiative.USER_LEADER,
     UserStateInInitiative.USER_PARTICIPANT,
     UserStateInInitiative.USER_VIEWER,
@@ -23,9 +22,9 @@ export function TerritoryStoriesList() {
 
   const renderStories = useMemo(() => {
     return stories.filter(
-      (story) => !story.featuredContent && (userHasAcces || !story.restricted),
+      (story) => !story.featuredContent && (userHasAccess || !story.restricted),
     );
-  }, [userHasAcces, stories]);
+  }, [userHasAccess, stories]);
 
   return isLoading ? (
     <div>Cargando...</div>
