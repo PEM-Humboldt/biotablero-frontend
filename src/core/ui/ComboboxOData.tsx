@@ -18,7 +18,7 @@ type ComboboxODataProps<T> = {
   sourceProcess: (oDataResponse: T[]) => { value: string; label: string }[];
   fixedSearchParams?: ODataParams;
   fixedFilter?: string;
-  maxItems: number; // items de top
+  maxItems: number;
   disabled?: boolean;
   uiText: {
     itemNotFound: string;
@@ -122,6 +122,8 @@ export function ComboboxOData<T>({
   }, [makeODataSearchString]);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchData = async () => {
       if (!loadOnEmpty && !searchParams.filter) {
         setItems([]);
@@ -134,7 +136,7 @@ export function ComboboxOData<T>({
       const res = await monitoringAPI<ODataResponse<T>>({
         type: "get",
         endpoint: endpoint,
-        options: { oData: searchParams },
+        options: { oData: searchParams, signal: controller.signal },
       });
 
       setWriting(false);
@@ -150,6 +152,10 @@ export function ComboboxOData<T>({
     };
 
     void fetchData();
+
+    return () => {
+      controller.abort();
+    };
   }, [endpoint, loadOnEmpty, searchParams, sourceProcess]);
 
   const handleSearch = useRef(

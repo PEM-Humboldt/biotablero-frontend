@@ -1,4 +1,5 @@
 import type { ImageMimeType } from "@appTypes/formats";
+import { ODataParams } from "@appTypes/odata";
 
 export const LOG_RECORDS_PER_PAGE = 20; // registrys on the logs summary
 export const INITIATIVES_PER_PAGE = 10; // Initiatives on the admin panel
@@ -27,6 +28,9 @@ export const INITIATIVE_PHONE_MAX_LENGHT = 10;
 
 export const INITIATIVE_TAGS_LIMIT_POLITICAL_CTX = 10;
 export const INITIATIVE_TAGS_LIMIT_CULTURAL_CTX = 3;
+export const INITIATIVE_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS: ODataParams = {
+  orderby: "name asc",
+};
 
 export const INITIATIVES_IMG_ALLOWED_FORMATS: ImageMimeType[] = [
   "image/jpeg",

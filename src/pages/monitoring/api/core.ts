@@ -47,7 +47,7 @@ export async function monitoringAPI<T>({
   try {
     const baseURL = import.meta.env.VITE_MONITORING_BACKEND_URL;
     let response: AxiosResponse<T>;
-    const { data, headers } = options ?? {};
+    const { data, headers, signal } = options ?? {};
 
     if (type === "get" || type === "delete") {
       const queryParams = data ? serializeQueryParams(data as QueryParams) : "";
@@ -61,6 +61,7 @@ export async function monitoringAPI<T>({
 
       response = await monitoringClient[type]<T>(fullEndpoint, {
         responseType: options?.responseType,
+        signal,
       });
     } else {
       let payload: RequestData;
@@ -80,7 +81,7 @@ export async function monitoringAPI<T>({
       response = await monitoringClient[type]<T>(
         `${baseURL}/${endpoint}`,
         payload,
-        { headers },
+        { headers, signal },
       );
     }
 

@@ -1,9 +1,10 @@
-import { useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { CirclePlus, XIcon } from "lucide-react";
 
 import { ComboboxOData } from "@ui/ComboboxOData";
 import { Button } from "@ui/shadCN/component/button";
 import { ErrorsList, LegendAndErrors } from "@ui/LabelingWithErrors";
+import { INITIATIVE_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS } from "@config/monitoring";
 import { cn } from "@ui/shadCN/lib/utils";
 
 import {
@@ -53,7 +54,7 @@ export function TagsManger({
     }, {});
   });
 
-  const updateTags =
+  const updateTags = useCallback(
     (categoryId: number) => (updatedTags: (TagData | TagInInitiative)[]) => {
       setTags((oldTags) => {
         const newState = {
@@ -66,7 +67,9 @@ export function TagsManger({
 
         return newState;
       });
-    };
+    },
+    [sectionUpdater],
+  );
 
   return (
     <PlainInputContainer
@@ -102,7 +105,7 @@ export function TagsManger({
   );
 }
 
-function TagSelector({
+const TagSelector = memo(function TagSelector({
   managerTitle,
   tagCategoryId,
   selectedTags,
@@ -122,17 +125,16 @@ function TagSelector({
   const [value, setValue] = useState<string>("");
   const [errors, setErrors] = useState<string[]>([]);
 
+  const tagIdsKey = selectedTags
+    .map((t) => (isTagInInitiative(t) ? t.tag.id : t.id))
+    .join(",");
+
   const filter = useMemo(() => {
     const categoryPart = `category/id eq ${tagCategoryId}`;
-    const exclusionPart =
-      selectedTags && selectedTags.length > 0
-        ? ` and not (id in (${selectedTags
-            .map((t) => (isTagInInitiative(t) ? t.tag.id : t.id))
-            .join(", ")}))`
-        : "";
+    const exclusionPart = tagIdsKey ? ` and not (id in (${tagIdsKey}))` : "";
 
     return `${categoryPart}${exclusionPart}`;
-  }, [tagCategoryId, selectedTags]);
+  }, [tagCategoryId, tagIdsKey]);
 
   const addTag = async () => {
     if (value === "") {
@@ -178,12 +180,12 @@ function TagSelector({
     );
   };
 
-  const handleTagValueCreation = (items: ODataTag[]) => {
+  const handleTagValueCreation = useCallback((items: ODataTag[]) => {
     return items.map((item) => ({
       value: `${item.id}|${item.name}`,
       label: item.name,
     }));
-  };
+  }, []);
 
   const uiTexts = uiText.initiative.module.tags;
 
@@ -247,8 +249,8 @@ function TagSelector({
             endpoint="Tag"
             sources={["name"]}
             sourceProcess={handleTagValueCreation}
-            fixedSearchParams={{ orderby: "name asc" }}
             fixedFilter={filter}
+            fixedSearchParams={INITIATIVE_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS}
             maxItems={maxTagsAmount}
             uiText={{ ...texts }}
             className="flex-1 min-w-0"
@@ -269,4 +271,4 @@ function TagSelector({
       )}
     </div>
   );
-}
+});
