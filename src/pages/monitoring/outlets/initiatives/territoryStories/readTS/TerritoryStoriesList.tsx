@@ -1,0 +1,101 @@
+import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
+import { Link, useParams } from "react-router";
+import { useMemo } from "react";
+import { ErrorsList } from "@ui/LabelingWithErrors";
+import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
+import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
+import { getFeaturedImage } from "../utils/getFeaturedImage";
+import { Button } from "@ui/shadCN/component/button";
+import { CirclePlus, ThumbsUp } from "lucide-react";
+import { parseSimpleMarkdown } from "@utils/textParser";
+
+export function TerritoryStoriesList() {
+  const { stories, errors, isLoading } = useTerritoryStorysCTX();
+  const { userStateInInitiative } = useInitiativeCTX();
+  const { initiativeId } = useParams();
+  const baseUrl = `/Monitoreo/Iniciativas/${initiativeId}/Relatos/`;
+
+  const userHasAcces = [
+    UserStateInInitiative.USER_LEADER,
+    UserStateInInitiative.USER_PARTICIPANT,
+    UserStateInInitiative.USER_VIEWER,
+  ].includes(userStateInInitiative);
+
+  const renderStories = useMemo(() => {
+    return stories.filter(
+      (story) => !story.featuredContent && (userHasAcces || !story.restricted),
+    );
+  }, [userHasAcces, stories]);
+
+  return isLoading ? (
+    <div>Cargando...</div>
+  ) : (
+    <>
+      <ErrorsList
+        errorItems={errors}
+        className="bg-accent/10 border border-accent rounded-lg m-4 mt-0 p-4"
+      />
+
+      <ul className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-8 p-4">
+        {renderStories.map((story) => {
+          const featuredImg = getFeaturedImage(story);
+          const creationDate = new Date(story.creationDate);
+
+          return (
+            <li key={story.id}>
+              <article className="rounded-xl bg-background overflow-hidden flex flex-col gap-4 h-full justify-between pb-4 outline outline-primary/31 hover:outline-primary hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-in-out">
+                <header>
+                  <img
+                    src={featuredImg.url}
+                    alt={featuredImg.alt}
+                    className="aspect-3/2  lg:max-h-[400px] object-cover object-center"
+                  />
+                  <h3 className="py-2 px-4 text-lg font-normal m-0">
+                    {story.title}
+                  </h3>
+
+                  {story.keywords !== undefined && (
+                    <ul className="flex flex-wrap gap-2 px-4 list-none">
+                      {story.keywords.split(",").map((kw, index) => (
+                        <li
+                          key={`${story.id}-kw-${index}`}
+                          className="flex px-2 items-start bg-muted text-primary text-sm rounded"
+                        >
+                          {kw}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </header>
+
+                <footer className="px-4 justify-self-end">
+                  <div className="mb-4">
+                    <time dateTime={creationDate.toLocaleDateString()}>
+                      {creationDate.toLocaleDateString("es-ES", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      })}
+                    </time>
+                    <div>{story.authorUserName}</div>
+                  </div>
+
+                  <div className="flex justify-between items-center">
+                    <span className="inline-flex">
+                      <ThumbsUp /> {story.likes}
+                    </span>
+                    <Button variant="ghost-clean" asChild>
+                      <Link to={`${baseUrl}${story.id}`}>
+                        Leer el relato <CirclePlus className="size-6" />
+                      </Link>
+                    </Button>
+                  </div>
+                </footer>
+              </article>
+            </li>
+          );
+        })}
+      </ul>
+    </>
+  );
+}
