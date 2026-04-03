@@ -10,7 +10,7 @@ import { Ellipsis, Search } from "lucide-react";
 type ComboboxODataProps<T> = {
   id?: string;
   endpoint: string;
-  value: number;
+  value: string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
   sources: (keyof T)[];
   oDataEntity?: string;
