@@ -78,7 +78,7 @@ export function FeaturedStory() {
         </header>
 
         <div className="line-clamp-4 max-w-[65ch]">
-          {parseSimpleMarkdown(featuredStory.text)}
+          {parseSimpleMarkdown(featuredStory.text, { plain: true })}
         </div>
 
         <footer className="space-y-4">

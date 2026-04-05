@@ -102,7 +102,7 @@ export function TerritoryStoryReader() {
         </header>
 
         <section className="prose prose-slate max-w-none dark:prose-invert">
-          {parseSimpleMarkdown(currentStory.text)}
+          {parseSimpleMarkdown(currentStory.text, { headingsOffset: 2 })}
         </section>
 
         <section aria-label="Galería de videos" className="empty:hidden">
