@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router";
 import { Button } from "@ui/shadCN/component/button";
 import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
 import { parseSimpleMarkdown } from "@utils/textParser";
-import { getFeaturedImage } from "../utils/getFeaturedImage";
+import { getFeaturedImage } from "pages/monitoring/outlets/initiatives/territoryStories/utils/getFeaturedImage";
 import { InitiativeError } from "pages/monitoring/outlets/initiatives/InitiativeError";
 
 export function TerritoryStoryReader() {
@@ -26,25 +26,26 @@ export function TerritoryStoryReader() {
   if (isLoading) {
     return <div className="p-8 text-center">Cargando relato...</div>;
   }
-  if (!currentStory || errors.length > 0) {
-    return (
-      <div className="p-4">
-        <Button
-          variant="ghost"
-          onClick={() => void navigate(baseUrl)}
-          className="mb-4"
-        >
-          Volver al explorador
-        </Button>
-        <ErrorsList errorItems={errors} />
-        <InitiativeError msg="No pudimos encontrar el relato que buscas o hubo un problema al cargarlo." />
-      </div>
-    );
-  }
 
-  if (!userHasAccess) {
+  if (!currentStory || errors.length > 0 || !userHasAccess) {
+    let errorMessage =
+      "Algo inesperado ocurrió, vuelve a intentarlo más tarde.";
+
+    if (!currentStory) {
+      errorMessage =
+        "No pudimos encontrar el relato que buscas o sucedió algo inesperado al cargarlo.";
+    } else if (!userHasAccess) {
+      errorMessage =
+        "No tienes los permisos necesarios para leer este relato. Contacta al líder de la iniciativa.";
+    }
+
     return (
-      <InitiativeError msg="No tienes los permisos necesarios para leer este relato. Contacta al líder de la iniciativa." />
+      <InitiativeError
+        msg={errorMessage}
+        errors={errors}
+        goBack={baseUrl}
+        className="h-full"
+      />
     );
   }
 

@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router";
+import { useParams } from "react-router";
 
 import { TablePager } from "@composites/TablePager";
 import { TERRITORY_STORIES_PER_PAGE } from "@config/monitoring";
@@ -11,10 +11,8 @@ import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorys
 import { TSSearchBar } from "pages/monitoring/outlets/initiatives/territoryStories/TSSearchBar";
 
 export function ReadTS({ moveToPanel: _ }: PanelComponentProp) {
-  const { storysAmount, currentPage, setCurrentPage, isLoading, errors } =
-    useTerritoryStorysCTX();
-  const { initiativeId, detailItem } = useParams();
-  const baseUrl = `/Monitoreo/Iniciativas/${initiativeId}/Relatos/`;
+  const { storysAmount, currentPage, setCurrentPage } = useTerritoryStorysCTX();
+  const { detailItem } = useParams();
 
   return detailItem ? (
     <TerritoryStoryReader />
