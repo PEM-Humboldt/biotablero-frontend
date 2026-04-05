@@ -13,7 +13,6 @@ import {
   panelView,
 } from "pages/monitoring/outlets/initiatives/layout/territoryStoryPanels";
 import { TerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
-import { TSSearchBar } from "pages/monitoring/outlets/initiatives/territoryStories/TSSearchBar";
 import { HeaderTS } from "pages/monitoring/outlets/initiatives/territoryStories/HeaderTS";
 
 export function TerritoryStories() {
@@ -47,20 +46,16 @@ export function TerritoryStories() {
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center bg-grey-form">
       <TerritoryStorysCTX>
         <HeaderTS />
 
         <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr] w-full max-w-[1600px]">
-          <main className={cn(panel !== PanelState.READ ? "bg-grey-form" : "")}>
+          <main className="">
             <ToggleTSAdminActions
               currentPanel={panel}
               goToPanel={handlePanelChange}
             />
-
-            {panel !== PanelState.CREATE && (
-              <TSSearchBar className="p-4 pt-2 " />
-            )}
 
             <PanelComponent moveToPanel={setPanel} />
           </main>

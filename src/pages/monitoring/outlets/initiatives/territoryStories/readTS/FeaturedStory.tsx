@@ -61,10 +61,10 @@ export function FeaturedStory() {
     <>
       <ErrorsList
         errorItems={errors}
-        className="bg-accent/10 border border-accent rounded-lg m-4 mt-0 p-4"
+        className="bg-accent/10 border border-accent rounded-lg m-4 p-4"
       />
 
-      <article className="m-4 mt-0 p-4 rounded-xl shadow-xl space-y-4">
+      <article className="m-4 p-4 rounded-xl shadow-lg space-y-4 bg-background outline outline-primary/10 hover:outline-primary hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-in-out">
         <header>
           <h3>
             <span className="sr-only">Relato destacado:</span>
@@ -73,7 +73,7 @@ export function FeaturedStory() {
           <img
             src={featuredImg.url}
             alt={featuredImg.alt}
-            className="aspect-video lg:aspect-auto lg:max-h-[400px] lg:w-full object-cover object-center rounded-lg"
+            className="aspect-video lg:aspect-auto lg:max-h-[300px] lg:w-full object-cover object-center rounded-lg"
           />
         </header>
 

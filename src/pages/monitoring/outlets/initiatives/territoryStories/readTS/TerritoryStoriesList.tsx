@@ -35,66 +35,72 @@ export function TerritoryStoriesList() {
         className="bg-accent/10 border border-accent rounded-lg m-4 mt-0 p-4"
       />
 
-      <ul className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-8 p-4">
-        {renderStories.map((story) => {
-          const featuredImg = getFeaturedImage(story);
-          const creationDate = new Date(story.creationDate);
+      {stories.length === 0 ? (
+        <div className="p-8 m-16 mt-4 bg-muted border border-primary/50 rounded-lg text-3xl text-primary text-center">
+          No se encontraron relatos que conincidan con tu búsqueda
+        </div>
+      ) : (
+        <ul className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-8 p-4">
+          {renderStories.map((story) => {
+            const featuredImg = getFeaturedImage(story);
+            const creationDate = new Date(story.creationDate);
 
-          return (
-            <li key={story.id}>
-              <article className="rounded-xl bg-background overflow-hidden flex flex-col gap-4 h-full justify-between pb-4 outline outline-primary/31 hover:outline-primary hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-in-out">
-                <header>
-                  <img
-                    src={featuredImg.url}
-                    alt={featuredImg.alt}
-                    className="aspect-3/2  lg:max-h-[400px] object-cover object-center"
-                  />
-                  <h3 className="py-2 px-4 text-lg font-normal m-0">
-                    {story.title}
-                  </h3>
+            return (
+              <li key={story.id}>
+                <article className="rounded-xl bg-background overflow-hidden flex flex-col gap-4 h-full justify-between pb-4 outline outline-primary/31 hover:outline-primary hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-in-out">
+                  <header>
+                    <img
+                      src={featuredImg.url}
+                      alt={featuredImg.alt}
+                      className="aspect-3/2  lg:max-h-[400px] object-cover object-center"
+                    />
+                    <h3 className="py-2 px-4 text-lg font-normal m-0">
+                      {story.title}
+                    </h3>
 
-                  {story.keywords !== undefined && (
-                    <ul className="flex flex-wrap gap-2 px-4 list-none">
-                      {story.keywords.split(",").map((kw, index) => (
-                        <li
-                          key={`${story.id}-kw-${index}`}
-                          className="flex px-2 items-start bg-muted text-primary text-sm rounded"
-                        >
-                          {kw}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </header>
+                    {story.keywords !== undefined && (
+                      <ul className="flex flex-wrap gap-2 px-4 list-none">
+                        {story.keywords.split(",").map((kw, index) => (
+                          <li
+                            key={`${story.id}-kw-${index}`}
+                            className="flex px-2 items-start bg-muted text-primary text-sm rounded"
+                          >
+                            {kw}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </header>
 
-                <footer className="px-4 justify-self-end">
-                  <div className="mb-4">
-                    <time dateTime={creationDate.toLocaleDateString()}>
-                      {creationDate.toLocaleDateString("es-ES", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </time>
-                    <div>{story.authorUserName}</div>
-                  </div>
+                  <footer className="px-4 justify-self-end">
+                    <div className="mb-4">
+                      <time dateTime={creationDate.toLocaleDateString()}>
+                        {creationDate.toLocaleDateString("es-ES", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        })}
+                      </time>
+                      <div>{story.authorUserName}</div>
+                    </div>
 
-                  <div className="flex justify-between items-center">
-                    <span className="inline-flex">
-                      <ThumbsUp /> {story.likes}
-                    </span>
-                    <Button variant="ghost-clean" asChild>
-                      <Link to={`${baseUrl}${story.id}`}>
-                        Leer el relato <CirclePlus className="size-6" />
-                      </Link>
-                    </Button>
-                  </div>
-                </footer>
-              </article>
-            </li>
-          );
-        })}
-      </ul>
+                    <div className="flex justify-between items-center">
+                      <span className="inline-flex">
+                        <ThumbsUp /> {story.likes}
+                      </span>
+                      <Button variant="ghost-clean" asChild>
+                        <Link to={`${baseUrl}${story.id}`}>
+                          Leer el relato <CirclePlus className="size-6" />
+                        </Link>
+                      </Button>
+                    </div>
+                  </footer>
+                </article>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </>
   );
 }
