@@ -1,6 +1,6 @@
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
-import { useNavigate, useParams, Link } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { Button } from "@ui/shadCN/component/button";
 import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
 import { parseSimpleMarkdown } from "@utils/textParser";
@@ -9,8 +9,12 @@ import { InitiativeError } from "pages/monitoring/outlets/initiatives/Initiative
 import {
   ArrowLeftFromLine,
   ArrowRightFromLine,
+  CircleArrowLeft,
   GalleryThumbnails,
 } from "lucide-react";
+import { TERRITORY_STORY_HEADINGS_OFFSET } from "@config/monitoring";
+import { LikeButton } from "pages/monitoring/outlets/initiatives/territoryStories/ui/LikeButton";
+import { MediaGallery } from "./territoryStoryReader/MediaGallery";
 
 export function TerritoryStoryReader() {
   const { initiativeId } = useParams();
@@ -58,66 +62,70 @@ export function TerritoryStoryReader() {
   const creationDate = new Date(currentStory.creationDate);
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
+    <div className="p-4">
       <Button
-        variant="outline"
+        variant="link"
+        size="lg"
         onClick={() => void navigate(baseUrl)}
-        className="mb-6"
+        className="ml-auto mb-4"
+        title="Volver al explorador"
       >
-        Volver al explorador de relatos
+        Volver a los relatos del territorio
+        <CircleArrowLeft />
       </Button>
 
       <article className="space-y-6">
-        <header className="space-y-4">
-          <figure className="rounded-xl overflow-hidden shadow-lg">
+        <header>
+          <figure>
             <img
               src={featuredImg.url}
               alt={featuredImg.alt}
-              className="w-full aspect-video object-cover"
+              className="w-full"
             />
+            <figcaption>{featuredImg.alt}</figcaption>
           </figure>
 
-          <h3 className="text-3xl font-bold">{currentStory.title}</h3>
+          <div className="flex flex-col-reverse">
+            <h3 className="text-3xl font-bold">{currentStory.title}</h3>
 
-          <div className="flex items-center gap-4 text-muted-foreground">
-            <time dateTime={creationDate.toISOString()} className="text-sm">
-              {creationDate.toLocaleDateString("es-ES", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
-            </time>
-            <span className="w-1 h-1 bg-muted-foreground rounded-full" />
-            <div className="text-sm font-medium">
-              {currentStory.authorUserName}
+            <div className="flex items-center justify-between gap-4">
+              <time
+                dateTime={creationDate.toISOString()}
+                className="text-muted-foreground text-sm"
+              >
+                {creationDate.toLocaleDateString("es-ES", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
+              </time>
+              <div className="text-base">{currentStory.authorUserName}</div>
             </div>
           </div>
 
           {currentStory.keywords && (
-            <ul className="flex flex-wrap gap-2 list-none">
+            <ul className="flex flex-wrap gap-2 -ml-2 list-none">
               {currentStory.keywords.split(",").map((kw, index) => (
                 <li
                   key={`${currentStory.id}-kw-${index}`}
-                  className="px-2 py-1 bg-secondary text-secondary-foreground text-xs rounded-md"
+                  className="px-2 pb-0.5 bg-muted text-sm text-primary font-normal border border-input text-xs rounded-full"
                 >
                   {kw.trim()}
                 </li>
               ))}
             </ul>
           )}
+
+          <LikeButton story={currentStory} />
         </header>
 
         <section className="prose prose-slate max-w-none dark:prose-invert">
-          {parseSimpleMarkdown(currentStory.text, { headingsOffset: 2 })}
+          {parseSimpleMarkdown(currentStory.text, {
+            headingsOffset: TERRITORY_STORY_HEADINGS_OFFSET,
+          })}
         </section>
 
-        <section aria-label="Galería de videos" className="empty:hidden">
-          {/* Contenido de galería */}
-        </section>
-
-        <section aria-label="Galería de imágenes" className="empty:hidden">
-          {/* Contenido de galería */}
-        </section>
+        <MediaGallery story={currentStory} />
 
         <footer className="mt-4 pt-4 pb-8 px-4 border-t border-t-input flex gap-2 justify-center">
           {prevStory && (
@@ -128,7 +136,7 @@ export function TerritoryStoryReader() {
               className="mb-6"
               title="Leer el relato anterior"
             >
-              <ArrowLeftFromLine className="size-6" aria-hidden="true" />
+              <ArrowLeftFromLine aria-hidden="true" />
               <span className="sr-only">Leer el relato anterior:</span>
               {prevStory.title}
             </Button>
@@ -155,7 +163,7 @@ export function TerritoryStoryReader() {
             >
               <span className="sr-only">Leer el relato siguiente:</span>
               {nextStory.title}
-              <ArrowRightFromLine className="size-6" aria-hidden="true" />
+              <ArrowRightFromLine aria-hidden="true" />
             </Button>
           )}
         </footer>
