@@ -47,11 +47,11 @@ const editorTransformers: Transformer[] = [
   BOLD_UNDERSCORE,
   ITALIC_STAR,
   ITALIC_UNDERSCORE,
+  HEADING,
 ];
 
 export const availableTransformers: Transformer[] = [
   ...editorTransformers,
-  HEADING,
   LINK,
 ];
 

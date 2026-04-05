@@ -1,17 +1,22 @@
-import { ErrorsList } from "@ui/LabelingWithErrors";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useParams, Link } from "react-router";
 import { Button } from "@ui/shadCN/component/button";
 import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
 import { parseSimpleMarkdown } from "@utils/textParser";
 import { getFeaturedImage } from "pages/monitoring/outlets/initiatives/territoryStories/utils/getFeaturedImage";
 import { InitiativeError } from "pages/monitoring/outlets/initiatives/InitiativeError";
+import {
+  ArrowLeftFromLine,
+  ArrowRightFromLine,
+  GalleryThumbnails,
+} from "lucide-react";
 
 export function TerritoryStoryReader() {
   const { initiativeId } = useParams();
   const { userStateInInitiative } = useInitiativeCTX();
-  const { errors, isLoading, currentStory } = useTerritoryStorysCTX();
+  const { errors, isLoading, currentStory, prevStory, nextStory } =
+    useTerritoryStorysCTX();
   const navigate = useNavigate();
   const baseUrl = `/Monitoreo/Iniciativas/${initiativeId}/Relatos/`;
 
@@ -114,14 +119,45 @@ export function TerritoryStoryReader() {
           {/* Contenido de galería */}
         </section>
 
-        <footer className="pt-8 border-t">
-          <Button variant="outline" className="w-full sm:w-auto">
-            Relato anterior
+        <footer className="mt-4 pt-4 pb-8 px-4 border-t border-t-input flex gap-2 justify-center">
+          {prevStory && (
+            <Button
+              variant="ghost"
+              size="lg"
+              onClick={() => void navigate(`${baseUrl}${prevStory.id}`)}
+              className="mb-6"
+              title="Leer el relato anterior"
+            >
+              <ArrowLeftFromLine className="size-6" aria-hidden="true" />
+              <span className="sr-only">Leer el relato anterior:</span>
+              {prevStory.title}
+            </Button>
+          )}
+
+          <Button
+            variant="ghost"
+            size="icon-lg"
+            onClick={() => void navigate(baseUrl)}
+            className="mb-6"
+            title="Volver al explorador"
+          >
+            <span className="sr-only">Volver al explorador de relatos</span>
+            <GalleryThumbnails className="size-6" />
           </Button>
 
-          <Button variant="outline" className="w-full sm:w-auto">
-            Siguiente relato
-          </Button>
+          {nextStory && (
+            <Button
+              variant="ghost"
+              size="lg"
+              onClick={() => void navigate(`${baseUrl}${nextStory.id}`)}
+              className="mb-6"
+              title="Leer el relato siguente"
+            >
+              <span className="sr-only">Leer el relato siguiente:</span>
+              {nextStory.title}
+              <ArrowRightFromLine className="size-6" aria-hidden="true" />
+            </Button>
+          )}
         </footer>
       </article>
     </div>

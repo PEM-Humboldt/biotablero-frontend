@@ -6,6 +6,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -27,6 +28,8 @@ type StoryContextValues = {
   stories: TerritoryStoryShort[];
   storysAmount: number;
   currentStory: TerritoryStoryFull | null;
+  nextStory: TerritoryStoryShort | null;
+  prevStory: TerritoryStoryShort | null;
   currentPage: number;
   setCurrentPage: (page: number) => void;
   setStorysSearchParams: Dispatch<SetStateAction<ODataParams>>;
@@ -45,6 +48,7 @@ export function TerritoryStorysCTX({ children }: { children: ReactNode }) {
   const [errors, setErrors] = useState<string[]>([]);
   const [searchStorysParams, setStorysSearchParams] = useState<ODataParams>({
     top: TERRITORY_STORIES_PER_PAGE,
+    orderby: "creationDate desc",
   });
   const storysAmount = useRef(0);
   const prevSearchParamsRef = useRef(searchStorysParams);
@@ -111,6 +115,21 @@ export function TerritoryStorysCTX({ children }: { children: ReactNode }) {
     void getCurrentStory();
   }, [getCurrentStory]);
 
+  const { prevStory, nextStory } = useMemo(() => {
+    const index = stories.findIndex(
+      (story) => story.id === Number(currentStoryId),
+    );
+
+    if (index === -1) {
+      return { prevStory: null, nextStory: null };
+    }
+
+    return {
+      prevStory: index > 0 ? stories[index - 1] : null,
+      nextStory: index < stories.length - 1 ? stories[index + 1] : null,
+    };
+  }, [stories, currentStoryId]);
+
   return (
     <StorysCTX.Provider
       value={{
@@ -119,6 +138,8 @@ export function TerritoryStorysCTX({ children }: { children: ReactNode }) {
         currentPage,
         setCurrentPage,
         currentStory,
+        nextStory,
+        prevStory,
         isLoading,
         errors,
         setStorysSearchParams,
