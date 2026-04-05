@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router";
 import { useEffect, useState } from "react";
-import { CirclePlus, ThumbsUp } from "lucide-react";
+import { CirclePlus } from "lucide-react";
 
 import { parseSimpleMarkdown } from "@utils/textParser";
 import { Button } from "@ui/shadCN/component/button";
@@ -10,6 +10,7 @@ import type { TerritoryStoryShort } from "pages/monitoring/types/odataResponse";
 import { getTerritoryStoriesFromInitiative } from "pages/monitoring/api/services/territoryStory";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { getFeaturedImage } from "pages/monitoring/outlets/initiatives/territoryStories/utils/getFeaturedImage";
+import { LikeButton } from "pages/monitoring/outlets/initiatives/territoryStories/ui/LikeButton";
 
 export function FeaturedStory() {
   const { initiativeId } = useParams();
@@ -94,9 +95,7 @@ export function FeaturedStory() {
           </div>
 
           <div>
-            <Button variant="ghost">
-              <ThumbsUp /> {featuredStory.likes}
-            </Button>
+            <LikeButton story={featuredStory} />
             <Button variant="ghost" asChild>
               <Link to={`${baseUrl}${featuredStory.id}`}>
                 Leer el relato <CirclePlus className="size-6" />
