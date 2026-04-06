@@ -7,6 +7,7 @@ import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
 import { getFeaturedImage } from "pages/monitoring/outlets/initiatives/territoryStories/utils/getFeaturedImage";
 import { Button } from "@ui/shadCN/component/button";
 import { CirclePlus, ThumbsUp } from "lucide-react";
+import { LikeButton } from "../ui/LikeButton";
 
 export function TerritoryStoriesList() {
   const { stories, errors, isLoading } = useTerritoryStorysCTX();
@@ -84,13 +85,15 @@ export function TerritoryStoriesList() {
                       <div>{story.authorUserName}</div>
                     </div>
 
-                    <div className="flex justify-between items-center">
-                      <span className="inline-flex">
-                        <ThumbsUp /> {story.likes}
-                      </span>
-                      <Button variant="ghost-clean" asChild>
-                        <Link to={`${baseUrl}${story.id}`}>
-                          Leer el relato <CirclePlus className="size-6" />
+                    <div className="flex -mx-4 justify-between content-end items-center">
+                      <LikeButton story={story} disabled={true} />
+                      <Button variant="ghost-clean" asChild className="ml-auto">
+                        <Link
+                          to={`${baseUrl}${story.id}`}
+                          className="flex items-center gap-2"
+                        >
+                          Leer <span className="sr-only">el relato</span>
+                          <CirclePlus className="size-6" aria-hidden="true" />
                         </Link>
                       </Button>
                     </div>
