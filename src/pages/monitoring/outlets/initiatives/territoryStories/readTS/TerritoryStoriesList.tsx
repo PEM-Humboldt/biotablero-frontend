@@ -6,8 +6,10 @@ import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
 import { getFeaturedImage } from "pages/monitoring/outlets/initiatives/territoryStories/utils/getFeaturedImage";
 import { Button } from "@ui/shadCN/component/button";
-import { CirclePlus, ThumbsUp } from "lucide-react";
-import { LikeButton } from "../ui/LikeButton";
+import { CirclePlus } from "lucide-react";
+import { LikeButton } from "pages/monitoring/outlets/initiatives/territoryStories/ui/LikeButton";
+import { StoryCreationInfo } from "pages/monitoring/outlets/initiatives/territoryStories/ui/StoryCreationInfo";
+import { StoryCardActions } from "pages/monitoring/outlets/initiatives/territoryStories/ui/StoryCardActions";
 
 export function TerritoryStoriesList() {
   const { stories, errors, isLoading } = useTerritoryStorysCTX();
@@ -44,11 +46,10 @@ export function TerritoryStoriesList() {
         <ul className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-8 p-4">
           {renderStories.map((story) => {
             const featuredImg = getFeaturedImage(story);
-            const creationDate = new Date(story.creationDate);
 
             return (
               <li key={story.id}>
-                <article className="rounded-xl bg-background overflow-hidden flex flex-col gap-4 h-full justify-between pb-4 outline outline-primary/31 hover:outline-primary hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-in-out">
+                <article className="rounded-xl bg-background overflow-hidden flex flex-col gap-4 h-full justify-between pb-2 outline outline-primary/31 hover:outline-primary hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-in-out">
                   <header>
                     <img
                       src={featuredImg.url}
@@ -74,29 +75,12 @@ export function TerritoryStoriesList() {
                   </header>
 
                   <footer className="px-4 justify-self-end">
-                    <div className="mb-4">
-                      <time dateTime={creationDate.toLocaleDateString()}>
-                        {creationDate.toLocaleDateString("es-ES", {
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric",
-                        })}
-                      </time>
-                      <div>{story.authorUserName}</div>
-                    </div>
+                    <StoryCreationInfo story={story} className="mb-4" />
 
-                    <div className="flex -mx-4 justify-between content-end items-center">
-                      <LikeButton story={story} disabled={true} />
-                      <Button variant="ghost-clean" asChild className="ml-auto">
-                        <Link
-                          to={`${baseUrl}${story.id}`}
-                          className="flex items-center gap-2"
-                        >
-                          Leer <span className="sr-only">el relato</span>
-                          <CirclePlus className="size-6" aria-hidden="true" />
-                        </Link>
-                      </Button>
-                    </div>
+                    <StoryCardActions
+                      story={story}
+                      className="flex -mx-4 justify-between content-end items-center"
+                    />
                   </footer>
                 </article>
               </li>
