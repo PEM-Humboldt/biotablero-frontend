@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { TERRITORY_STORY_HEADINGS_OFFSET } from "@config/monitoring";
 import { LikeButton } from "pages/monitoring/outlets/initiatives/territoryStories/ui/LikeButton";
-import { MediaGallery } from "./territoryStoryReader/MediaGallery";
+import { MediaGallery } from "pages/monitoring/outlets/initiatives/territoryStories/readTS/territoryStoryReader/MediaGallery";
 
 export function TerritoryStoryReader() {
   const { initiativeId } = useParams();

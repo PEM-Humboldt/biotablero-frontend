@@ -3,7 +3,10 @@ import type {
   JoinRequestStatus,
   UserLevel,
 } from "pages/monitoring/types/catalog";
-import { ImageObjectTS, VideoObjectTS } from "./territoryStory";
+import type {
+  ImageObjectTS,
+  VideoObjectTS,
+} from "pages/monitoring/types/territoryStory";
 
 // NOTE: Logs
 export interface ODataLogEntryShort extends HasId {

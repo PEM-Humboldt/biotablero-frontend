@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router";
 
 import { Button } from "@ui/shadCN/component/button";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
-import { cn } from "@ui/shadCN/lib/utils";
 
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";

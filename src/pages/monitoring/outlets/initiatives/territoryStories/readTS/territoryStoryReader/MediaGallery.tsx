@@ -1,4 +1,4 @@
-import { Camera, LucideIcon, Video } from "lucide-react";
+import { Camera, type LucideIcon, Video } from "lucide-react";
 import {
   Tabs,
   TabsList,
@@ -11,14 +11,31 @@ import type {
   VideoObjectTS,
 } from "pages/monitoring/types/territoryStory";
 import type { TerritoryStoryShort } from "pages/monitoring/types/odataResponse";
-import { ReactNode, useCallback, useEffect, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useState } from "react";
 import {
   getCleanYoutubeId,
   getYoutubeVideoMetadata,
-  YoutubeVideoMetadata,
+  type YoutubeVideoMetadata,
 } from "pages/monitoring/api/services/youtube";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { ErrorsList } from "@ui/LabelingWithErrors";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogTrigger,
+} from "@ui/shadCN/component/dialog";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@ui/shadCN/component/carousel";
+import { Button } from "@ui/shadCN/component/button";
 
 type MediaTabConfig = {
   value: string;
@@ -85,17 +102,66 @@ export function MediaGallery({
 }
 
 function ImageGallery({ images }: { images: ImageObjectTS[] }) {
+  const [selectedIndex, setSelectedIndex] = useState<number>(0);
+
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-      {images.map((image) => (
-        <img
-          key={image.fileUrl}
-          src={image.fileUrl}
-          alt={image.description}
-          className="aspect-video object-cover"
-        />
-      ))}
-    </div>
+    <Dialog>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        {images.map((image, index) => (
+          <DialogTrigger asChild key={image.fileUrl}>
+            <button
+              onClick={() => setSelectedIndex(index)}
+              type="button"
+              className=""
+            >
+              <img
+                src={image.fileUrl}
+                alt={image.description}
+                className="aspect-video object-cover w-full"
+              />
+            </button>
+          </DialogTrigger>
+        ))}
+      </div>
+
+      <DialogContent className="max-w-5xl w-[90%] bg-background">
+        <DialogHeader>
+          <DialogTitle className="text-xl text-primary font-normal">
+            Galería de imágenes
+          </DialogTitle>
+          <DialogDescription className="sr-only">
+            Visualizador de fotos y videos del relato actual. Usa las flechas
+            para navegar entre el contenido.
+          </DialogDescription>
+        </DialogHeader>
+
+        <Carousel
+          key={`carousel-at-${selectedIndex}`}
+          opts={{ startIndex: selectedIndex }}
+        >
+          <CarouselContent className="">
+            {images.map((image, index) => (
+              <CarouselItem key={`full-${index}`}>
+                <div className="flex flex-col ">
+                  <img
+                    src={image.fileUrl}
+                    alt={image.description}
+                    className="rounded w-auto object-contain"
+                  />
+                  {image.description && (
+                    <p className="p-4 text-lg">{image.description}</p>
+                  )}
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <div className="">
+            <CarouselPrevious className="rounded-lg -left-16" />
+            <CarouselNext className="rounded-lg -right-16" />
+          </div>
+        </Carousel>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -143,12 +209,20 @@ function VideoGallery({
       <ErrorsList errorItems={errors} />
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {videosInfo.map((video) => (
-          <img
-            key={video.url}
-            src={video.thumbnail}
-            alt={video.title}
-            className="aspect-video object-cover"
-          />
+          <figure>
+            <img
+              key={video.url}
+              src={video.thumbnail}
+              alt=""
+              className="aspect-video object-cover"
+            />
+            <figcaption>{video.title}</figcaption>
+            <Button asChild>
+              <a href={video.url} target="_blank">
+                Abrir en youtube
+              </a>
+            </Button>
+          </figure>
         ))}
       </div>
     </>
