@@ -7,15 +7,18 @@ import { parseSimpleMarkdown } from "@utils/textParser";
 import { getFeaturedImage } from "pages/monitoring/outlets/initiatives/territoryStories/utils/getFeaturedImage";
 import { InitiativeError } from "pages/monitoring/outlets/initiatives/InitiativeError";
 import {
-  ArrowLeftFromLine,
-  ArrowRightFromLine,
   CircleArrowLeft,
+  CircleArrowRight,
   GalleryThumbnails,
 } from "lucide-react";
 import { TERRITORY_STORY_HEADINGS_OFFSET } from "@config/monitoring";
 import { LikeButton } from "pages/monitoring/outlets/initiatives/territoryStories/ui/LikeButton";
 import { MediaGallery } from "pages/monitoring/outlets/initiatives/territoryStories/readTS/territoryStoryReader/MediaGallery";
-import { StoryCreator, StoryTimestamp } from "../ui/StoryCreationInfo";
+import {
+  StoryCreator,
+  StoryTimestamp,
+} from "pages/monitoring/outlets/initiatives/territoryStories/ui/StoryCreationInfo";
+import { ButtonGroup } from "@ui/shadCN/component/button-group";
 
 export function TerritoryStoryReader() {
   const { initiativeId } = useParams();
@@ -60,7 +63,6 @@ export function TerritoryStoryReader() {
   }
 
   const featuredImg = getFeaturedImage(currentStory);
-  const creationDate = new Date(currentStory.creationDate);
 
   return (
     <div className="flex flex-col p-4 gap-4">
@@ -76,12 +78,12 @@ export function TerritoryStoryReader() {
       </Button>
 
       <article>
-        <header className="flex flex-col">
+        <header className="flex flex-col px-4 lg:px-8 pt-2 lg:pt-4">
           <figure className="flex flex-col items-end mb-4">
             <img
               src={featuredImg.url}
               alt={featuredImg.alt}
-              className="w-full outline outline-primary/20"
+              className="w-full rounded"
             />
             <figcaption className="text-right p-4 pt-1 w-[50%] min-w-[250px] text-balance">
               {featuredImg.alt}
@@ -98,7 +100,7 @@ export function TerritoryStoryReader() {
               />
               <StoryCreator
                 story={currentStory}
-                className="text-lg font-normal"
+                className="text-lg font-normal border-l border-l-primary/30 p-2 px-4"
               />
             </div>
           </div>
@@ -116,10 +118,10 @@ export function TerritoryStoryReader() {
             </ul>
           )}
 
-          <LikeButton story={currentStory} className="-ml-2 mt-4 mb-6" />
+          <LikeButton story={currentStory} className="-ml-2 mt-2 mb-6" />
         </header>
 
-        <section className="markdown-renderer mb-8 w-full max-w-[75ch]">
+        <section className="markdown-renderer m-4 lg:m-8 mt-0 w-full max-w-[75ch]">
           {parseSimpleMarkdown(currentStory.text, {
             headingsOffset: TERRITORY_STORY_HEADINGS_OFFSET,
           })}
@@ -127,45 +129,56 @@ export function TerritoryStoryReader() {
 
         <MediaGallery story={currentStory} />
 
-        <footer className="mt-4 pt-4 pb-8 px-4 border-t border-t-input flex gap-2 justify-center">
-          {prevStory && (
-            <Button
-              variant="ghost"
-              size="lg"
-              onClick={() => void navigate(`${baseUrl}${prevStory.id}`)}
-              className="mb-6"
-              title="Leer el relato anterior"
-            >
-              <ArrowLeftFromLine aria-hidden="true" />
-              <span className="sr-only">Leer el relato anterior:</span>
-              {prevStory.title}
-            </Button>
-          )}
+        <footer className="py-8 px-8 mt-16 border-t border-t-primary/20">
+          <ButtonGroup className="flex w-full">
+            {prevStory && (
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => void navigate(`${baseUrl}${prevStory.id}`)}
+                className="flex-1"
+                title="Leer el relato anterior"
+              >
+                <CircleArrowLeft
+                  aria-hidden="true"
+                  className="size-5"
+                  strokeWidth={1.5}
+                />
+                <span className="sr-only">Leer el relato anterior:</span>
+                <span className="italic">Anterior: </span>
+                {prevStory.title}
+              </Button>
+            )}
 
-          <Button
-            variant="ghost"
-            size="icon-lg"
-            onClick={() => void navigate(baseUrl)}
-            className="mb-6"
-            title="Volver al explorador"
-          >
-            <span className="sr-only">Volver al explorador de relatos</span>
-            <GalleryThumbnails className="size-6" />
-          </Button>
-
-          {nextStory && (
             <Button
-              variant="ghost"
-              size="lg"
-              onClick={() => void navigate(`${baseUrl}${nextStory.id}`)}
-              className="mb-6"
-              title="Leer el relato siguente"
+              variant="outline"
+              size="icon-lg"
+              onClick={() => void navigate(baseUrl)}
+              title="Volver al explorador"
             >
-              <span className="sr-only">Leer el relato siguiente:</span>
-              {nextStory.title}
-              <ArrowRightFromLine aria-hidden="true" />
+              <span className="sr-only">Volver al explorador de relatos</span>
+              <GalleryThumbnails className="size-7" strokeWidth={1.5} />
             </Button>
-          )}
+
+            {nextStory && (
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => void navigate(`${baseUrl}${nextStory.id}`)}
+                className="flex-1"
+                title="Leer el relato siguente"
+              >
+                <span className="sr-only">Leer el relato siguiente:</span>
+                <span className="italic">Siguiente: </span>
+                {nextStory.title}
+                <CircleArrowRight
+                  aria-hidden="true"
+                  className="size-5"
+                  strokeWidth={1.5}
+                />
+              </Button>
+            )}
+          </ButtonGroup>
         </footer>
       </article>
     </div>
