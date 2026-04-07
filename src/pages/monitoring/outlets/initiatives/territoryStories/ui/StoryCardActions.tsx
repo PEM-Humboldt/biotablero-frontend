@@ -17,7 +17,7 @@ export function StoryCardActions({
   const { initiativeId } = useParams();
   const baseUrl = `/Monitoreo/Iniciativas/${initiativeId}/Relatos/`;
   return (
-    <div className={cn("flex justify-between gap-2", className)}>
+    <div className={cn("flex justify-between gap-2 items-center", className)}>
       <LikeButton story={story} disabled />
       <Button variant="ghost-clean" asChild>
         <Link to={`${baseUrl}${story.id}`}>

@@ -15,6 +15,7 @@ import {
 import { TERRITORY_STORY_HEADINGS_OFFSET } from "@config/monitoring";
 import { LikeButton } from "pages/monitoring/outlets/initiatives/territoryStories/ui/LikeButton";
 import { MediaGallery } from "pages/monitoring/outlets/initiatives/territoryStories/readTS/territoryStoryReader/MediaGallery";
+import { StoryCreator, StoryTimestamp } from "../ui/StoryCreationInfo";
 
 export function TerritoryStoryReader() {
   const { initiativeId } = useParams();
@@ -62,44 +63,43 @@ export function TerritoryStoryReader() {
   const creationDate = new Date(currentStory.creationDate);
 
   return (
-    <div className="p-4">
+    <div className="flex flex-col p-4 gap-4">
       <Button
-        variant="link"
+        variant="outline"
         size="lg"
         onClick={() => void navigate(baseUrl)}
-        className="ml-auto mb-4"
+        className="self-end"
         title="Volver al explorador"
       >
         Volver a los relatos del territorio
         <CircleArrowLeft />
       </Button>
 
-      <article className="space-y-6">
-        <header>
-          <figure>
+      <article>
+        <header className="flex flex-col">
+          <figure className="flex flex-col items-end mb-4">
             <img
               src={featuredImg.url}
               alt={featuredImg.alt}
-              className="w-full"
+              className="w-full outline outline-primary/20"
             />
-            <figcaption>{featuredImg.alt}</figcaption>
+            <figcaption className="text-right p-4 pt-1 w-[50%] min-w-[250px] text-balance">
+              {featuredImg.alt}
+            </figcaption>
           </figure>
 
           <div className="flex flex-col-reverse">
-            <h3 className="text-3xl font-bold">{currentStory.title}</h3>
+            <h3 className="text-3xl font-bold mb-1">{currentStory.title}</h3>
 
-            <div className="flex items-center justify-between gap-4">
-              <time
-                dateTime={creationDate.toISOString()}
+            <div className="grid grid-cols-2 items-center">
+              <StoryTimestamp
+                story={currentStory}
                 className="text-muted-foreground text-sm"
-              >
-                {creationDate.toLocaleDateString("es-ES", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })}
-              </time>
-              <div className="text-base">{currentStory.authorUserName}</div>
+              />
+              <StoryCreator
+                story={currentStory}
+                className="text-lg font-normal"
+              />
             </div>
           </div>
 
@@ -116,10 +116,10 @@ export function TerritoryStoryReader() {
             </ul>
           )}
 
-          <LikeButton story={currentStory} />
+          <LikeButton story={currentStory} className="-ml-2 mt-4 mb-6" />
         </header>
 
-        <section className="prose prose-slate max-w-none dark:prose-invert">
+        <section className="markdown-renderer mb-8 w-full max-w-[75ch]">
           {parseSimpleMarkdown(currentStory.text, {
             headingsOffset: TERRITORY_STORY_HEADINGS_OFFSET,
           })}

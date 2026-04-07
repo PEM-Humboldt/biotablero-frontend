@@ -8,7 +8,7 @@ import type { TerritoryStoryShort } from "pages/monitoring/types/odataResponse";
 import { getTerritoryStoriesFromInitiative } from "pages/monitoring/api/services/territoryStory";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { getFeaturedImage } from "pages/monitoring/outlets/initiatives/territoryStories/utils/getFeaturedImage";
-import { StoryCreationInfo } from "pages/monitoring/outlets/initiatives/territoryStories/ui/StoryCreationInfo";
+import { StoryCreationCardInfo } from "pages/monitoring/outlets/initiatives/territoryStories/ui/StoryCreationInfo";
 import { StoryCardActions } from "pages/monitoring/outlets/initiatives/territoryStories/ui/StoryCardActions";
 
 export function FeaturedStory() {
@@ -77,7 +77,7 @@ export function FeaturedStory() {
         </div>
 
         <footer className="space-y-4 mt-2">
-          <StoryCreationInfo story={featuredStory} />
+          <StoryCreationCardInfo story={featuredStory} />
           <StoryCardActions story={featuredStory} className="-ml-2 -mr-3" />
         </footer>
       </article>

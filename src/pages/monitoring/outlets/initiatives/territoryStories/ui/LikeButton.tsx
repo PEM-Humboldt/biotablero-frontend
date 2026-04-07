@@ -8,14 +8,16 @@ import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { useState } from "react";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
+import { cn } from "@ui/shadCN/lib/utils";
 
 export function LikeButton({
   story,
   disabled,
+  className,
 }: {
   story: TerritoryStoryFull;
   disabled?: boolean;
-  updateCallback?: () => void;
+  className?: string;
 }) {
   const { user } = useUserCTX();
   const [errors, setErrors] = useState<string[]>([]);
@@ -37,7 +39,10 @@ export function LikeButton({
 
   return isReadOnly ? (
     <div
-      className="py-2 px-3 min-h-9 flex gap-2 text-primary font-medium items-center"
+      className={cn(
+        "py-2 px-3 min-h-9 flex gap-2 text-primary font-medium items-center",
+        className,
+      )}
       title={!user ? 'Inicia sesión para poder dar "Me gusta"' : ""}
     >
       <ThumbsUp aria-hidden="true" className="size-5" strokeWidth={2} />
@@ -46,7 +51,7 @@ export function LikeButton({
       </span>
     </div>
   ) : (
-    <div className="h-8 flex items-center gap-1">
+    <div className={cn("h-8 flex items-center gap-1", className)}>
       <ErrorsList errorItems={errors} />
 
       <Button

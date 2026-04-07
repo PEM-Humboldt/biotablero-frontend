@@ -8,7 +8,7 @@ import { getFeaturedImage } from "pages/monitoring/outlets/initiatives/territory
 import { Button } from "@ui/shadCN/component/button";
 import { CirclePlus } from "lucide-react";
 import { LikeButton } from "pages/monitoring/outlets/initiatives/territoryStories/ui/LikeButton";
-import { StoryCreationInfo } from "pages/monitoring/outlets/initiatives/territoryStories/ui/StoryCreationInfo";
+import { StoryCreationCardInfo } from "pages/monitoring/outlets/initiatives/territoryStories/ui/StoryCreationInfo";
 import { StoryCardActions } from "pages/monitoring/outlets/initiatives/territoryStories/ui/StoryCardActions";
 
 export function TerritoryStoriesList() {
@@ -75,7 +75,7 @@ export function TerritoryStoriesList() {
                   </header>
 
                   <footer className="px-4 justify-self-end">
-                    <StoryCreationInfo story={story} className="mb-4" />
+                    <StoryCreationCardInfo story={story} className="mb-4" />
 
                     <StoryCardActions
                       story={story}
