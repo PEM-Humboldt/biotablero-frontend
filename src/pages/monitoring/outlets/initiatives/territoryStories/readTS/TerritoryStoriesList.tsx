@@ -1,21 +1,15 @@
 import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
-import { Link, useParams } from "react-router";
 import { useMemo } from "react";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
 import { getFeaturedImage } from "pages/monitoring/outlets/initiatives/territoryStories/utils/getFeaturedImage";
-import { Button } from "@ui/shadCN/component/button";
-import { CirclePlus } from "lucide-react";
-import { LikeButton } from "pages/monitoring/outlets/initiatives/territoryStories/ui/LikeButton";
 import { StoryCreationCardInfo } from "pages/monitoring/outlets/initiatives/territoryStories/ui/StoryCreationInfo";
 import { StoryCardActions } from "pages/monitoring/outlets/initiatives/territoryStories/ui/StoryCardActions";
 
 export function TerritoryStoriesList() {
   const { stories, errors, isLoading } = useTerritoryStorysCTX();
   const { userStateInInitiative } = useInitiativeCTX();
-  const { initiativeId } = useParams();
-  const baseUrl = `/Monitoreo/Iniciativas/${initiativeId}/Relatos/`;
 
   const userHasAccess = [
     UserStateInInitiative.USER_LEADER,
@@ -30,7 +24,9 @@ export function TerritoryStoriesList() {
   }, [userHasAccess, stories]);
 
   return isLoading ? (
-    <div>Cargando...</div>
+    <div className="p-8 m-16 mt-4 bg-muted border border-primary/50 rounded-lg text-3xl text-primary text-center">
+      Cargando...
+    </div>
   ) : (
     <>
       <ErrorsList
@@ -43,7 +39,7 @@ export function TerritoryStoriesList() {
           No se encontraron relatos que conincidan con tu búsqueda
         </div>
       ) : (
-        <ul className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-8 p-4">
+        <ul className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-8 p-8 pb-16 pt-4">
           {renderStories.map((story) => {
             const featuredImg = getFeaturedImage(story);
 

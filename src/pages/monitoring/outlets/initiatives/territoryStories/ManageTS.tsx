@@ -92,13 +92,14 @@ export function ManageTS({ moveToPanel: _ }: PanelComponentProp) {
 
   return (
     <>
-      <TSSearchBar className="p-4 pt-2 " />
+      <TSSearchBar className="p-8 pt-2 " />
+
       {isLoading ? (
         <div className="bg-primary/10 p-8 mx-4 rounded-lg border border-primary text-4xl text-primary text-center">
           {uiText.loading}
         </div>
       ) : (
-        <div className="p-4 pt-0 space-y-3">
+        <div className="p-8 pt-0 space-y-3">
           <ErrorsList
             errorItems={[...errors, ...manageErrors]}
             className="bg-accent/10 p-8 rounded-lg border border-accent"

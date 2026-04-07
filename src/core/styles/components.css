@@ -143,14 +143,6 @@
 
     & ul {
       @apply list-disc;
-
-      & ul {
-        @apply list-[circle] mt-2 ml-8;
-      }
-
-      & ul ul {
-        @apply list-[square];
-      }
     }
 
     & ol {
@@ -172,7 +164,7 @@
       counter-increment: li-counter;
 
       &::marker {
-        content: counter(li-counter) ".  ";
+        content: counter(li-counter) ". ";
         @apply text-foreground text-base font-light;
       }
     }
@@ -200,7 +192,7 @@
 
     /* Links */
     & a {
-      @apply text-primary underline transition-colors font-normal hover:text-accent;
+      @apply text-accent underline transition-colors font-normal hover:text-primary;
     }
 
     /* Citas (Blockquotes) */
@@ -210,15 +202,11 @@
 
     /* Formatos de texto */
     & strong {
-      @apply font-bold text-foreground;
+      @apply font-normal text-foreground;
     }
 
     & em {
       @apply italic;
-    }
-
-    & u {
-      @apply underline decoration-1 underline-offset-2;
     }
   }
 

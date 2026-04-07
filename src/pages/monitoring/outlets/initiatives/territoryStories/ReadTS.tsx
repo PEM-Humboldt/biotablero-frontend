@@ -19,7 +19,7 @@ export function ReadTS({ moveToPanel: _ }: PanelComponentProp) {
   ) : (
     <>
       <FeaturedStory />
-      <TSSearchBar className="p-4 pt-2 " />
+      <TSSearchBar className="p-4 mx-4 pt-2 bg-muted rounded-lg" />
       <TerritoryStoriesList />
       <TablePager
         currentPage={currentPage}
