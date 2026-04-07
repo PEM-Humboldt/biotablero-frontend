@@ -1,24 +1,12 @@
+import { type ReactNode, useCallback, useEffect, useState } from "react";
 import { Camera, type LucideIcon, Play, Video } from "lucide-react";
+
 import {
   Tabs,
   TabsList,
   TabsTrigger,
   TabsContent,
 } from "@ui/shadCN/component/tabs";
-import type {
-  ImageObjectTS,
-  TerritoryStoryFull,
-  VideoObjectTS,
-} from "pages/monitoring/types/territoryStory";
-import { type ReactNode, useCallback, useEffect, useState } from "react";
-import {
-  getCleanYoutubeId,
-  getYoutubeVideoMetadata,
-  type YoutubeVideoMetadata,
-} from "pages/monitoring/api/services/youtube";
-import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import { ErrorsList } from "@ui/LabelingWithErrors";
-
 import {
   Dialog,
   DialogContent,
@@ -34,6 +22,20 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@ui/shadCN/component/carousel";
+import { ErrorsList } from "@ui/LabelingWithErrors";
+
+import {
+  getCleanYoutubeId,
+  getYoutubeVideoMetadata,
+  type YoutubeVideoMetadata,
+} from "pages/monitoring/api/services/youtube";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import type {
+  ImageObjectTS,
+  TerritoryStoryFull,
+  VideoObjectTS,
+} from "pages/monitoring/types/territoryStory";
+import { uiText } from "pages/monitoring/outlets/initiatives/territoryStories/readTS/territoryStoryReader/layout/uiText";
 
 type MediaTabConfig = {
   value: string;
@@ -49,13 +51,13 @@ export function MediaGallery({ story }: { story: TerritoryStoryFull }) {
   const tabsConfig = [
     hasImages && {
       value: "images",
-      label: "Galería de imágenes",
+      label: uiText.reader.mediaGallery.images.title,
       icon: Camera,
       content: <ImageGallery images={story.images} />,
     },
     hasVideos && {
       value: "videos",
-      label: "Galería de videos",
+      label: uiText.reader.mediaGallery.videos.title,
       icon: Video,
       content: <VideoGallery videos={story.videos} />,
     },
@@ -128,11 +130,10 @@ function ImageGallery({ images }: { images: ImageObjectTS[] }) {
       <DialogContent className="max-w-5xl w-[90%] max-h-[80vh] bg-background">
         <DialogHeader>
           <DialogTitle className="text-xl text-primary font-normal">
-            Galería de imágenes
+            {uiText.reader.mediaGallery.images.title}
           </DialogTitle>
           <DialogDescription className="sr-only">
-            Visualizador de fotos y videos del relato actual. Usa las flechas
-            para navegar entre el contenido.
+            {uiText.reader.mediaGallery.images.srGalleryDescription}
           </DialogDescription>
         </DialogHeader>
 
@@ -210,7 +211,7 @@ function VideoGallery({
 
   return isLoading ? (
     <div className="p-8 text-3xl text-primary text-center">
-      Cargando la información de los videos...
+      {uiText.reader.mediaGallery.videos.loading}
     </div>
   ) : (
     <>
@@ -223,7 +224,7 @@ function VideoGallery({
           <figure
             key={video.url}
             className="group relative rounded overflow-hidden outline outline-primary/50 hover:outline-primary hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-in-out"
-            title="Abrir en Youtube"
+            title={uiText.reader.mediaGallery.videos.openLink.title}
           >
             <a
               href={video.url}
@@ -297,7 +298,9 @@ export function VideoGalleryYTTelemetry({
   }, [fetchAllVideos]);
 
   return isLoading ? (
-    <div>Cargando videos...</div>
+    <div className="p-8 text-3xl text-primary text-center">
+      {uiText.reader.mediaGallery.videos.loading}
+    </div>
   ) : (
     <>
       <ErrorsList errorItems={errors} />
@@ -331,7 +334,7 @@ export function VideoGalleryYTTelemetry({
               {videosInfo[selectedIndex]?.title || "Reproductor de Video"}
             </DialogTitle>
             <DialogDescription className="sr-only">
-              Reproductor de videos de YouTube
+              {uiText.reader.mediaGallery.videos.srGalleryDescription}
             </DialogDescription>
           </DialogHeader>
 

@@ -1,24 +1,27 @@
-import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
-import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
 import { useNavigate, useParams } from "react-router";
-import { Button } from "@ui/shadCN/component/button";
-import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
-import { parseSimpleMarkdown } from "@utils/textParser";
-import { getFeaturedImage } from "pages/monitoring/outlets/initiatives/territoryStories/utils/getFeaturedImage";
-import { InitiativeError } from "pages/monitoring/outlets/initiatives/InitiativeError";
 import {
   CircleArrowLeft,
   CircleArrowRight,
   GalleryThumbnails,
 } from "lucide-react";
+
+import { Button } from "@ui/shadCN/component/button";
+import { parseSimpleMarkdown } from "@utils/textParser";
 import { TERRITORY_STORY_HEADINGS_OFFSET } from "@config/monitoring";
+import { ButtonGroup } from "@ui/shadCN/component/button-group";
+
+import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
+import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
+import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
+import { getFeaturedImage } from "pages/monitoring/outlets/initiatives/territoryStories/utils/getFeaturedImage";
+import { InitiativeError } from "pages/monitoring/outlets/initiatives/InitiativeError";
 import { LikeButton } from "pages/monitoring/outlets/initiatives/territoryStories/ui/LikeButton";
 import { MediaGallery } from "pages/monitoring/outlets/initiatives/territoryStories/readTS/territoryStoryReader/MediaGallery";
 import {
   StoryCreator,
   StoryTimestamp,
 } from "pages/monitoring/outlets/initiatives/territoryStories/ui/StoryCreationInfo";
-import { ButtonGroup } from "@ui/shadCN/component/button-group";
+import { uiText } from "pages/monitoring/outlets/initiatives/territoryStories/readTS/territoryStoryReader/layout/uiText";
 
 export function TerritoryStoryReader() {
   const { initiativeId } = useParams();
@@ -37,19 +40,16 @@ export function TerritoryStoryReader() {
     (currentStory && !currentStory.restricted);
 
   if (isLoading) {
-    return <div className="p-8 text-center">Cargando relato...</div>;
+    return <div className="p-8 text-center">{uiText.reader.loading}</div>;
   }
 
   if (!currentStory || errors.length > 0 || !userHasAccess) {
-    let errorMessage =
-      "Algo inesperado ocurrió, vuelve a intentarlo más tarde.";
+    let errorMessage = uiText.reader.errors.unknown;
 
     if (!currentStory) {
-      errorMessage =
-        "No pudimos encontrar el relato que buscas o sucedió algo inesperado al cargarlo.";
+      errorMessage = uiText.reader.errors.noStory;
     } else if (!userHasAccess) {
-      errorMessage =
-        "No tienes los permisos necesarios para leer este relato. Contacta al líder de la iniciativa.";
+      errorMessage = uiText.reader.errors.unauthorized;
     }
 
     return (
@@ -71,9 +71,10 @@ export function TerritoryStoryReader() {
         size="lg"
         onClick={() => void navigate(baseUrl)}
         className="self-end"
-        title="Volver al explorador"
+        title={uiText.reader.backToStoryList.title}
       >
-        Volver a los relatos del territorio
+        <span className="sr-only">{uiText.reader.backToStoryList.sr}</span>
+        <span aria-hidden="true">{uiText.reader.backToStoryList.label}</span>
         <CircleArrowLeft />
       </Button>
 
@@ -112,7 +113,7 @@ export function TerritoryStoryReader() {
                   key={`${currentStory.id}-kw-${index}`}
                   className="px-2 pb-0.5 bg-muted text-sm text-primary font-normal border border-input text-xs rounded-full"
                 >
-                  {kw.trim()}
+                  {kw}
                 </li>
               ))}
             </ul>
@@ -137,15 +138,17 @@ export function TerritoryStoryReader() {
                 size="lg"
                 onClick={() => void navigate(`${baseUrl}${prevStory.id}`)}
                 className="flex-1"
-                title="Leer el relato anterior"
+                title={uiText.reader.prevStoryBtn.title}
               >
                 <CircleArrowLeft
                   aria-hidden="true"
                   className="size-5"
                   strokeWidth={1.5}
                 />
-                <span className="sr-only">Leer el relato anterior:</span>
-                <span className="italic">Anterior: </span>
+                <span className="sr-only">{uiText.reader.prevStoryBtn.sr}</span>
+                <span className="italic" aria-hidden="true">
+                  {uiText.reader.prevStoryBtn.label}
+                </span>
                 {prevStory.title}
               </Button>
             )}
@@ -154,9 +157,11 @@ export function TerritoryStoryReader() {
               variant="outline"
               size="icon-lg"
               onClick={() => void navigate(baseUrl)}
-              title="Volver al explorador"
+              title={uiText.reader.backToStoryList.title}
             >
-              <span className="sr-only">Volver al explorador de relatos</span>
+              <span className="sr-only">
+                {uiText.reader.backToStoryList.sr}
+              </span>
               <GalleryThumbnails className="size-7" strokeWidth={1.5} />
             </Button>
 
@@ -166,10 +171,12 @@ export function TerritoryStoryReader() {
                 size="lg"
                 onClick={() => void navigate(`${baseUrl}${nextStory.id}`)}
                 className="flex-1"
-                title="Leer el relato siguente"
+                title={uiText.reader.nextStoryBtn.title}
               >
-                <span className="sr-only">Leer el relato siguiente:</span>
-                <span className="italic">Siguiente: </span>
+                <span className="sr-only">{uiText.reader.nextStoryBtn.sr}</span>
+                <span className="italic" aria-hidden="true">
+                  {uiText.reader.nextStoryBtn.label}
+                </span>
                 {nextStory.title}
                 <CircleArrowRight
                   aria-hidden="true"

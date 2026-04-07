@@ -13,6 +13,7 @@ import {
 } from "pages/monitoring/outlets/initiatives/layout/territoryStoryPanels";
 import { TerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
 import { HeaderTS } from "pages/monitoring/outlets/initiatives/territoryStories/HeaderTS";
+import { TSAside } from "./territoryStories/TSAside";
 
 export function TerritoryStories() {
   const { userStateInInitiative } = useInitiativeCTX();
@@ -49,7 +50,7 @@ export function TerritoryStories() {
       <TerritoryStorysCTX>
         <HeaderTS />
 
-        <div className="grid grid-cols-1 md:grid-cols-[3fr_1fr] w-full max-w-[1600px]">
+        <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr] w-full max-w-[1600px]">
           <main className="">
             <ToggleTSAdminActions
               currentPanel={panel}
@@ -58,7 +59,7 @@ export function TerritoryStories() {
 
             <PanelComponent moveToPanel={setPanel} />
           </main>
-          <aside className="bg-accent">barra lateral</aside>
+          <TSAside />
         </div>
       </TerritoryStorysCTX>
     </div>

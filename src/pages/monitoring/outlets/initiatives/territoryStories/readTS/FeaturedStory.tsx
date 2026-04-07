@@ -10,6 +10,7 @@ import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { getFeaturedImage } from "pages/monitoring/outlets/initiatives/territoryStories/utils/getFeaturedImage";
 import { StoryCreationCardInfo } from "pages/monitoring/outlets/initiatives/territoryStories/ui/StoryCreationInfo";
 import { StoryCardActions } from "pages/monitoring/outlets/initiatives/territoryStories/ui/StoryCardActions";
+import { uiText } from "pages/monitoring/outlets/initiatives/territoryStories/readTS/territoryStoryReader/layout/uiText";
 
 export function FeaturedStory() {
   const { initiativeId } = useParams();
@@ -59,10 +60,12 @@ export function FeaturedStory() {
         className="bg-accent/10 border border-accent rounded-lg m-4 p-4"
       />
 
-      <article className="m-8 p-8 pb-2 rounded-xl shadow-lg space-y-4 bg-background outline outline-primary/10 hover:outline-primary hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-in-out">
+      <article className="m-8 p-6 py-4 rounded-2xl shadow-lg space-y-4 bg-background outline outline-primary/10 hover:outline-primary hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-in-out">
         <header>
           <h3 className="text-primary text-3xl font-normal">
-            <span className="sr-only">Relato destacado:</span>
+            <span className="sr-only">
+              {uiText.featuredCard.titleSrDisclosure}
+            </span>
             {featuredStory?.title}
           </h3>
           <img

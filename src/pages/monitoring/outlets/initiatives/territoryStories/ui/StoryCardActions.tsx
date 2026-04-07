@@ -6,6 +6,7 @@ import { Button } from "@ui/shadCN/component/button";
 import { LikeButton } from "pages/monitoring/outlets/initiatives/territoryStories/ui/LikeButton";
 import type { TerritoryStoryShort } from "pages/monitoring/types/odataResponse";
 import { cn } from "@ui/shadCN/lib/utils";
+import { uiText } from "pages/monitoring/outlets/initiatives/territoryStories/readTS/territoryStoryReader/layout/uiText";
 
 export function StoryCardActions({
   story,
@@ -21,7 +22,8 @@ export function StoryCardActions({
       <LikeButton story={story} disabled />
       <Button variant="ghost-clean" asChild>
         <Link to={`${baseUrl}${story.id}`}>
-          Leer <span className="sr-only">el relato</span>
+          <span aria-hidden="true">{uiText.cardActions.btn.label}</span>
+          <span className="sr-only">{uiText.cardActions.btn.sr}</span>
           <CirclePlus className="size-6" aria-hidden="true" />
         </Link>
       </Button>

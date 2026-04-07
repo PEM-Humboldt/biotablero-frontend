@@ -1,11 +1,14 @@
-import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
 import { useMemo } from "react";
+
 import { ErrorsList } from "@ui/LabelingWithErrors";
+
+import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
 import { getFeaturedImage } from "pages/monitoring/outlets/initiatives/territoryStories/utils/getFeaturedImage";
 import { StoryCreationCardInfo } from "pages/monitoring/outlets/initiatives/territoryStories/ui/StoryCreationInfo";
 import { StoryCardActions } from "pages/monitoring/outlets/initiatives/territoryStories/ui/StoryCardActions";
+import { uiText } from "pages/monitoring/outlets/initiatives/territoryStories/readTS/territoryStoryReader/layout/uiText";
 
 export function TerritoryStoriesList() {
   const { stories, errors, isLoading } = useTerritoryStorysCTX();
@@ -25,7 +28,7 @@ export function TerritoryStoriesList() {
 
   return isLoading ? (
     <div className="p-8 m-16 mt-4 bg-muted border border-primary/50 rounded-lg text-3xl text-primary text-center">
-      Cargando...
+      {uiText.storiesList.loading}
     </div>
   ) : (
     <>
@@ -35,11 +38,11 @@ export function TerritoryStoriesList() {
       />
 
       {stories.length === 0 ? (
-        <div className="p-8 m-16 mt-4 bg-muted border border-primary/50 rounded-lg text-3xl text-primary text-center">
-          No se encontraron relatos que conincidan con tu búsqueda
+        <div className="py-8 px-4 lg:px-8 m-16 mt-4 bg-muted border border-primary/50 rounded-lg text-3xl text-primary text-center">
+          {uiText.storiesList.noStories}
         </div>
       ) : (
-        <ul className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-8 p-8 pb-16 pt-4">
+        <ul className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-8 px-4 xl:px-8 pb-16 pt-4">
           {renderStories.map((story) => {
             const featuredImg = getFeaturedImage(story);
 

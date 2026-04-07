@@ -1,14 +1,16 @@
 import { ThumbsUp } from "lucide-react";
+import { useState } from "react";
 
+import { ErrorsList } from "@ui/LabelingWithErrors";
+import { cn } from "@ui/shadCN/lib/utils";
 import { Button } from "@ui/shadCN/component/button";
-import type { TerritoryStoryFull } from "pages/monitoring/types/territoryStory";
 import { useUserCTX } from "@hooks/UserContext";
+
+import type { TerritoryStoryFull } from "pages/monitoring/types/territoryStory";
 import { likedTerritoryStory } from "pages/monitoring/api/services/territoryStory";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import { useState } from "react";
-import { ErrorsList } from "@ui/LabelingWithErrors";
 import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
-import { cn } from "@ui/shadCN/lib/utils";
+import { uiText } from "pages/monitoring/outlets/initiatives/territoryStories/readTS/territoryStoryReader/layout/uiText";
 
 export function LikeButton({
   story,
@@ -43,7 +45,7 @@ export function LikeButton({
         "py-2 px-3 min-h-9 flex gap-2 text-primary font-medium items-center",
         className,
       )}
-      title={!user ? 'Inicia sesión para poder dar "Me gusta"' : ""}
+      title={!user ? uiText.like.noUser : ""}
     >
       <ThumbsUp aria-hidden="true" className="size-5" strokeWidth={2} />
       <span className="text-sm">
@@ -57,11 +59,11 @@ export function LikeButton({
       <Button
         variant="ghost"
         onClick={() => void handleLike()}
-        title="Me gusta"
+        title={uiText.like.btn.title}
       >
         <ThumbsUp aria-hidden="true" className="size-5" strokeWidth={2} />
-        Me gusta
-        <span className="sr-only">a este relato.</span>
+        <span aria-hidden="true">{uiText.like.btn.label}</span>
+        <span className="sr-only">{uiText.like.btn.sr}</span>
       </Button>
     </div>
   );
@@ -69,34 +71,22 @@ export function LikeButton({
 
 function getLikeStatusMsg(iLikeIt: boolean, likes: number, disabled: boolean) {
   if (likes === 0) {
-    return 'Da el primer "Me gusta"';
+    return uiText.like.first;
   }
 
-  const textNumbers: Record<number, string> = {
-    1: "una",
-    2: "dos",
-    3: "tres",
-    4: "cuatro",
-    5: "cinco",
-  };
-
   if (iLikeIt && likes === 1) {
-    return "A ti te gusta";
+    return uiText.like.youLiked;
   }
 
   const othersCount = iLikeIt ? likes - 1 : likes;
-  const countStr = textNumbers[othersCount] ?? othersCount;
-  const plural = othersCount === 1 ? "" : "s";
 
   if (disabled) {
-    const totalCount = textNumbers[likes] ?? likes;
-    const totalPlural = likes === 1 ? "" : "s";
-    return `A ${totalCount} persona${totalPlural} le${totalPlural} gusta`;
+    return uiText.like.btnDisabled(likes);
   }
 
   if (iLikeIt) {
-    return `A ti y a ${countStr} persona${plural} más les gusta este relato`;
+    return uiText.like.btnIlikedIt(othersCount);
   }
 
-  return `A ${countStr} persona${plural} le${plural} gusta este relato`;
+  return uiText.like.btnLegend(othersCount);
 }
