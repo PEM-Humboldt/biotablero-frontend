@@ -80,16 +80,18 @@ export function TerritoryStoryReader() {
 
       <article>
         <header className="flex flex-col px-4 lg:px-8 pt-2 lg:pt-4">
-          <figure className="flex flex-col items-end mb-4">
-            <img
-              src={featuredImg.url}
-              alt={featuredImg.alt}
-              className="w-full rounded"
-            />
-            <figcaption className="text-right p-4 pt-1 w-[50%] min-w-[250px] text-balance">
-              {featuredImg.alt}
-            </figcaption>
-          </figure>
+          {currentStory.images.length > 0 && (
+            <figure className="flex flex-col items-end mb-4">
+              <img
+                src={featuredImg.url}
+                alt={featuredImg.alt}
+                className="w-full rounded"
+              />
+              <figcaption className="text-right p-4 pt-1 w-[50%] min-w-[250px] text-balance">
+                {featuredImg.alt}
+              </figcaption>
+            </figure>
+          )}
 
           <div className="flex flex-col-reverse">
             <h3 className="text-3xl font-bold mb-1">{currentStory.title}</h3>
