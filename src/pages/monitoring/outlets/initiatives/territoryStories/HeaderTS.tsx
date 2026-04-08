@@ -1,10 +1,11 @@
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
-import backgroundImage from "pages/home/assets/biotablero-slider.webp";
+import { uiText } from "pages/monitoring/outlets/initiatives/territoryStories/layout/uiText";
 
 export function HeaderTS() {
   const { initiativeInfo } = useInitiativeCTX();
 
-  const bannerUrl = (initiativeInfo?.bannerUrl as string) || backgroundImage;
+  const bannerUrl =
+    (initiativeInfo?.bannerUrl as string) || uiText.header.imgFallback;
 
   return (
     <header
@@ -19,7 +20,7 @@ export function HeaderTS() {
 
       <div className="w-full max-w-[1600px] p-4 z-10 text-3xl md:text-5xl font-bold text-primary-foreground">
         <div className="w-full max-w-[500px] text-balance">
-          Juntos construimos más historias que transforman iniciativas.
+          {uiText.header.text}
         </div>
       </div>
     </header>

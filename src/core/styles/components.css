@@ -134,7 +134,6 @@
     }
 
     /* Listas */
-    /* NOTE: Los estilos para las listas, la parte de la anidada es magia negra escupida por gemini */
     & ul,
     & ol {
       @apply ml-16 mb-4 p-0;
