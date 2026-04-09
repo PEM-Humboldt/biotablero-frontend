@@ -134,7 +134,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
         <h2>
           <IconTooltip title="Interpretación">
             <InfoIcon
-              className={`graphinfo${showInfoGraph ? " activeBox" : ""}`}
+              className={`ecoest-info-icon${showInfoGraph ? " activeBox" : ""}`}
               onClick={this.toggleInfoGraph}
             />
           </IconTooltip>

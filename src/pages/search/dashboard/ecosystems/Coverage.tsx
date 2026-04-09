@@ -47,8 +47,8 @@ export function Coverage({
         <IconTooltip title="Interpretación">
           <span className="iconWrapper">
             <InfoIcon
-              fontSize="inherit"
-              className={`downSpecial${infoOpen ? " activeBox" : ""}`}
+              fontSize="medium"
+              className={`ecoest-info-icon${infoOpen ? " activeBox" : ""}`}
               onClick={toggleInfo}
             />
           </span>

@@ -1,72 +1,136 @@
+import { useEffect, useReducer } from "react";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InfoIcon from "@mui/icons-material/Info";
+
 import { IconTooltip } from "@ui/Tooltips";
 import { ShortInfo } from "@composites/ShortInfo";
 import TextBoxes from "@ui/TextBoxes";
-import EcosystemsBox from "pages/search/dashboard/ecosystems/EcosystemsBox";
-import { SEPAData } from "pages/search/types/ecosystems";
-import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
-import { formatNumber } from "@utils/format";
-import { transformSEAreas } from "pages/search/dashboard/ecosystems/transformData";
 
-/**
- * Calculate percentage for a given value according to total
- *
- * @param {number} part value for the given part
- * @param {number} total value obtained by adding all parts
- *
- * @returns {number} percentage associated to each part
- */
-const getPercentage = (part: number, total: number): number =>
-  parseFloat(((part * 100) / total).toFixed(2));
+import { StrategicEcosystemsController } from "pages/search/dashboard/ecosystems/StrategicEcosystemsController";
+import SmallStackedBar from "@composites/charts/SmallStackedBar";
+
+import { SEData, SELabels } from "pages/search/types/ecosystems";
+import { formatNumber } from "@utils/format";
+
+import {
+  transformSEAreas,
+  transformSEValues,
+} from "pages/search/dashboard/ecosystems/transformData";
+
+import { matchColor } from "pages/search/utils/matchColor";
+import colorPalettes from "pages/search/utils/colorPalettes";
+
+type State = {
+  SEAreas: SEData[];
+  SETotalArea: number;
+  loading: boolean;
+  noData: boolean;
+  showInfoGraph: boolean;
+};
+
+const initialState: State = {
+  SEAreas: [],
+  SETotalArea: 0,
+  loading: true,
+  noData: false,
+  showInfoGraph: false,
+};
+
+type Action =
+  | { type: "LOAD_SUCCESS"; payload: SEData[] }
+  | { type: "LOAD_FAIL" }
+  | { type: "SET_ACTIVE"; payload: string }
+  | { type: "TOGGLE_INFO_GRAPH" };
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case "LOAD_SUCCESS":
+      return {
+        ...state,
+        SEAreas: action.payload,
+        SETotalArea: action.payload.reduce((acc, i) => acc + i.area, 0),
+        loading: false,
+      };
+
+    case "LOAD_FAIL":
+      return { ...state, loading: false, noData: true };
+
+    case "TOGGLE_INFO_GRAPH":
+      return {
+        ...state,
+        showInfoGraph: !state.showInfoGraph,
+      };
+
+    default:
+      return state;
+  }
+}
 
 interface Props {
-  SEAreas: SEPAData[];
-  SETotalArea: number;
+  areaTypeId: string;
+  areaIdId: number;
   areaHa: number;
-  activeSE: string;
-  infoOpen: boolean;
-  toggleInfo: () => void;
-  texts: {
-    info: string;
-    cons: string;
-    meto: string;
-    quote: string;
-  };
-  messages: MessageWrapperType;
-  areaIdStr: string;
-  setActiveSE: (id: string) => void;
-  isLoading: boolean;
-  noData: boolean;
+  texts: { info: string; cons: string; meto: string; quote: string };
 }
 
 export function StrategicEcosystems({
-  SEAreas,
-  SETotalArea,
+  areaTypeId,
+  areaIdId,
   areaHa,
-  activeSE,
-  infoOpen,
-  toggleInfo,
   texts,
-  messages,
-  areaIdStr,
-  setActiveSE,
-  isLoading,
-  noData,
 }: Props) {
-  const percentage = getPercentage(SETotalArea, areaHa);
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const { SEAreas, SETotalArea, loading, noData, showInfoGraph } = state;
+
+  const controller = new StrategicEcosystemsController();
+
+  useEffect(() => {
+    controller.setArea(areaTypeId, areaIdId);
+
+    controller
+      .getStrategicEcosystemsValues(areaHa)
+      .then((res) => {
+        dispatch({
+          type: "LOAD_SUCCESS",
+          payload: transformSEAreas(res, areaHa),
+        });
+      })
+      .catch(() => {
+        dispatch({ type: "LOAD_FAIL" });
+      });
+  }, [areaTypeId, areaIdId, areaHa]);
+
+  const percentage = Number(
+    (areaHa > 0 ? (SETotalArea * 100) / areaHa : 0).toFixed(2),
+  );
+
+  /**
+   * Toggles the display of a specific help section.
+   *
+   * @param {TextSection} value - Section id
+   */
+  const toggleInfo = () => {
+    dispatch({ type: "TOGGLE_INFO_GRAPH" });
+  };
 
   return (
     <div className="ecoest">
-      <h4 className="minus20">
-        Ecosistemas estratégicos <b>{`${formatNumber(SETotalArea, 0)} ha`}</b>
-      </h4>
+      <div className="ecoest-header">
+        <h4>
+          Ecosistemas estratégicos <b>{formatNumber(SETotalArea, 0)} ha</b>
+        </h4>
 
-      <IconTooltip title="Interpretación">
-        <InfoIcon
-          className={`downSpecial2${infoOpen ? " activeBox" : ""}`}
-          onClick={toggleInfo}
-        />
-      </IconTooltip>
+        <IconTooltip title="Interpretación">
+          <span className="iconWrapper">
+            <InfoIcon
+              fontSize="medium"
+              className={`ecoest-info-icon${showInfoGraph ? " activeBox" : ""}`}
+              onClick={toggleInfo}
+            />
+          </span>
+        </IconTooltip>
+      </div>
 
       <h5 className="minusperc">{`${percentage} %`}</h5>
 
@@ -77,37 +141,62 @@ export function StrategicEcosystems({
         </h3>
       )}
 
-      {infoOpen && (
+      {showInfoGraph && (
         <ShortInfo
           description={`<p>${texts.info}</p>`}
-          className="graphinfo3"
+          className="graphinfo2"
           collapseButton={false}
         />
       )}
 
-      {isLoading && "Cargando..."}
+      {loading && "Cargando..."}
 
-      {!isLoading &&
-        noData &&
-        "No hay información de ecosistemas estratégicos."}
+      {!loading && noData && "No hay información"}
 
-      {!isLoading && !noData && (
-        <EcosystemsBox
-          SETotalArea={SETotalArea}
-          SEAreas={transformSEAreas(SEAreas, areaHa)}
-          activeSE={activeSE}
-          setActiveSE={setActiveSE}
-        />
+      {!loading && !noData && (
+        <div className="ecosystems">
+          {SEAreas.map((SEValues) => {
+            const hasArea = SEValues.area > 0;
+            const SEChartData = transformSEValues(SEValues, SETotalArea);
+
+            return (
+              <div className="mb10" key={SEValues.type}>
+                <div className="singleeco">{SELabels[SEValues.type]}</div>
+
+                <div className="singleeco2">
+                  {formatNumber(SEValues.area, 0)} ha
+                </div>
+
+                {hasArea && (
+                  <button className="rotate-false" type="button">
+                    <ExpandMoreIcon />
+                  </button>
+                )}
+
+                {hasArea && (
+                  <SmallStackedBar
+                    loadStatus={null}
+                    data={SEChartData}
+                    units="ha"
+                    colors={(key) =>
+                      matchColor("se")(key) || colorPalettes.default[0]
+                    }
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
       )}
 
       <TextBoxes
         downloadData={SEAreas}
-        downloadName={`eco_strategic_ecosystems_${areaIdStr}.csv`}
+        downloadName={`eco_strategic_ecosystems_${areaIdId}.csv`}
         quoteText={texts.quote}
         metoText={texts.meto}
         consText={texts.cons}
         toggleInfo={toggleInfo}
-        isInfoOpen={infoOpen}
+        isInfoOpen={showInfoGraph}
       />
     </div>
   );
