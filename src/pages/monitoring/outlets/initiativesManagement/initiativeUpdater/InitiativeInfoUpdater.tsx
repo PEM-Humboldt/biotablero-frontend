@@ -172,7 +172,9 @@ export function InitiativeInfoUpdater({
           title={uiText.tabsContent.initiativeManagement.general.title}
         />
 
-        <TagsUpdater title={"carrapicho"} />
+        <TagsUpdater
+          title={uiText.tabsContent.initiativeManagement.tags.title}
+        />
 
         <FormListUpdater
           title={uiText.tabsContent.initiativeManagement.locations.title}
