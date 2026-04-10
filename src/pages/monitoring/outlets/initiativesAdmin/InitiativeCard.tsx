@@ -212,7 +212,7 @@ export function InitiativeCard({
           />
         </div>
 
-        <TagsUpdater title={uiText.initiative.module.images.title} />
+        <TagsUpdater title={uiText.initiative.module.tags.title} />
 
         <ImagesUpdater
           title={uiText.initiative.module.images.title}

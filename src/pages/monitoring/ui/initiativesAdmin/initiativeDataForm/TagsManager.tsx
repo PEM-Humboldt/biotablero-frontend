@@ -35,7 +35,7 @@ export function TagsManger({
   sectionInfo: (TagData | TagInInitiative)[];
   sectionUpdater: (value: (TagData | TagInInitiative)[]) => void;
   validationErrors: string[];
-  initiativeId: number | null;
+  initiativeId?: number | null;
 }) {
   const [tags, setTags] = useState<
     Record<number, (TagData | TagInInitiative)[]>
