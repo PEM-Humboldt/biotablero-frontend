@@ -39,7 +39,7 @@ export default {
     "#44857d",
     "#167070",
   ],
-  coverage: ["#E8B21C", "#1B7A8A", "#6B2D3E"],
+  coverage: ["#1B7A8A", "#E8b21C", "#6B2D3E"],
   pa: ["#b9c9cf", "#484852", "#8b8d45", "#d9b86b", "#524320", "#ab4a30"],
   seBlue: ["rgba(255,255,255,0)", "#51b4c1"],
   shortFC: ["#ea495f", "#eabc47", "#51b4c1"],
