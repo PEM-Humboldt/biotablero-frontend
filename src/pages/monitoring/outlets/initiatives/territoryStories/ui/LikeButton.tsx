@@ -45,11 +45,13 @@ export function LikeButton({
         "py-2 px-3 min-h-9 flex gap-2 text-primary font-medium items-center",
         className,
       )}
-      title={!user ? uiText.like.noUser : ""}
+      title={!user ? uiText.like.noUser : undefined}
     >
       <ThumbsUp aria-hidden="true" className="size-5" strokeWidth={2} />
       <span className="text-sm">
-        {getLikeStatusMsg(iLikeIt, story.likes, disabled ?? false)}
+        {!user
+          ? story.likes
+          : getLikeStatusMsg(iLikeIt, story.likes, disabled ?? false)}
       </span>
     </div>
   ) : (

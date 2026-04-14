@@ -16,7 +16,7 @@ export function HeaderTS() {
         backgroundPosition: "center",
       }}
     >
-      <div className="absolute inset-0 -bg-linear-300 from-primary to-transparent mix-blend-color" />
+      <div className="absolute inset-0 -bg-linear-300 from-primary to-transparent mix-blend-multiply" />
 
       <div className="w-full max-w-[1600px] p-4 z-10 text-3xl md:text-5xl font-bold text-primary-foreground">
         <div className="w-full max-w-[500px] text-balance">
