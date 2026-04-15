@@ -1114,7 +1114,7 @@ div[class*="eaRHYv"] {
 }
 .graphcontainer {
   margin: 0;
-  padding: 15px !important;
+  padding: 5px !important;
 }
 .pt5 {
   padding-top: 0 !important;
@@ -1131,9 +1131,9 @@ div[class*="eaRHYv"] {
   font-size: 18px;
   font-weight: 400;
   color: #e84a5f;
-  padding: 8px;
+  padding: 5px;
   border: 1px solid #e84a5f;
-  margin-top: 5px;
+  margin-top: 0px;
   background-color: #fff;
 }
 .graphcontainer h4 b {
@@ -1225,14 +1225,39 @@ div[class*="eaRHYv"] {
 .ecoest {
   margin: 25px 12px 10px;
   border: 1px solid #ea495f;
-  padding: 0 15px;
+  padding: 15px;
+  position: relative;
 }
-.minus20 {
-  margin-top: -20px !important;
-  margin-left: -27px !important;
+.ecoest-header {
+  position: absolute;
+  top: -3px;
+  left: -15px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px;
+}
+.ecoest-header h4 {
+  margin: 0;
+}
+.ecoest-info-icon {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  color: #bbbbbb;
+; 
+}
+.ecoest-info-icon:hover {
+  color: #e84a5f;
+}
+.ecoest-info-icon.activeBox {
+  color: #e84a5f;
 }
 .minusperc {
   margin-left: -17px !important;
+  margin-top: 0px !important;
 }
 .graficaeco {
   max-width: 600px;
@@ -1315,8 +1340,8 @@ div[class*="eaRHYv"] {
   padding-left: 10px;
   margin-bottom: 20px;
 }
-.MuiSvgIcon-root-1.graphinfo {
-  font-size: initial;
+.MuiSvgIcon-root.graphinfo {
+  font-size: 24px;
 }
 .graphinfo:hover {
   color: #e84a5f;

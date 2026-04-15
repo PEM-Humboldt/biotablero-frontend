@@ -16,8 +16,11 @@ export function isMonitoringAPIError(
   return (
     typeof response === "object" &&
     response !== null &&
+    !("then" in response) &&
     "status" in response &&
-    "message" in response
+    "message" in response &&
+    "data" in response &&
+    Array.isArray(response.data)
   );
 }
 

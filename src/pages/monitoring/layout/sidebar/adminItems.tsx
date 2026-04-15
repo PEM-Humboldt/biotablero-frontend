@@ -1,12 +1,7 @@
-import { ChevronLeft, Logs, Tags, UserRoundCog } from "lucide-react";
+import { Logs, Tags, UserRoundCog } from "lucide-react";
 import type { DashboardItem } from "pages/monitoring/types/catalog";
 
 export const adminItems: DashboardItem[] = [
-  {
-    description: "Dashboard",
-    icon: ChevronLeft,
-    linkTo: "Dashboard",
-  },
   {
     description: "Administrador de iniciativas",
     icon: UserRoundCog,
