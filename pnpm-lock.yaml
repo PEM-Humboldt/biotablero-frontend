@@ -24,28 +24,28 @@ dependencies:
     specifier: 11.14.1
     version: 11.14.1(@emotion/react@11.14.0)(@types/react@18.3.24)(react@18.3.1)
   '@lexical/headless':
-    specifier: ^0.41.0
+    specifier: 0.41.0
     version: 0.41.0
   '@lexical/link':
-    specifier: ^0.41.0
+    specifier: 0.41.0
     version: 0.41.0
   '@lexical/list':
-    specifier: ^0.41.0
+    specifier: 0.41.0
     version: 0.41.0
   '@lexical/markdown':
-    specifier: ^0.41.0
+    specifier: 0.41.0
     version: 0.41.0
   '@lexical/react':
-    specifier: ^0.41.0
+    specifier: 0.41.0
     version: 0.41.0(react-dom@18.3.1)(react@18.3.1)(yjs@13.6.29)
   '@lexical/rich-text':
-    specifier: ^0.41.0
+    specifier: 0.41.0
     version: 0.41.0
   '@lexical/selection':
-    specifier: ^0.41.0
+    specifier: 0.41.0
     version: 0.41.0
   '@lexical/utils':
-    specifier: ^0.41.0
+    specifier: 0.41.0
     version: 0.41.0
   '@material-ui/core':
     specifier: 4.12.4
@@ -114,7 +114,7 @@ dependencies:
     specifier: 1.2.4
     version: 1.2.4(@types/react@18.3.24)(react@18.3.1)
   '@radix-ui/react-switch':
-    specifier: ^1.2.6
+    specifier: 1.2.6
     version: 1.2.6(@types/react-dom@18.3.7)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
   '@radix-ui/react-tabs':
     specifier: 1.1.13
@@ -156,7 +156,7 @@ dependencies:
     specifier: 1.0.4
     version: 1.0.4
   lexical:
-    specifier: ^0.41.0
+    specifier: 0.41.0
     version: 0.41.0
   lucide-react:
     specifier: 0.553.0
