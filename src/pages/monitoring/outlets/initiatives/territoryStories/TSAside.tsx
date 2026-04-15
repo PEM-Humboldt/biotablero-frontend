@@ -18,33 +18,34 @@ export function TSAside() {
   return (
     <aside className="py-8 px-4 xl:px-8">
       <div className="sticky top-8 space-y-8">
-        <TSRecomendations />
+        <TSRecommendations />
         <OtherMonitoringResources />
       </div>
     </aside>
   );
 }
 
-function TSRecomendations() {
+function TSRecommendations() {
   const { initiativeId } = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
-  const [randomStorys, setRandomStorys] = useState<TerritoryStoryShort[]>([]);
+  const [randomStories, setRandomStories] = useState<TerritoryStoryShort[]>([]);
   const baseUrl = `/Monitoreo/Iniciativas/${initiativeId}/Relatos/`;
 
   useEffect(() => {
     // TODO: Script temporal mientras se definen los parámetros para
     // halar las 3 historias random de otras iniciativas
     const fetchStories = async () => {
-      setIsLoading(true);
       if (!initiativeId) {
         return;
       }
+      setIsLoading(true);
+
       const storys = await getTerritoryStoriesFromInitiative(
         Number(initiativeId),
       )({});
       if (isMonitoringAPIError(storys)) {
-        setRandomStorys([]);
+        setRandomStories([]);
         setErrors(storys.data.map((err) => err.msg));
         setIsLoading(false);
         return;
@@ -60,7 +61,7 @@ function TSRecomendations() {
         rndStorys.push(...totalStorys.splice(randomStoryIndx, 1));
       }
 
-      setRandomStorys(rndStorys);
+      setRandomStories(rndStorys);
       setIsLoading(false);
     };
 
@@ -68,7 +69,9 @@ function TSRecomendations() {
   }, [initiativeId]);
 
   return isLoading ? (
-    <div>cagandooooo</div>
+    <div className="bg-muted text-lg text-primary border border-primary p-4">
+      Cargando...
+    </div>
   ) : (
     <div className="flex flex-col gap-2">
       <h3 className="text-primary text-lg font-normal m-0">Otros relatos</h3>
@@ -76,7 +79,7 @@ function TSRecomendations() {
         errorItems={errors}
         className="bg-accent/10 border border-accent rounded-lg p-4"
       />
-      {randomStorys.map((story) => {
+      {randomStories.map((story) => {
         const featuredImg = getFeaturedImage(story);
         return (
           <article

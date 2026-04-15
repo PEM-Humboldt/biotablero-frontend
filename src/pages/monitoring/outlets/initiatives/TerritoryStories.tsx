@@ -13,7 +13,7 @@ import {
 } from "pages/monitoring/outlets/initiatives/layout/territoryStoryPanels";
 import { TerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
 import { HeaderTS } from "pages/monitoring/outlets/initiatives/territoryStories/HeaderTS";
-import { TSAside } from "./territoryStories/TSAside";
+import { TSAside } from "pages/monitoring/outlets/initiatives/territoryStories/TSAside";
 
 export function TerritoryStories() {
   const { userStateInInitiative } = useInitiativeCTX();
@@ -87,7 +87,7 @@ function ToggleTSAdminActions({
   );
 
   return (
-    <div className="p-4 pb-0 flex justify-end gap-2">
+    <div className="p-4 flex justify-end gap-2">
       <ButtonGroup>
         {panelsAvailable.map(([panelKey, btnSettings]) => {
           return (
