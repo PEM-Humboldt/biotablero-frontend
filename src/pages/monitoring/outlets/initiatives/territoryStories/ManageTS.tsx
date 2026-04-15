@@ -18,10 +18,11 @@ import {
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import type { PanelComponentProp } from "pages/monitoring/outlets/initiatives/types/territoryStory";
 import { uiText } from "pages/monitoring/outlets/initiatives/territoryStories/layout/uiText";
+import { TSSearchBar } from "pages/monitoring/outlets/initiatives/territoryStories/TSSearchBar";
 
 export function ManageTS({ moveToPanel: _ }: PanelComponentProp) {
   const {
-    storys,
+    stories,
     storysAmount,
     currentPage,
     setCurrentPage,
@@ -89,144 +90,150 @@ export function ManageTS({ moveToPanel: _ }: PanelComponentProp) {
 
   const isAdmin = userStateInInitiative === UserStateInInitiative.USER_LEADER;
 
-  return isLoading ? (
-    <div className="bg-primary/10 p-8 mx-4 rounded-lg border border-primary text-4xl text-primary text-center">
-      {uiText.loading}
-    </div>
-  ) : (
-    <div className="p-4 pt-0 space-y-3">
-      <ErrorsList
-        errorItems={[...errors, ...manageErrors]}
-        className="bg-accent/10 p-8 rounded-lg border border-accent"
-      />
+  return (
+    <>
+      <TSSearchBar className="p-8 pt-2 " />
 
-      {storys.length === 0 && (
-        <div className="bg-muted p-10 text-2xl rounded-lg text-primary text-center">
-          {uiText.noStorys}
+      {isLoading ? (
+        <div className="bg-primary/10 p-8 mx-4 rounded-lg border border-primary text-4xl text-primary text-center">
+          {uiText.loading}
+        </div>
+      ) : (
+        <div className="p-8 pt-0 space-y-3">
+          <ErrorsList
+            errorItems={[...errors, ...manageErrors]}
+            className="bg-accent/10 p-8 rounded-lg border border-accent"
+          />
+
+          {stories.length === 0 && (
+            <div className="bg-muted p-10 text-2xl rounded-lg text-primary text-center">
+              {uiText.noStorys}
+            </div>
+          )}
+
+          {stories.map((story) => {
+            const userAuthorized =
+              isAdmin || story.authorUserName === user?.username;
+
+            return (
+              <div
+                key={`${story.id}_${story.title}`}
+                className={cn(
+                  editingId === story.id
+                    ? "shadow-lg rounded-lg overflow-hidden outline outline-primary/20"
+                    : "",
+                )}
+              >
+                <div
+                  className={cn(
+                    "flex gap-2 justify-between px-4 py-2 rounded-lg overflow-hidden",
+                    "bg-muted text-primary hover:bg-background hover:outline hover:outline-primary",
+                    !story.enabled &&
+                      "bg-red-50 outline outline-accent hover:outline-accent",
+                    editingId === story.id
+                      ? "rounded-b-none bg-primary/20 hover:bg-primary/20 hover:outline-none border-b border-b-primary/20"
+                      : "",
+                  )}
+                >
+                  <div className="">
+                    {editingId === story.id ? (
+                      <>
+                        <div className="font-normal text-lg mr-4 capitalize">
+                          {story.title}
+                        </div>
+                        <div className="font-light">{uiText.editMode}</div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="font-normal text-lg mr-4 capitalize">
+                          {story.title}
+                        </div>
+                        <div className="font-light">
+                          {uiText.storyBy}
+                          <span className="font-normal">
+                            {story.authorUserName}
+                            {uiText.storyByDateSeparator}
+                          </span>
+                          <time
+                            dateTime={new Date(
+                              story.creationDate,
+                            ).toLocaleDateString()}
+                          >
+                            {new Date(story.creationDate).toLocaleDateString()}
+                          </time>
+                          {story.keywords !== undefined && (
+                            <ul className="inline-flex gap-2 ml-2">
+                              {story.keywords.split(",").map((kw) => (
+                                <li
+                                  key={`kw_${kw}`}
+                                  className="bg-background text-sm border border-primary/30 px-2 rounded-full"
+                                >
+                                  {kw}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-1">
+                    {!story.enabled && (
+                      <span className="font-normal">
+                        {uiText.label.disabledStory}
+                      </span>
+                    )}
+                    <ConditionalButtonSwitch
+                      condition={story.enabled && userAuthorized}
+                      enabled={editingId === story.id}
+                      onClick={() => handleEdit(story.id)}
+                      text={{ ...uiText.label.editButton }}
+                    />
+
+                    <ConditionalButtonSwitch
+                      condition={userAuthorized}
+                      enabled={story.enabled}
+                      onClick={() => void handleEnable(story.id, story.enabled)}
+                      text={{ ...uiText.label.enableButton }}
+                    />
+
+                    <ConditionalButtonSwitch
+                      condition={story.enabled && isAdmin}
+                      enabled={story.featuredContent}
+                      onClick={() => void handleFeatured(story.id)}
+                      text={{ ...uiText.label.featuredButton }}
+                    />
+                  </div>
+                </div>
+
+                {editingId === story.id && (
+                  <div
+                    id={`edit_${editingId}`}
+                    className="bg-grey-form scroll-mt-10"
+                  >
+                    <CreateEditTSForm
+                      territoryStoryId={story.id}
+                      onEditSuccess={() => {
+                        setEditingId(null);
+                        void updateStorys();
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+            );
+          })}
+          <TablePager
+            currentPage={currentPage}
+            recordsAvailable={storysAmount}
+            onPageChange={setCurrentPage}
+            recordsPerPage={TERRITORY_STORIES_PER_PAGE}
+            paginated={3}
+          />
         </div>
       )}
-
-      {storys.map((story) => {
-        const userAuthorized =
-          isAdmin || story.authorUserName === user?.username;
-
-        return (
-          <div
-            key={`${story.id}_${story.title}`}
-            className={cn(
-              editingId === story.id
-                ? "shadow-lg rounded-lg overflow-hidden outline outline-primary/20"
-                : "",
-            )}
-          >
-            <div
-              className={cn(
-                "flex gap-2 justify-between px-4 py-2 rounded-lg overflow-hidden",
-                "bg-muted text-primary hover:bg-background hover:outline hover:outline-primary",
-                !story.enabled &&
-                  "bg-red-50 outline outline-accent hover:outline-accent",
-                editingId === story.id
-                  ? "rounded-b-none bg-primary/20 hover:bg-primary/20 hover:outline-none border-b border-b-primary/20"
-                  : "",
-              )}
-            >
-              <div className="">
-                {editingId === story.id ? (
-                  <>
-                    <div className="font-normal text-lg mr-4 capitalize">
-                      {story.title}
-                    </div>
-                    <div className="font-light">{uiText.editMode}</div>
-                  </>
-                ) : (
-                  <>
-                    <div className="font-normal text-lg mr-4 capitalize">
-                      {story.title}
-                    </div>
-                    <div className="font-light">
-                      {uiText.storyBy}
-                      <span className="font-normal">
-                        {story.authorUserName}
-                        {uiText.storyByDateSeparator}
-                      </span>
-                      <time
-                        dateTime={new Date(
-                          story.creationDate,
-                        ).toLocaleDateString()}
-                      >
-                        {new Date(story.creationDate).toLocaleDateString()}
-                      </time>
-                      {story.keywords !== undefined && (
-                        <ul className="inline-flex gap-2 ml-2">
-                          {story.keywords.split(",").map((kw) => (
-                            <li
-                              key={`kw_${kw}`}
-                              className="bg-background text-sm border border-primary/30 px-2 rounded-full"
-                            >
-                              {kw}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  </>
-                )}
-              </div>
-
-              <div className="flex items-center gap-1">
-                {!story.enabled && (
-                  <span className="font-normal">
-                    {uiText.label.disabledStory}
-                  </span>
-                )}
-                <ConditionalButtonSwitch
-                  condition={story.enabled && userAuthorized}
-                  enabled={editingId === story.id}
-                  onClick={() => handleEdit(story.id)}
-                  text={{ ...uiText.label.editButton }}
-                />
-
-                <ConditionalButtonSwitch
-                  condition={userAuthorized}
-                  enabled={story.enabled}
-                  onClick={() => void handleEnable(story.id, story.enabled)}
-                  text={{ ...uiText.label.enableButton }}
-                />
-
-                <ConditionalButtonSwitch
-                  condition={story.enabled && isAdmin}
-                  enabled={story.featuredContent}
-                  onClick={() => void handleFeatured(story.id)}
-                  text={{ ...uiText.label.featuredButton }}
-                />
-              </div>
-            </div>
-
-            {editingId === story.id && (
-              <div
-                id={`edit_${editingId}`}
-                className="bg-grey-form scroll-mt-10"
-              >
-                <CreateEditTSForm
-                  territoryStoryId={story.id}
-                  onEditSuccess={() => {
-                    setEditingId(null);
-                    void updateStorys();
-                  }}
-                />
-              </div>
-            )}
-          </div>
-        );
-      })}
-      <TablePager
-        currentPage={currentPage}
-        recordsAvailable={storysAmount}
-        onPageChange={setCurrentPage}
-        recordsPerPage={TERRITORY_STORIES_PER_PAGE}
-        paginated={3}
-      />
-    </div>
+    </>
   );
 }
 

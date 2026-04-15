@@ -69,3 +69,12 @@ export async function setFeaturedStory(territoryStoryId: number) {
 
   return res;
 }
+
+export async function likedTerritoryStory(territoryStoryId: number) {
+  const res = monitoringAPI<TerritoryStoryFull>({
+    type: "post",
+    endpoint: `TerritoryStory/like/${territoryStoryId}`,
+  });
+
+  return res;
+}

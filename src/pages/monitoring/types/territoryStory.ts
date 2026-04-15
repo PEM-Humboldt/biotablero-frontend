@@ -14,11 +14,8 @@ export type ImageObjectTS = {
   file?: File;
 };
 
-export interface TerritoryStoryFull extends TerritoryStoryShort {
-  keywords: string;
-  images?: ImageObjectTS[];
-  videos?: Omit<VideoObjectTS, "territoryStoryId">[];
-}
+// NOTE: En este momento tiene el mismo shape que TerritoryStoryShort mientras se decide como se acota el tamaño de la respuesta
+export type TerritoryStoryFull = TerritoryStoryShort;
 
 export type TerritoryStoryForm = {
   title: string;

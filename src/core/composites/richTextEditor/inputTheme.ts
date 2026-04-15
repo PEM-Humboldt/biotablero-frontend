@@ -1,26 +1,26 @@
 export const inputTheme = {
-  paragraph: "editor-paragraph",
+  paragraph: "text-lg leading-relaxed text-foreground mb-4 last:mb-0",
   quote:
-    "border-l-4 border-muted-foreground/40 pl-4 italic my-2 text-muted-foreground",
+    "border-l-4 border-primary px-4 py-1 my-4 ml-16 italic text-primary font-normal bg-muted max-w-[50ch] rounded-r-sm",
   heading: {
-    h1: "editor-heading-h1",
-    h2: "editor-heading-h2",
-    h3: "editor-heading-h3",
-    h4: "editor-heading-h4",
-    h5: "editor-heading-h5",
-    h6: "editor-heading-h6",
+    h1: "text-5xl font-bold mt-8 mb-4",
+    h2: "text-4xl font-bold mt-6 mb-3",
+    h3: "text-3xl font-normal mt-5 mb-2",
+    h4: "text-2xl font-normal mt-4 mb-2",
+    h5: "text-xl font-bold mt-4 mb-2",
+    h6: "text-xl font-bold mt-4 mb-2",
   },
   list: {
     ul: "list-disc ml-6 mb-2 space-y-1 editor-list-ul",
     ol: "list-decimal ml-6 mb-2 space-y-1 editor-list-ol",
-    listitem: "my-1 editor-listItem",
+    listitem: "mb-1 relative editor-listItem",
     nested: {
       listitem: "list-none ml-4 editor-nested-listitem",
     },
   },
-  link: "text-accent underline",
+  link: "text-accent underline transition-colors font-normal hover:text-primary",
   text: {
-    bold: "font-normal",
+    bold: "font-normal text-foreground",
     italic: "italic",
   },
 };

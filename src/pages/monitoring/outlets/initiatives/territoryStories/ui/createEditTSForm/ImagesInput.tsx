@@ -73,10 +73,6 @@ export function ImagesInput({
     setImageCards(images);
 
     return () => {
-      if (stagedImage?.preview) {
-        URL.revokeObjectURL(stagedImage?.preview);
-      }
-
       imageCards.forEach((img) => {
         if (img.fileUrl.startsWith("blob:")) {
           URL.revokeObjectURL(img.fileUrl);
@@ -127,7 +123,6 @@ export function ImagesInput({
       return;
     }
 
-    // TODO: Validation STR
     const [cleanDescription, descriptionErrors] = new StrValidator(
       stagedImage.description,
     )

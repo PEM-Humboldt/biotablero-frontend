@@ -1,12 +1,5 @@
-import {
-  Eye,
-  EyeClosed,
-  Pencil,
-  Star,
-  PencilOff,
-  type LucideIcon,
-  StarOff,
-} from "lucide-react";
+import { Eye, EyeClosed, Pencil, Star, PencilOff, StarOff } from "lucide-react";
+import backgroundImage from "pages/home/assets/biotablero-slider.webp";
 
 export const uiText = {
   loading: "Cargando...",
@@ -14,6 +7,11 @@ export const uiText = {
   editMode: "Editando...",
   storyBy: "Por: ",
   storyByDateSeparator: ", ",
+
+  header: {
+    text: "Juntos construimos más historias que transforman iniciativas.",
+    imgFallback: backgroundImage,
+  },
 
   label: {
     disabledStory: "Relato no publicado",

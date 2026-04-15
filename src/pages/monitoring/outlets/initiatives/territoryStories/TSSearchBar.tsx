@@ -19,9 +19,11 @@ export function TSSearchBar({ className }: { className: string }) {
   const [orderDate, setOrderDate] = useState(0);
   const [myStories, setMyStories] = useState(false);
 
-  const isUserInInitiative =
-    userStateInInitiative === UserStateInInitiative.USER_PARTICIPANT ||
-    userStateInInitiative === UserStateInInitiative.USER_LEADER;
+  const isUserInInitiative = [
+    UserStateInInitiative.USER_PARTICIPANT,
+    UserStateInInitiative.USER_LEADER,
+    UserStateInInitiative.USER_VIEWER,
+  ].includes(userStateInInitiative);
 
   const currentSortKey = orderStateSecuence[orderDate];
   const currentDateSort =

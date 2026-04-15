@@ -24,7 +24,7 @@ export const panelAccessButtons = new Map([
   [
     PanelState.MANAGE,
     {
-      label: "Editar",
+      label: "Administrar",
       title: "Ir al panel de administración",
       sr: "Ir al panel de administración",
       icon: NotebookPen,

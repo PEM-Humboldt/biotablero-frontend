@@ -14,8 +14,6 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import { $createHeadingNode, type HeadingTagType } from "@lexical/rich-text";
 import { $setBlocksType } from "@lexical/selection";
 
-import { HEADINGS_OFFSET } from "@composites/richTextEditor/layout/uiTextAndSettings";
-
 export function CustomShortcuts() {
   return (
     <>
@@ -73,7 +71,7 @@ function ToolbarShortcuts() {
         if (isHeadingShortcut) {
           payload.preventDefault();
           const level = code.replace("Digit", "");
-          const tag = `h${Number(level) + HEADINGS_OFFSET}` as HeadingTagType;
+          const tag = `h${Number(level)}` as HeadingTagType;
 
           editor.update(() => {
             const selection = $getSelection();

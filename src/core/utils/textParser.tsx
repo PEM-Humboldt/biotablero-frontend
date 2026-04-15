@@ -1,5 +1,5 @@
 import type { MutableRefObject, ReactNode } from "react";
-import React from "react";
+import React, { Fragment } from "react";
 
 import {
   $convertFromMarkdownString,
@@ -12,7 +12,7 @@ import {
   type LexicalNode,
   ElementNode,
   TextNode,
-  EditorState,
+  type EditorState,
 } from "lexical";
 import {
   $isHeadingNode,
@@ -28,10 +28,19 @@ import {
 } from "@lexical/list";
 import { $isLinkNode, LinkNode } from "@lexical/link";
 import { type Transformer } from "@lexical/markdown";
+import { jsx } from "@emotion/react";
 
 const nodes = [HeadingNode, ListNode, ListItemNode, QuoteNode, LinkNode];
 
-export function parseSimpleMarkdown(markdown: string): ReactNode {
+type RenderOptions = {
+  plain?: boolean;
+  headingsOffset?: number;
+};
+
+export function parseSimpleMarkdown(
+  markdown: string,
+  options?: RenderOptions,
+): ReactNode {
   if (!markdown) {
     return null;
   }
@@ -43,19 +52,33 @@ export function parseSimpleMarkdown(markdown: string): ReactNode {
     $convertFromMarkdownString(markdown, TRANSFORMERS);
 
     const root = $getRoot();
-    reactContent = lexNodesToReactNodes(root.getChildren());
+    reactContent = lexNodesToReactNodes(root.getChildren(), options ?? {});
   });
 
   return reactContent;
 }
 
-export function lexNodesToReactNodes(lexNodes: LexicalNode[]): ReactNode {
+export function lexNodesToReactNodes(
+  lexNodes: LexicalNode[],
+  options: RenderOptions,
+): ReactNode {
   return lexNodes.map((lexNode, i) => {
     const index = `parsed_md_${i}`;
 
+    if (options.plain) {
+      return <Fragment key={index}>{lexNode.getTextContent()}</Fragment>;
+    }
+
     if ($isHeadingNode(lexNode)) {
-      const Tag = lexNode.getTag();
-      const children = lexNodesToReactNodes(lexNode.getChildren());
+      const headingOffset = options.headingsOffset ?? 0;
+      const headingLevel = parseInt(lexNode.getTag().replace("h", ""), 10);
+      const newHeading = Math.min(6, Math.max(1, headingLevel + headingOffset));
+      const Tag = `h${newHeading}` as keyof JSX.IntrinsicElements;
+
+      const children = lexNodesToReactNodes(
+        lexNode.getChildren(),
+        options ?? {},
+      );
 
       return <Tag key={index}>{children}</Tag>;
     }
@@ -63,20 +86,27 @@ export function lexNodesToReactNodes(lexNodes: LexicalNode[]): ReactNode {
     if ($isListNode(lexNode)) {
       const listType = lexNode.getListType();
       const Tag = listType === "number" ? "ol" : "ul";
+
       return (
-        <Tag key={index}>{lexNodesToReactNodes(lexNode.getChildren())}</Tag>
+        <Tag key={index}>
+          {lexNodesToReactNodes(lexNode.getChildren(), options ?? {})}
+        </Tag>
       );
     }
 
     if ($isListItemNode(lexNode)) {
-      return <li key={index}>{lexNodesToReactNodes(lexNode.getChildren())}</li>;
+      return (
+        <li key={index}>
+          {lexNodesToReactNodes(lexNode.getChildren(), options ?? {})}
+        </li>
+      );
     }
 
     if ($isLinkNode(lexNode)) {
       const url = lexNode.getURL();
       return (
         <a key={index} href={url} target="_blank">
-          {lexNodesToReactNodes(lexNode.getChildren())}
+          {lexNodesToReactNodes(lexNode.getChildren(), options ?? {})}
         </a>
       );
     }
@@ -84,7 +114,7 @@ export function lexNodesToReactNodes(lexNodes: LexicalNode[]): ReactNode {
     if ($isQuoteNode(lexNode)) {
       return (
         <blockquote key={index}>
-          {lexNodesToReactNodes(lexNode.getChildren())}
+          {lexNodesToReactNodes(lexNode.getChildren(), options ?? {})}
         </blockquote>
       );
     }
@@ -108,7 +138,11 @@ export function lexNodesToReactNodes(lexNodes: LexicalNode[]): ReactNode {
     }
 
     if (lexNode instanceof ElementNode) {
-      return <p key={index}>{lexNodesToReactNodes(lexNode.getChildren())}</p>;
+      return (
+        <p key={index}>
+          {lexNodesToReactNodes(lexNode.getChildren(), options ?? {})}
+        </p>
+      );
     }
 
     return null;

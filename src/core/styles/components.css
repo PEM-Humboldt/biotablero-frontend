@@ -105,6 +105,110 @@
     margin-top: 4px;
     margin-bottom: 4px;
   }
+
+  /* NOTE: para manejar los estilos de renderizado de los relatos del territorio */
+  .markdown-renderer {
+    @apply text-lg leading-relaxed text-foreground break-words;
+
+    /* Párrafos y espaciado general */
+    & p {
+      @apply mb-4 last:mb-0 text-lg;
+    }
+
+    /* Headings dinámicos (h1-h6) */
+    & h1 {
+      @apply text-5xl font-bold mt-8 mb-4;
+    }
+    & h2 {
+      @apply text-4xl font-bold mt-6 mb-3;
+    }
+    & h3 {
+      @apply text-3xl font-normal mt-5 mb-2;
+    }
+    & h4 {
+      @apply text-2xl font-normal mt-4 mb-2;
+    }
+    & h5,
+    & h6 {
+      @apply text-xl font-bold mt-4 mb-2;
+    }
+
+    /* Listas */
+    & ul,
+    & ol {
+      @apply ml-16 mb-4 p-0;
+      list-style-position: outside;
+    }
+
+    & ul {
+      @apply list-disc;
+    }
+
+    & ol {
+      list-style-type: none !important;
+      counter-reset: li-counter;
+
+      & ol {
+        counter-reset: li-counter;
+        @apply mt-2 ml-8;
+      }
+    }
+
+    & li {
+      @apply mb-1 relative;
+      display: list-item;
+    }
+
+    & ol > li {
+      counter-increment: li-counter;
+
+      &::marker {
+        content: counter(li-counter) ". ";
+        @apply text-foreground text-base font-light;
+      }
+    }
+
+    & li:has(> ul:only-child),
+    & li:has(> ol:only-child) {
+      @apply ml-0;
+      display: block;
+      list-style-type: none !important;
+      counter-increment: none;
+
+      &::marker {
+        content: none !important;
+      }
+    }
+
+    & li > p {
+      @apply m-0 inline;
+    }
+
+    & li > ul,
+    & li > ol {
+      @apply block;
+    }
+
+    /* Links */
+    & a {
+      @apply text-accent underline transition-colors font-normal hover:text-primary;
+    }
+
+    /* Citas (Blockquotes) */
+    & blockquote {
+      @apply border-l-4 border-primary px-4 py-1 my-4 ml-16 italic text-primary font-normal bg-muted max-w-[50ch] rounded-r-sm;
+    }
+
+    /* Formatos de texto */
+    & strong {
+      @apply font-normal text-foreground;
+    }
+
+    & em {
+      @apply italic;
+    }
+  }
+
   /* NOTE: Para la tabla de etiquetas */
   .table-tags {
     @apply border border-primary/30 rounded-lg mb-2 overflow-hidden;

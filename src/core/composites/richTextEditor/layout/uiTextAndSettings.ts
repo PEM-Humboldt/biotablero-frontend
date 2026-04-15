@@ -11,16 +11,15 @@ import {
 import type { RenderSelector } from "@composites/richTextEditor/toolbar/types/items";
 
 // Headings
-export const HEADINGS_OFFSET = 2;
-export const headingRange = [1, 2, 3, 4];
+export const headingRange = [1, 2, 3];
 
 type SupportedBlockTypes = "p" | `h${number}`;
 
 export const blockTypes: Map<SupportedBlockTypes, string> = new Map([
   ["p", "Párrafo"],
   ...headingRange.map((range): [SupportedBlockTypes, string] => [
-    `h${range + HEADINGS_OFFSET}`,
-    `Título nivel ${range} (Ctrl+Alt+${range})`,
+    `h${range}`,
+    `Subtítulo nivel ${range} (Ctrl+Alt+${range})`,
   ]),
 ]);
 
