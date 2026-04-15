@@ -1,4 +1,4 @@
-import { type InternalAxiosRequestConfig } from "axios";
+import { GenericAbortSignal, type InternalAxiosRequestConfig } from "axios";
 import { type ODataParams } from "@appTypes/odata";
 import type { QueryParams, RequestBody } from "@appTypes/htmlRequest";
 
@@ -27,6 +27,7 @@ export type MonitoringAPIParams = {
         oData?: Partial<ODataParams>;
         headers?: Record<string, string>;
         responseType?: ResponseType;
+        signal?: GenericAbortSignal;
       };
     }
   | {
@@ -35,6 +36,7 @@ export type MonitoringAPIParams = {
         data?: QueryParams;
         headers?: Record<string, string>;
         responseType?: ResponseType;
+        signal?: GenericAbortSignal;
       };
     }
   | {
@@ -43,6 +45,7 @@ export type MonitoringAPIParams = {
         data?: RequestData;
         headers?: Record<string, string>;
         responseType?: ResponseType;
+        signal?: GenericAbortSignal;
       };
     }
 );

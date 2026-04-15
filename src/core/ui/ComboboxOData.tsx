@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ODataParams, ODataResponse } from "@appTypes/odata";
 import { debouncer } from "@utils/debouncer";
 import { Combobox } from "@ui/ComboBox";
@@ -17,7 +17,8 @@ type ComboboxODataProps<T> = {
   loadOnEmpty?: boolean;
   sourceProcess: (oDataResponse: T[]) => { value: string; label: string }[];
   fixedSearchParams?: ODataParams;
-  maxItems: number; // items de top
+  fixedFilter?: string;
+  maxItems: number;
   disabled?: boolean;
   uiText: {
     itemNotFound: string;
@@ -43,6 +44,7 @@ type ComboboxODataProps<T> = {
  * @param loadOnEmpty - Optional, if true load the items returned by the endpoint with no filter, it defaults to true.
  * @param sourceProcess - Callback to transform OData items into `{ value, label }` format.
  * @param fixedSearchParams - Static parameters (like $expand) merged into every request.
+ * @param fixedFilter - Odata filter string injected with precedence to all querys
  * @param maxItems - The $top limit for API results.
  * @param disabled - Disables user interaction and visual state.
  * @param uiText - I18n object for not found messages, trigger labels, and placeholders.
@@ -65,6 +67,7 @@ export function ComboboxOData<T>({
   loadOnEmpty = true,
   sourceProcess,
   fixedSearchParams,
+  fixedFilter,
   maxItems,
   disabled,
   uiText,
@@ -76,30 +79,51 @@ export function ComboboxOData<T>({
   const [writing, setWriting] = useState(false);
   const [searchParams, setSearchParams] = useState<ODataParams>({
     ...(fixedSearchParams ?? {}),
+    ...(fixedFilter ? { filter: fixedFilter } : {}),
     top: maxItems,
   });
 
-  const makeODataSearchString = (searchValue: string) => {
-    if (searchValue === "") {
-      return "";
-    }
+  const makeODataSearchString = useCallback(
+    (searchValue: string) => {
+      if (searchValue === "") {
+        return fixedFilter ? fixedFilter : "";
+      }
 
-    const alias = "l";
-    const prefix = oDataEntity ? `${alias}/` : "";
-    const filterStrings: string[] = [];
+      const alias = "l";
+      const prefix = oDataEntity ? `${alias}/` : "";
+      const filterStrings: string[] = [];
 
-    for (const source of sources) {
-      const normalizaedSource = `tolower(${prefix}${source as string})`;
-      const base = `contains(${normalizaedSource}, '${searchValue.toLowerCase()}')`;
-      filterStrings.push(base);
-    }
+      for (const source of sources) {
+        const normalizaedSource = `tolower(${prefix}${source as string})`;
+        const base = `contains(${normalizaedSource}, '${searchValue.toLowerCase()}')`;
+        filterStrings.push(base);
+      }
 
-    return prefix
-      ? `${oDataEntity}/any(${alias}: ${filterStrings.join(" or ")})`
-      : filterStrings.join(" or ");
-  };
+      let lookFor: string = "";
+
+      if (filterStrings.length > 0) {
+        lookFor = prefix
+          ? `${oDataEntity}/any(${alias}: ${filterStrings.join(" or ")})`
+          : filterStrings.join(" or ");
+      }
+
+      return fixedFilter
+        ? `${fixedFilter} and ${!oDataEntity ? `(${lookFor})` : lookFor}`
+        : lookFor;
+    },
+    [fixedFilter, oDataEntity, sources],
+  );
 
   useEffect(() => {
+    setSearchParams((prev) => ({
+      ...prev,
+      filter: makeODataSearchString(""),
+    }));
+  }, [makeODataSearchString]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
     const fetchData = async () => {
       if (!loadOnEmpty && !searchParams.filter) {
         setItems([]);
@@ -112,7 +136,7 @@ export function ComboboxOData<T>({
       const res = await monitoringAPI<ODataResponse<T>>({
         type: "get",
         endpoint: endpoint,
-        options: { oData: searchParams },
+        options: { oData: searchParams, signal: controller.signal },
       });
 
       setWriting(false);
@@ -128,6 +152,10 @@ export function ComboboxOData<T>({
     };
 
     void fetchData();
+
+    return () => {
+      controller.abort();
+    };
   }, [endpoint, loadOnEmpty, searchParams, sourceProcess]);
 
   const handleSearch = useRef(
@@ -151,7 +179,10 @@ export function ComboboxOData<T>({
 
   return (
     <>
-      <ErrorsList errorItems={errors} />
+      <ErrorsList
+        errorItems={errors}
+        className="bg-accent/10 p-4 border border-accent rounded-lg"
+      />
       <Combobox
         id={id}
         items={items}

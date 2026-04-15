@@ -1,4 +1,4 @@
-import { isAxiosError, type AxiosResponse } from "axios";
+import axios, { isAxiosError, type AxiosResponse } from "axios";
 import type { ApiRequestError, DataError, ErrorUIMessage } from "@appTypes/api";
 import { oDataToString } from "@utils/odata";
 import { serializeQueryParams } from "@utils/htmlRequest";
@@ -49,7 +49,7 @@ export async function monitoringAPI<T>({
       window._env_?.VITE_MONITORING_BACKEND_URL ||
       import.meta.env.VITE_MONITORING_BACKEND_URL;
     let response: AxiosResponse<T>;
-    const { data, headers } = options ?? {};
+    const { data, headers, signal } = options ?? {};
 
     if (type === "get" || type === "delete") {
       const queryParams = data ? serializeQueryParams(data as QueryParams) : "";
@@ -63,6 +63,7 @@ export async function monitoringAPI<T>({
 
       response = await monitoringClient[type]<T>(fullEndpoint, {
         responseType: options?.responseType,
+        signal,
       });
     } else {
       let payload: RequestData;
@@ -82,7 +83,7 @@ export async function monitoringAPI<T>({
       response = await monitoringClient[type]<T>(
         `${baseURL}/${endpoint}`,
         payload,
-        { headers },
+        { headers, signal },
       );
     }
 
@@ -90,6 +91,14 @@ export async function monitoringAPI<T>({
       ? { data: response.data, status: response.status }
       : response.data;
   } catch (err) {
+    if (axios.isCancel(err)) {
+      return {
+        status: 0,
+        message: "Request cancelled by the user",
+        data: [],
+      };
+    }
+
     if (
       window._env_?.VITE_ENVIRONMENT ||
       import.meta.env.VITE_ENVIRONMENT === "develop"

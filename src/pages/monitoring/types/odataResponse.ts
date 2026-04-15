@@ -161,15 +161,15 @@ interface TagCategory extends HasId {
 }
 
 export interface ODataTag extends HasId {
-  id: number;
   name: string;
   url?: string;
   category: TagCategory;
   categoryName: string;
 }
 
-export interface TagEntryShort extends Omit<ODataTag, "categoryName"> {
-  categoryName: string;
+export interface TagInInitiative {
+  initiativeTagId: number;
+  tag: Omit<ODataTag, "categoryName">;
 }
 
 export type ODataLog = ODataResponse<ODataLogEntryShort>;

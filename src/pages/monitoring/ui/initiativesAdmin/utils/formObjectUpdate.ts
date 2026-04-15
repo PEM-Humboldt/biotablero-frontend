@@ -8,6 +8,7 @@ export function makeInitialInfo(): InitiativeDataForm {
     contacts: [],
     users: [],
     images: { imageUrl: "", bannerUrl: "" },
+    tags: [],
   };
 }
 

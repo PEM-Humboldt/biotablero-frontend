@@ -1,4 +1,7 @@
-import type { ODataTagInfo } from "pages/monitoring/types/odataResponse";
+import type {
+  ODataTagInfo,
+  TagInInitiative,
+} from "pages/monitoring/types/odataResponse";
 import { monitoringAPI } from "pages/monitoring/api/core";
 import { createODataGetter } from "pages/monitoring/api/oDataGetter";
 import type { TagCategory, TagDataForm } from "pages/monitoring/types/tagData";
@@ -94,6 +97,24 @@ export async function deleteTag(id: number) {
   const res = await monitoringAPI<TagDataForm>({
     type: "delete",
     endpoint: `Tag/${id}`,
+  });
+
+  return res;
+}
+
+export async function addTagToInitiative(initiativeId: number, tagId: number) {
+  const res = await monitoringAPI<TagInInitiative>({
+    type: "post",
+    endpoint: `InitiativeTag?initiativeId=${initiativeId}&tagId=${tagId}`,
+  });
+
+  return res;
+}
+
+export async function removeTagFromInitiative(tagInInitiativeId: number) {
+  const res = await monitoringAPI({
+    type: "delete",
+    endpoint: `InitiativeTag/${tagInInitiativeId}`,
   });
 
   return res;

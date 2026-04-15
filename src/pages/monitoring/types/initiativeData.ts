@@ -7,8 +7,12 @@ import type {
   ContactSRC,
   UserSRC,
   InitiativeAditionalInfo,
+  TagData,
 } from "pages/monitoring/types/initiative";
-import type { LocationCompleteInfo } from "pages/monitoring/types/odataResponse";
+import type {
+  LocationCompleteInfo,
+  TagInInitiative,
+} from "pages/monitoring/types/odataResponse";
 
 export type InitiativeDataForm = {
   general: GeneralInfo;
@@ -16,6 +20,7 @@ export type InitiativeDataForm = {
   contacts: InitiativeContact[];
   users: UserData[];
   images: ImagesData;
+  tags: (TagData | TagInInitiative)[];
 };
 
 // NOTE: tipos para los errores
@@ -30,15 +35,17 @@ export type InitiativeDataFormErr = {
   contacts: string[];
   users: string[];
   images: ErrorsImages;
+  tags: string[];
 };
 
 export type CardInfoGrouped = {
   id: number;
-  general: GeneralInfo & Omit<InitiativeAditionalInfo, "id">;
+  general: GeneralInfo & Omit<InitiativeAditionalInfo, "id" | "tags">;
   locations: LocationCompleteInfo[];
   contacts: ContactSRC[];
   users: UserSRC[];
   images: ImagesData;
+  tags: TagInInitiative[];
 };
 
 // NOTE: Interfaz de los componentes del formulario

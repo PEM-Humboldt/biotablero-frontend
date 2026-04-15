@@ -14,7 +14,6 @@ import { TAG_RECORDS_PER_PAGE } from "@config/monitoring";
 import type {
   ODataTag,
   ODataTagInfo,
-  TagEntryShort,
 } from "pages/monitoring/types/odataResponse";
 import { ODataTable } from "@composites/ODataTable";
 import { TablePager } from "@composites/TablePager";
@@ -24,7 +23,7 @@ import { TagFormButton } from "pages/monitoring/outlets/tagsAdmin/TagFormBtn";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import type { TagCategory, TagDataForm } from "pages/monitoring/types/tagData";
 
-function parseEntry(rawODataTag: ODataTag): TagEntryShort {
+function parseEntry(rawODataTag: ODataTag): ODataTag {
   return {
     ...rawODataTag,
     categoryName: translateTagCategory(rawODataTag.category.name),
@@ -32,7 +31,7 @@ function parseEntry(rawODataTag: ODataTag): TagEntryShort {
   };
 }
 
-function parseODataTags(odataTags: ODataTagInfo): TagEntryShort[] {
+function parseODataTags(odataTags: ODataTagInfo): ODataTag[] {
   const { value } = odataTags;
   return value.map(parseEntry);
 }

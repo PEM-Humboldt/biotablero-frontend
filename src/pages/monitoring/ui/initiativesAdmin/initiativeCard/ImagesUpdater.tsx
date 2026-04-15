@@ -106,7 +106,7 @@ export function ImagesUpdater({
       )}
     >
       <div
-        id={`${initiativeId}_${"images"}`}
+        id={`${initiativeId}_images`}
         className="font-normal flex flex-wrap gap-2 text-primary items-center text-lg pb-1"
       >
         <h4 className="font-normal text-primary text-lg p-0! m-0!">{title}</h4>

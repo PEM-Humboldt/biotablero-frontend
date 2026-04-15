@@ -150,6 +150,10 @@ export const uiText = {
         title: "Información general",
       },
 
+      tags: {
+        title: "Etiquetas de la iniciativa",
+      },
+
       locations: {
         title: "Ubicación de la iniciativa",
         tableCol: ["Departamento", "Municipio", "Vereda"],
