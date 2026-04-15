@@ -10,6 +10,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarSeparator,
   useSidebar,
 } from "@ui/shadCN/component/sidebar";
 
@@ -28,11 +29,18 @@ export function MonitoringSidebar({ className }: { className: string }) {
     <Sidebar collapsible="icon" className={className}>
       <SidebarContent>
         <SidebarGroupButtons title="Monitoreo" items={generalItems} />
+
         {isUser && (
-          <SidebarGroupButtons title="Usuario registrado" items={userItems} />
+          <>
+            <SidebarSeparator />
+            <SidebarGroupButtons title="Usuario registrado" items={userItems} />
+          </>
         )}
         {isAdmin && (
-          <SidebarGroupButtons title="Administrador" items={adminItems} />
+          <>
+            <SidebarSeparator />
+            <SidebarGroupButtons title="Administrador" items={adminItems} />
+          </>
         )}
       </SidebarContent>
     </Sidebar>
@@ -61,12 +69,14 @@ function SidebarGroupButtons({
                   size="lg"
                   variant="outline"
                   tooltip={item.description}
-                  onClick={() => {
-                    setOpen(false);
-                    if ("action" in item) {
-                      item.action();
-                    }
-                  }}
+                  onClick={
+                    "action" in item
+                      ? () => {
+                          setOpen(false);
+                          item.action();
+                        }
+                      : undefined
+                  }
                 >
                   {"action" in item ? (
                     <>

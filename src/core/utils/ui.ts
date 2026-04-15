@@ -9,11 +9,15 @@ export const inputLengthCount = (
 };
 
 export const inputWarnColor = (
-  currentString: string,
+  currentStringOrStringLength: string | number,
   maxLength: number,
   threshold: number = 0.95,
 ) => {
-  return currentString.length > Math.floor(maxLength * threshold)
+  const currentLength =
+    typeof currentStringOrStringLength === "number"
+      ? currentStringOrStringLength
+      : currentStringOrStringLength.length;
+  return currentLength > Math.floor(maxLength * threshold)
     ? "text-accent"
     : "text-primary";
 };

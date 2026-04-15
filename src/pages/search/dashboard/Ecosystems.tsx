@@ -11,13 +11,12 @@ import {
 
 import BackendAPI from "pages/search/api/backendAPI";
 import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
-import { SEPAData } from "pages/search/types/ecosystems";
 import { EcosystemsController } from "pages/search/dashboard/EcosystemsController";
 import { RasterLayer } from "pages/search/types/layers";
 
 import { Coverage } from "pages/search/dashboard/ecosystems/Coverage";
 // import { ProtectedAreas } from "pages/search/dashboard/ecosystems/ProtectedAreas";
-// import { StrategicEcosystems } from "pages/search/dashboard/ecosystems/StrategicEcosystems";
+import { StrategicEcosystems } from "pages/search/dashboard/ecosystems/StrategicEcosystems";
 import { SmallStackedBarData } from "@composites/charts/SmallStackedBar";
 
 type TextsContent = { info: string; cons: string; meto: string; quote: string };
@@ -36,9 +35,6 @@ type EcosystemsState = {
   }>;
   PATotalArea: number;
   PADivergentData: boolean;
-
-  SEAreas: SEPAData[];
-  SETotalArea: number;
 
   layers: RasterLayer[];
 
@@ -67,9 +63,6 @@ const initialState: EcosystemsState = {
   PAAreas: [],
   PATotalArea: 0,
   PADivergentData: false,
-
-  SEAreas: [],
-  SETotalArea: 0,
 
   layers: [],
 
@@ -155,7 +148,7 @@ const controller = new EcosystemsController();
 
 export function Ecosystems() {
   const context = useContext(SearchLegacyCTX) as LegacyContextValues;
-  const { areaType, areaId } = context;
+  const { areaType, areaId, areaHa } = context;
 
   const [state, dispatch] = useReducer(ecosystemsReducer, initialState);
 
@@ -170,9 +163,9 @@ export function Ecosystems() {
   const areaTypeId = areaType.id;
   const areaIdId = areaId.id;
 
-  controller.setArea(areaTypeId, areaIdId);
-
   useEffect(() => {
+    controller.setArea(areaTypeId, areaIdId);
+
     context.setLoadingLayer(true);
 
     controller
@@ -298,21 +291,12 @@ export function Ecosystems() {
         />
         {*/}
 
-        {/* STRATEGIC ECOSYSTEMS */}
-        {/*}
         <StrategicEcosystems
-          SEAreas={SEAreas}
-          SETotalArea={SETotalArea}
+          areaTypeId={areaTypeId}
+          areaIdId={areaIdId}
           areaHa={areaHa!}
-          infoOpen={infoShown.has("se")}
-          toggleInfo={() => toggleInfo("se")}
           texts={texts.se}
-          messages={messages.se}
-          areaIdStr={areaIdStr}
-          isLoading={messages.se === "loading"}
-          noData={messages.se === "no-data"}
         />
-        {*/}
       </div>
     </div>
   );

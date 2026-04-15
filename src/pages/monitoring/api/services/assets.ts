@@ -1,6 +1,10 @@
 import type { ImageUploadInfo } from "pages/monitoring/api/types/definitions";
 import { monitoringAPI } from "pages/monitoring/api/core";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import type {
+  ImageObjectTS,
+  VideoObjectTS,
+} from "pages/monitoring/types/territoryStory";
 
 /**
  * Uploads a collection of images to their respective API endpoints.
@@ -42,4 +46,73 @@ export async function uploadImages(
   }
 
   return imageUploadErrors;
+}
+
+export async function postTerritoryStoryVideo(
+  territoryStoryId: number,
+  fileUrl: string,
+) {
+  const payload = { territoryStoryId, fileUrl };
+  const res = await monitoringAPI<VideoObjectTS[]>({
+    type: "post",
+    endpoint: `TerritoryStoryVideo`,
+    options: { data: payload },
+  });
+
+  return res;
+}
+
+export async function deleteTerritoryStoryVideo(territoryStoryVideoId: number) {
+  const res = await monitoringAPI<VideoObjectTS[]>({
+    type: "delete",
+    endpoint: `TerritoryStoryVideo/${territoryStoryVideoId}`,
+  });
+
+  return res;
+}
+
+export async function getTerritoryStoryVideos(territoryStoryId: number) {
+  const res = await monitoringAPI<VideoObjectTS[]>({
+    type: "get",
+    endpoint: `TerritoryStoryVideo/GetByTerritoryStory/${territoryStoryId}`,
+  });
+
+  return res;
+}
+
+export async function postTerritoryStoryImage(
+  territoryStoryId: number,
+  description: string,
+  file: File,
+) {
+  const formData = new FormData();
+  formData.append("TerritoryStoryId", String(territoryStoryId));
+  formData.append("Description", description);
+  formData.append("File", file);
+
+  const res = await monitoringAPI<ImageObjectTS>({
+    type: "post",
+    endpoint: "TerritoryStoryImage",
+    options: { data: formData, headers: { accept: "*/*" } },
+  });
+
+  return res;
+}
+
+export async function deleteTerritoryStoryImage(imageInTSId: number) {
+  const res = await monitoringAPI({
+    type: "delete",
+    endpoint: `TerritoryStoryImage/${imageInTSId}`,
+  });
+
+  return res;
+}
+
+export async function setImageAsFeatured(imageInTSId: number) {
+  const res = await monitoringAPI<ImageObjectTS>({
+    type: "post",
+    endpoint: `TerritoryStoryImage/FeaturedContent/${imageInTSId}`,
+  });
+
+  return res;
 }

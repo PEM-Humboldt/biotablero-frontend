@@ -4,6 +4,7 @@ import {
   type FormEvent,
   type Dispatch,
   type SetStateAction,
+  useEffect,
 } from "react";
 
 import { cn } from "@ui/shadCN/lib/utils";
@@ -21,6 +22,7 @@ import type { SearchParentData } from "@composites/odataSearchBar/types/odataSea
 export type ODataSearchBarProps<T, F> = {
   components: SearchBarComponent<T>[];
   setSearchParams: Dispatch<SetStateAction<F>>;
+  filterInjection?: string;
   className: string;
   submit?: string;
   reset?: string;
@@ -43,6 +45,7 @@ export type ODataSearchBarProps<T, F> = {
 export function ODataSearchBar<T>({
   components,
   setSearchParams,
+  filterInjection,
   className = "",
   submit = "",
   reset = "",
@@ -55,6 +58,10 @@ export function ODataSearchBar<T>({
   const getSearchValues = () => {
     const filters: string[] = [];
     const searchParams: ODataParams = {};
+
+    if (filterInjection) {
+      filters.push(filterInjection);
+    }
 
     components.forEach((component, i) => {
       const element = searchRefs.current[`${component.source.join("-")}_${i}`];
@@ -81,6 +88,14 @@ export function ODataSearchBar<T>({
 
     return searchParams;
   };
+
+  useEffect(() => {
+    if (submit === "") {
+      onChangeHandler();
+    } else {
+      setSearchParams((oldParams) => ({ ...oldParams, ...getSearchValues() }));
+    }
+  }, [filterInjection]);
 
   const submitSearch = (event: FormEvent) => {
     event.preventDefault();

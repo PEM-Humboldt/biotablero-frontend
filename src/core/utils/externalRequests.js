@@ -10,7 +10,7 @@ class ExternalRequests {
    */
   static requestFeaturesFlags() {
     const objectId = `https://biotablero.s3.amazonaws.com/featureFlags_${
-      import.meta.env.VITE_ENVIRONMENT
+      window._env_?.VITE_ENVIRONMENT || import.meta.env.VITE_ENVIRONMENT
     }.json`;
     return ExternalRequests.makeGetRequest(objectId);
   }

@@ -147,6 +147,7 @@
   /* Regular colors */
   --color-white: oklch(100% 0 0);
   --color-grey-light: oklch(0.9491 0 0);
+  --color-grey-form: oklch(0.9702 0 129.63);
   --color-grey: oklch(85% 0 89.88);
   --color-grey-dark: oklch(15.91% 0 89.88);
   --color-black: oklch(0% 0 0);

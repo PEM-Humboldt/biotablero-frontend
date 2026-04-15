@@ -1,9 +1,9 @@
 import SearchAPI from "pages/search/api/searchAPI";
-import LayerAPI from "../api/layerAPI";
+import LayerAPI from "pages/search/api/layerAPI";
 import { RasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
 import { MetricsUtils } from "pages/search/utils/metrics";
-import { transformCoverageValues } from "./ecosystems/transformData";
+import { transformCoverageValues } from "pages/search/dashboard/ecosystems/transformData";
 
 /**
  * Controller for Ecosystems Component
@@ -112,13 +112,6 @@ export class EcosystemsController {
     }
     throw Error("Polygon and area undefined");
   }
-
-  /**
-   * Get the raster layers required for a Special Ecosystem type
-   *  @param {string} seType Special Ecosystem type
-   *
-   * @returns { Promise<Array<RasterLayer>> } layers for the Special Ecosystem type
-   */
 
   // TODO: Refactor to use SearchAPI when available
 

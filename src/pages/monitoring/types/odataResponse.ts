@@ -3,6 +3,7 @@ import type {
   JoinRequestStatus,
   UserLevel,
 } from "pages/monitoring/types/catalog";
+import { ImageObjectTS, VideoObjectTS } from "./territoryStory";
 
 // NOTE: Logs
 export interface ODataLogEntryShort extends HasId {
@@ -107,14 +108,62 @@ export type UserInInitiative = {
   users: InitiativeUser[];
 };
 
+interface TerritoryStoryImageObject extends HasId {
+  territoryStoryId: number;
+  fileUrl: string;
+  description: string;
+  featuredContent: boolean;
+}
+
+interface TerritoryStoryVideoObject extends HasId {
+  territoryStoryId: number;
+  fileUrl: string;
+}
+
+export interface ODataTerritoryStoryObject extends HasId {
+  initiativeId: number;
+  authorUserName: string;
+  title: string;
+  text: string;
+  keywords: string;
+  creationDate: string;
+  restricted: boolean;
+  enabled: boolean;
+  featuredContent: boolean;
+  likes: number;
+  iLikedIt: boolean;
+  images: TerritoryStoryImageObject[];
+  videos: TerritoryStoryVideoObject[];
+}
+
+export type TerritoryStoryShort = {
+  id: number;
+  initiativeId: number;
+  title: string;
+  text: string;
+  restricted: boolean;
+  enabled: boolean;
+  featuredContent: boolean;
+  likes: number;
+
+  // NOTE: Hablar con César por si el contenido puede acotarse
+  authorUserName: string;
+  creationDate: string;
+  keywords: string;
+  images?: ImageObjectTS[];
+  videos?: Omit<VideoObjectTS, "territoryStoryId">[];
+};
+
 // NOTE: Etiquetas
+interface TagCategory extends HasId {
+  id: number;
+  name: string;
+}
+
 export interface ODataTag extends HasId {
   name: string;
   url?: string;
-  category: {
-    id: number;
-    name: string;
-  };
+  category: TagCategory;
   categoryName: string;
 }
 
@@ -127,4 +176,5 @@ export type ODataLog = ODataResponse<ODataLogEntryShort>;
 export type ODataInitiative = ODataResponse<ODataInitiativeShortEntry>;
 export type ODataUserRequest = ODataResponse<ODataInitiativeUserRequest>;
 export type ODataUserInfo = ODataResponse<ODataUser>;
+export type ODataTerritoryStory = ODataResponse<TerritoryStoryShort>;
 export type ODataTagInfo = ODataResponse<ODataTag>;

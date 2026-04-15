@@ -1,7 +1,7 @@
 @layer components {
   /* NOTE: Para marcación de páginas */
   .page-main {
-    @apply bg-[#f5f5f5] w-full p-4 *:max-w-6xl flex flex-col gap-4 items-center;
+    @apply bg-[#f5f5f5] w-full p-4 *:max-w-7xl flex flex-col gap-4 items-center;
 
     & > header {
       @apply p-6 pb-0 w-full flex justify-between items-baseline;
@@ -73,6 +73,38 @@
     }
   }
 
+  /* Manejo de indentación y viñetas para listas anidadas en Lexical */
+  .editor-list-ul {
+    @apply list-disc;
+  }
+
+  .editor-list-ul .editor-list-ul {
+    list-style-type: circle;
+  }
+
+  .editor-list-ul .editor-list-ul .editor-list-ul {
+    list-style-type: square;
+  }
+
+  .editor-list-ol {
+    @apply list-decimal;
+  }
+
+  /* Lexical usa clases para la indentación profunda si usas el comando Tab */
+  .editor-listItem {
+    @apply ml-8;
+  }
+
+  .editor-nested-listitem {
+    list-style-type: none; /* Evita doble viñeta en el contenedor */
+  }
+
+  /* Reset de márgenes para que no se sumen exponencialmente de forma errónea */
+  .editor-nested-listitem > ul,
+  .editor-nested-listitem > ol {
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
   /* NOTE: Para la tabla de etiquetas */
   .table-tags {
     @apply border border-primary/30 rounded-lg mb-2 overflow-hidden;

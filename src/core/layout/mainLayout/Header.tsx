@@ -17,7 +17,7 @@ interface HeaderProps {
 export function Header({ activeModule, headerNames, className }: HeaderProps) {
   const { title, subtitle } = headerNames;
 
-  const renderCompositeTitle = title !== "" && subtitle !== "";
+  const renderCompositeTitle = title !== "" || subtitle !== "";
 
   return (
     <header
@@ -38,7 +38,7 @@ export function Header({ activeModule, headerNames, className }: HeaderProps) {
 
         {renderCompositeTitle && (
           <h2 className="text-xl! font-light! border-l border-l-grey-light px-4! m-0!">
-            {title} / {subtitle}
+            {title} {subtitle !== "" ? `/ ${subtitle}` : ""}
           </h2>
         )}
       </div>

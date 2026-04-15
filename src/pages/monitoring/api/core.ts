@@ -45,7 +45,9 @@ export async function monitoringAPI<T>({
   getStatus = false,
 }: MonitoringAPIParams): Promise<T | ResponseWithStatus<T> | ApiRequestError> {
   try {
-    const baseURL = import.meta.env.VITE_MONITORING_BACKEND_URL;
+    const baseURL =
+      window._env_?.VITE_MONITORING_BACKEND_URL ||
+      import.meta.env.VITE_MONITORING_BACKEND_URL;
     let response: AxiosResponse<T>;
     const { data, headers, signal } = options ?? {};
 
@@ -97,7 +99,10 @@ export async function monitoringAPI<T>({
       };
     }
 
-    if (import.meta.env.VITE_ENVIRONMENT === "develop") {
+    if (
+      window._env_?.VITE_ENVIRONMENT ||
+      import.meta.env.VITE_ENVIRONMENT === "develop"
+    ) {
       console.error("error trace", err);
     }
 
