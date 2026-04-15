@@ -28,7 +28,7 @@ import { FormListManager } from "pages/monitoring/ui/initiativesAdmin/initiative
 import { LocationInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/LocationInput";
 import { ContactInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/ContactInput";
 import { UsersInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/UsersInput";
-import { TagsManger } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/TagsManager";
+import { TagsManager } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/TagsManager";
 import { ImagesInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/ImagesInput";
 import {
   makeInitialInfo,
@@ -205,11 +205,12 @@ export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
           />
         </div>
 
-        <TagsManger
+        <TagsManager
           title={componentText.initiative.module.tags.title}
           sectionInfo={initiative.current.tags}
           sectionUpdater={handleFormUpdate("tags")}
           validationErrors={errors?.tags ?? []}
+          initiativeId={null}
         />
 
         <ImagesInput

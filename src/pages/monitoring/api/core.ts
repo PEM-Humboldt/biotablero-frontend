@@ -1,4 +1,4 @@
-import { isAxiosError, type AxiosResponse } from "axios";
+import axios, { isAxiosError, type AxiosResponse } from "axios";
 import type { ApiRequestError, DataError, ErrorUIMessage } from "@appTypes/api";
 import { oDataToString } from "@utils/odata";
 import { serializeQueryParams } from "@utils/htmlRequest";
@@ -89,6 +89,14 @@ export async function monitoringAPI<T>({
       ? { data: response.data, status: response.status }
       : response.data;
   } catch (err) {
+    if (axios.isCancel(err)) {
+      return {
+        status: 0,
+        message: "Request cancelled by the user",
+        data: [],
+      };
+    }
+
     if (import.meta.env.VITE_ENVIRONMENT === "develop") {
       console.error("error trace", err);
     }

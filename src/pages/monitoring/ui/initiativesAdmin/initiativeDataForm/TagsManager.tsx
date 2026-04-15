@@ -24,7 +24,7 @@ import {
 } from "pages/monitoring/api/services/tags";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
-export function TagsManger({
+export function TagsManager({
   title,
   sectionInfo,
   sectionUpdater,
@@ -35,7 +35,7 @@ export function TagsManger({
   sectionInfo: (TagData | TagInInitiative)[];
   sectionUpdater: (value: (TagData | TagInInitiative)[]) => void;
   validationErrors: string[];
-  initiativeId?: number | null;
+  initiativeId: number | null;
 }) {
   const [tags, setTags] = useState<
     Record<number, (TagData | TagInInitiative)[]>

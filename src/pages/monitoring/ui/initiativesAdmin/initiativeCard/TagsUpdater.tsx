@@ -5,7 +5,7 @@ import { cn } from "@ui/shadCN/lib/utils";
 import type { CardInfoGrouped } from "pages/monitoring/types/initiativeData";
 import { EditModeButton } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/EditModeButton";
 import { useInitiativeDataCTX } from "pages/monitoring/ui/initiativesAdmin/hooks/useAdminUpdateContext";
-import { TagsManger } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/TagsManager";
+import { TagsManager } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/TagsManager";
 import type { TagInInitiative } from "pages/monitoring/types/odataResponse";
 import { initiativeTagCategories } from "pages/monitoring/ui/initiativesAdmin/layout/initiativeTagCategoties";
 import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
@@ -43,7 +43,7 @@ export function TagsUpdater({ title }: TagsUpdaterProps) {
       )}
     >
       <div
-        id={`${initiativeId}_${"images"}`}
+        id={`${initiativeId}_tags_container`}
         className="font-normal flex flex-wrap gap-2 text-primary items-center text-lg pb-1"
       >
         <h4 className="font-normal text-primary text-lg p-0! m-0!">{title}</h4>
@@ -58,7 +58,7 @@ export function TagsUpdater({ title }: TagsUpdaterProps) {
         </div>
       ) : (
         <form aria-labelledby={`${initiativeId}_tags`}>
-          <TagsManger
+          <TagsManager
             sectionInfo={tagsInfo.current ?? []}
             sectionUpdater={() => void updater!()}
             validationErrors={[]}
