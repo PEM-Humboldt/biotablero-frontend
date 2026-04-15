@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, type LucideIcon } from "lucide-react";
 
 import { cn } from "@ui/shadCN/lib/utils";
 import { Button } from "@ui/shadCN/component/button";
@@ -23,9 +23,11 @@ type ComboBoxProps<T> = {
   maxItems?: number;
   value: number | string;
   setValue: React.Dispatch<React.SetStateAction<string>>;
+  onSearchChange?: (value: string) => void;
   disabled?: boolean;
   uiText: { itemNotFound: string; trigger: string; inputPlaceholder: string };
   className?: string;
+  icon?: LucideIcon;
 } & (
   | { keys: { forLabel?: keyof T; forValue: keyof T } }
   | { keys: { forLabel: keyof T; forValue?: keyof T } }
@@ -37,10 +39,12 @@ export function Combobox<T>({
   maxItems,
   value,
   setValue,
+  onSearchChange,
   keys,
   uiText,
   disabled = false,
   className = "",
+  icon,
 }: ComboBoxProps<T>) {
   const [open, setOpen] = React.useState(false);
 
@@ -48,6 +52,8 @@ export function Combobox<T>({
   const itemLabel = (keys?.forLabel ?? keys.forValue) as keyof T;
 
   const componentWidth = "w-full";
+
+  const Icon = icon || ChevronsUpDown;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -68,17 +74,21 @@ export function Combobox<T>({
               )
             : uiText.trigger}
 
-          <ChevronsUpDown className="text-primary" />
+          <Icon className="text-primary" />
         </Button>
       </PopoverTrigger>
 
       <PopoverContent className="p-0 w-(--radix-popover-trigger-width)">
         <Command>
-          <CommandInput placeholder={uiText.inputPlaceholder} className="h-9" />
+          <CommandInput
+            onValueChange={onSearchChange}
+            placeholder={uiText.inputPlaceholder}
+            className="h-9"
+          />
 
           <CommandList
             className={cn(!maxItems ? "overflow-y-auto max-h-[300px]" : "")}
-            style={maxItems ? { maxHeight: `${33 * maxItems}px` } : undefined}
+            style={maxItems ? { maxHeight: `${45 * maxItems}px` } : undefined}
           >
             <CommandEmpty>{uiText.itemNotFound}</CommandEmpty>
             <CommandGroup>
