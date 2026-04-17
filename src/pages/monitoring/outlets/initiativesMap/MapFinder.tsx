@@ -14,7 +14,7 @@ import {
 import L, { type LatLngExpression, type LatLngBoundsLiteral } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { COLOMBIA_BOUNDS } from "pages/utils/settings";
-import * as nation from "nation.json";
+// import * as nation from "nation.json";
 import type {
   Feature,
   FeatureCollection,
@@ -48,7 +48,7 @@ const MOCK_MORE_INITIATIVES: InitiativeByLocation[] = [
   { initiativeId: 14, initiativeName: "Ama 5", coordinate: [-70.5, -1.2] },
   { initiativeId: 15, initiativeName: "Ama 6", coordinate: [-71.2, -1.5] },
   { initiativeId: 16, initiativeName: "Ama 7", coordinate: [-69.85, -2.0] },
-  { initiativeId: 17, initiativeName: "Ama 8", coordinate: [-70.0, -0.5] },
+  { initiativeId: 17, initiativeName: "Ama 8", coordinate: [-72.0, -0.5] },
 
   { initiativeId: 18, initiativeName: "Cho 1", coordinate: [-76.658, 5.692] },
   { initiativeId: 19, initiativeName: "Cho 2", coordinate: [-77.2, 5.2] },
@@ -126,6 +126,7 @@ export function MapFinder({
 }) {
   const [bounds, setBounds] = useState(startingBounds);
   const [initiatives, setInitiatives] = useState<InitiativeByLocation[]>([]);
+  const [nation, setNation] = useState<FeatureCollection | null>(null);
 
   useEffect(() => {
     const fetchInitiativeLocations = async () => {
@@ -142,20 +143,37 @@ export function MapFinder({
       setInitiatives([...res, ...MOCK_MORE_INITIATIVES]);
     };
 
+    const fetchCountryMap = async () => {
+      const res = await monitoringAPI<FeatureCollection>({
+        type: "get",
+        endpoint: "Location/Polygon/0",
+      });
+
+      if (isMonitoringAPIError(res)) {
+        setInitiatives([]);
+        return;
+      }
+
+      setNation(res);
+    };
+
     void fetchInitiativeLocations();
+    void fetchCountryMap();
   }, []);
 
   const processedData = useMemo<
     { feature: Feature<Geometry, GeoJsonProperties>; count: number }[]
   >(() => {
-    if (!initiatives.length || !nation?.features) {
+    if (!initiatives.length || !nation || !nation?.features) {
       return [];
     }
 
     let remaining = [...initiatives];
     const results = [];
 
-    for (const feature of (nation as FeatureCollection).features) {
+    for (const feature of nation.features as Feature<
+      Polygon | MultiPolygon
+    >[]) {
       if (remaining.length === 0) {
         break;
       }
@@ -166,9 +184,7 @@ export function MapFinder({
       for (const initiative of remaining) {
         const pt = point([initiative.coordinate[0], initiative.coordinate[1]]);
 
-        if (
-          booleanPointInPolygon(pt, feature as Feature<Polygon | MultiPolygon>)
-        ) {
+        if (booleanPointInPolygon(pt, feature)) {
           matches.push(initiative);
         } else {
           rest.push(initiative);
@@ -186,7 +202,7 @@ export function MapFinder({
     }
 
     return results;
-  }, [initiatives]);
+  }, [initiatives, nation]);
 
   const getColor = getGradientColor(
     1,
