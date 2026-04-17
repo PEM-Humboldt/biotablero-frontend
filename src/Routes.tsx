@@ -13,6 +13,7 @@ import { InitiativesAdmin } from "pages/monitoring/outlets/InitiativesAdmin";
 import { InitiativesManagement } from "pages/monitoring/outlets/InitiativesManagement";
 import { TagsAdmin } from "pages/monitoring/outlets/TagsAdmin";
 import { Resources } from "pages/monitoring/outlets/Resources";
+import { ResourcesManager } from "pages/monitoring/outlets/resources/ResourcesManager";
 
 export const routes = createBrowserRouter([
   {
@@ -42,8 +43,17 @@ export const routes = createBrowserRouter([
             Component: InitiativesMap,
           },
           {
-            path: "Recursos/:resourceId?",
-            Component: Resources,
+            path: "Recursos",
+            children: [
+              {
+                Component: ResourcesManager,
+                path: "Admin",
+              },
+              {
+                Component: Resources,
+                path: ":resourceId?",
+              },
+            ],
           },
           {
             path: "Iniciativas/:initiativeId?/:tabSection?/:detailItem?",
