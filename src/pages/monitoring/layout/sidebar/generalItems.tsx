@@ -1,23 +1,25 @@
 import {
   BadgeQuestionMark,
-  FilePlay,
+  BookMarked,
+  ChartBar,
+  FlaskConical,
   House,
-  MapPinCheckInside,
-  PackageOpen,
-  ZoomIn,
+  Lightbulb,
+  NotepadText,
 } from "lucide-react";
 
 import type { DashboardItem } from "pages/monitoring/types/catalog";
 
 export const generalItems: DashboardItem[] = [
-  { description: "Mapa de iniciativas", icon: House, linkTo: "/Monitoreo" },
-  { description: "Buscar indicadores", icon: ZoomIn, linkTo: "/" },
-  { description: "Recursos", icon: PackageOpen, linkTo: "/" },
-  { description: "Tutorial", icon: FilePlay, linkTo: "/" },
-  { description: "Preguntas Frecuentes", icon: BadgeQuestionMark, linkTo: "/" },
+  { description: "Iniciativas", icon: House, linkTo: "/Monitoreo" },
+  { description: "Indicadores", icon: ChartBar, linkTo: "/Monitoreo" },
+  { description: "Recursos", icon: BookMarked, linkTo: "/Monitoreo/Recursos" },
+  { description: "Glosario", icon: NotepadText, linkTo: "/Monitoreo" },
+  { description: "Preguntas", icon: BadgeQuestionMark, linkTo: "/Monitoreo" },
+  { description: "Ayudas", icon: Lightbulb, linkTo: "/Monitoreo" },
   {
     description: "Iniciativas (Provicional)",
-    icon: MapPinCheckInside,
+    icon: FlaskConical,
     linkTo: "/Monitoreo/Iniciativas",
   },
 ];

@@ -12,6 +12,7 @@ import { Logs } from "pages/monitoring/outlets/Logs";
 import { InitiativesAdmin } from "pages/monitoring/outlets/InitiativesAdmin";
 import { InitiativesManagement } from "pages/monitoring/outlets/InitiativesManagement";
 import { TagsAdmin } from "pages/monitoring/outlets/TagsAdmin";
+import { Resources } from "pages/monitoring/outlets/Resources";
 
 export const routes = createBrowserRouter([
   {
@@ -36,15 +37,17 @@ export const routes = createBrowserRouter([
           return { Component: Monitoring };
         },
         children: [
-          { index: true, Component: InitiativesMap },
+          {
+            index: true,
+            Component: InitiativesMap,
+          },
+          {
+            path: "Recursos/:resourceId?",
+            Component: Resources,
+          },
           {
             path: "Iniciativas/:initiativeId?/:tabSection?/:detailItem?",
-            children: [
-              {
-                index: true,
-                Component: Initiatives,
-              },
-            ],
+            Component: Initiatives,
           },
           {
             path: "gestionarIniciativas",
@@ -56,31 +59,36 @@ export const routes = createBrowserRouter([
               }),
           },
           {
-            path: "administrarIniciativas",
-            Component: InitiativesAdmin,
-            loader: () =>
-              checkNLoad({
-                requirements: { roles: ["Admin"] },
-                redirectPath: "/Monitoreo",
-              }),
-          },
-          {
-            path: "administrarEtiquetas",
-            Component: TagsAdmin,
-            loader: () =>
-              checkNLoad({
-                requirements: { roles: ["Admin"] },
-                redirectPath: "/Monitoreo",
-              }),
-          },
-          {
-            path: "logs",
-            Component: Logs,
-            loader: () =>
-              checkNLoad({
-                requirements: { roles: ["Admin"] },
-                redirectPath: "/Monitoreo",
-              }),
+            path: "Admin",
+            children: [
+              {
+                path: "Iniciativas",
+                Component: InitiativesAdmin,
+                loader: () =>
+                  checkNLoad({
+                    requirements: { roles: ["Admin"] },
+                    redirectPath: "/Monitoreo",
+                  }),
+              },
+              {
+                path: "Etiquetas",
+                Component: TagsAdmin,
+                loader: () =>
+                  checkNLoad({
+                    requirements: { roles: ["Admin"] },
+                    redirectPath: "/Monitoreo",
+                  }),
+              },
+              {
+                path: "Registros",
+                Component: Logs,
+                loader: () =>
+                  checkNLoad({
+                    requirements: { roles: ["Admin"] },
+                    redirectPath: "/Monitoreo",
+                  }),
+              },
+            ],
           },
         ],
       },

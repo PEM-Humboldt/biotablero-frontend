@@ -14,8 +14,8 @@ import {
   useSidebar,
 } from "@ui/shadCN/component/sidebar";
 
-import { generalItems } from "pages/monitoring/layout/sidebar/generalItems";
 import type { DashboardItem } from "pages/monitoring/types/catalog";
+import { generalItems } from "pages/monitoring/layout/sidebar/generalItems";
 import { userItems } from "pages/monitoring/layout/sidebar/userItems";
 import { adminItems } from "pages/monitoring/layout/sidebar/adminItems";
 
