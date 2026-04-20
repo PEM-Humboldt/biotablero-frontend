@@ -23,6 +23,18 @@ export type MetricTypesMap = {
   paramo: MetricDataStructure<"id", "paramo">;
   tropicalDryForest: MetricDataStructure<"id", "bosqueSeco">;
   wetland: MetricDataStructure<"id", "humedal">;
+  coverage_paramo: MetricDataStructure<
+    "id",
+    "Natural" | "Secundaria" | "Transformada"
+  >;
+  coverage_tropicalDryForest: MetricDataStructure<
+    "id",
+    "Natural" | "Secundaria" | "Transformada"
+  >;
+  coverage_wetland: MetricDataStructure<
+    "id",
+    "Natural" | "Secundaria" | "Transformada"
+  >;
 };
 
 export type MetricsTypes = keyof MetricTypesMap;
