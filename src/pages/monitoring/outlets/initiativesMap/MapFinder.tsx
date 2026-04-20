@@ -14,7 +14,6 @@ import {
 import L, { type LatLngExpression, type LatLngBoundsLiteral } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { COLOMBIA_BOUNDS } from "pages/utils/settings";
-// import * as nation from "nation.json";
 import type {
   Feature,
   FeatureCollection,
