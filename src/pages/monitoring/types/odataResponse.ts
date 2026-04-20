@@ -145,9 +145,16 @@ export interface TagInInitiative {
   tag: Omit<ODataTag, "categoryName">;
 }
 
+// NOTE: Recursos
+export interface ResourceType extends HasId {
+  name: string;
+  description: string;
+}
+
 export type ODataLog = ODataResponse<ODataLogEntryShort>;
 export type ODataInitiative = ODataResponse<ODataInitiativeShortEntry>;
 export type ODataUserRequest = ODataResponse<ODataInitiativeUserRequest>;
 export type ODataUserInfo = ODataResponse<ODataUser>;
 export type ODataTerritoryStory = ODataResponse<TerritoryStoryShort>;
 export type ODataTagInfo = ODataResponse<ODataTag>;
+export type ODataResourceType = ODataResponse<ResourceType>;
