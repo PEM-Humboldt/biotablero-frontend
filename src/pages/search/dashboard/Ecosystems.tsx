@@ -1,4 +1,4 @@
-import { useEffect, useContext, useReducer } from "react";
+import { useEffect, useContext, useReducer, useState } from "react";
 
 import InfoIcon from "@mui/icons-material/Info";
 import { ShortInfo } from "@composites/ShortInfo";
@@ -149,6 +149,7 @@ const controller = new EcosystemsController();
 export function Ecosystems() {
   const context = useContext(SearchLegacyCTX) as LegacyContextValues;
   const { areaType, areaId, areaHa } = context;
+  const [hasActiveSE, setHasActiveSE] = useState(false);
 
   const [state, dispatch] = useReducer(ecosystemsReducer, initialState);
 
@@ -269,6 +270,7 @@ export function Ecosystems() {
         <Coverage
           coverage={coverageData}
           infoOpen={infoShown.has("coverage")}
+          disableGraphClick={hasActiveSE}
           toggleInfo={() => toggleInfo("coverage")}
           texts={texts.coverage}
           messages={messages.cov}
@@ -296,6 +298,7 @@ export function Ecosystems() {
           areaIdId={areaIdId}
           areaHa={areaHa!}
           texts={texts.se}
+          onActiveSEChange={setHasActiveSE}
         />
       </div>
     </div>
