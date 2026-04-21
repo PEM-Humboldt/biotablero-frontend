@@ -54,6 +54,8 @@ export function ProtectedAreas({
   messages,
   areaIdStr,
 }: Props) {
+  const paColor = matchColor("pa", true);
+
   return (
     <>
       <h4>
@@ -67,7 +69,7 @@ export function ProtectedAreas({
         />
       </IconTooltip>
 
-      <h5>{`${getPercentage(PATotalArea, areaHa)} %`}</h5>
+      <h5 className="pa-percentage">{`${getPercentage(PATotalArea, areaHa)} %`}</h5>
 
       {infoOpen && (
         <ShortInfo
@@ -83,9 +85,7 @@ export function ProtectedAreas({
           loadStatus={messages}
           data={PAAreas}
           units="ha"
-          colors={(key: string) =>
-            matchColor("pa")(key) || colorPalettes.default[0]
-          }
+          colors={(key: string) => paColor(key) || colorPalettes.default[0]}
           scaleType={PADivergentData ? "symlog" : "linear"}
         />
       </div>
