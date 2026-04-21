@@ -62,7 +62,7 @@ export function ProtectedAreas({
 
       <IconTooltip title="Interpretación">
         <InfoIcon
-          className={`downSpecial${infoOpen ? " activeBox" : ""}`}
+          className={`metrics-info-icon${infoOpen ? " activeBox" : ""}`}
           onClick={toggleInfo}
         />
       </IconTooltip>

@@ -145,7 +145,7 @@ export function StrategicEcosystems({
           <span className="iconWrapper">
             <InfoIcon
               fontSize="medium"
-              className={`ecoest-info-icon${showInfoGraph ? " activeBox" : ""}`}
+              className={`metrics-info-icon${showInfoGraph ? " activeBox" : ""}`}
               onClick={toggleInfo}
             />
           </span>

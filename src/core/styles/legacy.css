@@ -1241,17 +1241,18 @@ div[class*="eaRHYv"] {
 .ecoest-header h4 {
   margin: 0;
 }
-.ecoest-info-icon {
+.metrics-info-icon {
   cursor: pointer;
   display: flex;
   align-items: center;
   background: #fff;
   color: #bbbbbb;
+  margin-left: 8px;
 }
-.ecoest-info-icon:hover {
+.metrics-info-icon:hover {
   color: #e84a5f;
 }
-.ecoest-info-icon.activeBox {
+.metrics-info-icon.activeBox {
   color: #e84a5f;
 }
 .minusperc {
