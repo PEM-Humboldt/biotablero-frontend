@@ -7,7 +7,14 @@ import {
   TabsList,
   TabsTrigger,
 } from "@ui/shadCN/component/tabs";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import type {
   MonitoringResource,
   ResourceType,
@@ -134,14 +141,57 @@ function ResourcesEditor({
   resourceType: ResourceType;
   resources: MonitoringResource[];
 }) {
+  const [currentEdit, setCurrentEdit] = useState<number | null>(null);
+
   return (
     <div className="flex gap-4 *:border *:flex-1">
+      <ResourcesListEditor {...{ resources, setCurrentEdit }} />
       <div>{resourceType.description}</div>
-      <div>
-        {resources.map((resource) => (
-          <div>{resource.name}</div>
-        ))}
-      </div>
     </div>
+  );
+}
+
+function ResourcesListEditor({
+  resources,
+  setCurrentEdit,
+}: {
+  resources: MonitoringResource[];
+  setCurrentEdit: Dispatch<SetStateAction<number | null>>;
+}) {
+  const removeResource = (resourceId: number) => {
+    console.log(resourceId);
+  };
+
+  if (resources.length === 0) {
+    return null;
+  }
+
+  return (
+    <table>
+      <thead>
+        <tr>
+          <td>Nombre</td>
+          <td>Iniciativa</td>
+          <td>acciones</td>
+        </tr>
+      </thead>
+
+      <tbody>
+        {resources.map((resource) => (
+          <tr>
+            <td>{resource.name}</td>
+            <td>{resource.initiativeId}</td>
+            <td>
+              <Button onClick={() => setCurrentEdit(resource.id)}>
+                Editar
+              </Button>{" "}
+              <Button onClick={() => removeResource(resource.id)}>
+                Borrar
+              </Button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
