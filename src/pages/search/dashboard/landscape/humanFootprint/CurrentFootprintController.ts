@@ -8,6 +8,22 @@ import { MetricTypesMap } from "pages/search/types/metrics";
 import SearchAPI from "pages/search/api/searchAPI";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import LayerAPI from "pages/search/api/layerAPI";
+
+type HFCategory = keyof Omit<MetricTypesMap["currentHF"], "id">;
+
+type HFRange = {
+  max: number;
+  label: HFCategory;
+};
+
+const HFCategoriesRanges: HFRange[] = [
+  { max: 0, label: "Natural" },
+  { max: 15, label: "Baja" },
+  { max: 30, label: "Media" },
+  { max: 50, label: "Alta" },
+  { max: Infinity, label: "Muy Alta" },
+];
+
 export class CurrentFootprintController {
   areaType: string = "";
   areaId: number = 0;
@@ -32,14 +48,25 @@ export class CurrentFootprintController {
       "currentHF_average",
       this.areaId,
     ).then((averageValues) => {
-      // TODO: Asignar una categoría al promedi opara poder darle color, los
-      // rangos varíaron con respecto a las clasificaciones que teníamos antes
-      const category = "Baja";
+      const average = Number(averageValues.average);
+
       return {
         ...averageValues,
-        category,
+        category: this.getHFCategory(average),
       };
     });
+  }
+
+  private getHFCategory(value: number): HFCategory {
+    if (Number.isNaN(value)) return "Natural";
+
+    for (const range of HFCategoriesRanges) {
+      if (value <= range.max) {
+        return range.label;
+      }
+    }
+
+    return "Natural";
   }
 
   /**
@@ -66,7 +93,7 @@ export class CurrentFootprintController {
   /**
    * Get layers for current human footprint component
    *
-   * @returns { Promise<ShapeLayer> } layers for the classes in the current area
+   * @returns { Promise<RasterLayer> } layers for the classes in the current area
    */
   getCurrentHFLayers = async (): Promise<Array<RasterLayer>> => {
     if (this.areaId) {
@@ -126,69 +153,6 @@ export class CurrentFootprintController {
     }
     throw Error("Polygon and area undefined");
   };
-
-  /**
-   * Highlight and set the tooltip
-   *
-   * @param {L.LeafletMouseEvent} event objet
-   *
-   */
-  highlightShapeFeature = (event: L.LeafletMouseEvent) => {
-    type TooltipLabel = Record<"natural" | "baja" | "media" | "alta", string>;
-
-    const tooltipLabel: TooltipLabel = {
-      natural: "Natural",
-      baja: "Baja",
-      media: "Media",
-      alta: "Alta",
-    };
-
-    const feature = event.target;
-    const optionsTooltip = { sticky: true };
-
-    const key = feature.feature.properties.key as keyof TooltipLabel;
-
-    feature
-      .bindTooltip(
-        `<b>${tooltipLabel[key]}:</b>
-        <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
-        optionsTooltip,
-      )
-      .openTooltip();
-
-    feature.setStyle({
-      fillOpacity: 1,
-    });
-  };
-
-  /**
-   * Reset the feature style
-   *
-   * @param {L.LeafletMouseEvent} event objet
-   *
-   */
-  resetShapeHighlight = (event: L.LeafletMouseEvent) => {
-    const feature = event.target;
-    feature.setStyle({ fillOpacity: 0.6 });
-    feature.closePopup();
-  };
-
-  /**
-   * Set the features style, applying an specific Highlight if neccesary
-   *
-   * @param {string} selectedKey Id of the feature to highlight.
-   *
-   * @returns {Function} function receiving a geoJsonFeature as required by leaflet
-   */
-  setLayerStyle =
-    (selectedKey = "") =>
-    (feature?: { properties: { key: string; id: string } }) => {
-      return {
-        stroke: false,
-        fillColor: matchColor("hfCurrent")(feature?.properties.key),
-        fillOpacity: feature?.properties.key === selectedKey ? 1 : 0.6,
-      };
-    };
 
   /**
    * Send the cancel signal to all active requests and remove them from the map

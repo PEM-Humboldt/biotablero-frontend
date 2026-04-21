@@ -69,11 +69,12 @@ const SmallStackedBar = (props: Props) => {
   const getToolTip = (
     id: string | number,
     allData: Record<string, string | number>,
+    color: string,
   ) => {
     if (id !== "NA") {
       return (
         <div className="tooltip-graph-container">
-          <strong style={{ color: "#e84a5f" }}>
+          <strong style={{ color }}>
             {id !== "undefined" ? allData[`${id}Label`] : ""}
           </strong>
           <div>
@@ -109,7 +110,9 @@ const SmallStackedBar = (props: Props) => {
           enableLabel={false}
           animate
           barComponent={BarItem}
-          tooltip={({ id, data: allData }) => getToolTip(id, allData)}
+          tooltip={({ id, data: allData, color }) =>
+            getToolTip(id, allData, color)
+          }
           onClick={({ id }) => onClickGraphHandler?.(String(id))}
           valueScale={{ type: scaleType }}
         />

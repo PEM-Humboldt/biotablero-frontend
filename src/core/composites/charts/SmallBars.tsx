@@ -187,7 +187,7 @@ export function SmallBarsElement({
               <strong style={{ color }}>
                 {currentVal ? currentVal.tooltipContent[0] : ""}
               </strong>
-              <div style={{ color: "#ffffff" }}>
+              <div>
                 {tooltipRows.map((rowValue) => {
                   return (
                     <div key={rowValue}>
