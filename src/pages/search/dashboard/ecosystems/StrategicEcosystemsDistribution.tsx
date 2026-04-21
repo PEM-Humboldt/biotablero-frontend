@@ -154,7 +154,6 @@ export function StrategicEcosystemsDistribution({
 
     return () => {
       controller.cancelActiveRequests();
-      context.clearLayers();
     };
   }, [areaTypeId, areaIdId, SEType]);
 

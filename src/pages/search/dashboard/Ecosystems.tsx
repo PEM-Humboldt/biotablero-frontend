@@ -249,6 +249,11 @@ export function Ecosystems() {
     );
   };
 
+  const restoreCoverageLayers = () => {
+    context.setRasterLayers(layers);
+    context.setMapTitle({ name: "Coberturas" });
+  };
+
   return (
     <div className="graphcard">
       <h2>
@@ -299,6 +304,7 @@ export function Ecosystems() {
           areaHa={areaHa!}
           texts={texts.se}
           onActiveSEChange={setHasActiveSE}
+          onSEDetailClose={restoreCoverageLayers}
         />
       </div>
     </div>

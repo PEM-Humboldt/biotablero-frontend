@@ -83,6 +83,7 @@ interface Props {
   areaHa: number;
   texts: { info: string; cons: string; meto: string; quote: string };
   onActiveSEChange?: (hasActiveSE: boolean) => void;
+  onSEDetailClose?: () => void;
 }
 
 export function StrategicEcosystems({
@@ -91,6 +92,7 @@ export function StrategicEcosystems({
   areaHa,
   texts,
   onActiveSEChange,
+  onSEDetailClose,
 }: Props) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -191,12 +193,16 @@ export function StrategicEcosystems({
                       activeSE === SEValues.type ? "false" : "true"
                     }`}
                     type="button"
-                    onClick={() =>
+                    onClick={() => {
+                      const isClosingDetail = activeSE === SEValues.type;
                       dispatch({
                         type: "TOGGLE_DETAIL",
                         payload: SEValues.type,
-                      })
-                    }
+                      });
+                      if (isClosingDetail) {
+                        onSEDetailClose?.();
+                      }
+                    }}
                   >
                     <ExpandMoreIcon />
                   </button>
