@@ -1158,6 +1158,9 @@ div[class*="eaRHYv"] {
   position: relative;
   z-index: 2;
 }
+.graphcontainer h5.pa-percentage {
+  margin-top: -12px;
+}
 .graphcontainer h6 {
   font-size: 14px;
   margin-left: 10px;
