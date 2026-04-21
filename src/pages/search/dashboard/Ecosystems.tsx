@@ -15,7 +15,7 @@ import { EcosystemsController } from "pages/search/dashboard/EcosystemsControlle
 import { RasterLayer } from "pages/search/types/layers";
 
 import { Coverage } from "pages/search/dashboard/ecosystems/Coverage";
-// import { ProtectedAreas } from "pages/search/dashboard/ecosystems/ProtectedAreas";
+import { ProtectedAreas } from "pages/search/dashboard/ecosystems/ProtectedAreas";
 import { StrategicEcosystems } from "pages/search/dashboard/ecosystems/StrategicEcosystems";
 import { SmallStackedBarData } from "@composites/charts/SmallStackedBar";
 
@@ -86,10 +86,19 @@ type EcosystemsAction =
   | { type: "COVERAGE_VALUES_SUCCEEDED"; payload: SmallStackedBarData[] }
   | { type: "COVERAGE_LAYERS_SUCCEEDED"; payload: RasterLayer[] }
   | { type: "COVERAGE_VALUES_FAILED" }
+  | { type: "PROTECTED_AREAS_VALUES_SUCCEEDED"; payload: SmallStackedBarData[] }
+  | { type: "PROTECTED_AREAS_VALUES_FAILED" }
   | {
       type: "SET_TEXTS";
       payload: { section: keyof EcosystemsState["texts"]; value: TextsContent };
     };
+
+const isNoProtected = (value: string) =>
+  value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s|_/g, "") === "noprotegida";
 
 function ecosystemsReducer(
   state: EcosystemsState,
@@ -130,6 +139,31 @@ function ecosystemsReducer(
         },
       };
 
+    case "PROTECTED_AREAS_VALUES_SUCCEEDED":
+      return {
+        ...state,
+        PAAreas: action.payload,
+        PATotalArea: action.payload
+          .filter((item) => !isNoProtected(item.key))
+          .reduce((acc, item) => acc + item.area, 0),
+        PADivergentData: action.payload.some(
+          (item) => item.percentage > 0 && item.percentage < 0.01,
+        ),
+        messages: {
+          ...state.messages,
+          pa: null,
+        },
+      };
+
+    case "PROTECTED_AREAS_VALUES_FAILED":
+      return {
+        ...state,
+        messages: {
+          ...state.messages,
+          pa: "no-data",
+        },
+      };
+
     case "SET_TEXTS":
       return {
         ...state,
@@ -153,8 +187,17 @@ export function Ecosystems() {
 
   const [state, dispatch] = useReducer(ecosystemsReducer, initialState);
 
-  const { showInfoMain, infoShown, coverageData, layers, messages, texts } =
-    state;
+  const {
+    showInfoMain,
+    infoShown,
+    coverageData,
+    PAAreas,
+    PATotalArea,
+    PADivergentData,
+    layers,
+    messages,
+    texts,
+  } = state;
 
   if (!areaType || !areaId) {
     context.setLoadingLayer(false);
@@ -196,6 +239,18 @@ export function Ecosystems() {
         context.setLoadingLayer(false);
       });
 
+    controller
+      .getProtectedAreasValues(areaHa ?? 0)
+      .then((PAAreas) => {
+        dispatch({
+          type: "PROTECTED_AREAS_VALUES_SUCCEEDED",
+          payload: PAAreas,
+        });
+      })
+      .catch(() => {
+        dispatch({ type: "PROTECTED_AREAS_VALUES_FAILED" });
+      });
+
     const TEXT_SECTIONS: TextSection[] = ["ecosystems", "coverage", "pa", "se"];
 
     TEXT_SECTIONS.forEach((section) => {
@@ -221,7 +276,7 @@ export function Ecosystems() {
       context.clearLayers();
       controller.cancelActiveRequests();
     };
-  }, [areaTypeId, areaIdId]);
+  }, [areaTypeId, areaIdId, areaHa]);
 
   /**
    * Toggles the visibility state of the main tooltip.
@@ -271,7 +326,6 @@ export function Ecosystems() {
       )}
 
       <div className="graphcontainer pt5">
-        {/* COVERAGE */}
         <Coverage
           coverage={coverageData}
           infoOpen={infoShown.has("coverage")}
@@ -283,8 +337,6 @@ export function Ecosystems() {
           onClickGraph={clickOnGraph}
         />
 
-        {/* PROTECTED AREAS */}
-        {/*}
         <ProtectedAreas
           PAAreas={PAAreas}
           PATotalArea={PATotalArea}
@@ -294,9 +346,8 @@ export function Ecosystems() {
           toggleInfo={() => toggleInfo("pa")}
           texts={texts.pa}
           messages={messages.pa}
-          areaIdStr={areaIdStr}
+          areaIdStr={`${areaIdId}`}
         />
-        {*/}
 
         <StrategicEcosystems
           areaTypeId={areaTypeId}
