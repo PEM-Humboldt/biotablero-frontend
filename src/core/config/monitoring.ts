@@ -68,3 +68,6 @@ export const TERRITORY_STORY_YT_VID_MAX_AMOUNT = 6;
 export const TAG_NAME_MAX_LENGTH = 40;
 export const TAG_URL_MAX_LENGTH = 150;
 export const TAG_RECORDS_PER_PAGE = 20;
+
+// Resources
+export const RESOURCES_MAX_ITEMS_EDIT_LIST = 10;

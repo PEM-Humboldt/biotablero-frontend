@@ -3,6 +3,7 @@ import type {
   ODataResourceType,
 } from "pages/monitoring/types/odataResponse";
 import { monitoringAPI } from "pages/monitoring/api/core";
+import { createODataGetter } from "../oDataGetter";
 
 export function getResourcesType() {
   const res = monitoringAPI<ODataResourceType>({
@@ -13,27 +14,5 @@ export function getResourcesType() {
   return res;
 }
 
-export function getEditableResourcesByUser(
-  username?: string,
-  initiativesAsLeader?: number[],
-) {
-  const filters: string[] = [];
-
-  if (username) {
-    filters.push(`authorUserName eq '${username}'`);
-  }
-
-  if (initiativesAsLeader && initiativesAsLeader.length > 0) {
-    filters.push(`initiativeId in (${initiativesAsLeader.join(",")})`);
-  }
-
-  const res = monitoringAPI<ODataMonitoringResources>({
-    type: "get",
-    endpoint: "Resource",
-    options: {
-      oData: { filter: filters.join(" or ") },
-    },
-  });
-
-  return res;
-}
+export const getEditableResourcesByUser =
+  createODataGetter<ODataMonitoringResources>("Resource");

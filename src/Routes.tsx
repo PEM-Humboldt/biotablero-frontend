@@ -13,7 +13,7 @@ import { InitiativesAdmin } from "pages/monitoring/outlets/InitiativesAdmin";
 import { InitiativesManagement } from "pages/monitoring/outlets/InitiativesManagement";
 import { TagsAdmin } from "pages/monitoring/outlets/TagsAdmin";
 import { MonitoringResources } from "pages/monitoring/outlets/MonitoringResources";
-import { ResourcesManager } from "pages/monitoring/outlets/resources/ResourcesManager";
+import { Manager as ResourcesManager } from "pages/monitoring/outlets/resources/Manager";
 
 export const routes = createBrowserRouter([
   {

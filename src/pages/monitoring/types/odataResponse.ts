@@ -153,6 +153,7 @@ export interface ResourceType extends HasId {
 
 export interface MonitoringResource extends HasId {
   initiativeId: number;
+  authorUserName: string;
   name: string;
   description: string;
   isDraft: boolean;
