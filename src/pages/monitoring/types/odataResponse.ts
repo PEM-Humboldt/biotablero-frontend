@@ -151,6 +151,23 @@ export interface ResourceType extends HasId {
   description: string;
 }
 
+export interface MonitoringResource extends HasId {
+  initiativeId: number;
+  name: string;
+  description: string;
+  isDraft: boolean;
+  likes: number;
+  iLikedIt?: boolean;
+  resourceType: ResourceType;
+  creationDate: string;
+  publicationDate: string;
+
+  // TODO: Confirmar el type
+  files: string[];
+  links: string[];
+  tags: string[];
+}
+
 export type ODataLog = ODataResponse<ODataLogEntryShort>;
 export type ODataInitiative = ODataResponse<ODataInitiativeShortEntry>;
 export type ODataUserRequest = ODataResponse<ODataInitiativeUserRequest>;
@@ -158,3 +175,4 @@ export type ODataUserInfo = ODataResponse<ODataUser>;
 export type ODataTerritoryStory = ODataResponse<TerritoryStoryShort>;
 export type ODataTagInfo = ODataResponse<ODataTag>;
 export type ODataResourceType = ODataResponse<ResourceType>;
+export type ODataMonitoringResources = ODataResponse<MonitoringResource>;
