@@ -1,4 +1,4 @@
-import { useEffect, useContext, useReducer } from "react";
+import { useEffect, useContext, useState } from "react";
 
 import SmallStackedBar, {
   SmallStackedBarData,
@@ -13,7 +13,7 @@ import {
 } from "pages/search/hooks/SearchContext";
 import { StrategicEcosystemsDistributionController } from "pages/search/dashboard/ecosystems/StrategicEcosystemsDistributionController";
 import { matchColor } from "pages/search/utils/matchColor";
-import { SEKey } from "pages/search/types/ecosystems";
+import { SEKey, SELabels } from "pages/search/types/ecosystems";
 import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
 
 interface Props {
@@ -21,77 +21,27 @@ interface Props {
   disableGraphClick?: boolean;
 }
 
-interface EcosystemsState {
-  distributionData: SmallStackedBarData[];
-  layers: RasterLayer[];
-  loading: boolean;
-  noData: boolean;
-}
-
-const initialState: EcosystemsState = {
-  distributionData: [],
-  layers: [],
-  loading: true,
-  noData: false,
-};
-
-type EcosystemsAction =
-  | { type: "DISTRIBUTION_VALUES_REQUESTED" }
-  | { type: "DISTRIBUTION_VALUES_SUCCEEDED"; payload: SmallStackedBarData[] }
-  | { type: "DISTRIBUTION_LAYERS_SUCCEEDED"; payload: RasterLayer[] }
-  | { type: "DISTRIBUTION_VALUES_FAILED" };
-
-function ecosystemsReducer(
-  state: EcosystemsState,
-  action: EcosystemsAction,
-): EcosystemsState {
-  switch (action.type) {
-    case "DISTRIBUTION_VALUES_REQUESTED":
-      return {
-        ...state,
-        loading: true,
-        noData: false,
-      };
-
-    case "DISTRIBUTION_VALUES_SUCCEEDED":
-      return {
-        ...state,
-        distributionData: action.payload,
-        loading: false,
-        noData: action.payload.length === 0,
-      };
-
-    case "DISTRIBUTION_LAYERS_SUCCEEDED":
-      return { ...state, layers: action.payload };
-
-    case "DISTRIBUTION_VALUES_FAILED":
-      return {
-        ...state,
-        loading: false,
-        noData: true,
-      };
-
-    default:
-      return state;
-  }
-}
-const controller = new StrategicEcosystemsDistributionController();
+type ChartStatus = "loading" | "ready" | "error";
 
 export function StrategicEcosystemsDistribution({
   SEType,
   disableGraphClick = false,
 }: Props) {
-  const [state, dispatch] = useReducer(ecosystemsReducer, initialState);
+  const [distributionData, setDistributionData] = useState<
+    SmallStackedBarData[]
+  >([]);
+  const [layers, setLayers] = useState<RasterLayer[]>([]);
+  const [chartStatus, setChartStatus] = useState<ChartStatus>("loading");
 
   const context = useContext(SearchLegacyCTX) as LegacyContextValues;
 
   const { areaType, areaId } = context;
-
-  const { distributionData, layers, loading, noData } = state;
+  const controller = new StrategicEcosystemsDistributionController();
+  const loading = chartStatus === "loading";
 
   const loadStatus: MessageWrapperType = loading
     ? "loading"
-    : noData
+    : chartStatus === "error" || distributionData.length === 0
       ? "no-data"
       : null;
 
@@ -115,42 +65,52 @@ export function StrategicEcosystemsDistribution({
     );
   };
 
+  const isCancelError = (error: unknown) =>
+    String(error).toLowerCase().includes("cancel");
+
   useEffect(() => {
-    dispatch({ type: "DISTRIBUTION_VALUES_REQUESTED" });
+    setChartStatus("loading");
+    setDistributionData([]);
+    setLayers([]);
     controller.setArea(areaTypeId, areaIdId);
 
     context.setRasterLayers([]);
     context.setLoadingLayer(true);
 
-    controller
-      .getStrategicEcosystemsDistributionValues(SEType)
-      .then((distributionDataRes) => {
-        controller
-          .getStrategicEcosystemsDistributionLayers(SEType)
-          .then((layersRes) => {
-            dispatch({
-              type: "DISTRIBUTION_LAYERS_SUCCEEDED",
-              payload: layersRes,
-            });
-            context.setRasterLayers(layersRes);
-            context.setLoadingLayer(false);
-            context.setMapTitle({ name: `Coberturas - ${SEType}` });
-          })
-          .catch((e) => {
-            context.setLoadingLayer(false);
-            if (!e.toString().includes("request canceled")) {
-              context.setLayerError?.(e.toString());
-            }
-          });
-        dispatch({
-          type: "DISTRIBUTION_VALUES_SUCCEEDED",
-          payload: distributionDataRes,
-        });
-      })
-      .catch(() => {
-        dispatch({ type: "DISTRIBUTION_VALUES_FAILED" });
+    const loadData = async () => {
+      try {
+        const distributionDataRes =
+          await controller.getStrategicEcosystemsDistributionValues(SEType);
+        setDistributionData(distributionDataRes);
+        setChartStatus("ready");
+      } catch (error) {
+        if (isCancelError(error)) {
+          return;
+        }
+        setDistributionData([]);
+        setChartStatus("error");
         context.setLoadingLayer(false);
-      });
+        return;
+      }
+
+      try {
+        const layersRes =
+          await controller.getStrategicEcosystemsDistributionLayers(SEType);
+        setLayers(layersRes);
+        context.setRasterLayers(layersRes);
+        context.setMapTitle({ name: `Coberturas - ${SELabels[SEType]}` });
+      } catch (error) {
+        if (!isCancelError(error)) {
+          context.setLayerError?.(
+            error instanceof Error ? error.message : String(error),
+          );
+        }
+      } finally {
+        context.setLoadingLayer(false);
+      }
+    };
+
+    void loadData();
 
     return () => {
       controller.cancelActiveRequests();
