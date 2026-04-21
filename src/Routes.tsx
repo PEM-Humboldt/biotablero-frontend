@@ -12,7 +12,7 @@ import { Logs } from "pages/monitoring/outlets/Logs";
 import { InitiativesAdmin } from "pages/monitoring/outlets/InitiativesAdmin";
 import { InitiativesManagement } from "pages/monitoring/outlets/InitiativesManagement";
 import { TagsAdmin } from "pages/monitoring/outlets/TagsAdmin";
-import { Resources } from "pages/monitoring/outlets/Resources";
+import { MonitoringResources } from "pages/monitoring/outlets/MonitoringResources";
 import { ResourcesManager } from "pages/monitoring/outlets/resources/ResourcesManager";
 
 export const routes = createBrowserRouter([
@@ -50,7 +50,7 @@ export const routes = createBrowserRouter([
                 path: "Admin",
               },
               {
-                Component: Resources,
+                Component: MonitoringResources,
                 path: ":resourceId?",
               },
             ],
