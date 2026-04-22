@@ -145,10 +145,21 @@ export interface TagInInitiative {
   tag: Omit<ODataTag, "categoryName">;
 }
 
-// NOTE: Recursos
+// NOTE: Recursos monitoreo
 export interface ResourceType extends HasId {
   name: string;
   description: string;
+}
+
+export interface ResourceAttachment extends HasId {
+  resourceId: number;
+  name: string;
+  url: string;
+}
+
+export interface ResourceTag {
+  resourceTagId: number;
+  tag: Omit<ODataTag, "categoryName">;
 }
 
 export interface MonitoringResource extends HasId {
@@ -162,11 +173,9 @@ export interface MonitoringResource extends HasId {
   resourceType: ResourceType;
   creationDate: string;
   publicationDate: string;
-
-  // TODO: Confirmar el type
-  files: string[];
-  links: string[];
-  tags: string[];
+  files: ResourceAttachment[];
+  links: ResourceAttachment[];
+  tags: ResourceTag[];
 }
 
 export type ODataLog = ODataResponse<ODataLogEntryShort>;

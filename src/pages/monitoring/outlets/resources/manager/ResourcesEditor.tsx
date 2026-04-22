@@ -3,6 +3,7 @@ import {
   type SetStateAction,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { SquarePen, Trash } from "lucide-react";
@@ -22,6 +23,7 @@ import { getEditableResourcesByUser } from "pages/monitoring/api/services/monito
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 import { RoleInInitiative } from "pages/monitoring/types/catalog";
+import { ResourceForm } from "./ResourceForm";
 
 export function ResourcesEditor({
   resourceType,
@@ -32,8 +34,8 @@ export function ResourcesEditor({
   const [errors, setErrors] = useState<string[]>([]);
   const [currentEdit, setCurrentEdit] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalResources, setTotalResources] = useState<number>(0);
   const [resources, setResources] = useState<MonitoringResource[]>([]);
+  const totalResources = useRef<number>(0);
   const { user } = useUserCTX();
   const { userInitiativesAs } = useUserInMonitoringCTX();
 
@@ -67,12 +69,17 @@ export function ResourcesEditor({
     }
 
     setResources(resourcesAvailable.value);
-    setTotalResources(resourcesAvailable["@odata.count"]);
+    totalResources.current = resourcesAvailable["@odata.count"];
     setIsLoading(false);
   }, [user, userInitiativesAs, currentPage, resourceType.id]);
 
   const removeResource = async (resourceId: number) => {
-    console.log(resourceId);
+    await new Promise((resolve) =>
+      setTimeout(() => {
+        console.log(resourceId);
+        resolve(true);
+      }, 500),
+    );
   };
 
   useEffect(() => {
@@ -97,11 +104,13 @@ export function ResourcesEditor({
           )}
           <TablePager
             currentPage={currentPage}
-            recordsAvailable={totalResources}
+            recordsAvailable={totalResources.current}
             onPageChange={setCurrentPage}
             recordsPerPage={RESOURCES_MAX_ITEMS_EDIT_LIST}
             paginated={3}
           />
+
+          <ResourceForm resource={null} currentSection={resourceType} />
         </div>
         <div>{resourceType.description}</div>
       </div>
