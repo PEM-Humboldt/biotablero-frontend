@@ -19,11 +19,15 @@ import type {
   MonitoringResource,
   ResourceType,
 } from "pages/monitoring/types/odataResponse";
-import { getEditableResourcesByUser } from "pages/monitoring/api/services/monitoringResources";
+import {
+  deleteResource,
+  getEditableResourcesByUser,
+} from "pages/monitoring/api/services/monitoringResources";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 import { RoleInInitiative } from "pages/monitoring/types/catalog";
-import { ResourceForm } from "./ResourceForm";
+import { DestructiveConfirmationDialog } from "@ui/DestructiveConfirmationDialog";
+import { toast } from "sonner";
 
 export function ResourcesEditor({
   resourceType,
@@ -38,6 +42,7 @@ export function ResourcesEditor({
   const totalResources = useRef<number>(0);
   const { user } = useUserCTX();
   const { userInitiativesAs } = useUserInMonitoringCTX();
+  const [helper, setHelper] = useState<string | null>(null);
 
   const fetchResources = useCallback(async () => {
     setIsLoading(true);
@@ -73,13 +78,21 @@ export function ResourcesEditor({
     setIsLoading(false);
   }, [user, userInitiativesAs, currentPage, resourceType.id]);
 
-  const removeResource = async (resourceId: number) => {
-    await new Promise((resolve) =>
-      setTimeout(() => {
-        console.log(resourceId);
-        resolve(true);
-      }, 500),
-    );
+  const removeResource = async (resourceId: number, resourceName: string) => {
+    const res = await deleteResource(resourceId);
+    if (isMonitoringAPIError(res)) {
+      setErrors(res.data.map((err) => err.msg));
+      return;
+    }
+
+    await fetchResources();
+    toast("Recurso eliminado", {
+      position: "bottom-right",
+      description: `El recurso de monitoreo '${resourceName}' fue eliminado exitosamente y ya no se encuentra disponible`,
+      icon: <Trash className="size-8 text-accent" />,
+      className: "px-6! gap-6! border-2! border-accent!",
+      duration: 3 * 1000,
+    });
   };
 
   useEffect(() => {
@@ -109,10 +122,10 @@ export function ResourcesEditor({
             recordsPerPage={RESOURCES_MAX_ITEMS_EDIT_LIST}
             paginated={3}
           />
-
-          <ResourceForm resource={null} currentSection={resourceType} />
         </div>
-        <div>{resourceType.description}</div>
+        <div>
+          {resourceType.description} / {helper ?? "nanai"}
+        </div>
       </div>
     </>
   );
@@ -125,7 +138,7 @@ function ResourcesListEditor({
 }: {
   resources: MonitoringResource[];
   setCurrentEdit: Dispatch<SetStateAction<number | null>>;
-  removeResource: (resourceId: number) => Promise<void>;
+  removeResource: (resourceId: number, resourceName: string) => Promise<void>;
 }) {
   const { user } = useUserCTX();
   const { userInitiativesById } = useUserInMonitoringCTX();
@@ -175,18 +188,26 @@ function ResourcesListEditor({
                     <SquarePen className="size-4" />
                   </span>
                 </Button>{" "}
-                <Button
-                  type="button"
-                  onClick={() => void removeResource(resource.id)}
-                  variant="ghost-clean"
-                  size="icon-sm"
-                  title="Borrar"
-                >
-                  <span className="sr-only">Borrar recurso</span>
-                  <span aria-hidden="true">
-                    <Trash className="size-4" />
-                  </span>
-                </Button>
+                <DestructiveConfirmationDialog
+                  texts={{
+                    trigger: {
+                      title: "Borrar",
+                      sr: "BorrarRecurso",
+                      label: "",
+                      icon: Trash,
+                    },
+                    dialog: {
+                      title: `¿Deseas eliminar el recurso '${resource.name}'?`,
+                      description:
+                        "Al eliminar este recurso todo su contenido será eliminado y dejará de estar disponible para todas las personas",
+                    },
+                  }}
+                  triggerBtnVariant="ghost-clean"
+                  triggerBtnSize="icon-sm"
+                  handler={() =>
+                    void removeResource(resource.id, resource.name)
+                  }
+                />
               </td>
             </tr>
           ))}

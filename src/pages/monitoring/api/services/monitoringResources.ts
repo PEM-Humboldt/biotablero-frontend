@@ -16,3 +16,12 @@ export function getResourcesType() {
 
 export const getEditableResourcesByUser =
   createODataGetter<ODataMonitoringResources>("Resource");
+
+export async function deleteResource(resourceId: number) {
+  const res = await monitoringAPI({
+    type: "delete",
+    endpoint: `Resource/${resourceId}`,
+  });
+
+  return res;
+}

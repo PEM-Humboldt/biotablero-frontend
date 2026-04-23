@@ -30,6 +30,7 @@ export type DestructiveConfirmationDialogProps = {
 export function DestructiveConfirmationDialog({
   texts,
   triggerBtnVariant,
+  triggerBtnSize,
   handler,
   isLoading,
   isDisabled,
@@ -38,8 +39,9 @@ export function DestructiveConfirmationDialog({
     <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button
-          variant={triggerBtnVariant}
+          variant={triggerBtnVariant ?? "default"}
           title={texts.trigger.title ?? texts.trigger.label}
+          size={triggerBtnSize ?? "default"}
           disabled={isDisabled || isLoading}
         >
           {isLoading && <Spinner />}
@@ -53,7 +55,7 @@ export function DestructiveConfirmationDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{texts.dialog.title}</AlertDialogTitle>
-          <AlertDialogDescription className="text-center mt-2 pt-2 border-t border-foreground/20">
+          <AlertDialogDescription className="text-left mt-2 pt-2 border-t border-foreground/20">
             {texts.dialog.description}
           </AlertDialogDescription>
         </AlertDialogHeader>
