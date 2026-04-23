@@ -7,10 +7,8 @@ import colorPalettes from "pages/search/utils/colorPalettes";
 
 import { RasterLayer } from "pages/search/types/layers";
 
-import {
-  SearchLegacyCTX,
-  LegacyContextValues,
-} from "pages/search/hooks/SearchContext";
+import { useSearchLegacyCTX } from "pages/search/hooks/SearchContext";
+
 import { StrategicEcosystemsDistributionController } from "pages/search/dashboard/ecosystems/StrategicEcosystemsDistributionController";
 import { matchColor } from "pages/search/utils/matchColor";
 import { SEKey, SELabels } from "pages/search/types/ecosystems";
@@ -33,9 +31,14 @@ export function StrategicEcosystemsDistribution({
   const [layers, setLayers] = useState<RasterLayer[]>([]);
   const [chartStatus, setChartStatus] = useState<ChartStatus>("loading");
 
-  const context = useContext(SearchLegacyCTX) as LegacyContextValues;
-
-  const { areaType, areaId } = context;
+  const {
+    areaType,
+    areaId,
+    setLoadingLayer,
+    setRasterLayers,
+    setMapTitle,
+    setLayerError,
+  } = useSearchLegacyCTX();
   const controller = new StrategicEcosystemsDistributionController();
   const loading = chartStatus === "loading";
 
@@ -46,7 +49,7 @@ export function StrategicEcosystemsDistribution({
       : null;
 
   if (!areaType || !areaId) {
-    context.setLoadingLayer(false);
+    setLoadingLayer(false);
     return;
   }
 
@@ -57,7 +60,7 @@ export function StrategicEcosystemsDistribution({
     if (disableGraphClick) {
       return;
     }
-    context.setRasterLayers(
+    setRasterLayers(
       layers.map((layer) => ({
         ...layer,
         selected: layer.id === selectedKey,
@@ -74,8 +77,8 @@ export function StrategicEcosystemsDistribution({
     setLayers([]);
     controller.setArea(areaTypeId, areaIdId);
 
-    context.setRasterLayers([]);
-    context.setLoadingLayer(true);
+    setRasterLayers([]);
+    setLoadingLayer(true);
 
     const loadData = async () => {
       try {
@@ -89,7 +92,7 @@ export function StrategicEcosystemsDistribution({
         }
         setDistributionData([]);
         setChartStatus("error");
-        context.setLoadingLayer(false);
+        setLoadingLayer(false);
         return;
       }
 
@@ -97,16 +100,16 @@ export function StrategicEcosystemsDistribution({
         const layersRes =
           await controller.getStrategicEcosystemsDistributionLayers(SEType);
         setLayers(layersRes);
-        context.setRasterLayers(layersRes);
-        context.setMapTitle({ name: `Coberturas - ${SELabels[SEType]}` });
+        setRasterLayers(layersRes);
+        setMapTitle({ name: `Coberturas - ${SELabels[SEType]}` });
       } catch (error) {
         if (!isCancelError(error)) {
-          context.setLayerError?.(
+          setLayerError?.(
             error instanceof Error ? error.message : String(error),
           );
         }
       } finally {
-        context.setLoadingLayer(false);
+        setLoadingLayer(false);
       }
     };
 

@@ -4,10 +4,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
 
-import {
-  SearchLegacyCTX,
-  LegacyContextValues,
-} from "pages/search/hooks/SearchContext";
+import { useSearchLegacyCTX } from "pages/search/hooks/SearchContext";
 
 import BackendAPI from "pages/search/api/backendAPI";
 import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
@@ -147,8 +144,16 @@ function ecosystemsReducer(
 const controller = new EcosystemsController();
 
 export function Ecosystems() {
-  const context = useContext(SearchLegacyCTX) as LegacyContextValues;
-  const { areaType, areaId, areaHa } = context;
+  const {
+    areaType,
+    areaId,
+    areaHa,
+    setLoadingLayer,
+    setRasterLayers,
+    setMapTitle,
+    setLayerError,
+    clearLayers,
+  } = useSearchLegacyCTX();
   const [hasActiveSE, setHasActiveSE] = useState(false);
 
   const [state, dispatch] = useReducer(ecosystemsReducer, initialState);
@@ -157,7 +162,7 @@ export function Ecosystems() {
     state;
 
   if (!areaType || !areaId) {
-    context.setLoadingLayer(false);
+    setLoadingLayer(false);
     return;
   }
 
@@ -167,7 +172,7 @@ export function Ecosystems() {
   useEffect(() => {
     controller.setArea(areaTypeId, areaIdId);
 
-    context.setLoadingLayer(true);
+    setLoadingLayer(true);
 
     controller
       .getCoverageValues()
@@ -176,14 +181,14 @@ export function Ecosystems() {
           .getCoveragesLayers()
           .then((layersRes) => {
             dispatch({ type: "COVERAGE_LAYERS_SUCCEEDED", payload: layersRes });
-            context.setRasterLayers(layersRes);
-            context.setLoadingLayer(false);
-            context.setMapTitle({ name: "Coberturas" });
+            setRasterLayers(layersRes);
+            setLoadingLayer(false);
+            setMapTitle({ name: "Coberturas" });
           })
           .catch((e) => {
-            context.setLoadingLayer(false);
+            setLoadingLayer(false);
             if (!e.toString().includes("request canceled")) {
-              context.setLayerError?.(e.toString());
+              setLayerError?.(e.toString());
             }
           });
         dispatch({
@@ -193,7 +198,7 @@ export function Ecosystems() {
       })
       .catch(() => {
         dispatch({ type: "COVERAGE_VALUES_FAILED" });
-        context.setLoadingLayer(false);
+        setLoadingLayer(false);
       });
 
     const TEXT_SECTIONS: TextSection[] = ["ecosystems", "coverage", "pa", "se"];
@@ -218,7 +223,7 @@ export function Ecosystems() {
     });
 
     return () => {
-      context.clearLayers();
+      clearLayers();
       controller.cancelActiveRequests();
     };
   }, [areaTypeId, areaIdId]);
@@ -241,7 +246,7 @@ export function Ecosystems() {
    *  @param {string} selectedKey Special Ecosystem type
    */
   const clickOnGraph = (selectedKey: string) => {
-    context.setRasterLayers(
+    setRasterLayers(
       layers.map((layer) => ({
         ...layer,
         selected: layer.id === selectedKey,
@@ -250,8 +255,8 @@ export function Ecosystems() {
   };
 
   const restoreCoverageLayers = () => {
-    context.setRasterLayers(layers);
-    context.setMapTitle({ name: "Coberturas" });
+    setRasterLayers(layers);
+    setMapTitle({ name: "Coberturas" });
   };
 
   return (
