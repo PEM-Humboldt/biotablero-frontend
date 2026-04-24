@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 
 import { Button } from "@ui/shadCN/component/button";
 import {
@@ -8,8 +8,8 @@ import {
   TabsList,
   TabsTrigger,
 } from "@ui/shadCN/component/tabs";
-import { useUserCTX } from "@hooks/UserContext";
 import { ErrorsList } from "@ui/LabelingWithErrors";
+import { LoadingDiv } from "@ui/LoadingDiv";
 
 import type { ResourceType } from "pages/monitoring/types/odataResponse";
 import { getResourcesType } from "pages/monitoring/api/services/monitoringResources";
@@ -20,15 +20,8 @@ export function Manager() {
   const [isLoading, setIsLoading] = useState(true);
   const [errors, setErrors] = useState<string[]>([]);
   const [resourcesType, setResourcesType] = useState<ResourceType[]>([]);
-  const { user } = useUserCTX();
-  const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user) {
-      void navigate("/Monitoreo/Recursos");
-      return;
-    }
-
     const fetchResourcesType = async () => {
       const res = await getResourcesType();
       setIsLoading(false);
@@ -42,10 +35,10 @@ export function Manager() {
     };
 
     void fetchResourcesType();
-  }, [user, navigate]);
+  }, []);
 
   return isLoading ? (
-    <div>Cargando...</div>
+    <LoadingDiv className="text-center bg-background" />
   ) : (
     <main className="page-main">
       <ErrorsList errorItems={errors} />
@@ -77,10 +70,7 @@ export function Manager() {
               key={`content_${resourceType.name}`}
               className="tabs-content"
             >
-              <div className="p-4 space-y-4">
-                <div>{resourceType.description}</div>
-                <ResourcesEditor {...{ resourceType }} />
-              </div>
+              <ResourcesEditor {...{ resourceType }} />
             </TabsContent>
           ))}
         </Tabs>

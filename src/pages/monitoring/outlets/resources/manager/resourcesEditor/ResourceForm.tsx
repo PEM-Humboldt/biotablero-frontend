@@ -32,9 +32,6 @@ import {
 import TextareaAutosize from "react-textarea-autosize";
 import { cn } from "@ui/shadCN/lib/utils";
 import type { TagData } from "pages/monitoring/types/initiative";
-import { ResourceTagSelector } from "pages/monitoring/outlets/resources/manager/ResourceTagSelector";
-import { resourceTagCategories } from "pages/monitoring/outlets/resources/manager/layout/tagCategories";
-import { text } from "stream/consumers";
 
 type MonirotingResourceForm = {
   initiativeId: number | null;
