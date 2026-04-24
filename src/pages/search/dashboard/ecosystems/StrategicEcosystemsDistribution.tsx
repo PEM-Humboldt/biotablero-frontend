@@ -36,6 +36,7 @@ export function StrategicEcosystemsDistribution({
     areaId,
     setLoadingLayer,
     setRasterLayers,
+    setShowAreaLayer,
     setMapTitle,
     setLayerError,
   } = useSearchLegacyCTX();
@@ -80,6 +81,7 @@ export function StrategicEcosystemsDistribution({
     setLayers([]);
     controller.setArea(areaTypeId, areaIdId);
 
+    setShowAreaLayer(true);
     setRasterLayers([]);
     setLoadingLayer(true);
 
