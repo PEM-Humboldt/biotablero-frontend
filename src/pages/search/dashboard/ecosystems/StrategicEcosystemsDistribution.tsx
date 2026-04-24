@@ -1,4 +1,4 @@
-import { useEffect, useContext, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import SmallStackedBar, {
   SmallStackedBarData,
@@ -39,7 +39,10 @@ export function StrategicEcosystemsDistribution({
     setMapTitle,
     setLayerError,
   } = useSearchLegacyCTX();
-  const controller = new StrategicEcosystemsDistributionController();
+
+  const controllerRef = useRef(new StrategicEcosystemsDistributionController());
+
+  const controller = controllerRef.current;
   const loading = chartStatus === "loading";
 
   const loadStatus: MessageWrapperType = loading
