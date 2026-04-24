@@ -76,9 +76,10 @@ export class EcosystemsController {
           .replace(/\s|_/g, "") === "noprotegida";
 
       const hasNoProtected = items.some((item) => isNoProtected(item.key));
-      const PATotalArea = items
-        .filter((item) => !isNoProtected(item.key))
-        .reduce((acc, item) => acc + item.area, 0);
+      const PATotalArea = items.reduce(
+        (acc, item) => (isNoProtected(item.key) ? acc : acc + item.area),
+        0,
+      );
 
       if (!hasNoProtected) {
         const noProtectedArea = Math.max(totalArea - PATotalArea, 0);

@@ -140,9 +140,10 @@ function ecosystemsReducer(
       return {
         ...state,
         PAAreas: action.payload,
-        PATotalArea: action.payload
-          .filter((item) => !isNoProtected(item.key))
-          .reduce((acc, item) => acc + item.area, 0),
+        PATotalArea: action.payload.reduce(
+          (acc, item) => (isNoProtected(item.key) ? acc : acc + item.area),
+          0,
+        ),
         PADivergentData: action.payload.some(
           (item) => item.percentage > 0 && item.percentage < 0.01,
         ),
@@ -204,15 +205,15 @@ export function Ecosystems() {
     texts,
   } = state;
 
-  if (!areaType || !areaId) {
-    setLoadingLayer(false);
-    return;
-  }
-
-  const areaTypeId = areaType.id;
-  const areaIdId = areaId.id;
+  const areaTypeId = areaType?.id;
+  const areaIdId = areaId?.id;
 
   useEffect(() => {
+    if (!areaTypeId || !areaIdId) {
+      setLoadingLayer(false);
+      return;
+    }
+
     controller.setArea(areaTypeId, areaIdId);
 
     setLoadingLayer(true);
@@ -282,6 +283,10 @@ export function Ecosystems() {
       controller.cancelActiveRequests();
     };
   }, [areaTypeId, areaIdId, areaHa]);
+
+  if (!areaType || !areaId) {
+    return null;
+  }
 
   /**
    * Toggles the visibility state of the main tooltip.
@@ -355,8 +360,8 @@ export function Ecosystems() {
         />
 
         <StrategicEcosystems
-          areaTypeId={areaTypeId}
-          areaIdId={areaIdId}
+          areaTypeId={areaTypeId!}
+          areaIdId={areaIdId!}
           areaHa={areaHa!}
           texts={texts.se}
           onActiveSEChange={setHasActiveSE}
