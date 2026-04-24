@@ -72,9 +72,6 @@ export function StrategicEcosystemsDistribution({
     );
   };
 
-  const isCancelError = (error: unknown) =>
-    String(error).toLowerCase().includes("cancel");
-
   useEffect(() => {
     setChartStatus("loading");
     setDistributionData([]);
@@ -101,16 +98,14 @@ export function StrategicEcosystemsDistribution({
           })
           .catch((error) => {
             setLoadingLayer(false);
-            if (!isCancelError(error)) {
-              setLayerError?.(
-                error instanceof Error ? error.message : String(error),
-              );
+            if (!error.toString().includes("request canceled")) {
+              setLayerError?.(error.toString());
             }
           });
       })
       .catch((error) => {
-        if (isCancelError(error)) {
-          return;
+        if (!error.toString().includes("request canceled")) {
+          setLayerError?.(error.toString());
         }
         setDistributionData([]);
         setChartStatus("error");
