@@ -44,13 +44,13 @@ export function StrategicEcosystemsDistribution({
   const controllerRef = useRef(new StrategicEcosystemsDistributionController());
 
   const controller = controllerRef.current;
-  const loading = chartStatus === "loading";
+  let loadStatus: MessageWrapperType = null;
 
-  const loadStatus: MessageWrapperType = loading
-    ? "loading"
-    : chartStatus === "error" || distributionData.length === 0
-      ? "no-data"
-      : null;
+  if (chartStatus === "loading") {
+    loadStatus = "loading";
+  } else if (chartStatus === "error" || distributionData.length === 0) {
+    loadStatus = "no-data";
+  }
 
   if (!areaType || !areaId) {
     setLoadingLayer(false);
