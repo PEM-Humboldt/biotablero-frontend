@@ -85,40 +85,37 @@ export function StrategicEcosystemsDistribution({
     setRasterLayers([]);
     setLoadingLayer(true);
 
-    const loadData = async () => {
-      try {
-        const distributionDataRes =
-          await controller.getStrategicEcosystemsDistributionValues(SEType);
+    controller
+      .getStrategicEcosystemsDistributionValues(SEType)
+      .then((distributionDataRes) => {
         setDistributionData(distributionDataRes);
         setChartStatus("ready");
-      } catch (error) {
+
+        controller
+          .getStrategicEcosystemsDistributionLayers(SEType)
+          .then((layersRes) => {
+            setLayers(layersRes);
+            setRasterLayers(layersRes);
+            setMapTitle({ name: `Coberturas - ${SELabels[SEType]}` });
+            setLoadingLayer(false);
+          })
+          .catch((error) => {
+            setLoadingLayer(false);
+            if (!isCancelError(error)) {
+              setLayerError?.(
+                error instanceof Error ? error.message : String(error),
+              );
+            }
+          });
+      })
+      .catch((error) => {
         if (isCancelError(error)) {
           return;
         }
         setDistributionData([]);
         setChartStatus("error");
         setLoadingLayer(false);
-        return;
-      }
-
-      try {
-        const layersRes =
-          await controller.getStrategicEcosystemsDistributionLayers(SEType);
-        setLayers(layersRes);
-        setRasterLayers(layersRes);
-        setMapTitle({ name: `Coberturas - ${SELabels[SEType]}` });
-      } catch (error) {
-        if (!isCancelError(error)) {
-          setLayerError?.(
-            error instanceof Error ? error.message : String(error),
-          );
-        }
-      } finally {
-        setLoadingLayer(false);
-      }
-    };
-
-    void loadData();
+      });
 
     return () => {
       controller.cancelActiveRequests();
