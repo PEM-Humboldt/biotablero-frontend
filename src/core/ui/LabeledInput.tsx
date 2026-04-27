@@ -24,7 +24,7 @@ interface LabeledInputProps
   required?: boolean;
   texts: { label?: string; sr?: string; placeholder?: string };
   state: string;
-  stateSetter: Dispatch<SetStateAction<string>>;
+  stateSetter: (value: string) => void;
   validator?: () => Promise<void>;
   validationErrors: string[];
 }

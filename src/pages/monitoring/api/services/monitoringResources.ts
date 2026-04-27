@@ -1,14 +1,24 @@
 import type {
+  MonitoringResource,
   ODataMonitoringResources,
   ODataResourceType,
 } from "pages/monitoring/types/odataResponse";
 import { monitoringAPI } from "pages/monitoring/api/core";
-import { createODataGetter } from "../oDataGetter";
+import { createODataGetter } from "pages/monitoring/api/oDataGetter";
 
-export function getResourcesType() {
+export async function getResourcesType() {
   const res = monitoringAPI<ODataResourceType>({
     type: "get",
     endpoint: "ResourceType",
+  });
+
+  return res;
+}
+
+export async function getResource(resourceId: number) {
+  const res = await monitoringAPI<MonitoringResource>({
+    type: "get",
+    endpoint: `Resource/${resourceId}`,
   });
 
   return res;

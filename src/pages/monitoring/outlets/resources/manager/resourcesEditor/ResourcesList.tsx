@@ -5,17 +5,22 @@ import { Button } from "@ui/shadCN/component/button";
 import { useUserCTX } from "@hooks/UserContext";
 import { DestructiveConfirmationDialog } from "@ui/DestructiveConfirmationDialog";
 
-import type { MonitoringResource } from "pages/monitoring/types/odataResponse";
+import type {
+  MonitoringResource,
+  ResourceType,
+} from "pages/monitoring/types/odataResponse";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 
 export function ResourcesList({
   resources,
   setEditResource,
   removeResource,
+  resourceType,
 }: {
   resources: MonitoringResource[];
   setEditResource: Dispatch<SetStateAction<number | null>>;
   removeResource: (resourceId: number, resourceName: string) => Promise<void>;
+  resourceType: ResourceType;
 }) {
   const { user } = useUserCTX();
   const { userInitiativesById } = useUserInMonitoringCTX();
@@ -25,8 +30,7 @@ export function ResourcesList({
       <div className="table-form-display-container ">
         <table className="table-form-display py-0!">
           <caption className="sr-only">
-            Recursos sobre {resources[0].resourceType.name} que puedes
-            administrar
+            Recursos sobre {resourceType.name} que puedes administrar
           </caption>
 
           <thead>
@@ -49,7 +53,9 @@ export function ResourcesList({
                     ? ` por ${resource.authorUserName}`
                     : ""}
                 </td>
-                <td>{userInitiativesById[resource.initiativeId].name}</td>
+                <td>
+                  {userInitiativesById[resource.initiativeId]?.name ?? ""}
+                </td>
                 <td className="table-form-actions">
                   <Button
                     type="button"
@@ -90,7 +96,7 @@ export function ResourcesList({
         </table>
       </div>
 
-      <div>{resources[0].resourceType.description}</div>
+      <div>resourceType.description</div>
     </div>
   );
 }

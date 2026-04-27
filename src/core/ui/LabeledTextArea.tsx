@@ -13,7 +13,7 @@ interface LabeledTextAreaProps extends TextareaAutosizeProps {
   required?: boolean;
   texts: { label?: string; sr?: string; helper?: string; placeholder?: string };
   state: string;
-  stateSetter: Dispatch<SetStateAction<string>>;
+  stateSetter: (value: string) => void;
   validator?: () => Promise<void>;
   validationErrors: string[];
 }
@@ -73,7 +73,7 @@ export function LabeledTextArea({
           onChange={(e) => stateSetter(e.target.value)}
           onBlur={() => void validator?.()}
           maxLength={inputMaxLength}
-          aria-invalid={hasErrors !== undefined}
+          aria-invalid={hasErrors}
           aria-required={required}
           aria-describedby={hasErrors ? errId : undefined}
         />

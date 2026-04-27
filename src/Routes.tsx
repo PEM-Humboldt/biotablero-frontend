@@ -48,6 +48,11 @@ export const routes = createBrowserRouter([
               {
                 Component: ResourcesManager,
                 path: "Admin",
+                loader: () =>
+                  checkNLoad({
+                    requirements: { roles: ["User"] },
+                    redirectPath: "/Monitoreo/Recursos",
+                  }),
               },
               {
                 Component: MonitoringResources,

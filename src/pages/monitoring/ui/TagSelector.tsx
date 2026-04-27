@@ -92,7 +92,7 @@ export function TagSelector<T extends { tag: Omit<ODataTag, "categoryName"> }>({
   managerTitle,
   tagCategoryId,
   fixedSearchParams,
-  selectedTags,
+  selectedTags = [],
   onTagsChange,
   maxTagsAmount,
   texts,

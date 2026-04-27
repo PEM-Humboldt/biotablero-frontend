@@ -70,7 +70,7 @@ export function Manager() {
               key={`content_${resourceType.name}`}
               className="tabs-content"
             >
-              <ResourcesEditor {...{ resourceType }} />
+              <ResourcesEditor resourceType={resourceType} />
             </TabsContent>
           ))}
         </Tabs>
