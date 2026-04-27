@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { ComponentType, useCallback, useMemo, useRef, useState } from "react";
 import { CirclePlus, XIcon } from "lucide-react";
 
 import { ComboboxOData } from "@ui/ComboboxOData";
@@ -31,6 +31,16 @@ interface TagSelectorProps<T> {
   };
 }
 
+const MemoizedTagSelector = typedMemo(TagSelector);
+
+/**
+ * A stability-optimized wrapper for the `TagSelector` component.
+ * It intercepts incoming props and ensures referential identity.
+ * This prevents unnecessary re-renders when the `TagSelector` is used alongside
+ * other tags selectors that share the same datasource endpoint
+ *
+ * @param props - The standard {@link TagSelectorProps} to be stabilized and passed down.
+ */
 export function StableTagSelector<
   T extends { tag: Omit<ODataTag, "categoryName"> },
 >(props: TagSelectorProps<T>) {
@@ -46,7 +56,7 @@ export function StableTagSelector<
   }, []);
 
   return (
-    <TagSelector
+    <MemoizedTagSelector
       {...props}
       fixedSearchParams={stableSearchParams}
       selectedTags={stableSelectedTags}
@@ -57,9 +67,28 @@ export function StableTagSelector<
   );
 }
 
-export const TagSelector = typedMemo(function TagSelectorInner<
-  T extends { tag: Omit<ODataTag, "categoryName"> },
->({
+/**
+ * A component for managing and selecting tags linked to specific categories and entities.
+ * It provides a UI for viewing active tags and searching for new ones via an OData-backed
+ * combobox.
+ *
+ * @remarks
+ * **Implementation Notes:**
+ * - use the `apiUpdaters` when immediate server-side updates are required without submit.
+ * - Use {@link StableTagSelector} if this component is used alongside other selectors or within a parent that re-renders frequently to ensure referential stability.
+ *
+ * @param managerTitle - The descriptive label for the tag management section.
+ * @param tagCategoryId - The OData category ID used to filter available tags.
+ * @param fixedSearchParams - Static parameters applied to the OData search query.
+ * @param selectedTags - An array of currently selected tags or tag-relation objects.
+ * @param onTagsChange - Callback function triggered when tags are added or removed.
+ * @param maxTagsAmount - The maximum number of tags allowed in the selection.
+ * @param texts - Localized strings for combobox placeholders and triggers.
+ * @param relatedId - The ID of the parent entity for API-driven tag updates.
+ * @param parentRelationKey - The property name in type `T` that stores the relation ID.
+ * @param apiUpdaters - Optional async methods for handling add/remove operations on the server.
+ */
+export function TagSelector<T extends { tag: Omit<ODataTag, "categoryName"> }>({
   managerTitle,
   tagCategoryId,
   fixedSearchParams,
@@ -228,4 +257,4 @@ export const TagSelector = typedMemo(function TagSelectorInner<
       )}
     </div>
   );
-});
+}

@@ -80,7 +80,7 @@ export function TagsManager({
         {initiativeTagCategories.map((tagGroup) => {
           const tagCategoryId = tagGroup.tagCategoryId;
           return (
-            <StableTagSelector<TagInInitiative>
+            <StableTagSelector
               key={`tag_manager_${tagCategoryId}`}
               managerTitle={tagGroup.title}
               tagCategoryId={tagCategoryId}
