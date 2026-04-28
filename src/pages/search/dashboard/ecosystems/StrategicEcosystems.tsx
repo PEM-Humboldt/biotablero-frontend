@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useRef } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InfoIcon from "@mui/icons-material/Info";
 
@@ -99,7 +99,8 @@ export function StrategicEcosystems({
   const { SEAreas, SETotalArea, loading, noData, showInfoGraph, activeSE } =
     state;
 
-  const controller = new StrategicEcosystemsController();
+  const controllerRef = useRef(new StrategicEcosystemsController());
+  const controller = controllerRef.current;
 
   useEffect(() => {
     controller.setArea(areaTypeId, areaIdId);
@@ -115,7 +116,7 @@ export function StrategicEcosystems({
       .catch(() => {
         dispatch({ type: "LOAD_FAIL" });
       });
-  }, [areaTypeId, areaIdId, areaHa]);
+  }, [areaTypeId, areaIdId, areaHa, controller]);
 
   useEffect(() => {
     onActiveSEChange?.(Boolean(activeSE));

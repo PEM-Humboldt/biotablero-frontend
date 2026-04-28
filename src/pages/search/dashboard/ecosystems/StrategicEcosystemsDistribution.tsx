@@ -52,13 +52,8 @@ export function StrategicEcosystemsDistribution({
     loadStatus = "no-data";
   }
 
-  if (!areaType || !areaId) {
-    setLoadingLayer(false);
-    return;
-  }
-
-  const areaTypeId = areaType.id;
-  const areaIdId = areaId.id;
+  const areaTypeId = areaType?.id;
+  const areaIdId = areaId?.id;
 
   const clickOnGraph = (selectedKey: string) => {
     if (disableGraphClick) {
@@ -73,49 +68,63 @@ export function StrategicEcosystemsDistribution({
   };
 
   useEffect(() => {
-    setChartStatus("loading");
-    setDistributionData([]);
-    setLayers([]);
-    controller.setArea(areaTypeId, areaIdId);
+    let isCurrent = true;
 
-    setShowAreaLayer(true);
-    setRasterLayers([]);
-    setLoadingLayer(true);
+    if (!areaTypeId || !areaIdId) {
+      setLoadingLayer(false);
+      return () => {
+        isCurrent = false;
+        controller.cancelActiveRequests();
+      };
+    }
 
-    controller
-      .getStrategicEcosystemsDistributionValues(SEType)
-      .then((distributionDataRes) => {
+    const loadData = async () => {
+      setChartStatus("loading");
+      setDistributionData([]);
+      setLayers([]);
+      controller.setArea(areaTypeId, areaIdId);
+
+      setShowAreaLayer(true);
+      setRasterLayers([]);
+      setLoadingLayer(true);
+
+      try {
+        const distributionDataRes =
+          await controller.getStrategicEcosystemsDistributionValues(SEType);
+
+        if (!isCurrent) return;
         setDistributionData(distributionDataRes);
         setChartStatus("ready");
 
-        controller
-          .getStrategicEcosystemsDistributionLayers(SEType)
-          .then((layersRes) => {
-            setLayers(layersRes);
-            setRasterLayers(layersRes);
-            setMapTitle({ name: `Coberturas - ${SELabels[SEType]}` });
-            setLoadingLayer(false);
-          })
-          .catch((error) => {
-            setLoadingLayer(false);
-            if (!error.toString().includes("request canceled")) {
-              setLayerError?.(error.toString());
-            }
-          });
-      })
-      .catch((error) => {
-        if (!error.toString().includes("request canceled")) {
-          setLayerError?.(error.toString());
+        const layersRes =
+          await controller.getStrategicEcosystemsDistributionLayers(SEType);
+
+        if (!isCurrent) return;
+        setLayers(layersRes);
+        setRasterLayers(layersRes);
+        setMapTitle({ name: `Coberturas - ${SELabels[SEType]}` });
+        setLoadingLayer(false);
+      } catch (error) {
+        if (!isCurrent) return;
+
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        if (!errorMessage.includes("request canceled")) {
+          setLayerError?.(errorMessage);
         }
         setDistributionData([]);
         setChartStatus("error");
         setLoadingLayer(false);
-      });
+      }
+    };
+
+    loadData();
 
     return () => {
+      isCurrent = false;
       controller.cancelActiveRequests();
     };
-  }, [areaTypeId, areaIdId, SEType]);
+  }, [areaTypeId, areaIdId, SEType, controller]);
 
   return (
     <>
