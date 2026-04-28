@@ -6,6 +6,7 @@ import TextBoxes from "@ui/TextBoxes";
 import { matchColor } from "pages/search/utils/matchColor";
 import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { formatNumber } from "@utils/format";
+import colorPalettes from "pages/search/utils/colorPalettes";
 
 /**
  * Calculate percentage for a given value according to total
@@ -53,6 +54,8 @@ export function ProtectedAreas({
   messages,
   areaIdStr,
 }: Props) {
+  const paColor = matchColor("pa", true);
+
   return (
     <>
       <h4>
@@ -61,12 +64,12 @@ export function ProtectedAreas({
 
       <IconTooltip title="Interpretación">
         <InfoIcon
-          className={`downSpecial${infoOpen ? " activeBox" : ""}`}
+          className={`metrics-info-icon${infoOpen ? " activeBox" : ""}`}
           onClick={toggleInfo}
         />
       </IconTooltip>
 
-      <h5>{`${getPercentage(PATotalArea, areaHa)} %`}</h5>
+      <h5 className="pa-percentage">{`${getPercentage(PATotalArea, areaHa)} %`}</h5>
 
       {infoOpen && (
         <ShortInfo
@@ -82,7 +85,7 @@ export function ProtectedAreas({
           loadStatus={messages}
           data={PAAreas}
           units="ha"
-          colors={matchColor("pa", true)}
+          colors={(key: string) => paColor(key) || colorPalettes.default[0]}
           scaleType={PADivergentData ? "symlog" : "linear"}
         />
       </div>

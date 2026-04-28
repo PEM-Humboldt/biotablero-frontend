@@ -57,7 +57,7 @@ export function Coverage({
           <span className="iconWrapper">
             <InfoIcon
               fontSize="medium"
-              className={`ecoest-info-icon${infoOpen ? " activeBox" : ""}`}
+              className={`metrics-info-icon${infoOpen ? " activeBox" : ""}`}
               onClick={toggleInfo}
             />
           </span>

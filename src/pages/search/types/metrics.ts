@@ -35,6 +35,7 @@ export type MetricTypesMap = {
     "id",
     "Natural" | "Secundaria" | "Transformada"
   >;
+  protectedAreas: MetricDataStructure<"id", string>;
 };
 
 export type MetricsTypes = keyof MetricTypesMap;

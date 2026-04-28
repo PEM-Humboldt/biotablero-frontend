@@ -4,6 +4,7 @@ import { RasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import { transformCoverageValues } from "pages/search/dashboard/ecosystems/transformData";
+import { SmallStackedBarData } from "@composites/charts/SmallStackedBar";
 
 /**
  * Controller for Ecosystems Component
@@ -45,6 +46,56 @@ export class EcosystemsController {
         ),
       );
       return transformCoverageValues(res);
+    });
+  }
+
+  /**
+   * Get the protected areas values for the current area
+   *
+   * @returns { Promise<SmallStackedBarData[]>}
+   */
+  getProtectedAreasValues(totalArea: number): Promise<SmallStackedBarData[]> {
+    return SearchAPI.requestMetricsValues<"protectedAreas">(
+      "protectedAreas",
+      this.areaId,
+    ).then((response) => {
+      const { id, ...rawValues } = response;
+      const items = Object.entries(rawValues)
+        .filter(([, value]) => value > 0)
+        .map(([key, area]) => ({
+          key,
+          label: key,
+          area,
+        }));
+
+      const isNoProtected = (value: string) =>
+        value
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/\s|_/g, "") === "noprotegida";
+
+      const hasNoProtected = items.some((item) => isNoProtected(item.key));
+      const PATotalArea = items.reduce(
+        (acc, item) => (isNoProtected(item.key) ? acc : acc + item.area),
+        0,
+      );
+
+      if (!hasNoProtected) {
+        const noProtectedArea = Math.max(totalArea - PATotalArea, 0);
+        items.push({
+          area: noProtectedArea,
+          label: "No Protegida",
+          key: "No Protegida",
+        });
+      }
+
+      const PAAreas: SmallStackedBarData[] = items.map((item) => ({
+        ...item,
+        percentage: totalArea > 0 ? item.area / totalArea : 0,
+      }));
+
+      return PAAreas;
     });
   }
 
