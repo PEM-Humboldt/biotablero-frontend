@@ -12,7 +12,7 @@ import type {
   ResourceType,
 } from "pages/monitoring/types/odataResponse";
 import {
-  deleteResource,
+  removeResource,
   getEditableResourcesByUser,
 } from "pages/monitoring/api/services/monitoringResources";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
@@ -77,7 +77,7 @@ export function ResourcesEditor({
   }, [fetchResources]);
 
   const removeResource = async (resourceId: number, resourceName: string) => {
-    const res = await deleteResource(resourceId);
+    const res = await removeResource(resourceId);
     if (isMonitoringAPIError(res)) {
       setErrors(res.data.map((err) => err.msg));
       return;
