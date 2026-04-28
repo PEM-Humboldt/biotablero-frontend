@@ -28,7 +28,6 @@ import {
 } from "@lexical/list";
 import { $isLinkNode, LinkNode } from "@lexical/link";
 import { type Transformer } from "@lexical/markdown";
-import { jsx } from "@emotion/react";
 
 const nodes = [HeadingNode, ListNode, ListItemNode, QuoteNode, LinkNode];
 

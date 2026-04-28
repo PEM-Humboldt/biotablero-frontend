@@ -1,8 +1,10 @@
 import { Button } from "@ui/shadCN/component/button";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import type { ResourceAttachment } from "pages/monitoring/types/odataResponse";
 import { PlusIcon, Trash } from "lucide-react";
 import { LabeledInput } from "@ui/LabeledInput";
+import { helperInfo } from "./layout/helperInfo";
+import { cn } from "@ui/shadCN/lib/utils";
 
 export function AttachmentInput({
   labelId,
@@ -13,6 +15,9 @@ export function AttachmentInput({
   descriptionMaxLength,
   contentMaxLength,
   text,
+  currentHelper,
+  helpers,
+  setHelper,
 }: {
   labelId: "files" | "links";
   inputType: "text" | "file";
@@ -25,6 +30,9 @@ export function AttachmentInput({
     resource: { label: string; sr?: string; placeholder: string };
   };
   contentMaxLength: number;
+  currentHelper: keyof typeof helperInfo | null;
+  helpers: (keyof typeof helperInfo)[];
+  setHelper: Dispatch<SetStateAction<keyof typeof helperInfo | null>>;
 }) {
   const [errors, setErrors] = useState<string[]>([]);
   const [description, setDescription] = useState("");
@@ -62,6 +70,10 @@ export function AttachmentInput({
   };
 
   const unifiedErrors = [...validationErrors, ...errors];
+  const accept =
+    currentHelper && helperInfo[currentHelper].type === "files"
+      ? helperInfo[currentHelper].fileType.join(", ")
+      : undefined;
 
   return (
     <div>
@@ -95,6 +107,22 @@ export function AttachmentInput({
             validationErrors={unifiedErrors}
           />
 
+          <div>
+            {helpers.map((helper) => (
+              <Button
+                key={helper}
+                type="button"
+                variant="link"
+                onClick={() =>
+                  setHelper((prv) => (prv === helper ? null : helper))
+                }
+                className={cn(helper === currentHelper ? "text-accent" : "")}
+              >
+                {helper}
+              </Button>
+            ))}
+          </div>
+
           {inputType === "text" ? (
             <LabeledInput
               inputName={`attachment_${inputType}`}
@@ -110,6 +138,7 @@ export function AttachmentInput({
               id={labelId}
               type="file"
               onChange={(e) => setContent(e.target.files?.[0] || null)}
+              // accept={accept}
             />
           )}
 
@@ -117,8 +146,16 @@ export function AttachmentInput({
             type="button"
             variant="outline"
             size="sm"
-            onClick={handleAdd}
-            disabled={!description || !content}
+            onClick={() => {
+              setHelper(null);
+              handleAdd();
+            }}
+            disabled={
+              !currentHelper ||
+              !helpers.includes(currentHelper) ||
+              !description ||
+              !content
+            }
             className="self-end"
           >
             <PlusIcon /> Agregar
