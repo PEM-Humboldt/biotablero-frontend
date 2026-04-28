@@ -1,4 +1,5 @@
 import { createRoot } from "react-dom/client";
+import { StrictMode } from "react";
 import ReactGA from "react-ga4";
 import { App } from "App";
 

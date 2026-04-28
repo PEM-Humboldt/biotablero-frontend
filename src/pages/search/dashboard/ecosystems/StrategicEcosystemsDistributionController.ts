@@ -4,13 +4,13 @@ import { RasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import { transformCoverageValues } from "pages/search/dashboard/ecosystems/transformData";
-import { SmallStackedBarData } from "@composites/charts/SmallStackedBar";
+import { SEKey } from "pages/search/types/ecosystems";
 
 /**
- * Controller for Ecosystems Component
+ * Controller for Strategic Ecosystems Distribution Component
  * @class
  */
-export class EcosystemsController {
+export class StrategicEcosystemsDistributionController {
   areaType: string = "";
   areaId: number = 0;
   activeRequests: Map<string, CancelTokenSource> = new Map();
@@ -29,15 +29,13 @@ export class EcosystemsController {
   }
 
   /**
-   * Get the coverage values for the current area
+   * Get the coverage values for strategic ecosystems of the current area
    *
    * @returns { Promise<SmallStackedBarData[]>}
    */
-  getCoverageValues() {
-    return SearchAPI.requestMetricsValues<"coverage">(
-      "coverage",
-      this.areaId,
-    ).then((res) => {
+  getStrategicEcosystemsDistributionValues(SEType: SEKey) {
+    const metricId = `coverage_${SEType}` as const;
+    return SearchAPI.requestMetricsValues(metricId, this.areaId).then((res) => {
       const { id, ...classes } = res;
       this.itemId = id;
       this.classes = new Set(
@@ -50,67 +48,19 @@ export class EcosystemsController {
   }
 
   /**
-   * Get the protected areas values for the current area
-   *
-   * @returns { Promise<SmallStackedBarData[]>}
-   */
-  getProtectedAreasValues(totalArea: number): Promise<SmallStackedBarData[]> {
-    return SearchAPI.requestMetricsValues<"protectedAreas">(
-      "protectedAreas",
-      this.areaId,
-    ).then((response) => {
-      const { id, ...rawValues } = response;
-      const items = Object.entries(rawValues)
-        .filter(([, value]) => value > 0)
-        .map(([key, area]) => ({
-          key,
-          label: key,
-          area,
-        }));
-
-      const isNoProtected = (value: string) =>
-        value
-          .toLowerCase()
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .replace(/\s|_/g, "") === "noprotegida";
-
-      const hasNoProtected = items.some((item) => isNoProtected(item.key));
-      const PATotalArea = items.reduce(
-        (acc, item) => (isNoProtected(item.key) ? acc : acc + item.area),
-        0,
-      );
-
-      if (!hasNoProtected) {
-        const noProtectedArea = Math.max(totalArea - PATotalArea, 0);
-        items.push({
-          area: noProtectedArea,
-          label: "No Protegida",
-          key: "No Protegida",
-        });
-      }
-
-      const PAAreas: SmallStackedBarData[] = items.map((item) => ({
-        ...item,
-        percentage: totalArea > 0 ? item.area / totalArea : 0,
-      }));
-
-      return PAAreas;
-    });
-  }
-
-  /**
-   * Get the coverage raster layers for the current area
+   * Get the coverage raster layers for strategic ecosystems of the current area
    *
    * @returns { Promise<Array<RasterLayer>> } layers for the classes in the current area
    */
-  async getCoveragesLayers(): Promise<Array<RasterLayer>> {
+  async getStrategicEcosystemsDistributionLayers(
+    SEType: SEKey,
+  ): Promise<Array<RasterLayer>> {
     if (this.areaId) {
       const requests: Array<Promise<{ layer: string }>> = [];
 
       this.classes.forEach((classId) => {
         const { request, source } = SearchAPI.requestMetricsLayer(
-          "coverage",
+          `coverage_${SEType}`,
           this.itemId,
           classId,
           Number(this.areaId),
@@ -163,45 +113,6 @@ export class EcosystemsController {
     }
     throw Error("Polygon and area undefined");
   }
-
-  // TODO: Refactor to use SearchAPI when available
-
-  /*
-  async getCoveragesSELayer(seType: string): Promise<Array<RasterLayer>> {
-    if (this.areaType && this.areaId) {
-      const requests: Array<Promise<any>> = [];
-      coverageKeys.forEach((category: string) => {
-        const { request, source } = BackendAPI.requestCoveragesSELayer(
-          this.areaType ?? "",
-          this.areaId ?? "",
-          category,
-          seType,
-        );
-        requests.push(request);
-        this.activeRequests.set(category, source);
-      });
-
-      const res = await Promise.all(requests);
-
-      coverageKeys.forEach((category) => {
-        this.activeRequests.delete(category);
-      });
-
-      if (res.includes("request canceled")) throw Error("request canceled");
-
-      return coverageKeys.map((category, idx) => ({
-        id: category,
-        data: `data:${res[idx].headers["content-type"]};base64, ${base64(
-          res[idx].data,
-        )}`,
-        selected: false,
-        paneLevel: 2,
-      }));
-    }
-
-    throw Error("Polygon and area undefined");
-  }
-  */
 
   /**
    * Send the cancel signal to all active requests and remove them from the map

@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useRef } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InfoIcon from "@mui/icons-material/Info";
 
@@ -20,12 +20,15 @@ import {
 import { matchColor } from "pages/search/utils/matchColor";
 import colorPalettes from "pages/search/utils/colorPalettes";
 
+import { StrategicEcosystemsDistribution } from "pages/search/dashboard/ecosystems/StrategicEcosystemsDistribution";
+
 type State = {
   SEAreas: SEData[];
   SETotalArea: number;
   loading: boolean;
   noData: boolean;
   showInfoGraph: boolean;
+  activeSE: string | null;
 };
 
 const initialState: State = {
@@ -34,13 +37,15 @@ const initialState: State = {
   loading: true,
   noData: false,
   showInfoGraph: false,
+  activeSE: null,
 };
 
 type Action =
   | { type: "LOAD_SUCCESS"; payload: SEData[] }
   | { type: "LOAD_FAIL" }
   | { type: "SET_ACTIVE"; payload: string }
-  | { type: "TOGGLE_INFO_GRAPH" };
+  | { type: "TOGGLE_INFO_GRAPH" }
+  | { type: "TOGGLE_DETAIL"; payload: string };
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -61,6 +66,12 @@ function reducer(state: State, action: Action): State {
         showInfoGraph: !state.showInfoGraph,
       };
 
+    case "TOGGLE_DETAIL":
+      return {
+        ...state,
+        activeSE: state.activeSE === action.payload ? null : action.payload,
+      };
+
     default:
       return state;
   }
@@ -71,6 +82,8 @@ interface Props {
   areaIdId: number;
   areaHa: number;
   texts: { info: string; cons: string; meto: string; quote: string };
+  onActiveSEChange?: (hasActiveSE: boolean) => void;
+  onSEDetailClose?: () => void;
 }
 
 export function StrategicEcosystems({
@@ -78,12 +91,16 @@ export function StrategicEcosystems({
   areaIdId,
   areaHa,
   texts,
+  onActiveSEChange,
+  onSEDetailClose,
 }: Props) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const { SEAreas, SETotalArea, loading, noData, showInfoGraph } = state;
+  const { SEAreas, SETotalArea, loading, noData, showInfoGraph, activeSE } =
+    state;
 
-  const controller = new StrategicEcosystemsController();
+  const controllerRef = useRef(new StrategicEcosystemsController());
+  const controller = controllerRef.current;
 
   useEffect(() => {
     controller.setArea(areaTypeId, areaIdId);
@@ -99,7 +116,11 @@ export function StrategicEcosystems({
       .catch(() => {
         dispatch({ type: "LOAD_FAIL" });
       });
-  }, [areaTypeId, areaIdId, areaHa]);
+  }, [areaTypeId, areaIdId, areaHa, controller]);
+
+  useEffect(() => {
+    onActiveSEChange?.(Boolean(activeSE));
+  }, [activeSE, onActiveSEChange]);
 
   const percentage = Number(
     (areaHa > 0 ? (SETotalArea * 100) / areaHa : 0).toFixed(2),
@@ -125,7 +146,7 @@ export function StrategicEcosystems({
           <span className="iconWrapper">
             <InfoIcon
               fontSize="medium"
-              className={`ecoest-info-icon${showInfoGraph ? " activeBox" : ""}`}
+              className={`metrics-info-icon${showInfoGraph ? " activeBox" : ""}`}
               onClick={toggleInfo}
             />
           </span>
@@ -168,7 +189,22 @@ export function StrategicEcosystems({
                 </div>
 
                 {hasArea && (
-                  <button className="rotate-false" type="button">
+                  <button
+                    className={`icongraph2 rotate-${
+                      activeSE === SEValues.type ? "false" : "true"
+                    }`}
+                    type="button"
+                    onClick={() => {
+                      const isClosingDetail = activeSE === SEValues.type;
+                      dispatch({
+                        type: "TOGGLE_DETAIL",
+                        payload: SEValues.type,
+                      });
+                      if (isClosingDetail) {
+                        onSEDetailClose?.();
+                      }
+                    }}
+                  >
                     <ExpandMoreIcon />
                   </button>
                 )}
@@ -181,6 +217,13 @@ export function StrategicEcosystems({
                     colors={(key) =>
                       matchColor("se")(key) || colorPalettes.default[0]
                     }
+                  />
+                )}
+
+                {hasArea && activeSE === SEValues.type && (
+                  <StrategicEcosystemsDistribution
+                    SEType={SEValues.type}
+                    disableGraphClick={showInfoGraph}
                   />
                 )}
               </div>
