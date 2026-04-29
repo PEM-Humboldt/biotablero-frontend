@@ -3,7 +3,7 @@ import { Point, ResponsiveLine } from "@nivo/line";
 import { CartesianMarkerProps } from "@nivo/core";
 
 import { formatNumber } from "@utils/format";
-import withMessageWrapper from "@composites/charts/withMessageWrapper";
+import { withMessageWrapper } from "@composites/charts/withMessageWrapper";
 
 interface LinesData {
   label: string;
@@ -34,12 +34,17 @@ interface Props {
   yMax?: number;
   height?: number;
   units?: string;
+  legendAnchor?: "top-left" | "top-right" | "bottom-left" | "bottom-right";
+  legendTranslateX?: number;
+  legendTranslateY?: number;
+  enableGridX?: boolean;
 }
 
 interface State {
   data: Array<LinesDataState>;
   labels: Record<string, string>;
   selectedId: string;
+  hiddenIds: Set<string>;
 }
 class Lines extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -48,6 +53,7 @@ class Lines extends React.Component<Props, State> {
       data: [],
       labels: {},
       selectedId: "",
+      hiddenIds: new Set(),
     };
   }
 
@@ -64,11 +70,37 @@ class Lines extends React.Component<Props, State> {
     });
   }
 
-  /**
-   * Organize customized tooltip for this graph
-   *
-   * @param {object} point datum selected in the graph
-   */
+  componentDidUpdate(prevProps: Props) {
+    if (
+      prevProps.data !== this.props.data ||
+      prevProps.colors !== this.props.colors
+    ) {
+      const { data, colors } = this.props;
+      const labels: Record<string, string> = {};
+      const newData = data.map((obj) => {
+        labels[obj.key] = obj.label;
+        return { id: obj.key, data: obj.data, color: colors(obj.key) };
+      });
+
+      this.setState((prevState) => {
+        const nextHiddenIds = new Set(
+          [...prevState.hiddenIds].filter((id) =>
+            newData.some((d) => d.id === id),
+          ),
+        );
+
+        return {
+          data: newData,
+          labels,
+          hiddenIds: nextHiddenIds,
+          selectedId: nextHiddenIds.has(prevState.selectedId)
+            ? ""
+            : prevState.selectedId,
+        };
+      });
+    }
+  }
+
   getToolTip = (point: Point) => {
     const {
       data: { xFormatted, yFormatted },
@@ -121,6 +153,21 @@ class Lines extends React.Component<Props, State> {
     onClickGraphHandler?.(id);
   };
 
+  toggleLineVisibility = (id: string) => {
+    this.setState((prevState) => {
+      const hiddenIds = new Set(prevState.hiddenIds);
+      if (hiddenIds.has(id)) hiddenIds.delete(id);
+      else hiddenIds.add(id);
+
+      return {
+        hiddenIds,
+        selectedId: hiddenIds.has(prevState.selectedId)
+          ? ""
+          : prevState.selectedId,
+      };
+    });
+  };
+
   render() {
     const {
       labelX,
@@ -130,16 +177,23 @@ class Lines extends React.Component<Props, State> {
       yMin = 0,
       yMax = 100,
       height = 490,
+      legendAnchor = "bottom-left",
+      legendTranslateX = -50,
+      legendTranslateY = 100,
+      enableGridX = true,
     } = this.props;
 
-    const { data, labels, selectedId } = this.state;
+    const { data, labels, selectedId, hiddenIds } = this.state;
 
     if (!data) return null;
+
+    const visibleData = data.filter((serie) => !hiddenIds.has(serie.id));
 
     return (
       <div style={{ height }}>
         <ResponsiveLine
-          data={data}
+          data={visibleData}
+          enableGridX={enableGridX}
           xScale={{ type: "point" }}
           yScale={{
             type: "linear",
@@ -152,7 +206,7 @@ class Lines extends React.Component<Props, State> {
             top: 50,
             left: 60,
             right: 20,
-            bottom: 100,
+            bottom: 50,
           }}
           curve="cardinal"
           axisBottom={{
@@ -188,27 +242,28 @@ class Lines extends React.Component<Props, State> {
           useMesh={true}
           legends={[
             {
-              anchor: "bottom-left",
+              anchor: legendAnchor,
               data: Object.keys(labels).map((id) => {
+                const isHidden = hiddenIds.has(id);
                 const color =
                   id === selectedId ? colors(`${id}Sel`) : colors(id);
                 return {
                   id,
                   label: labels[id],
-                  color,
+                  color: isHidden ? "#A9AEB6" : color,
                 };
               }),
               direction: "row",
               justify: false,
-              translateX: -50,
-              translateY: 100,
+              translateX: legendTranslateX,
+              translateY: legendTranslateY,
               itemsSpacing: 5,
               itemDirection: "left-to-right",
-              itemWidth: 105,
+              itemWidth: 120,
               itemHeight: 40,
-              itemOpacity: 0.75,
+              itemOpacity: 0.9,
               onClick: (datum) => {
-                this.selectLine(String(datum.id));
+                this.toggleLineVisibility(String(datum.id));
               },
               symbolSize: 12,
               symbolShape: "circle",
