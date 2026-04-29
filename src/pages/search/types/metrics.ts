@@ -36,6 +36,11 @@ export type MetricTypesMap = {
     "Natural" | "Secundaria" | "Transformada"
   >;
   protectedAreas: MetricDataStructure<"id", string>;
+  gap: Array<{
+    id: string | number;
+    bin_edges: number[];
+    histogram: number[];
+  }>;
 };
 
 export type MetricsTypes = keyof MetricTypesMap;
