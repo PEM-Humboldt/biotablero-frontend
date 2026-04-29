@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import BackIcon from "@mui/icons-material/FirstPage";
 import Ecosistemas from "@mui/icons-material/Nature";
 import Paisaje from "@mui/icons-material/FilterHdr";
+import Especies from "@mui/icons-material/FilterVintage";
 // NOTE: No consumido en esta implementación
 // import Especies from "@mui/icons-material/FilterVintage";
 
@@ -39,7 +40,7 @@ export function Dashboard({ goBackClick: handlerGoBack }: DashboardProps) {
         titles={[
           { label: "Ecosistemas", icon: <Ecosistemas /> },
           { label: "Paisaje", icon: <Paisaje /> },
-          // { label: "Especies", icon: <Especies />, showTab: false },
+          { label: "Especies", icon: <Especies /> },
         ]}
       >
         <div>
