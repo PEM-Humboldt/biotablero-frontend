@@ -2,6 +2,12 @@ import { resourceTypeInfo } from "pages/monitoring/outlets/resources/manager/res
 import { helperInfo } from "pages/monitoring/outlets/resources/manager/resourcesEditor/layout/helperInfo";
 import type { ResourceType } from "pages/monitoring/types/odataResponse";
 import { parseSimpleMarkdown } from "@utils/textParser";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@ui/shadCN/component/accordion";
 
 export function ResourceInfo({
   currentHelper,
@@ -36,6 +42,35 @@ export function ResourceInfo({
               headingsOffset: 3,
             },
           )}
+
+          {currentHelper &&
+            helperInfo[currentHelper].viewMore &&
+            helperInfo[currentHelper].viewMore.length > 0 && (
+              <div>
+                <Accordion
+                  type="single"
+                  collapsible
+                  className="flex flex-col gap-2 [&_h3]:m-0!"
+                >
+                  {helperInfo[currentHelper].viewMore.map((helpItem) => (
+                    <AccordionItem
+                      key={helpItem.title}
+                      value={helpItem.title}
+                      className="my-0!"
+                    >
+                      <AccordionTrigger className="underline text-primary font-normal">
+                        {helpItem.title}
+                      </AccordionTrigger>
+                      <AccordionContent className="py-4 overflow-hidden">
+                        {parseSimpleMarkdown(helpItem.mdText, {
+                          headingsOffset: 4,
+                        })}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </div>
+            )}
         </div>
       </div>
     </div>

@@ -1,6 +1,15 @@
 export const tosTexts = {
   title: "Términos de uso",
   description: "Términos para la carga de información y responsabilidades",
+  trigger: {
+    read: "Leer los términos para la carga de información",
+    readToAccept: "Aceptar los términos para la carga de información",
+  },
+  actionBtns: {
+    accept: "Acepto",
+    decline: "Rechazo",
+    cancel: "Cancelar",
+  },
   tos: `
 # Términos y Condiciones: Carga de Información por Terceros
 

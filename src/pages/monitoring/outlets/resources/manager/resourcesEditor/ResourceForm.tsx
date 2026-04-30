@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import { useNavigate } from "react-router";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Circle, CircleCheckBig, NotebookPen } from "lucide-react";
 import { toast } from "sonner";
 
@@ -10,32 +9,40 @@ import { Button } from "@ui/shadCN/component/button";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import { ErrorsList, LabelAndErrors } from "@ui/LabelingWithErrors";
 import { LabeledInput } from "@ui/LabeledInput";
+import { GotoButonInToast } from "@ui/GotoButtonInToast";
 import {
   NativeSelect,
   NativeSelectOption,
 } from "@ui/shadCN/component/native-select";
 import {
   RESOURCE_DESCRIPTION_MAX_LENGTH,
-  RESOURCE_MAX_FILES_AMOUNT,
-  RESOURCE_MAX_LINKS_AMOUNT,
   RESOURCE_NAME_MAX_LENGTH,
   RESOURCES_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS,
 } from "@config/monitoring";
 import { StrValidator } from "@utils/strValidator";
 
+import { resourceTagCategories } from "pages/monitoring/outlets/resources/manager/resourcesEditor/layout/tagCategories";
+import { AttachmentInput } from "pages/monitoring/outlets/resources/manager/resourcesEditor/ResourceAttachment";
+import type { TagData } from "pages/monitoring/types/initiative";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
+import { tosTexts } from "pages/monitoring/outlets/resources/manager/resourcesEditor/layout/tos";
+import { ResourceInfo } from "pages/monitoring/outlets/resources/manager/resourcesEditor/ResourceInfo";
+import { validationExemption } from "pages/monitoring/ui/initiativesAdmin/utils/fieldClientValidations";
+import { resourceNameNotExist } from "pages/monitoring/outlets/resources/manager/resourcesEditor/utils/validations";
+import type { RequestData } from "pages/monitoring/api/types/definitions";
+import { createErrorObjectParser } from "pages/monitoring/utils/errorObjectParser";
+import { getAttachmentDiff } from "pages/monitoring/outlets/resources/manager/resourcesEditor/utils/attachmentDiff";
+import type { MonirotingResourceForm } from "pages/monitoring/outlets/resources/manager/resourcesEditor/types/resources";
+import { setInitialInformation } from "pages/monitoring/outlets/resources/manager/resourcesEditor/utils/initialInformation";
 import type {
   ResourceTag,
   ResourceType,
 } from "pages/monitoring/types/odataResponse";
-import { resourceTagCategories } from "pages/monitoring/outlets/resources/manager/resourcesEditor/layout/tagCategories";
 import {
   isTagRelated,
   StableTagSelector,
 } from "pages/monitoring/ui/TagSelector";
-import { AttachmentInput } from "pages/monitoring/outlets/resources/manager/resourcesEditor/ResourceAttachment";
-import { helperInfo } from "pages/monitoring/outlets/resources/manager/resourcesEditor/layout/helperInfo";
-import type { TagData } from "pages/monitoring/types/initiative";
-import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import {
   addResourceFile,
   addResourceLink,
@@ -48,16 +55,8 @@ import {
   removeResourceTag,
   updateResource,
 } from "pages/monitoring/api/services/monitoringResources";
-import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
-import { tosTexts } from "pages/monitoring/outlets/resources/manager/resourcesEditor/layout/tos";
-import { ResourceInfo } from "pages/monitoring/outlets/resources/manager/resourcesEditor/ResourceInfo";
-import { validationExemption } from "pages/monitoring/ui/initiativesAdmin/utils/fieldClientValidations";
-import { resourceNameNotExist } from "pages/monitoring/outlets/resources/manager/resourcesEditor/utils/validations";
-import type { RequestData } from "pages/monitoring/api/types/definitions";
-import { createErrorObjectParser } from "pages/monitoring/utils/errorObjectParser";
-import { getAttachmentDiff } from "pages/monitoring/outlets/resources/manager/resourcesEditor/utils/attachmentDiff";
-import type { MonirotingResourceForm } from "pages/monitoring/outlets/resources/manager/resourcesEditor/types/resources";
-import { setInitialInformation } from "pages/monitoring/outlets/resources/manager/resourcesEditor/utils/initialInformation";
+import { uiText } from "pages/monitoring/outlets/resources/manager/resourcesEditor/layout/uiText";
+import { attachmentConfigs } from "pages/monitoring/outlets/resources/manager/resourcesEditor/layout/attachmentConfigs";
 
 const makeResourceErrorsObject = createErrorObjectParser([
   "initiativeId",
@@ -92,8 +91,6 @@ export function ResourceForm({
   const [errors, setErrors] = useState<
     Partial<Record<keyof MonirotingResourceForm | "root", string[]>>
   >({});
-
-  const navigate = useNavigate();
 
   const { userInitiativesById } = useUserInMonitoringCTX();
 
@@ -162,7 +159,7 @@ export function ResourceForm({
             resourceNameNotExist,
             resource.name === resourceRef.current.name,
           ),
-          "Ya existe un recurso de monitoreo con ese nombre",
+          uiText.validations.repeatedName,
         )
     ).result;
 
@@ -271,12 +268,6 @@ export function ResourceForm({
       resourceRef.current.links,
       ["name", "url"],
     );
-    const diffFiles = getAttachmentDiff(
-      resource.files,
-      resourceRef.current.files,
-      ["name"],
-    );
-
     const delLinkPromises =
       diffLinks.del.length > 0
         ? diffLinks.del.map((link) => removeResourceLink(link.id!))
@@ -292,6 +283,11 @@ export function ResourceForm({
         ? diffLinks.edit.map((link) => editResourceLink(link.id!, link))
         : null;
 
+    const diffFiles = getAttachmentDiff(
+      resource.files,
+      resourceRef.current.files,
+      ["name"],
+    );
     const delFilePromises =
       diffFiles.del.length > 0
         ? diffFiles.del.map((file) => removeResourceFile(file.id!))
@@ -334,48 +330,26 @@ export function ResourceForm({
       return;
     }
 
-    const verb = resource ? "guardado" : "creado";
-    toast(`Recurso ${verb}`, {
+    toast(uiText.confirmationToast.title(!!resourceId), {
       position: "bottom-right",
-      description: `El recurso de monitoreo '${resource.name}' fue ${verb} exitosamente`,
+      description: uiText.confirmationToast.description(
+        !!resourceId,
+        resource.name,
+      ),
       icon: <NotebookPen className="size-8 text-primary" />,
       className: "px-6! gap-6! border-2! border-primary! md:w-[450px]! ",
       duration: 3 * 1000,
       dismissible: true,
-
-      ...(!resource.isDraft
-        ? {
-            action: (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() =>
-                  void navigate(`/Monitoreo/Recursos/${resourceId ?? 666}`)
-                }
-              >
-                Ver recurso
-              </Button>
-            ),
-          }
-        : {}),
+      action: !resource.isDraft ? (
+        <GotoButonInToast
+          baseUrl="/Monitoreo/Recursos/"
+          urlParams={resourceId ? String(resourceId) : ""}
+          label={uiText.confirmationToast.actionButton}
+        />
+      ) : undefined,
     });
     onSubmitSuccess();
   };
-
-  const helperKeys = useMemo(
-    () =>
-      Object.entries(helperInfo).reduce<{
-        files: string[];
-        links: string[];
-      }>(
-        (all, [key, value]) => {
-          all[value.type].push(key);
-          return all;
-        },
-        { files: [], links: [] },
-      ),
-    [],
-  );
 
   return !resource ? null : (
     <div className="p-4 flex gap-12 *:flex-1">
@@ -385,18 +359,13 @@ export function ResourceForm({
         onSubmit={(e) => void handleSubmit(e)}
         onReset={() => handleReset()}
       >
-        <h3 className="text-primary">
-          {resourceId ? "Actualizar recurso" : "Crear recurso"}
-        </h3>
+        <h3 className="text-primary">{uiText.title(!!resourceId)}</h3>
         <LabeledInput
           inputName="name"
           inputType="text"
           inputMaxLength={RESOURCE_NAME_MAX_LENGTH}
           required={true}
-          texts={{
-            label: "Nombre del recurso",
-            placeholder: "Cómo medir el tronco de la palma",
-          }}
+          texts={uiText.name}
           validator={validateName}
           state={resource.name}
           stateSetter={updateValue("name")}
@@ -410,7 +379,7 @@ export function ResourceForm({
               errID="errors_initiativeId"
               validationErrors={errors.initiativeId ?? []}
             >
-              <span>Recurso bajo la iniciativa:</span>
+              {uiText.initiative.many}
             </LabelAndErrors>
             <NativeSelect
               name="initiativeId"
@@ -432,7 +401,7 @@ export function ResourceForm({
           </div>
         ) : (
           <p className="">
-            Recurso bajo la iniciativa{" "}
+            {uiText.initiative.one}
             <strong>{Object.values(userInitiativesById)[0]?.name ?? ""}</strong>
           </p>
         )}
@@ -457,73 +426,37 @@ export function ResourceForm({
           inputName="description"
           inputMaxLength={RESOURCE_DESCRIPTION_MAX_LENGTH}
           required={true}
-          texts={{
-            label: "Descripción",
-            placeholder: "Descricion del recurso",
-          }}
+          texts={uiText.desctiption}
           validator={validateDescription}
           state={resource.description}
           stateSetter={updateValue("description")}
           validationErrors={errors.description ?? []}
         />
 
-        <AttachmentInput
-          labelId="links"
-          inputType="text"
-          items={resource.links}
-          updater={updateValue("links")}
-          validationErrors={errors.links ?? []}
-          descriptionMaxLength={100}
-          contentMaxLength={RESOURCE_MAX_LINKS_AMOUNT}
-          text={{
-            module: {
-              title: "Adjuntar enlaces al recurso",
-              attachmentsListTitle: "Enlaces adjuntos",
-              attachmentTypes: "¿El enlace hacia qué tipo de recurso apunta?",
-            },
-            description: {
-              label: "Descripción del enlace",
-              placeholder: "Los modelos de distribución...",
-            },
-            resource: { label: "Enlace", placeholder: "https://ejemplo.com" },
-          }}
-          currentHelper={helper}
-          helpers={helperKeys.links}
-          setHelper={setHelper}
-        />
+        {attachmentConfigs.map((config) => (
+          <AttachmentInput
+            key={config.id}
+            labelId={config.id}
+            inputType={config.type}
+            items={resource[config.id]}
+            updater={updateValue(config.id)}
+            validationErrors={errors[config.id] ?? []}
+            descriptionMaxLength={100}
+            contentMaxLength={config.max}
+            text={uiText.attachments[config.id]}
+            currentHelper={helper}
+            helpers={config.helpers}
+            setHelper={setHelper}
+          />
+        ))}
 
-        <AttachmentInput
-          labelId="files"
-          inputType="file"
-          items={resource.files}
-          updater={updateValue("files")}
-          validationErrors={errors.links ?? []}
-          descriptionMaxLength={100}
-          contentMaxLength={RESOURCE_MAX_FILES_AMOUNT}
-          text={{
-            module: {
-              title: "Adjuntar archivos al recurso",
-              attachmentsListTitle: "Archivos adjuntos",
-              attachmentTypes: "¿Qué formato de archivo deseas adjuntar?",
-            },
-            description: {
-              label: "Descripcion",
-              placeholder: "palo palo palo",
-            },
-            resource: { label: "archivo" },
-          }}
-          currentHelper={helper}
-          helpers={helperKeys.files}
-          setHelper={setHelper}
-        />
-
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-2 py-4 items-center justify-center">
           <LabelAndErrors
             validationErrors={errors.isDraft ?? []}
             errID="errors_isDraft"
             htmlFor="isDraft"
           >
-            ¿Publicar el recurso?
+            {uiText.isDraft.label}
           </LabelAndErrors>
           <Switch
             name="isDraft"
@@ -541,31 +474,33 @@ export function ResourceForm({
                 : undefined
             }
           />
-          {resource.isDraft ? "No, aún es borrador" : "Si, es público"}
+          {uiText.isDraft.feedback(resource.isDraft)}
         </div>
 
-        <div className="flex gap-2">
-          <ConfirmationDialog
-            triggerBtnVariant="outline"
-            className="w-full"
-            texts={{
-              trigger: {
-                label: `${tos ? "Leer" : "Aceptar"} términos para la carga de información`,
-                icon: tos ? CircleCheckBig : Circle,
-              },
-              dialog: {
-                title: tosTexts.title,
-                description: tosTexts.description,
-                longMarkdown: tosTexts.tos,
-              },
-              actionBtns: {
-                confirm: tos ? "Rechazo" : "Acepto",
-                cancel: "cancelar",
-              },
-            }}
-            handler={() => setTOS(!tos)}
-          />
-        </div>
+        <ConfirmationDialog
+          triggerBtnVariant="outline"
+          className="w-full"
+          texts={{
+            trigger: {
+              label: tos
+                ? tosTexts.trigger.read
+                : tosTexts.trigger.readToAccept,
+              icon: tos ? CircleCheckBig : Circle,
+            },
+            dialog: {
+              title: tosTexts.title,
+              description: tosTexts.description,
+              longMarkdown: tosTexts.tos,
+            },
+            actionBtns: {
+              confirm: tos
+                ? tosTexts.actionBtns.decline
+                : tosTexts.actionBtns.accept,
+              cancel: tosTexts.actionBtns.cancel,
+            },
+          }}
+          handler={() => setTOS(!tos)}
+        />
 
         <ErrorsList
           errorItems={errors.root ?? []}
