@@ -1,4 +1,10 @@
-import { type Dispatch, type SetStateAction, useRef, useState } from "react";
+import {
+  type Dispatch,
+  type SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Circle, CircleCheckBig, CirclePlus, Trash } from "lucide-react";
 
 import { Button } from "@ui/shadCN/component/button";
@@ -100,6 +106,11 @@ export function AttachmentInput({
     setContent(file);
   };
 
+  useEffect(() => {
+    setContentErrors([]);
+    setDescriptionErrors([]);
+  }, [currentHelper]);
+
   const handleDescriptionValidation = () => {
     setDescriptionErrors([]);
     const [descriptionSanitized, descriptionInputErrors] = new StrValidator(
@@ -148,7 +159,7 @@ export function AttachmentInput({
   return (
     <fieldset
       className={cn(
-        "border flex flex-col gap-2 rounded-lg p-2 px-4",
+        "border flex flex-col gap-2 rounded-lg p-4 pt-2",
         helpers.includes(currentHelper ?? "")
           ? "border-primary shadow-lg"
           : "border-primary/30",
