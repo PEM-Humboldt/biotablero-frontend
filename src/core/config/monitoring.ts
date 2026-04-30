@@ -70,13 +70,13 @@ export const TAG_URL_MAX_LENGTH = 150;
 export const TAG_RECORDS_PER_PAGE = 20;
 
 // Resources
-export const RESOURCES_MAX_ITEMS_EDIT_LIST = 1;
+export const RESOURCES_MAX_ITEMS_EDIT_LIST = 10;
 export const RESOURCE_NAME_MAX_LENGTH = 100;
 export const RESOURCE_DESCRIPTION_MAX_LENGTH = 500;
 export const RESOURCE_TAGS_LIMIT_ECOSYSTEM = 2;
 export const RESOURCE_TAGS_LIMIT_BIOLOGICAL_GROUP = 2;
-export const RESOURCE_MAX_LINKS_AMOUNT = 2;
-export const RESOURCE_MAX_FILES_AMOUNT = 2;
+export const RESOURCE_MAX_LINKS_AMOUNT = 10;
+export const RESOURCE_MAX_FILES_AMOUNT = 3;
 export const RESOURCE_FILE_MAX_SIZE = 0.2; // size in megabytes;
 export const RESOURCES_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS: ODataParams = {
   orderby: "name asc",

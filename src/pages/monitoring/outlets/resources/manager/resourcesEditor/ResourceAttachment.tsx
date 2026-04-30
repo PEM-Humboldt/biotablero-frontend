@@ -1,11 +1,20 @@
 import {
   type Dispatch,
+  memo,
   type SetStateAction,
   useEffect,
   useRef,
   useState,
 } from "react";
-import { Circle, CircleCheckBig, CirclePlus, Trash } from "lucide-react";
+import {
+  Circle,
+  CircleCheckBig,
+  CirclePlus,
+  ExternalLink,
+  Pencil,
+  Trash,
+  XIcon,
+} from "lucide-react";
 
 import { Button } from "@ui/shadCN/component/button";
 import { LabeledInput } from "@ui/LabeledInput";
@@ -59,17 +68,44 @@ export function AttachmentInput({
     inputType === "text" ? "" : null,
   );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const editingItemRef = useRef<Partial<
+    ResourceAttachment & { file: File }
+  > | null>(null);
+
+  const handleEdit = (index: number) => {
+    const item = items[index];
+    editingItemRef.current = item;
+    updater(items.filter((_, i) => i !== index));
+    setDescription(item.name || "");
+    setContent(inputType === "text" ? item.url || "" : null);
+  };
+
+  const handleCancelEdit = () => {
+    if (editingItemRef.current) {
+      updater([...items, editingItemRef.current]);
+
+      editingItemRef.current = null;
+      setDescription("");
+      setContent(inputType === "text" ? "" : null);
+      setDescriptionErrors([]);
+    }
+  };
 
   const handleAdd = () => {
     setDescriptionErrors([]);
 
-    const newItem =
+    const newItemBase =
       inputType === "text"
         ? { name: description, url: content as string }
         : { name: description, file: content as File, url: "" };
 
-    updater([...items, newItem]);
+    const finalItem = editingItemRef.current
+      ? { ...editingItemRef.current, ...newItemBase }
+      : newItemBase;
 
+    updater([...items, finalItem]);
+
+    editingItemRef.current = null;
     setDescription("");
     setContent(inputType === "text" ? "" : null);
     setDescriptionErrors([]);
@@ -176,9 +212,7 @@ export function AttachmentInput({
 
       {items.length > 0 && (
         <section className="border border-primary/50 p-2 mb-2 rounded-lg bg-background">
-          <h4 className="text-base text-primary font-normal">
-            {text.module.attachmentsListTitle}
-          </h4>
+          <h4 className="sr-only">{text.module.attachmentsListTitle}</h4>
           <ul>
             {items.map((item, idx) => (
               <li
@@ -189,15 +223,42 @@ export function AttachmentInput({
                   "hover:bg-muted",
                 )}
               >
-                <span>{item.name}</span>
-                <Button
-                  type="button"
-                  variant="ghost-clean"
-                  size="icon"
-                  onClick={() => handleRemove(idx)}
-                >
-                  <Trash />
-                </Button>
+                <span className="truncate">{item.name}</span>
+                <div className="flex">
+                  {item.url && (
+                    <Button
+                      type="button"
+                      variant="ghost-clean"
+                      size="icon"
+                      title="Ver"
+                      asChild
+                    >
+                      <a href={item.url} target="_blank">
+                        <ExternalLink className="size-4" />
+                      </a>
+                    </Button>
+                  )}
+                  {inputType === "text" && (
+                    <Button
+                      type="button"
+                      variant="ghost-clean"
+                      size="icon"
+                      onClick={() => handleEdit(idx)}
+                      title="Editar"
+                    >
+                      <Pencil className="size-4" />
+                    </Button>
+                  )}
+                  <Button
+                    type="button"
+                    variant="ghost-clean"
+                    size="icon"
+                    onClick={() => handleRemove(idx)}
+                    title="Eliminar"
+                  >
+                    <Trash className="size-4" />
+                  </Button>
+                </div>
               </li>
             ))}
           </ul>
@@ -242,6 +303,7 @@ export function AttachmentInput({
               stateSetter={setDescription}
               validator={handleDescriptionValidation}
               validationErrors={unifiedErrors}
+              autoComplete="off"
             />
 
             <div className="flex w-full gap-2">
@@ -288,21 +350,32 @@ export function AttachmentInput({
                 </div>
               )}
 
-              <Button
-                onClick={() => {
-                  setHelper(null);
-                  handleAdd();
-                }}
-                type="button"
-                variant="outline"
-                size="icon"
-                title="Agregar"
-                disabled={isLoading || !description || !content}
-                className="self-end"
-              >
-                <span className="sr-only">Adjuntar elemento</span>
-                <CirclePlus aria-hidden="true" className="size-5" />
-              </Button>
+              <div className="flex gap-2 self-end">
+                {editingItemRef.current && (
+                  <Button
+                    onClick={handleCancelEdit}
+                    type="button"
+                    variant="outline_destructive"
+                    size="icon"
+                    title="Cancelar edición"
+                  >
+                    <XIcon className="size-5" />
+                  </Button>
+                )}
+                <Button
+                  onClick={() => {
+                    setHelper(null);
+                    handleAdd();
+                  }}
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  title={editingItemRef.current ? "Guardar cambios" : "Agregar"}
+                  disabled={isLoading || !description || !content}
+                >
+                  <CirclePlus className="size-5" />
+                </Button>
+              </div>
             </div>
           </div>
         </>

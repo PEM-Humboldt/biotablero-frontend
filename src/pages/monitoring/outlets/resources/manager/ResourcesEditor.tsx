@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Trash } from "lucide-react";
+import { NotebookPen, Trash } from "lucide-react";
 
 import { LoadingDiv } from "@ui/LoadingDiv";
 import { RESOURCES_MAX_ITEMS_EDIT_LIST } from "@config/monitoring";
@@ -19,9 +19,10 @@ import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 import { RoleInInitiative } from "pages/monitoring/types/catalog";
 import { toast } from "sonner";
+import { Button } from "@ui/shadCN/component/button";
 import { ResourcesList } from "pages/monitoring/outlets/resources/manager/resourcesEditor/ResourcesList";
 import { ResourceForm } from "pages/monitoring/outlets/resources/manager/resourcesEditor/ResourceForm";
-import { ResourceInfo } from "./resourcesEditor/ResourceInfo";
+import { ResourceInfo } from "pages/monitoring/outlets/resources/manager/resourcesEditor/ResourceInfo";
 
 export function ResourcesEditor({
   resourceType,
@@ -84,6 +85,7 @@ export function ResourcesEditor({
     }
 
     await fetchResources();
+
     toast("Recurso eliminado", {
       position: "bottom-right",
       description: `El recurso de monitoreo '${resourceName}' fue eliminado exitosamente y ya no se encuentra disponible`,
@@ -94,6 +96,7 @@ export function ResourcesEditor({
   };
 
   const onSubmitSuccess = () => {
+    void fetchResources();
     setEditResource(null);
   };
 
@@ -108,7 +111,19 @@ export function ResourcesEditor({
 
       {resources.length > 0 && editResource === null ? (
         <div className="flex flex-wrap *:flex-1 gap-12 p-4 pb-2">
-          <ResourceInfo currentHelper={null} resourceType={resourceType} />
+          <div>
+            <ResourceInfo currentHelper={null} resourceType={resourceType} />
+
+            <Button
+              className="w-full my-4"
+              onClick={() => setEditResource(0)}
+              variant="default"
+              size="lg"
+            >
+              Crear nuevo recurso
+              <NotebookPen />
+            </Button>
+          </div>
           <div>
             <ResourcesList
               resources={resources}
