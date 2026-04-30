@@ -10,6 +10,7 @@ import type {
   ResourceType,
 } from "pages/monitoring/types/odataResponse";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
+import { uiText } from "pages/monitoring/outlets/resources/manager/resourcesEditor/layout/uiText";
 
 export function ResourcesList({
   resources,
@@ -27,19 +28,21 @@ export function ResourcesList({
 
   return (
     <div>
-      <h3 className="text-primary">Recursos disponibles para edición</h3>
+      <h3 className="text-primary">{uiText.resourcesList.title}</h3>
       <div className="table-form-display-container ">
         <table className="table-form-display py-0!">
           <caption className="sr-only">
-            Recursos sobre {resourceType.name} que puedes administrar
+            {uiText.resourcesList.srCaption(resourceType.name)}
           </caption>
 
           <thead>
             <tr>
-              <td className="w-[60%]">Nombre</td>
-              <td className="w-[40%]">Iniciativa</td>
+              <td className="w-[60%]">{uiText.resourcesList.headers[0]}</td>
+              <td className="w-[40%]">{uiText.resourcesList.headers[1]}</td>
               <td className="w-18">
-                <span className="sr-only">acciones</span>
+                <span className="sr-only">
+                  {uiText.resourcesList.headers[2]}
+                </span>
               </td>
             </tr>
           </thead>
@@ -49,10 +52,12 @@ export function ResourcesList({
               <tr key={`resourceItem_${resource.id}`}>
                 <td>
                   {resource.name}
-                  {resource.authorUserName &&
-                  resource.authorUserName !== user?.username
-                    ? ` por ${resource.authorUserName}`
-                    : ""}
+                  {uiText.resourcesList.madeByOther(
+                    resource.authorUserName &&
+                      resource.authorUserName !== user?.username
+                      ? resource.authorUserName
+                      : null,
+                  )}
                 </td>
                 <td>
                   {userInitiativesById[resource.initiativeId]?.name ?? ""}
@@ -63,25 +68,26 @@ export function ResourcesList({
                     onClick={() => setEditResource(resource.id)}
                     variant="ghost-clean"
                     size="icon-sm"
-                    title="Editar"
+                    title={uiText.resourcesList.edit.title}
                   >
-                    <span className="sr-only">Editar recurso</span>
-                    <span aria-hidden="true">
-                      <SquarePen className="size-4" />
+                    {uiText.resourcesList.edit.label}
+                    <span className="sr-only">
+                      {uiText.resourcesList.edit.sr}
                     </span>
+                    <SquarePen className="size-4" aria-hidden="true" />
                   </Button>
                   <DestructiveConfirmationDialog
                     texts={{
                       trigger: {
-                        title: "Borrar",
-                        sr: "BorrarRecurso",
-                        label: "",
+                        ...uiText.resourcesList.del.trigger,
                         icon: Trash,
                       },
                       dialog: {
-                        title: `¿Deseas eliminar el recurso '${resource.name}'?`,
+                        title: uiText.resourcesList.del.dialog.title(
+                          resource.name,
+                        ),
                         description:
-                          "Al eliminar este recurso todo su contenido será eliminado y dejará de estar disponible para todas las personas",
+                          uiText.resourcesList.del.dialog.description,
                       },
                     }}
                     triggerBtnVariant="ghost-clean"

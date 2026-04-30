@@ -1,8 +1,27 @@
-// import { uiText } from "pages/monitoring/outlets/resources/manager/resourcesEditor/layout/uiText";
-
 export const uiText = {
+  resourcesList: {
+    title: "Recursos disponibles para edición",
+    srCaption: (resourceTypeName: string) =>
+      `Recursos sobre ${resourceTypeName} que puedes administrar`,
+    headers: ["Nombre", "Iniciativa", "Acciones"],
+    madeByOther: (otherName: string | null) =>
+      otherName ? ` por ${otherName}` : "",
+    edit: { label: "", title: "Editar", sr: "Editar recurso" },
+    del: {
+      trigger: { label: "", title: "Borrar", sr: "Borrar recurso" },
+      dialog: {
+        title: (resourceName: string) =>
+          `¿Deseas eliminar el recurso '${resourceName}'?`,
+        description:
+          "Al eliminar este recurso todo su contenido será eliminado y dejará de estar disponible para todas las personas",
+      },
+    },
+  },
   validations: {
     repeatedName: "Ya existe un recurso de monitoreo con ese nombre",
+    fileSize: (sizeInMb: number) =>
+      `El archivo excede el tamaño máximo permitido (${sizeInMb}MB).`,
+    checkUrl: "Revisa que la url esté activa",
   },
   title: (isUpdate: boolean) =>
     isUpdate ? "Actualizar recurso" : "Crear recurso",
@@ -19,6 +38,22 @@ export const uiText = {
     placeholder: "Descricion del recurso",
   },
   attachments: {
+    ui: {
+      view: { label: "", title: "Ver", sr: "Ver adjunto" },
+      edit: { label: "", title: "Editar", sr: "Editar adjunto" },
+      del: { label: "", title: "Borrar", sr: "Borrar adjunto" },
+      fileUpload: {
+        label: "Cargar archivo",
+        placeholder: "Buscar el archivo...",
+      },
+      save: {
+        title: (isUpdate: boolean) => (isUpdate ? "Guardar" : "Agregar"),
+        label: (isUpdate: boolean) => (isUpdate ? "" : ""),
+        sr: (isUpdate: boolean) =>
+          isUpdate ? "Guardar cambios" : "Agregar adjunto",
+      },
+      cancel: { title: "Cancelar", label: "Cancelar edición", sr: "" },
+    },
     links: {
       module: {
         title: "Adjuntar enlaces al recurso",

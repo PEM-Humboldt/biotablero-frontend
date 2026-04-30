@@ -1,6 +1,5 @@
 import {
   type Dispatch,
-  memo,
   type SetStateAction,
   useEffect,
   useRef,
@@ -26,6 +25,7 @@ import { RESOURCE_FILE_MAX_SIZE } from "@config/monitoring";
 import type { ResourceAttachment } from "pages/monitoring/types/odataResponse";
 import { helperInfo } from "pages/monitoring/outlets/resources/manager/resourcesEditor/layout/helperInfo";
 import { urlIsActive } from "pages/monitoring/outlets/resources/manager/resourcesEditor/utils/validations";
+import { uiText } from "./layout/uiText";
 
 export function AttachmentInput({
   labelId,
@@ -129,9 +129,7 @@ export function AttachmentInput({
     setContentErrors([]);
 
     if (file && file.size > maxFileSizeInMB) {
-      setContentErrors([
-        `El archivo excede el tamaño máximo permitido (${RESOURCE_FILE_MAX_SIZE}MB).`,
-      ]);
+      setContentErrors([uiText.validations.fileSize(RESOURCE_FILE_MAX_SIZE)]);
       setContent(null);
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
@@ -175,7 +173,7 @@ export function AttachmentInput({
         .sanitize()
         .isRequired()
         .isURL()
-        .customAsync(urlIsActive, "Revisa que la url esté activa")
+        .customAsync(urlIsActive, uiText.validations.checkUrl)
     ).result;
 
     if (linkErrors.length > 0) {
@@ -230,11 +228,15 @@ export function AttachmentInput({
                       type="button"
                       variant="ghost-clean"
                       size="icon"
-                      title="Ver"
+                      title={uiText.attachments.ui.view.title}
                       asChild
                     >
                       <a href={item.url} target="_blank">
-                        <ExternalLink className="size-4" />
+                        {uiText.attachments.ui.view.label}
+                        <span className="sr-only">
+                          {uiText.attachments.ui.view.sr}
+                        </span>
+                        <ExternalLink className="size-4" aria-hidden="true" />
                       </a>
                     </Button>
                   )}
@@ -244,9 +246,13 @@ export function AttachmentInput({
                       variant="ghost-clean"
                       size="icon"
                       onClick={() => handleEdit(idx)}
-                      title="Editar"
+                      title={uiText.attachments.ui.edit.title}
                     >
-                      <Pencil className="size-4" />
+                      {uiText.attachments.ui.edit.label}
+                      <span className="sr-only">
+                        {uiText.attachments.ui.edit.sr}
+                      </span>
+                      <Pencil className="size-4" aria-hidden="true" />
                     </Button>
                   )}
                   <Button
@@ -254,9 +260,13 @@ export function AttachmentInput({
                     variant="ghost-clean"
                     size="icon"
                     onClick={() => handleRemove(idx)}
-                    title="Eliminar"
+                    title={uiText.attachments.ui.del.title}
                   >
-                    <Trash className="size-4" />
+                    {uiText.attachments.ui.del.label}
+                    <span className="sr-only">
+                      {uiText.attachments.ui.del.sr}
+                    </span>
+                    <Trash className="size-4" aria-hidden="true" />
                   </Button>
                 </div>
               </li>
@@ -287,7 +297,7 @@ export function AttachmentInput({
                   )}
                 >
                   {helper === currentHelper ? <CircleCheckBig /> : <Circle />}
-                  <span className="">{helperInfo[helper].btnLabel}</span>
+                  <span>{helperInfo[helper].btnLabel}</span>
                 </Button>
               ))}
             </div>
@@ -323,7 +333,7 @@ export function AttachmentInput({
               ) : (
                 <div className="flex flex-col w-full">
                   <span className="text-primary font-normal">
-                    Cargar archivo
+                    {uiText.attachments.ui.fileUpload.label}
                   </span>
                   <ErrorsList errorItems={contentErrors} />
                   <label
@@ -334,9 +344,8 @@ export function AttachmentInput({
                     <span className="truncate text-muted-foreground">
                       {content instanceof File
                         ? content.name
-                        : "Seleccionar archivo..."}
+                        : uiText.attachments.ui.fileUpload.placeholder}
                     </span>
-                    <span className="ml-2 text-xs text-primary">Buscar</span>
                   </label>
 
                   <input
@@ -357,8 +366,12 @@ export function AttachmentInput({
                     type="button"
                     variant="outline_destructive"
                     size="icon"
-                    title="Cancelar edición"
+                    title={uiText.attachments.ui.cancel.title}
                   >
+                    {uiText.attachments.ui.cancel.label}
+                    <span className="sr-only">
+                      {uiText.attachments.ui.cancel.sr}
+                    </span>
                     <XIcon className="size-5" />
                   </Button>
                 )}
@@ -370,9 +383,19 @@ export function AttachmentInput({
                   type="button"
                   variant="outline"
                   size="icon"
-                  title={editingItemRef.current ? "Guardar cambios" : "Agregar"}
                   disabled={isLoading || !description || !content}
+                  title={uiText.attachments.ui.save.title(
+                    editingItemRef.current !== null,
+                  )}
                 >
+                  {uiText.attachments.ui.save.label(
+                    editingItemRef.current !== null,
+                  )}
+                  <span className="sr-only">
+                    {uiText.attachments.ui.save.sr(
+                      editingItemRef.current !== null,
+                    )}
+                  </span>
                   <CirclePlus className="size-5" />
                 </Button>
               </div>
