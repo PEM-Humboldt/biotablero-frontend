@@ -79,7 +79,7 @@ export const match = {
   },
   forestLP: {
     palette: "forestLP",
-    sort: ["Persistencia", "Perdida", "Ganancia", "No Bosque"],
+    sort: ["Perdida", "Persistencia", "No Bosque"],
   },
   forestIntegrity: {
     palette: "forestIntegrity",

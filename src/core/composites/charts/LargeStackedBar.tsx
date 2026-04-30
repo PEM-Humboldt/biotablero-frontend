@@ -80,7 +80,7 @@ export const LargeStackedBar = (props: Props) => {
           <strong style={{ color: darkColors[color] ? "#ffffff" : color }}>
             {allData[`${id}Label`]}
           </strong>
-          <div style={{ color: "#ffffff" }}>
+          <div>
             {`${formatNumber(allData[id], 0)} ${units}`}
             <br />
             {`${formatNumber(Number(allData[`${id}Percentage`]) * 100, 2)}%`}
@@ -93,9 +93,7 @@ export const LargeStackedBar = (props: Props) => {
         <strong style={{ color: darkColors[color] ? "#ffffff" : color }}>
           {allData[`${id}Label`]}
         </strong>
-        <div style={{ color: "#ffffff" }}>
-          {`${formatNumber(allData[id], 0)} ${units}`}
-        </div>
+        <div>{`${formatNumber(allData[id], 0)} ${units}`}</div>
       </div>
     );
   };
