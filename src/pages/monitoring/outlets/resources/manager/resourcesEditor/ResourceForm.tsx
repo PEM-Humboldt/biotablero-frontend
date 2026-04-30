@@ -7,8 +7,7 @@ import { LabeledTextArea } from "@ui/LabeledTextArea";
 import { Switch } from "@ui/shadCN/component/switch";
 import { ConfirmationDialog } from "@ui/ConfirmationDialog";
 import { Button } from "@ui/shadCN/component/button";
-import { LabelAndErrors } from "@ui/LabelingWithErrors";
-import { parseSimpleMarkdown } from "@utils/textParser";
+import { ErrorsList, LabelAndErrors } from "@ui/LabelingWithErrors";
 import { LabeledInput } from "@ui/LabeledInput";
 import {
   NativeSelect,
@@ -21,27 +20,37 @@ import {
   RESOURCE_NAME_MAX_LENGTH,
   RESOURCES_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS,
 } from "@config/monitoring";
+import { StrValidator } from "@utils/strValidator";
 
 import type {
   MonitoringResource,
-  ODataTag,
   ResourceAttachment,
   ResourceTag,
   ResourceType,
 } from "pages/monitoring/types/odataResponse";
 import { resourceTagCategories } from "pages/monitoring/outlets/resources/manager/resourcesEditor/layout/tagCategories";
-import { StableTagSelector } from "pages/monitoring/ui/TagSelector";
+import {
+  isTagRelated,
+  StableTagSelector,
+} from "pages/monitoring/ui/TagSelector";
 import { AttachmentInput } from "pages/monitoring/outlets/resources/manager/resourcesEditor/ResourceAttachment";
 import { helperInfo } from "pages/monitoring/outlets/resources/manager/resourcesEditor/layout/helperInfo";
 import type { TagData } from "pages/monitoring/types/initiative";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import { getResource } from "pages/monitoring/api/services/monitoringResources";
+import {
+  AddResourceTag,
+  createResource,
+  getResource,
+  removeResourceTag,
+  updateResource,
+} from "pages/monitoring/api/services/monitoringResources";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 import { tosTexts } from "pages/monitoring/outlets/resources/manager/resourcesEditor/layout/tos";
 import { ResourceInfo } from "pages/monitoring/outlets/resources/manager/resourcesEditor/ResourceInfo";
-import { StrValidator } from "@utils/strValidator";
 import { validationExemption } from "pages/monitoring/ui/initiativesAdmin/utils/fieldClientValidations";
-import { resourceNameNotExist } from "./utils/validations";
+import { resourceNameNotExist } from "pages/monitoring/outlets/resources/manager/resourcesEditor/utils/validations";
+import type { RequestData } from "pages/monitoring/api/types/definitions";
+import { createErrorObjectParser } from "pages/monitoring/utils/errorObjectParser";
 
 export type MonirotingResourceForm = {
   initiativeId: number | null;
@@ -50,7 +59,7 @@ export type MonirotingResourceForm = {
   isDraft: boolean;
   files: Partial<ResourceAttachment & { file: File }>[];
   links: Partial<ResourceAttachment>[];
-  tags: Record<number, (Omit<ODataTag, "categoryName"> | TagData)[]>;
+  tags: Record<number, (ResourceTag | TagData)[]>;
 };
 
 function setInitialInformation(
@@ -65,19 +74,35 @@ function setInitialInformation(
     links: resource?.links && resource.links.length > 0 ? resource.links : [],
     tags:
       resource?.tags && resource.tags.length > 0
-        ? resource.tags.reduce<
-            Record<number, Omit<ODataTag, "categoryName">[]>
-          >((all, tag) => {
+        ? resource.tags.reduce<Record<number, ResourceTag[]>>((all, tag) => {
             const tagCategoryId = tag.tag.category.id;
             if (!all[tagCategoryId]) {
               all[tagCategoryId] = [];
             }
-            all[tagCategoryId].push(tag.tag);
+            all[tagCategoryId].push(tag);
             return all;
           }, {})
         : {},
   };
 }
+
+const resourceKeys = [
+  "initiativeId",
+  "authorUserName",
+  "name",
+  "description",
+  "isDraft",
+  "likes",
+  "iLikedIt",
+  "resourceType",
+  "creationDate",
+  "publicationDate",
+  "files",
+  "links",
+  "tags",
+];
+
+const makeResourceErrorsObject = createErrorObjectParser(resourceKeys);
 
 export function ResourceForm({
   resourceId,
@@ -108,10 +133,15 @@ export function ResourceForm({
 
   const updateTags =
     (tagCategoryId: number) => (value: (ResourceTag | TagData)[]) =>
-      setResource((oldInfo) => ({
-        ...oldInfo,
-        tags: { ...oldInfo?.tags, [tagCategoryId]: value },
-      }));
+      setResource((oldInfo) => {
+        return {
+          ...oldInfo,
+          tags: {
+            ...oldInfo?.tags,
+            [tagCategoryId]: value,
+          },
+        } as MonirotingResourceForm;
+      });
 
   useEffect(() => {
     if (resourceId === null) {
@@ -160,7 +190,7 @@ export function ResourceForm({
             resourceNameNotExist,
             resource.name === resourceRef.current.name,
           ),
-          "Ya existe un recurso con ese nombre",
+          "Ya existe un recurso de monitoreo con ese nombre",
         )
     ).result;
 
@@ -195,22 +225,99 @@ export function ResourceForm({
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!resource) {
+    if (!resource || !resourceRef.current) {
       return;
     }
 
-    await new Promise((resolve) => {
-      setTimeout(() => {
-        console.log("777", resource);
-        // setResource(null);
-        onSubmitSuccess();
-        resolve(true);
-      }, 0);
-    });
+    setErrors({});
+    validateDescription();
+    await validateName();
 
-    toast("Recurso guardado", {
+    if (Object.keys(errors).length > 0) {
+      return;
+    }
+
+    const resourceGeneralInfo: RequestData = {
+      initiativeId:
+        resource.initiativeId ?? Object.keys(userInitiativesById)[0],
+      name: resource.name,
+      description: resource.description,
+      isDraft: resource.isDraft,
+      resourceType: { id: resourceType.id },
+    };
+    const resGeneral = resourceId
+      ? await updateResource(resourceId, resourceGeneralInfo)
+      : await createResource(resourceGeneralInfo);
+    if (isMonitoringAPIError(resGeneral)) {
+      setErrors(makeResourceErrorsObject(resGeneral));
+      return;
+    }
+
+    const originalTags = Object.values(
+      resourceRef.current.tags,
+    ).flat() as ResourceTag[];
+    const currentTags = Object.values(resource.tags).flat();
+
+    const diffTags = {
+      add: currentTags.filter((tag) => !isTagRelated(tag)) as TagData[],
+      del: originalTags.filter(
+        (oldTag) =>
+          !currentTags.some((newTag) => {
+            const newId = isTagRelated(newTag) ? newTag.tag.id : newTag.id;
+            return newId === oldTag.tag.id;
+          }),
+      ),
+    };
+
+    const tagsRemovePromises = diffTags.del.map((tag) =>
+      removeResourceTag(tag.resourceTagId),
+    );
+    const tagsRemoved = await Promise.all(tagsRemovePromises);
+    for (const resTag of tagsRemoved) {
+      if (isMonitoringAPIError(resTag)) {
+        setErrors(makeResourceErrorsObject(resTag));
+        break;
+      }
+    }
+    if (Object.keys(errors).length > 0) {
+      return;
+    }
+
+    const tagsAddPromises = diffTags.add.map((tag) =>
+      AddResourceTag(resGeneral.id, tag.id),
+    );
+    const tagsAdded = await Promise.all(tagsAddPromises);
+    for (const resTag of tagsAdded) {
+      if (isMonitoringAPIError(resTag)) {
+        setErrors(makeResourceErrorsObject(resTag));
+        break;
+      }
+    }
+
+    const diffLinks = {
+      add: resource.links.filter((link) => !link.id || !link.resourceId),
+      del: resourceRef.current.links.filter(
+        (oldLink) =>
+          !resource.links.some(
+            (newLink) => newLink.id && oldLink.id && newLink.id === oldLink.id,
+          ),
+      ),
+    };
+
+    const diffFiles = {
+      add: resource.files.filter((file) => file.file !== undefined),
+      del: resourceRef.current.links.filter(
+        (oldFile) =>
+          !resource.links.some(
+            (newFile) => newFile.id && oldFile.id && newFile.id === oldFile.id,
+          ),
+      ),
+    };
+
+    const verb = resource ? "guardado" : "creado";
+    toast(`Recurso ${verb}`, {
       position: "bottom-right",
-      description: `El recurso de monitoreo '${resource.name}' fue creado exitosamente`,
+      description: `El recurso de monitoreo '${resource.name}' fue ${verb} exitosamente`,
       icon: <NotebookPen className="size-8 text-primary" />,
       className: "px-6! gap-6! border-2! border-primary! md:w-[450px]! ",
       duration: 3 * 1000,
@@ -382,7 +489,7 @@ export function ResourceForm({
               label: "Descripcion",
               placeholder: "palo palo palo",
             },
-            resource: { label: "archivo", placeholder: "https:///////" },
+            resource: { label: "archivo" },
           }}
           currentHelper={helper}
           helpers={helperKeys.files}
@@ -438,6 +545,11 @@ export function ResourceForm({
             handler={() => setTOS(!tos)}
           />
         </div>
+
+        <ErrorsList
+          errorItems={errors.root ?? []}
+          className="bg-accent/10 p-4 border border-accent rounded-lg"
+        />
 
         <div className="flex flex-row-reverse justify-between gap-2">
           <Button disabled={!tos || isLoading}>

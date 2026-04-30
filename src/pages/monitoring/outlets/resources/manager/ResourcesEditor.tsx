@@ -31,12 +31,11 @@ export function ResourcesEditor({
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [resources, setResources] = useState<MonitoringResource[]>([]);
+  const [editResource, setEditResource] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const totalResources = useRef<number>(0);
   const { user } = useUserCTX();
   const { userInitiativesAs } = useUserInMonitoringCTX();
-
-  const [editResource, setEditResource] = useState<number | null>(null);
+  const totalResources = useRef<number>(0);
 
   const fetchResources = useCallback(async () => {
     setIsLoading(true);
@@ -94,7 +93,9 @@ export function ResourcesEditor({
     });
   };
 
-  const onSubmitSuccess = () => {};
+  const onSubmitSuccess = () => {
+    setEditResource(null);
+  };
 
   return isLoading ? (
     <LoadingDiv className="text-center bg-background" />

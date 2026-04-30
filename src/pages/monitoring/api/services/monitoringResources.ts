@@ -64,7 +64,7 @@ export async function removeResource(resourceId: number) {
 export async function AddResourceTag(resourceId: number, tagId: number) {
   const res = await monitoringAPI<ResourceTag>({
     type: "post",
-    endpoint: `Resource?resourceId=${resourceId}&tagId=${tagId}`,
+    endpoint: `ResourceTag?resourceId=${resourceId}&tagId=${tagId}`,
   });
 
   return res;
@@ -73,7 +73,7 @@ export async function AddResourceTag(resourceId: number, tagId: number) {
 export async function removeResourceTag(tagInResourceId: number) {
   const res = await monitoringAPI<ResourceTag>({
     type: "delete",
-    endpoint: `Resource/${tagInResourceId}`,
+    endpoint: `ResourceTag/${tagInResourceId}`,
   });
 
   return res;

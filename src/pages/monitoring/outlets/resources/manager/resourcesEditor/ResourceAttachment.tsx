@@ -44,7 +44,7 @@ export function AttachmentInput({
       attachmentTypes: string;
     };
     description: { label: string; sr?: string; placeholder: string };
-    resource: { label: string; sr?: string; placeholder: string };
+    resource: { label: string; sr?: string; placeholder?: string };
   };
   contentMaxLength: number;
   currentHelper: keyof typeof helperInfo | null;
@@ -256,6 +256,7 @@ export function AttachmentInput({
                   validator={handleLinkValiadtion}
                   validationErrors={contentErrors}
                   disabled={!helpers.includes(currentHelper ?? "")}
+                  autoComplete="off"
                 />
               ) : (
                 <div className="flex flex-col w-full">

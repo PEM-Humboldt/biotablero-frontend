@@ -1,4 +1,4 @@
-import { ComponentType, useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { CirclePlus, XIcon } from "lucide-react";
 
 import { ComboboxOData } from "@ui/ComboboxOData";
@@ -32,6 +32,10 @@ interface TagSelectorProps<T> {
 }
 
 const MemoizedTagSelector = typedMemo(TagSelector);
+
+export function isTagRelated<T>(tag: TagData | T): tag is T {
+  return typeof tag === "object" && tag !== null && "tag" in tag;
+}
 
 /**
  * A stability-optimized wrapper for the `TagSelector` component.
@@ -113,10 +117,6 @@ export function TagSelector<T extends { tag: Omit<ODataTag, "categoryName"> }>({
 
     return `${categoryPart}${exclusionPart}`;
   }, [tagCategoryId, tagIdsKey]);
-
-  function isTagRelated(tag: TagData | T): tag is T {
-    return typeof tag === "object" && tag !== null && "tag" in tag;
-  }
 
   const addTag = async () => {
     if (value === "") {
