@@ -13,7 +13,7 @@ import type {
 } from "pages/monitoring/types/odataResponse";
 import {
   removeResource,
-  getEditableResourcesByUser,
+  getResources,
 } from "pages/monitoring/api/services/monitoringResources";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
@@ -21,6 +21,7 @@ import { RoleInInitiative } from "pages/monitoring/types/catalog";
 import { toast } from "sonner";
 import { ResourcesList } from "pages/monitoring/outlets/resources/manager/resourcesEditor/ResourcesList";
 import { ResourceForm } from "pages/monitoring/outlets/resources/manager/resourcesEditor/ResourceForm";
+import { ResourceInfo } from "./resourcesEditor/ResourceInfo";
 
 export function ResourcesEditor({
   resourceType,
@@ -54,7 +55,7 @@ export function ResourcesEditor({
       filters.push(`initiativeId in (${initiativesAsLeader.join(",")})`);
     }
 
-    const resourcesAvailable = await getEditableResourcesByUser({
+    const resourcesAvailable = await getResources({
       filter: `resourceType/id eq ${resourceType.id} and (${filters.join(" or ")})`,
       top: RESOURCES_MAX_ITEMS_EDIT_LIST,
       skip: (currentPage - 1) * RESOURCES_MAX_ITEMS_EDIT_LIST,
@@ -76,7 +77,7 @@ export function ResourcesEditor({
     void fetchResources();
   }, [fetchResources]);
 
-  const removeResource = async (resourceId: number, resourceName: string) => {
+  const deleteResource = async (resourceId: number, resourceName: string) => {
     const res = await removeResource(resourceId);
     if (isMonitoringAPIError(res)) {
       setErrors(res.data.map((err) => err.msg));
@@ -98,33 +99,38 @@ export function ResourcesEditor({
   return isLoading ? (
     <LoadingDiv className="text-center bg-background" />
   ) : (
-    <div>
+    <div className="p-4">
       <ErrorsList
         errorItems={errors}
         className="border border-accent px-2 py-1 rounded-lg bg-background"
       />
 
       {resources.length > 0 && editResource === null ? (
-        <>
-          <ResourcesList
-            resources={resources}
-            setEditResource={setEditResource}
-            removeResource={removeResource}
-            resourceType={resourceType}
-          />
+        <div className="flex flex-wrap *:flex-1 gap-12 p-4 pb-2">
+          <ResourceInfo currentHelper={null} resourceType={resourceType} />
+          <div>
+            <ResourcesList
+              resources={resources}
+              setEditResource={setEditResource}
+              removeResource={deleteResource}
+              resourceType={resourceType}
+            />
 
-          <TablePager
-            currentPage={currentPage}
-            recordsAvailable={totalResources.current}
-            onPageChange={setCurrentPage}
-            recordsPerPage={RESOURCES_MAX_ITEMS_EDIT_LIST}
-            paginated={3}
-          />
-        </>
+            <TablePager
+              currentPage={currentPage}
+              recordsAvailable={totalResources.current}
+              onPageChange={setCurrentPage}
+              recordsPerPage={RESOURCES_MAX_ITEMS_EDIT_LIST}
+              paginated={3}
+              className="pb-4"
+            />
+          </div>
+        </div>
       ) : (
         <ResourceForm
           resourceId={editResource}
           onSubmitSuccess={onSubmitSuccess}
+          resourceType={resourceType}
         />
       )}
     </div>

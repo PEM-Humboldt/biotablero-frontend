@@ -1,4 +1,3 @@
-import type { Dispatch, SetStateAction } from "react";
 import TextareaAutosize, {
   type TextareaAutosizeProps,
 } from "react-textarea-autosize";
@@ -14,7 +13,7 @@ interface LabeledTextAreaProps extends TextareaAutosizeProps {
   texts: { label?: string; sr?: string; helper?: string; placeholder?: string };
   state: string;
   stateSetter: (value: string) => void;
-  validator?: () => Promise<void>;
+  validator?: () => Promise<void> | void;
   validationErrors: string[];
 }
 

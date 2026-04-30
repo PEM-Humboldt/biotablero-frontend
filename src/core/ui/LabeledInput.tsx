@@ -25,7 +25,7 @@ interface LabeledInputProps
   texts: { label?: string; sr?: string; placeholder?: string };
   state: string;
   stateSetter: (value: string) => void;
-  validator?: () => Promise<void>;
+  validator?: () => Promise<void> | void;
   validationErrors: string[];
 }
 
@@ -61,7 +61,7 @@ export function LabeledInput({
   const hasErrors = validationErrors.length > 0;
   const errId = `errors_${inputName}`;
   return (
-    <div>
+    <div className="w-full">
       <LabelAndErrors
         htmlFor={inputName}
         errID={errId}

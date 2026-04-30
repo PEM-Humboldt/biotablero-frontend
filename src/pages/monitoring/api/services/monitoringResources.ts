@@ -26,7 +26,7 @@ export async function getResource(resourceId: number) {
   return res;
 }
 
-export const getEditableResourcesByUser =
+export const getResources =
   createODataGetter<ODataMonitoringResources>("Resource");
 
 export async function createResource(resource: RequestData) {

@@ -1,3 +1,27 @@
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { useNavigate } from "react-router";
+import { Circle, CircleCheckBig, NotebookPen } from "lucide-react";
+import { toast } from "sonner";
+
+import { LabeledTextArea } from "@ui/LabeledTextArea";
+import { Switch } from "@ui/shadCN/component/switch";
+import { ConfirmationDialog } from "@ui/ConfirmationDialog";
+import { Button } from "@ui/shadCN/component/button";
+import { LabelAndErrors } from "@ui/LabelingWithErrors";
+import { parseSimpleMarkdown } from "@utils/textParser";
+import { LabeledInput } from "@ui/LabeledInput";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@ui/shadCN/component/native-select";
+import {
+  RESOURCE_DESCRIPTION_MAX_LENGTH,
+  RESOURCE_MAX_FILES_AMOUNT,
+  RESOURCE_MAX_LINKS_AMOUNT,
+  RESOURCE_NAME_MAX_LENGTH,
+  RESOURCES_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS,
+} from "@config/monitoring";
+
 import type {
   MonitoringResource,
   ODataTag,
@@ -5,43 +29,19 @@ import type {
   ResourceTag,
   ResourceType,
 } from "pages/monitoring/types/odataResponse";
-import { Button } from "@ui/shadCN/component/button";
-import {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type FormEvent,
-} from "react";
-import { LabelAndErrors } from "@ui/LabelingWithErrors";
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@ui/shadCN/component/native-select";
-import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
-import {
-  RESOURCE_DESCRIPTION_MAX_LENGTH,
-  RESOURCE_NAME_MAX_LENGTH,
-  RESOURCES_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS,
-} from "@config/monitoring";
+import { resourceTagCategories } from "pages/monitoring/outlets/resources/manager/resourcesEditor/layout/tagCategories";
+import { StableTagSelector } from "pages/monitoring/ui/TagSelector";
+import { AttachmentInput } from "pages/monitoring/outlets/resources/manager/resourcesEditor/ResourceAttachment";
+import { helperInfo } from "pages/monitoring/outlets/resources/manager/resourcesEditor/layout/helperInfo";
 import type { TagData } from "pages/monitoring/types/initiative";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { getResource } from "pages/monitoring/api/services/monitoringResources";
-import { LabeledInput } from "@ui/LabeledInput";
-import { resourceTagCategories } from "./layout/tagCategories";
-import { StableTagSelector } from "pages/monitoring/ui/TagSelector";
-import { TagCategory } from "pages/monitoring/types/tagData";
-import { LabeledTextArea } from "@ui/LabeledTextArea";
-import { AttachmentInput } from "./ResourceAttachment";
-import { Switch } from "@mui/material";
-import { ConfirmationDialog } from "@ui/ConfirmationDialog";
-import { Check, NotebookPen } from "lucide-react";
-import { toast } from "sonner";
-import { useNavigate } from "react-router";
-import { helperInfo } from "./layout/helperInfo";
-import { parseSimpleMarkdown } from "@utils/textParser";
+import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
+import { tosTexts } from "pages/monitoring/outlets/resources/manager/resourcesEditor/layout/tos";
+import { ResourceInfo } from "pages/monitoring/outlets/resources/manager/resourcesEditor/ResourceInfo";
+import { StrValidator } from "@utils/strValidator";
+import { validationExemption } from "pages/monitoring/ui/initiativesAdmin/utils/fieldClientValidations";
+import { resourceNameNotExist } from "./utils/validations";
 
 export type MonirotingResourceForm = {
   initiativeId: number | null;
@@ -101,6 +101,18 @@ export function ResourceForm({
 
   const { userInitiativesById } = useUserInMonitoringCTX();
 
+  const updateValue =
+    <K extends keyof MonirotingResourceForm>(key: K) =>
+    (value: MonirotingResourceForm[K]) =>
+      setResource((oldInfo) => ({ ...oldInfo!, [key]: value }));
+
+  const updateTags =
+    (tagCategoryId: number) => (value: (ResourceTag | TagData)[]) =>
+      setResource((oldInfo) => ({
+        ...oldInfo,
+        tags: { ...oldInfo?.tags, [tagCategoryId]: value },
+      }));
+
   useEffect(() => {
     if (resourceId === null) {
       const startingResource = setInitialInformation(null);
@@ -130,6 +142,55 @@ export function ResourceForm({
 
   const handleReset = () => {
     setResource(resourceRef.current);
+  };
+
+  const validateName = async () => {
+    if (!resource || !resourceRef.current) {
+      return;
+    }
+    setErrors(({ name: _, ...oldErors }) => oldErors);
+
+    const [cleanName, nameErrors] = (
+      await new StrValidator(resource.name)
+        .sanitize()
+        .isRequired()
+        .hasLengthLessOrEqualThan(RESOURCE_NAME_MAX_LENGTH)
+        .customAsync(
+          validationExemption(
+            resourceNameNotExist,
+            resource.name === resourceRef.current.name,
+          ),
+          "Ya existe un recurso con ese nombre",
+        )
+    ).result;
+
+    if (nameErrors.length > 0) {
+      setErrors((oldErr) => ({ ...oldErr, name: nameErrors }));
+      return;
+    }
+
+    updateValue("name")(cleanName);
+  };
+
+  const validateDescription = () => {
+    if (!resource || !resourceRef.current) {
+      return;
+    }
+    setErrors(({ description: _, ...oldErors }) => oldErors);
+
+    const [cleanDescription, descriptionErrors] = new StrValidator(
+      resource.description,
+    )
+      .sanitize()
+      .isRequired()
+      .hasLengthLessOrEqualThan(RESOURCE_DESCRIPTION_MAX_LENGTH).result;
+
+    if (descriptionErrors.length > 0) {
+      setErrors((oldErr) => ({ ...oldErr, description: descriptionErrors }));
+      return;
+    }
+
+    updateValue("description")(cleanDescription);
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -173,18 +234,6 @@ export function ResourceForm({
     });
   };
 
-  const updateValue =
-    <K extends keyof MonirotingResourceForm>(key: K) =>
-    (value: MonirotingResourceForm[K]) =>
-      setResource((oldInfo) => ({ ...oldInfo!, [key]: value }));
-
-  const updateTags =
-    (tagCategoryId: number) => (value: (ResourceTag | TagData)[]) =>
-      setResource((oldInfo) => ({
-        ...oldInfo,
-        tags: { ...oldInfo?.tags, [tagCategoryId]: value },
-      }));
-
   const helperKeys = useMemo(
     () =>
       Object.entries(helperInfo).reduce<{
@@ -201,13 +250,16 @@ export function ResourceForm({
   );
 
   return !resource ? null : (
-    <div className="p-4 flex gap-4 *:flex-1">
+    <div className="p-4 flex gap-12 *:flex-1">
+      <ResourceInfo currentHelper={helper} resourceType={resourceType} />
       <form
-        className="space-y-4"
+        className="space-y-4 [&_label]:text-primary [&_label]:font-normal"
         onSubmit={(e) => void handleSubmit(e)}
         onReset={() => handleReset()}
       >
-        {resource.name}
+        <h3 className="text-primary">
+          {resourceId ? "Actualizar recurso" : "Crear recurso"}
+        </h3>
         <LabeledInput
           inputName="name"
           inputType="text"
@@ -217,19 +269,20 @@ export function ResourceForm({
             label: "Nombre del recurso",
             placeholder: "Cómo medir el tronco de la palma",
           }}
+          validator={validateName}
           state={resource.name}
           stateSetter={updateValue("name")}
           validationErrors={errors.name ?? []}
         />
 
         {Object.keys(userInitiativesById).length > 1 ? (
-          <>
+          <div>
             <LabelAndErrors
               htmlFor="initiativeId"
               errID="errors_initiativeId"
               validationErrors={errors.initiativeId ?? []}
             >
-              <span>Iniciativa a la que pertenece</span>
+              <span>Recurso bajo la iniciativa:</span>
             </LabelAndErrors>
             <NativeSelect
               name="initiativeId"
@@ -248,10 +301,10 @@ export function ResourceForm({
                 </NativeSelectOption>
               ))}
             </NativeSelect>
-          </>
+          </div>
         ) : (
-          <p className="my-0">
-            El recurso pertenece a la iniciativa{" "}
+          <p className="">
+            Recurso bajo la iniciativa{" "}
             <strong>{Object.values(userInitiativesById)[0]?.name ?? ""}</strong>
           </p>
         )}
@@ -280,6 +333,7 @@ export function ResourceForm({
             label: "Descripción",
             placeholder: "Descricion del recurso",
           }}
+          validator={validateDescription}
           state={resource.description}
           stateSetter={updateValue("description")}
           validationErrors={errors.description ?? []}
@@ -292,13 +346,18 @@ export function ResourceForm({
           updater={updateValue("links")}
           validationErrors={errors.links ?? []}
           descriptionMaxLength={100}
-          contentMaxLength={10}
+          contentMaxLength={RESOURCE_MAX_LINKS_AMOUNT}
           text={{
-            description: {
-              label: "Descripcion",
-              placeholder: "palo palo palo",
+            module: {
+              title: "Adjuntar enlaces al recurso",
+              attachmentsListTitle: "Enlaces adjuntos",
+              attachmentTypes: "¿El enlace hacia qué tipo de recurso apunta?",
             },
-            resource: { label: "Enlace", placeholder: "https:///////" },
+            description: {
+              label: "Descripción del enlace",
+              placeholder: "Los modelos de distribución...",
+            },
+            resource: { label: "Enlace", placeholder: "https://ejemplo.com" },
           }}
           currentHelper={helper}
           helpers={helperKeys.links}
@@ -312,8 +371,13 @@ export function ResourceForm({
           updater={updateValue("files")}
           validationErrors={errors.links ?? []}
           descriptionMaxLength={100}
-          contentMaxLength={10}
+          contentMaxLength={RESOURCE_MAX_FILES_AMOUNT}
           text={{
+            module: {
+              title: "Adjuntar archivos al recurso",
+              attachmentsListTitle: "Archivos adjuntos",
+              attachmentTypes: "¿Qué formato de archivo deseas adjuntar?",
+            },
             description: {
               label: "Descripcion",
               placeholder: "palo palo palo",
@@ -325,19 +389,19 @@ export function ResourceForm({
           setHelper={setHelper}
         />
 
-        <div>
+        <div className="flex gap-2 items-center">
           <LabelAndErrors
             validationErrors={errors.isDraft ?? []}
             errID="errors_isDraft"
             htmlFor="isDraft"
           >
-            Es borrador
+            ¿Publicar el recurso?
           </LabelAndErrors>
           <Switch
             name="isDraft"
             id="isDraft"
-            value={resource.isDraft}
-            onChange={() => {
+            checked={!resource.isDraft}
+            onCheckedChange={() => {
               setResource((oldInfo) => ({
                 ...oldInfo!,
                 isDraft: !oldInfo!["isDraft"],
@@ -349,21 +413,23 @@ export function ResourceForm({
                 : undefined
             }
           />
+          {resource.isDraft ? "No, aún es borrador" : "Si, es público"}
         </div>
 
         <div className="flex gap-2">
-          {tos && (
-            <span className="flex gap-1 items-center text-primary font-normal">
-              <Check className="size-5" /> Términos aprobados
-            </span>
-          )}
           <ConfirmationDialog
-            triggerBtnVariant="link"
+            triggerBtnVariant="outline"
+            className="w-full"
             texts={{
               trigger: {
-                label: `${tos ? "Rechazar" : "Aprobar"} términos para la carga de información`,
+                label: `${tos ? "Leer" : "Aceptar"} términos para la carga de información`,
+                icon: tos ? CircleCheckBig : Circle,
               },
-              dialog: { title: "Términos de uso", description: "yara yara ya" },
+              dialog: {
+                title: tosTexts.title,
+                description: tosTexts.description,
+                longMarkdown: tosTexts.tos,
+              },
               actionBtns: {
                 confirm: tos ? "Rechazo" : "Acepto",
                 cancel: "cancelar",
@@ -373,21 +439,15 @@ export function ResourceForm({
           />
         </div>
 
-        <div>
-          <Button disabled={!tos || isLoading}>guardar</Button>
-          <Button type="reset">reset</Button>
+        <div className="flex flex-row-reverse justify-between gap-2">
+          <Button disabled={!tos || isLoading}>
+            {resource.isDraft ? "Guardar" : "Publicar"}
+          </Button>
+          <Button type="reset" variant="outline_destructive">
+            Deshacer cambios
+          </Button>
         </div>
       </form>
-      <div>
-        {helper && (
-          <>
-            <h4>{helperInfo[helper].title}</h4>
-            {parseSimpleMarkdown(helperInfo[helper].mdText, {
-              headingsOffset: 3,
-            })}
-          </>
-        )}
-      </div>
     </div>
   );
 }

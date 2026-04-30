@@ -26,7 +26,8 @@ export function ResourcesList({
   const { userInitiativesById } = useUserInMonitoringCTX();
 
   return (
-    <div className="flex flex-wrap *:flex-1 gap-8 p-4 pb-2">
+    <div>
+      <h3 className="text-primary">Recursos disponibles para edición</h3>
       <div className="table-form-display-container ">
         <table className="table-form-display py-0!">
           <caption className="sr-only">
@@ -95,8 +96,6 @@ export function ResourcesList({
           </tbody>
         </table>
       </div>
-
-      <div>resourceType.description</div>
     </div>
   );
 }
