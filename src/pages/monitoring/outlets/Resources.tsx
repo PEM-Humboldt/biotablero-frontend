@@ -4,7 +4,7 @@ import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiative
 import { RoleInInitiative } from "pages/monitoring/types/catalog";
 import { Button } from "@ui/shadCN/component/button";
 
-export function MonitoringResources() {
+export function Resources() {
   const { userInitiativesAs } = useUserInMonitoringCTX();
   const { resourceId } = useParams();
 
