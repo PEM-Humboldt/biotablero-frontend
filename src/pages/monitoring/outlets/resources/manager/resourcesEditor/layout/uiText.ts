@@ -35,7 +35,8 @@ export const uiText = {
   },
   desctiption: {
     label: "Descripción",
-    placeholder: "Descricion del recurso",
+    placeholder:
+      "Describe brevemente el recurso que quieres compartir, indicando su contenido, propósito y utilidad. La descripción no debe superar las 500 palabras.",
   },
   attachments: {
     ui: {

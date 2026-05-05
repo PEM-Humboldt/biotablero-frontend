@@ -9,7 +9,7 @@ export function setInitialInformation(
 ): MonirotingResourceForm {
   return {
     initiativeId: resource?.initiativeId || null,
-    name: resource?.name || "carai",
+    name: resource?.name || "",
     description: resource?.description || "",
     isDraft: resource?.isDraft || false,
     files: resource?.files && resource.files.length > 0 ? resource.files : [],

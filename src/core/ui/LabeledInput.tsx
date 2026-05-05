@@ -5,7 +5,7 @@ import {
   InputGroupInput,
 } from "@ui/shadCN/component/input-group";
 import { inputLengthCount, inputWarnColor } from "@utils/ui";
-import type { Dispatch, InputHTMLAttributes, SetStateAction } from "react";
+import type { InputHTMLAttributes } from "react";
 
 type AllowedInput =
   | "text"
@@ -25,7 +25,7 @@ interface LabeledInputProps
   texts: { label?: string; sr?: string; placeholder?: string };
   state: string;
   stateSetter: (value: string) => void;
-  validator?: () => Promise<void> | void;
+  validator?: () => Promise<void | boolean> | void | boolean;
   validationErrors: string[];
 }
 

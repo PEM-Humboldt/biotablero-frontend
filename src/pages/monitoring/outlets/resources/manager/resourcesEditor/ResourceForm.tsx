@@ -17,6 +17,7 @@ import {
 import {
   RESOURCE_DESCRIPTION_MAX_LENGTH,
   RESOURCE_NAME_MAX_LENGTH,
+  RESOURCE_NAME_MIN_LENGTH,
   RESOURCES_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS,
 } from "@config/monitoring";
 import { StrValidator } from "@utils/strValidator";
@@ -153,6 +154,7 @@ export function ResourceForm({
       await new StrValidator(resource.name)
         .sanitize()
         .isRequired()
+        .hasLengthMoreThan(RESOURCE_NAME_MIN_LENGTH)
         .hasLengthLessOrEqualThan(RESOURCE_NAME_MAX_LENGTH)
         .customAsync(
           validationExemption(
@@ -441,7 +443,8 @@ export function ResourceForm({
             items={resource[config.id]}
             updater={updateValue(config.id)}
             validationErrors={errors[config.id] ?? []}
-            descriptionMaxLength={100}
+            descriptionMaxLength={config.descriptionMaxLength}
+            linkMaxLength={config.linkMaxLength}
             contentMaxLength={config.max}
             text={uiText.attachments[config.id]}
             currentHelper={helper}
