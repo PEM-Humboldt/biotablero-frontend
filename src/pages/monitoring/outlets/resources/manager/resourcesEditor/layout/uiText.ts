@@ -53,7 +53,7 @@ export const uiText = {
         sr: (isUpdate: boolean) =>
           isUpdate ? "Guardar cambios" : "Agregar adjunto",
       },
-      cancel: { title: "Cancelar", label: "Cancelar edición", sr: "" },
+      cancel: { title: "Cancelar", label: "", sr: "Cancelar edición" },
     },
     links: {
       module: {
@@ -75,7 +75,7 @@ export const uiText = {
       },
       description: {
         label: "Descripcion",
-        placeholder: "palo palo palo",
+        placeholder: "Describe el archivo brevemente",
       },
       resource: { label: "archivo" },
     },
