@@ -112,7 +112,7 @@ export async function addTagToInitiative(initiativeId: number, tagId: number) {
 }
 
 export async function removeTagFromInitiative(tagInInitiativeId: number) {
-  const res = await monitoringAPI({
+  const res = await monitoringAPI<undefined>({
     type: "delete",
     endpoint: `InitiativeTag/${tagInInitiativeId}`,
   });
