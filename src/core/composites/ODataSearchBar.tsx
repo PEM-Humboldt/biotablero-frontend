@@ -95,6 +95,10 @@ export function ODataSearchBar<T>({
     } else {
       setSearchParams((oldParams) => ({ ...oldParams, ...getSearchValues() }));
     }
+    // NOTE: En los reset al hacer el useEffect sensible a todas las
+    // dependencias que pide, entramos los rerenderizados pueden causar un r
+    // etorno al estado anterior y forzar al usuario a hacer clic dos veces
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterInjection]);
 
   const submitSearch = (event: FormEvent) => {
@@ -133,7 +137,10 @@ export function ODataSearchBar<T>({
     }
 
     if (reset) {
-      setSearchParams(({ filter: _filter, ...otherParams }) => otherParams);
+      setSearchParams(({ filter: _filter, ...otherParams }) => ({
+        ...otherParams,
+        filter: filterInjection || "",
+      }));
     }
   };
 
