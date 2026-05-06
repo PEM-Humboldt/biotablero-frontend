@@ -164,45 +164,6 @@ export class EcosystemsController {
     throw Error("Polygon and area undefined");
   }
 
-  // TODO: Refactor to use SearchAPI when available
-
-  /*
-  async getCoveragesSELayer(seType: string): Promise<Array<RasterLayer>> {
-    if (this.areaType && this.areaId) {
-      const requests: Array<Promise<any>> = [];
-      coverageKeys.forEach((category: string) => {
-        const { request, source } = BackendAPI.requestCoveragesSELayer(
-          this.areaType ?? "",
-          this.areaId ?? "",
-          category,
-          seType,
-        );
-        requests.push(request);
-        this.activeRequests.set(category, source);
-      });
-
-      const res = await Promise.all(requests);
-
-      coverageKeys.forEach((category) => {
-        this.activeRequests.delete(category);
-      });
-
-      if (res.includes("request canceled")) throw Error("request canceled");
-
-      return coverageKeys.map((category, idx) => ({
-        id: category,
-        data: `data:${res[idx].headers["content-type"]};base64, ${base64(
-          res[idx].data,
-        )}`,
-        selected: false,
-        paneLevel: 2,
-      }));
-    }
-
-    throw Error("Polygon and area undefined");
-  }
-  */
-
   /**
    * Send the cancel signal to all active requests and remove them from the map
    */
