@@ -1,4 +1,4 @@
-import { useEffect, useContext, useReducer, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 
 import InfoIcon from "@mui/icons-material/Info";
 import { ShortInfo } from "@composites/ShortInfo";
@@ -176,8 +176,6 @@ function ecosystemsReducer(
   }
 }
 
-const controller = new EcosystemsController();
-
 export function Ecosystems() {
   const {
     areaType,
@@ -190,6 +188,8 @@ export function Ecosystems() {
     clearLayers,
   } = useSearchLegacyCTX();
   const [hasActiveSE, setHasActiveSE] = useState(false);
+  const controllerRef = useRef(new EcosystemsController());
+  const controller = controllerRef.current;
 
   const [state, dispatch] = useReducer(ecosystemsReducer, initialState);
 
@@ -283,6 +283,12 @@ export function Ecosystems() {
       controller.cancelActiveRequests();
     };
   }, [areaTypeId, areaIdId, areaHa]);
+
+  useEffect(() => {
+    return () => {
+      controller.cancelActiveRequests();
+    };
+  }, []);
 
   if (!areaType || !areaId) {
     return null;
