@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import Lines from "@composites/charts/Lines";
 import {
+  gapAverage,
   gapMockByGroup,
   speciesGroupOptions,
   type SpeciesGroupKey,
@@ -10,14 +11,14 @@ interface LineSerie {
   key: string;
   label: string;
   data: {
-    x: string;
+    x: number;
     y: number;
   }[];
 }
 
 const SERIES_YEARS = [2019, 2021, 2023, 2025] as const;
-const X_MIN = 0.3;
-const X_MAX = 0.95;
+const X_MIN = 0;
+const X_MAX = 1;
 
 const yearColors: Record<number, string> = {
   2019: "#303F8C",
@@ -47,11 +48,11 @@ export function Gap() {
           if (end < X_MIN || end > X_MAX) return null;
 
           return {
-            x: end.toFixed(2),
+            x: Number(end.toFixed(2)),
             y: value,
           };
         })
-        .filter((point): point is { x: string; y: number } => point !== null);
+        .filter((point): point is { x: number; y: number } => point !== null);
 
       const year = SERIES_YEARS[index] ?? Number(serie.id) ?? 2000 + index;
 
@@ -77,6 +78,32 @@ export function Gap() {
     return Math.ceil(maxValue * 1.15);
   }, [transformedData]);
 
+  const avgLastSerieX = gapAverage[selectedGroup];
+  const averageMarkerValue = Number(avgLastSerieX.toFixed(2));
+  const lastSerieLabel =
+    transformedData[transformedData.length - 1]?.label ?? "última serie";
+  const markers = useMemo(
+    () => [
+      {
+        axis: "x" as const,
+        value: averageMarkerValue,
+        lineStyle: {
+          stroke: "#B54A00",
+          strokeWidth: 2,
+          strokeDasharray: "6 4",
+        },
+        legend: `Promedio ${lastSerieLabel}`,
+        legendPosition: "top-right" as const,
+        textStyle: {
+          fill: "#B54A00",
+          fontSize: 11,
+          fontWeight: 600,
+        },
+      },
+    ],
+    [averageMarkerValue, lastSerieLabel],
+  );
+
   if (transformedData.length === 0) return null;
 
   return (
@@ -89,10 +116,10 @@ export function Gap() {
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
+          flexDirection: "column",
           alignItems: "flex-start",
-          marginBottom: "6px",
-          gap: "12px",
+          marginBottom: "10px",
+          gap: "10px",
         }}
       >
         <h5
@@ -114,7 +141,6 @@ export function Gap() {
             gap: "12px",
             color: "#616771",
             minWidth: "320px",
-            justifyContent: "flex-end",
           }}
         >
           <span style={{ lineHeight: 1.1 }}>Grupo Taxonómico</span>
@@ -144,8 +170,13 @@ export function Gap() {
 
       <Lines
         data={transformedData}
+        markers={markers}
+        tooltipType="value"
         labelX="Índice de Vacíos de Registros por (IVR)"
         labelY="Frecuencia de unidades de 1km²"
+        xScaleType="linear"
+        xMin={X_MIN}
+        xMax={X_MAX}
         height={420}
         yMin={0}
         yMax={yMax}
@@ -164,8 +195,7 @@ export function Gap() {
           color: "#5E6570",
         }}
       >
-        0 : vacío mínimo - lugar bien muestreado · 1 : vacíos máximo - lugar mal
-        muestreado
+        0 : vacío mínimo · 1 : vacíos máximo
       </p>
     </div>
   );

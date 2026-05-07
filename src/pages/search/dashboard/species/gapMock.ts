@@ -13,6 +13,16 @@ export type SpeciesGroupKey =
   | "fish"
   | "plants";
 
+export const gapAverage: Record<SpeciesGroupKey, number> = {
+  all: 0.84,
+  mammals: 0.79,
+  birds: 0.8,
+  reptiles: 0.78,
+  amphibians: 0.77,
+  fish: 0.79,
+  plants: 0.81,
+};
+
 export const speciesGroupOptions: Array<{
   value: SpeciesGroupKey;
   label: string;
@@ -63,8 +73,8 @@ export const gapMockByGroup: Record<SpeciesGroupKey, GapMetricSerie[]> = {
       id: 2025,
       bin_edges: E,
       histogram: [
-        0, 0, 0, 0, 0, 2, 6, 31, 88, 640, 1810, 3601, 2470, 1523, 6205, 24110,
-        35200, 3200, 7, 1,
+        0, 0, 0, 0, 0, 0, 1, 9, 50, 437, 1432, 3421, 2302, 1374, 5651, 22639,
+        33455, 2727, 1, 0,
       ],
     },
   ],

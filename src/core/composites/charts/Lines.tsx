@@ -9,7 +9,7 @@ interface LinesData {
   label: string;
   data: Array<{
     y: number;
-    x: string;
+    x: string | number;
   }>;
   key: string;
 }
@@ -18,7 +18,7 @@ interface LinesDataState {
   id: string;
   data: Array<{
     y: number;
-    x: string;
+    x: string | number;
   }>;
   color: string;
 }
@@ -38,6 +38,10 @@ interface Props {
   legendTranslateX?: number;
   legendTranslateY?: number;
   enableGridX?: boolean;
+  xScaleType?: "point" | "linear";
+  xMin?: number | "auto";
+  xMax?: number | "auto";
+  tooltipType?: "default" | "value";
 }
 
 interface State {
@@ -108,19 +112,17 @@ class Lines extends React.Component<Props, State> {
       serieId,
     } = point;
     const { labels } = this.state;
-    const { units } = this.props;
+    const { units, tooltipType = "default" } = this.props;
     return (
       <div className="tooltip-graph-container">
         <div>
           <strong
             style={{ color: serieId === "aTotal" ? "#ffffff" : serieColor }}
           >
-            {`${labels[serieId]} en ${xFormatted}`}
+            {tooltipType === "value"
+              ? `${formatNumber(yFormatted, 2)}${units ? ` ${units}` : ""}`
+              : `${labels[serieId]} en ${xFormatted}`}
           </strong>
-          <br />
-          <div style={{ color: "#ffffff" }}>
-            {`${formatNumber(yFormatted, 2)}${units ? ` ${units}` : ""}`}
-          </div>
         </div>
       </div>
     );
@@ -181,6 +183,9 @@ class Lines extends React.Component<Props, State> {
       legendTranslateX = -50,
       legendTranslateY = 100,
       enableGridX = true,
+      xScaleType = "point",
+      xMin = "auto",
+      xMax = "auto",
     } = this.props;
 
     const { data, labels, selectedId, hiddenIds } = this.state;
@@ -194,7 +199,11 @@ class Lines extends React.Component<Props, State> {
         <ResponsiveLine
           data={visibleData}
           enableGridX={enableGridX}
-          xScale={{ type: "point" }}
+          xScale={
+            xScaleType === "linear"
+              ? { type: "linear", min: xMin, max: xMax }
+              : { type: "point" }
+          }
           yScale={{
             type: "linear",
             min: yMin,
@@ -216,6 +225,7 @@ class Lines extends React.Component<Props, State> {
             legend: labelX,
             legendOffset: 36,
             legendPosition: "middle",
+            format: xScaleType === "linear" ? (value) => `${value}` : undefined,
           }}
           axisLeft={{
             tickSize: 5,
