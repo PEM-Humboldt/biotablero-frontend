@@ -1,8 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link, useParams } from "react-router";
-import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
-import { RoleInInitiative } from "pages/monitoring/types/catalog";
-import { Button } from "@ui/shadCN/component/button";
+import { useParams } from "react-router";
+
+import { LoadingDiv } from "@ui/LoadingDiv";
+import { ErrorsList } from "@ui/LabelingWithErrors";
+import { ODataSearchBar } from "@composites/ODataSearchBar";
+import type { ODataParams, SearchBarComponent } from "@appTypes/odata";
+import { TablePager } from "@composites/TablePager";
+import { RESOURCES_PER_PAGE } from "@config/monitoring";
+import { cn } from "@ui/shadCN/lib/utils";
+
 import { Header } from "pages/monitoring/outlets/resources/Header";
 import type {
   MonitoringResource,
@@ -14,16 +20,11 @@ import {
   getResourcesType,
 } from "pages/monitoring/api/services/monitoringResources";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import { LoadingDiv } from "@ui/LoadingDiv";
-import { ErrorsList } from "@ui/LabelingWithErrors";
-import { ODataSearchBar } from "@composites/ODataSearchBar";
-import type { ODataParams, SearchBarComponent } from "@appTypes/odata";
-import { TablePager } from "@composites/TablePager";
 import { makeSearchResourcesComponents } from "pages/monitoring/outlets/resources/layout/makeResourcesSearchBarComponents";
-import { RESOURCES_PER_PAGE } from "@config/monitoring";
+import { ResourceCard } from "pages/monitoring/outlets/resources/ResourceCard";
+import { CurrentResource } from "pages/monitoring/outlets/resources/CurrentResource";
 
 export function Resources() {
-  const { userInitiativesAs } = useUserInMonitoringCTX();
   const { resourceId } = useParams();
 
   const [isLoading, setIsLoading] = useState(0);
@@ -43,7 +44,7 @@ export function Resources() {
     orderby: "publicationDate desc",
   });
   const prevSearchParamsRef = useRef(searchParams);
-  const recordsAvailable = useRef(0);
+  const resourcesAvailable = useRef(0);
 
   useEffect(() => {
     setIsLoading((prvLoads) => prvLoads + 1);
@@ -114,78 +115,99 @@ export function Resources() {
         return;
       }
 
-      recordsAvailable.current = res["@odata.count"];
+      resourcesAvailable.current = res["@odata.count"];
       setResources(res.value);
     };
 
     void fetchResources();
   }, [searchParams, currentPage]);
 
-  const userLinkedInitiatives = useMemo(
-    () => [
-      ...(userInitiativesAs[RoleInInitiative.LEADER] ?? []),
-      ...(userInitiativesAs[RoleInInitiative.USER] ?? []),
-    ],
-    [userInitiativesAs],
-  );
+  const filtersInjected = useMemo(() => {
+    const filters = [`resourceType/id eq ${currentTab}`];
+    if (currentResource !== null) {
+      filters.push(`id ne ${currentResource.id}`);
+    }
+    return filters.join(" and ");
+  }, [currentResource, currentTab]);
+
+  const plural = resourcesAvailable.current !== 1 ? "s " : " ";
 
   return (
-    <div className="flex flex-col gap-4 w-full *:w-full items-center bg-grey-form">
+    <div className="flex flex-col gap-4 lg:gap-6 pb-8 w-full items-center bg-grey-form">
       <Header />
-      {userLinkedInitiatives.length > 0 && (
-        <Button asChild>
-          <Link to="/Monitoreo/Recursos/Admin">Administrar mis recursos</Link>
-        </Button>
-      )}
 
       <ErrorsList
         errorItems={errors}
-        className="bg-accent/10 border border-accent rounded-lg max-w-[1600px] p-4"
+        className="w-1/2 min-w-[300px] mx-12 p-4 bg-accent/10 border border-accent rounded-lg"
       />
 
-      <div className="flex gap-2 max-w-[1600px]">
+      <div className="flex flex-wrap gap-4 w-full max-w-[1600px] px-4">
         {resourceTypes.map((resType) => (
-          <Button
+          <div
             key={`resTypeTrigger_${resType.id}`}
-            className="flex-1"
-            onClick={() => setCurrentTab(resType.id)}
+            className={cn(
+              "isolate relative flex-[1_1_200px] flex flex-col p-4 lg:p-6 border-2 border-transparent rounded-xl shadow-xl transition-all duration-200",
+              resType.id === currentTab
+                ? "bg-primary text-primary-foreground"
+                : "hover:bg-primary/10 hover:shadow hover:scale-107 hover:border-primary",
+            )}
           >
-            {resType.name}
-          </Button>
+            <h3 className="text-4xl font-bold text-balance">{resType.name}</h3>
+
+            <p className="text-pretty m-0">{resType.description}</p>
+
+            {resType.id !== currentTab && (
+              <button
+                onClick={() => {
+                  setCurrentTab(resType.id);
+                  setCurrentResource(null);
+                }}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                aria-label={`Seleccionar tipo de recurso: ${resType.name}`}
+              />
+            )}
+          </div>
         ))}
       </div>
 
       {searchBarComponents && (
-        <ODataSearchBar
-          components={searchBarComponents}
-          setSearchParams={setSearchParams}
-          className="max-w-[1600px]"
-          filterInjection={`resourceType/id eq ${currentTab}`}
-          reset="Reiniciar consulta"
-        />
-      )}
-
-      {isLoading > 0 && <LoadingDiv />}
-
-      {currentResource && (
-        <div className="max-w-[1600px] bg-primary text-background">
-          {currentResource.name}
+        <div className="w-full px-4 max-w-[1200px] flex flex-col items-center">
+          <ODataSearchBar
+            components={searchBarComponents}
+            setSearchParams={setSearchParams}
+            className="w-full bg-muted [&_select]:bg-background flex-wrap! py-2"
+            filterInjection={filtersInjected}
+            reset="Reiniciar consulta"
+          />
+          <div className="text-primary text-left w-full mb-0 px-6">
+            <strong>{resourcesAvailable.current} </strong>
+            Recurso{plural}encontrado{plural}
+          </div>
         </div>
       )}
 
+      {isLoading > 0 && (
+        <LoadingDiv className="bg-transparent border-none text-center" />
+      )}
+
+      <CurrentResource resource={currentResource} />
+
       {resources.length > 0 ? (
-        <ul>
-          {resources.map((resource) => (
-            <div key={resource.id}>{resource.name}</div>
-          ))}
-        </ul>
+        <section className="w-full max-w-[1600px]">
+          <h3 className="sr-only">Recursos disponibles</h3>
+          <ul className="px-4 grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8">
+            {resources.map((resource) => (
+              <ResourceCard key={resource.id} resource={resource} />
+            ))}
+          </ul>
+        </section>
       ) : (
         "Todavíano hay recursos en esta categoría"
       )}
 
       <TablePager
         currentPage={currentPage}
-        recordsAvailable={recordsAvailable.current}
+        recordsAvailable={resourcesAvailable.current}
         onPageChange={setCurrentPage}
         recordsPerPage={RESOURCES_PER_PAGE}
         paginated={3}
