@@ -116,13 +116,11 @@ export function StrategicEcosystems({
       .catch(() => {
         dispatch({ type: "LOAD_FAIL" });
       });
-  }, [areaTypeId, areaIdId, areaHa]);
 
-  useEffect(() => {
     return () => {
       controller.cancelActiveRequests();
     };
-  }, []);
+  }, [areaTypeId, areaIdId, areaHa]);
 
   useEffect(() => {
     onActiveSEChange?.(Boolean(activeSE));

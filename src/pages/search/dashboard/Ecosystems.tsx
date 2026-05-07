@@ -80,6 +80,7 @@ const initialState: EcosystemsState = {
 type EcosystemsAction =
   | { type: "TOGGLE_MAIN_INFO" }
   | { type: "TOGGLE_SECTION_INFO"; payload: string }
+  | { type: "COVERAGE_LOADING" }
   | { type: "COVERAGE_VALUES_SUCCEEDED"; payload: SmallStackedBarData[] }
   | { type: "COVERAGE_LAYERS_SUCCEEDED"; payload: RasterLayer[] }
   | { type: "COVERAGE_VALUES_FAILED" }
@@ -114,6 +115,17 @@ function ecosystemsReducer(
       return { ...state, infoShown: newSet };
     }
 
+    case "COVERAGE_LOADING":
+      return {
+        ...state,
+        coverageData: [],
+        layers: [],
+        messages: {
+          ...state.messages,
+          cov: "loading",
+        },
+      };
+
     case "COVERAGE_VALUES_SUCCEEDED":
       return {
         ...state,
@@ -125,7 +137,10 @@ function ecosystemsReducer(
       };
 
     case "COVERAGE_LAYERS_SUCCEEDED":
-      return { ...state, layers: action.payload };
+      return {
+        ...state,
+        layers: action.payload,
+      };
 
     case "COVERAGE_VALUES_FAILED":
       return {
@@ -209,11 +224,14 @@ export function Ecosystems() {
   const areaIdId = areaId?.id;
 
   useEffect(() => {
+    let isCurrent = true;
+
     if (!areaTypeId || !areaIdId) {
       setLoadingLayer(false);
       return;
     }
 
+    dispatch({ type: "COVERAGE_LOADING" });
     controller.setArea(areaTypeId, areaIdId);
 
     setLoadingLayer(true);
@@ -221,26 +239,36 @@ export function Ecosystems() {
     controller
       .getCoverageValues()
       .then((coverageDataRes) => {
+        if (!isCurrent) return;
         controller
           .getCoveragesLayers()
           .then((layersRes) => {
+            if (!isCurrent) return;
             dispatch({ type: "COVERAGE_LAYERS_SUCCEEDED", payload: layersRes });
             setRasterLayers(layersRes);
             setLoadingLayer(false);
             setMapTitle({ name: "Coberturas" });
           })
           .catch((e) => {
-            setLoadingLayer(false);
-            if (!e.toString().includes("request canceled")) {
-              setLayerError?.(e.toString());
+            if (!isCurrent) return;
+            const errorMessage = e?.toString?.() ?? String(e);
+            if (errorMessage.includes("request canceled")) {
+              return;
             }
+            setLoadingLayer(false);
+            setLayerError?.(errorMessage);
           });
         dispatch({
           type: "COVERAGE_VALUES_SUCCEEDED",
           payload: coverageDataRes,
         });
       })
-      .catch(() => {
+      .catch((e) => {
+        if (!isCurrent) return;
+        const errorMessage = e?.toString?.() ?? String(e);
+        if (errorMessage.includes("request canceled")) {
+          return;
+        }
         dispatch({ type: "COVERAGE_VALUES_FAILED" });
         setLoadingLayer(false);
       });
@@ -248,12 +276,14 @@ export function Ecosystems() {
     controller
       .getProtectedAreasValues(areaHa ?? 0)
       .then((PAAreas) => {
+        if (!isCurrent) return;
         dispatch({
           type: "PROTECTED_AREAS_VALUES_SUCCEEDED",
           payload: PAAreas,
         });
       })
       .catch(() => {
+        if (!isCurrent) return;
         dispatch({ type: "PROTECTED_AREAS_VALUES_FAILED" });
       });
 
@@ -279,16 +309,11 @@ export function Ecosystems() {
     });
 
     return () => {
+      isCurrent = false;
       clearLayers();
       controller.cancelActiveRequests();
     };
   }, [areaTypeId, areaIdId, areaHa]);
-
-  useEffect(() => {
-    return () => {
-      controller.cancelActiveRequests();
-    };
-  }, []);
 
   if (!areaType || !areaId) {
     return null;

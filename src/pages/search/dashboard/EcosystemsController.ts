@@ -5,6 +5,7 @@ import { CancelTokenSource } from "axios";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import { transformCoverageValues } from "pages/search/dashboard/ecosystems/transformData";
 import { SmallStackedBarData } from "@composites/charts/SmallStackedBar";
+import axios from "axios";
 
 /**
  * Controller for Ecosystems Component
@@ -34,19 +35,26 @@ export class EcosystemsController {
    * @returns { Promise<SmallStackedBarData[]>}
    */
   getCoverageValues() {
-    return SearchAPI.requestMetricsValues<"coverage">(
-      "coverage",
-      this.areaId,
-    ).then((res) => {
-      const { id, ...classes } = res;
-      this.itemId = id;
-      this.classes = new Set(
-        Object.keys(classes).filter(
-          (classId) => classes[classId as keyof typeof classes] != 0.0,
-        ),
-      );
-      return transformCoverageValues(res);
-    });
+    const requestKey = "coverage-values";
+    const source = axios.CancelToken.source();
+    this.activeRequests.set(requestKey, source);
+
+    return SearchAPI.requestMetricsValues<"coverage">("coverage", this.areaId, {
+      cancelToken: source.token,
+    })
+      .then((res) => {
+        const { id, ...classes } = res;
+        this.itemId = id;
+        this.classes = new Set(
+          Object.keys(classes).filter(
+            (classId) => classes[classId as keyof typeof classes] != 0.0,
+          ),
+        );
+        return transformCoverageValues(res);
+      })
+      .finally(() => {
+        this.activeRequests.delete(requestKey);
+      });
   }
 
   /**
@@ -55,48 +63,57 @@ export class EcosystemsController {
    * @returns { Promise<SmallStackedBarData[]>}
    */
   getProtectedAreasValues(totalArea: number): Promise<SmallStackedBarData[]> {
+    const requestKey = "protected-areas-values";
+    const source = axios.CancelToken.source();
+    this.activeRequests.set(requestKey, source);
+
     return SearchAPI.requestMetricsValues<"protectedAreas">(
       "protectedAreas",
       this.areaId,
-    ).then((response) => {
-      const { id, ...rawValues } = response;
-      const items = Object.entries(rawValues)
-        .filter(([, value]) => value > 0)
-        .map(([key, area]) => ({
-          key,
-          label: key,
-          area,
+      { cancelToken: source.token },
+    )
+      .then((response) => {
+        const { id, ...rawValues } = response;
+        const items = Object.entries(rawValues)
+          .filter(([, value]) => value > 0)
+          .map(([key, area]) => ({
+            key,
+            label: key,
+            area,
+          }));
+
+        const isNoProtected = (value: string) =>
+          value
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/\s|_/g, "") === "noprotegida";
+
+        const hasNoProtected = items.some((item) => isNoProtected(item.key));
+        const PATotalArea = items.reduce(
+          (acc, item) => (isNoProtected(item.key) ? acc : acc + item.area),
+          0,
+        );
+
+        if (!hasNoProtected) {
+          const noProtectedArea = Math.max(totalArea - PATotalArea, 0);
+          items.push({
+            area: noProtectedArea,
+            label: "No Protegida",
+            key: "No Protegida",
+          });
+        }
+
+        const PAAreas: SmallStackedBarData[] = items.map((item) => ({
+          ...item,
+          percentage: totalArea > 0 ? item.area / totalArea : 0,
         }));
 
-      const isNoProtected = (value: string) =>
-        value
-          .toLowerCase()
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .replace(/\s|_/g, "") === "noprotegida";
-
-      const hasNoProtected = items.some((item) => isNoProtected(item.key));
-      const PATotalArea = items.reduce(
-        (acc, item) => (isNoProtected(item.key) ? acc : acc + item.area),
-        0,
-      );
-
-      if (!hasNoProtected) {
-        const noProtectedArea = Math.max(totalArea - PATotalArea, 0);
-        items.push({
-          area: noProtectedArea,
-          label: "No Protegida",
-          key: "No Protegida",
-        });
-      }
-
-      const PAAreas: SmallStackedBarData[] = items.map((item) => ({
-        ...item,
-        percentage: totalArea > 0 ? item.area / totalArea : 0,
-      }));
-
-      return PAAreas;
-    });
+        return PAAreas;
+      })
+      .finally(() => {
+        this.activeRequests.delete(requestKey);
+      });
   }
 
   /**
@@ -165,7 +182,7 @@ export class EcosystemsController {
   }
 
   /**
-   * Send the cancel signal to all active requests and remove them from the map
+   * Cancel all active requests and remove them from the map
    */
   cancelActiveRequests = () => {
     this.activeRequests.forEach((value, key) => {

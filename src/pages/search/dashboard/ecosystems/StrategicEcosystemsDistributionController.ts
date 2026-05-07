@@ -5,6 +5,7 @@ import { CancelTokenSource } from "axios";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import { transformCoverageValues } from "pages/search/dashboard/ecosystems/transformData";
 import { SEKey } from "pages/search/types/ecosystems";
+import axios from "axios";
 
 /**
  * Controller for Strategic Ecosystems Distribution Component
@@ -35,16 +36,26 @@ export class StrategicEcosystemsDistributionController {
    */
   getStrategicEcosystemsDistributionValues(SEType: SEKey) {
     const metricId = `coverage_${SEType}` as const;
-    return SearchAPI.requestMetricsValues(metricId, this.areaId).then((res) => {
-      const { id, ...classes } = res;
-      this.itemId = id;
-      this.classes = new Set(
-        Object.keys(classes).filter(
-          (classId) => classes[classId as keyof typeof classes] != 0.0,
-        ),
-      );
-      return transformCoverageValues(res);
-    });
+    const requestKey = `strategic-ecosystems-distribution-values-${SEType}`;
+    const source = axios.CancelToken.source();
+    this.activeRequests.set(requestKey, source);
+
+    return SearchAPI.requestMetricsValues(metricId, this.areaId, {
+      cancelToken: source.token,
+    })
+      .then((res) => {
+        const { id, ...classes } = res;
+        this.itemId = id;
+        this.classes = new Set(
+          Object.keys(classes).filter(
+            (classId) => classes[classId as keyof typeof classes] != 0.0,
+          ),
+        );
+        return transformCoverageValues(res);
+      })
+      .finally(() => {
+        this.activeRequests.delete(requestKey);
+      });
   }
 
   /**

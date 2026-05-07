@@ -85,8 +85,12 @@ class SearchAPI {
   static requestMetricsValues<Metric extends MetricsTypes>(
     metricId: Metric,
     polygonId: number,
+    options: AxiosRequestConfig = {},
   ): Promise<MetricTypesMap[Metric]> {
-    return SearchAPI.makeGetRequest(`metrics/${metricId}/values/${polygonId}`);
+    return SearchAPI.makeGetRequest(
+      `metrics/${metricId}/values/${polygonId}`,
+      options,
+    );
   }
 
   /**

@@ -42,8 +42,8 @@ export function StrategicEcosystemsDistribution({
   } = useSearchLegacyCTX();
 
   const controllerRef = useRef(new StrategicEcosystemsDistributionController());
-
   const controller = controllerRef.current;
+
   let loadStatus: MessageWrapperType = null;
 
   if (chartStatus === "loading") {
@@ -124,7 +124,7 @@ export function StrategicEcosystemsDistribution({
       isCurrent = false;
       controller.cancelActiveRequests();
     };
-  }, [areaTypeId, areaIdId, SEType, controller]);
+  }, [areaTypeId, areaIdId, SEType]);
 
   return (
     <>
