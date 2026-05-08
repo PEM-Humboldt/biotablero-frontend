@@ -61,7 +61,7 @@ export async function removeResource(resourceId: number) {
   return res;
 }
 
-export async function AddResourceTag(resourceId: number, tagId: number) {
+export async function addResourceTag(resourceId: number, tagId: number) {
   const res = await monitoringAPI<ResourceTag>({
     type: "post",
     endpoint: `ResourceTag?resourceId=${resourceId}&tagId=${tagId}`,
@@ -90,22 +90,22 @@ export async function addResourceLink(resourceLinkInfo: RequestData) {
 }
 
 export async function editResourceLink(
-  linkInresourceId: number,
+  linkInResourceId: number,
   resourceLinkInfo: RequestData,
 ) {
   const res = await monitoringAPI<MonitoringResource>({
     type: "put",
-    endpoint: `ResourceLink/${linkInresourceId}`,
+    endpoint: `ResourceLink/${linkInResourceId}`,
     options: { data: resourceLinkInfo },
   });
 
   return res;
 }
 
-export async function removeResourceLink(linkInresourceId: number) {
+export async function removeResourceLink(linkInResourceId: number) {
   const res = await monitoringAPI<MonitoringResource>({
     type: "delete",
-    endpoint: `ResourceLink/${linkInresourceId}`,
+    endpoint: `ResourceLink/${linkInResourceId}`,
   });
 
   return res;
@@ -148,10 +148,10 @@ export async function editResourceFile(
   return res;
 }
 
-export async function removeResourceFile(fileInresourceId: number) {
+export async function removeResourceFile(fileInResourceId: number) {
   const res = await monitoringAPI<MonitoringResource>({
     type: "delete",
-    endpoint: `ResourceFile/${fileInresourceId}`,
+    endpoint: `ResourceFile/${fileInResourceId}`,
   });
 
   return res;

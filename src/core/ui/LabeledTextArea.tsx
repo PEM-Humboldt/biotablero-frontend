@@ -13,7 +13,7 @@ interface LabeledTextAreaProps extends TextareaAutosizeProps {
   texts: { label?: string; sr?: string; helper?: string; placeholder?: string };
   state: string;
   stateSetter: (value: string) => void;
-  validator?: () => Promise<void> | void;
+  validator?: () => Promise<void | boolean> | void | boolean;
   validationErrors: string[];
 }
 

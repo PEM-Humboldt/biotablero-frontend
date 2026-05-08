@@ -17,6 +17,7 @@ import {
 import {
   RESOURCE_DESCRIPTION_MAX_LENGTH,
   RESOURCE_NAME_MAX_LENGTH,
+  RESOURCE_NAME_MIN_LENGTH,
   RESOURCES_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS,
 } from "@config/monitoring";
 import { StrValidator } from "@utils/strValidator";
@@ -33,7 +34,7 @@ import { resourceNameNotExist } from "pages/monitoring/outlets/resources/manager
 import type { RequestData } from "pages/monitoring/api/types/definitions";
 import { createErrorObjectParser } from "pages/monitoring/utils/errorObjectParser";
 import { getAttachmentDiff } from "pages/monitoring/outlets/resources/manager/resourcesEditor/utils/attachmentDiff";
-import type { MonirotingResourceForm } from "pages/monitoring/outlets/resources/manager/resourcesEditor/types/resources";
+import type { MonitoringResourceForm } from "pages/monitoring/outlets/resources/manager/resourcesEditor/types/resources";
 import { setInitialInformation } from "pages/monitoring/outlets/resources/manager/resourcesEditor/utils/initialInformation";
 import type {
   ResourceTag,
@@ -46,7 +47,7 @@ import {
 import {
   addResourceFile,
   addResourceLink,
-  AddResourceTag,
+  addResourceTag,
   createResource,
   editResourceLink,
   getResource,
@@ -83,20 +84,20 @@ export function ResourceForm({
   resourceType: ResourceType;
   onSubmitSuccess: () => void;
 }) {
-  const [resource, setResource] = useState<MonirotingResourceForm | null>(null);
-  const resourceRef = useRef<MonirotingResourceForm | null>(null);
+  const [resource, setResource] = useState<MonitoringResourceForm | null>(null);
+  const resourceRef = useRef<MonitoringResourceForm | null>(null);
   const [helper, setHelper] = useState<string | null>(null);
   const [tos, setTOS] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [errors, setErrors] = useState<
-    Partial<Record<keyof MonirotingResourceForm | "root", string[]>>
+    Partial<Record<keyof MonitoringResourceForm | "root", string[]>>
   >({});
 
   const { userInitiativesById } = useUserInMonitoringCTX();
 
   const updateValue =
-    <K extends keyof MonirotingResourceForm>(key: K) =>
-    (value: MonirotingResourceForm[K]) =>
+    <K extends keyof MonitoringResourceForm>(key: K) =>
+    (value: MonitoringResourceForm[K]) =>
       setResource((oldInfo) => ({ ...oldInfo!, [key]: value }));
 
   const updateTags =
@@ -108,7 +109,7 @@ export function ResourceForm({
             ...oldInfo?.tags,
             [tagCategoryId]: value,
           },
-        } as MonirotingResourceForm;
+        } as MonitoringResourceForm;
       });
 
   useEffect(() => {
@@ -153,6 +154,7 @@ export function ResourceForm({
       await new StrValidator(resource.name)
         .sanitize()
         .isRequired()
+        .hasLengthMoreThan(RESOURCE_NAME_MIN_LENGTH)
         .hasLengthLessOrEqualThan(RESOURCE_NAME_MAX_LENGTH)
         .customAsync(
           validationExemption(
@@ -253,7 +255,7 @@ export function ResourceForm({
     }
 
     const tagsAddPromises = diffTags.add.map((tag) =>
-      AddResourceTag(resGeneral.id, tag.id),
+      addResourceTag(resGeneral.id, tag.id),
     );
     const tagsAdded = await Promise.all(tagsAddPromises);
     for (const resTag of tagsAdded) {
@@ -307,8 +309,10 @@ export function ResourceForm({
       ...(addFilePromises ? addFilePromises : []),
     ]);
 
+    let hasErrors = false;
     for (const attachment of resAttachments) {
       if (isMonitoringAPIError(attachment)) {
+        hasErrors = true;
         setErrors((oldErrs) => {
           const newErrs = makeResourceErrorsObject(attachment);
           const merged = { ...oldErrs };
@@ -326,7 +330,7 @@ export function ResourceForm({
       }
     }
 
-    if (Object.keys(errors).length > 0) {
+    if (hasErrors) {
       return;
     }
 
@@ -426,7 +430,7 @@ export function ResourceForm({
           inputName="description"
           inputMaxLength={RESOURCE_DESCRIPTION_MAX_LENGTH}
           required={true}
-          texts={uiText.desctiption}
+          texts={uiText.description}
           validator={validateDescription}
           state={resource.description}
           stateSetter={updateValue("description")}
@@ -441,7 +445,8 @@ export function ResourceForm({
             items={resource[config.id]}
             updater={updateValue(config.id)}
             validationErrors={errors[config.id] ?? []}
-            descriptionMaxLength={100}
+            descriptionMaxLength={config.descriptionMaxLength}
+            linkMaxLength={config.linkMaxLength}
             contentMaxLength={config.max}
             text={uiText.attachments[config.id]}
             currentHelper={helper}

@@ -25,7 +25,7 @@ import { RESOURCE_FILE_MAX_SIZE } from "@config/monitoring";
 import type { ResourceAttachment } from "pages/monitoring/types/odataResponse";
 import { helperInfo } from "pages/monitoring/outlets/resources/manager/resourcesEditor/layout/helperInfo";
 import { urlIsActive } from "pages/monitoring/outlets/resources/manager/resourcesEditor/utils/validations";
-import { uiText } from "./layout/uiText";
+import { uiText } from "pages/monitoring/outlets/resources/manager/resourcesEditor/layout/uiText";
 
 export function AttachmentInput({
   labelId,
@@ -34,6 +34,7 @@ export function AttachmentInput({
   validationErrors,
   updater,
   descriptionMaxLength,
+  linkMaxLength,
   contentMaxLength,
   text,
   currentHelper,
@@ -46,6 +47,7 @@ export function AttachmentInput({
   validationErrors: string[];
   updater: (value: Partial<ResourceAttachment & { file: File }>[]) => void;
   descriptionMaxLength: number;
+  linkMaxLength?: number;
   text: {
     module: {
       title: string;
@@ -61,7 +63,7 @@ export function AttachmentInput({
   setHelper: Dispatch<SetStateAction<keyof typeof helperInfo | null>>;
 }) {
   const [isLoading, setIsLoading] = useState(false);
-  const [desctiptionErrors, setDescriptionErrors] = useState<string[]>([]);
+  const [descriptionErrors, setDescriptionErrors] = useState<string[]>([]);
   const [contentErrors, setContentErrors] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [content, setContent] = useState<string | File | null>(
@@ -88,30 +90,6 @@ export function AttachmentInput({
       setDescription("");
       setContent(inputType === "text" ? "" : null);
       setDescriptionErrors([]);
-    }
-  };
-
-  const handleAdd = () => {
-    setDescriptionErrors([]);
-
-    const newItemBase =
-      inputType === "text"
-        ? { name: description, url: content as string }
-        : { name: description, file: content as File, url: "" };
-
-    const finalItem = editingItemRef.current
-      ? { ...editingItemRef.current, ...newItemBase }
-      : newItemBase;
-
-    updater([...items, finalItem]);
-
-    editingItemRef.current = null;
-    setDescription("");
-    setContent(inputType === "text" ? "" : null);
-    setDescriptionErrors([]);
-
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
     }
   };
 
@@ -156,15 +134,16 @@ export function AttachmentInput({
 
     if (descriptionInputErrors.length > 0) {
       setDescriptionErrors(descriptionInputErrors);
-      return;
+      return false;
     }
 
     setDescription(descriptionSanitized);
+    return true;
   };
 
-  const handleLinkValiadtion = async () => {
+  const handleLinkValidation = async () => {
     if (inputType === "file") {
-      return;
+      return true;
     }
     setContentErrors([]);
 
@@ -173,18 +152,47 @@ export function AttachmentInput({
         .sanitize()
         .isRequired()
         .isURL()
+        .isUniqueIn(new Set(items.map((item) => item.url!)))
         .customAsync(urlIsActive, uiText.validations.checkUrl)
     ).result;
 
     if (linkErrors.length > 0) {
       setContentErrors(linkErrors);
-      return;
+      return false;
     }
 
     setContent(linkSanitized);
+    return true;
   };
 
-  const unifiedErrors = [...validationErrors, ...desctiptionErrors];
+  const handleAdd = async () => {
+    if (!handleDescriptionValidation() || !(await handleLinkValidation())) {
+      return;
+    }
+
+    setHelper(null);
+    const newItemBase =
+      inputType === "text"
+        ? { name: description, url: content as string }
+        : { name: description, file: content as File, url: "" };
+
+    const finalItem = editingItemRef.current
+      ? { ...editingItemRef.current, ...newItemBase }
+      : newItemBase;
+
+    updater([...items, finalItem]);
+
+    editingItemRef.current = null;
+    setDescription("");
+    setContent(inputType === "text" ? "" : null);
+    setDescriptionErrors([]);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const unifiedErrors = [...validationErrors, ...descriptionErrors];
   const accept =
     currentHelper && helperInfo[currentHelper].type === "files"
       ? helperInfo[currentHelper].fileType.join(", ")
@@ -240,7 +248,7 @@ export function AttachmentInput({
                       </a>
                     </Button>
                   )}
-                  {inputType === "text" && (
+                  {inputType === "text" && editingItemRef.current === null && (
                     <Button
                       type="button"
                       variant="ghost-clean"
@@ -321,11 +329,11 @@ export function AttachmentInput({
                 <LabeledInput
                   inputName={`attachment_${inputType}`}
                   inputType="text"
-                  inputMaxLength={descriptionMaxLength}
+                  inputMaxLength={linkMaxLength ?? 250}
                   texts={text.resource}
                   state={content as string}
                   stateSetter={setContent}
-                  validator={handleLinkValiadtion}
+                  validator={handleLinkValidation}
                   validationErrors={contentErrors}
                   disabled={!helpers.includes(currentHelper ?? "")}
                   autoComplete="off"
@@ -376,10 +384,7 @@ export function AttachmentInput({
                   </Button>
                 )}
                 <Button
-                  onClick={() => {
-                    setHelper(null);
-                    handleAdd();
-                  }}
+                  onClick={() => void handleAdd()}
                   type="button"
                   variant="outline"
                   size="icon"
