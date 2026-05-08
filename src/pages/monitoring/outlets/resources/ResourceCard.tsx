@@ -1,11 +1,15 @@
-import type { MonitoringResource } from "pages/monitoring/types/odataResponse";
+import type { MonitoringResourceShort } from "pages/monitoring/types/odataResponse";
 import { cn } from "@ui/shadCN/lib/utils";
 import { ExternalLink, FileDown, type LucideIcon } from "lucide-react";
 import { Link } from "react-router";
 import { ResourceTagsRender } from "pages/monitoring/outlets/resources/ui/ResourceTagsRender";
 import { LikeResourceButton } from "pages/monitoring/outlets/resources/ui/LikeResourseButton";
 
-export function ResourceCard({ resource }: { resource: MonitoringResource }) {
+export function ResourceCard({
+  resource,
+}: {
+  resource: MonitoringResourceShort;
+}) {
   const lastUpdate = new Date(resource.publicationDate);
   const isoDate = lastUpdate.toISOString().split("T")[0];
   const renderDate = lastUpdate.toLocaleDateString();
@@ -21,46 +25,61 @@ export function ResourceCard({ resource }: { resource: MonitoringResource }) {
   return (
     <div
       className={cn(
-        "isolate relative overflow-hidden shadow-xl transition-all space-y-2 bg-background border border-grey rounded-2xl p-4 lg:p-6",
+        "isolate flex flex-col gap-4 justify-between relative overflow-hidden shadow-xl transition-all border border-transparent rounded-2xl p-4 pb-3 lg:p-6 lg:pb-4",
         "hover:scale-107 hover:shadow-sm hover:border-primary",
       )}
     >
-      <h4>{resource.name}</h4>
       <div>
-        <span className="sr-only">Realizado por la iniciativa</span>{" "}
-        {resource.initiativeId}
+        <header className="mb-4">
+          <h4 className="text-2xl mb-0">{resource.name}</h4>
+          <span className="sr-only">Realizado por la iniciativa </span>
+          <span className="text-sm italic">{resource.initiative.name}</span>
+        </header>
+
+        <time
+          dateTime={isoDate}
+          aria-label={`Fecha de publicación: ${renderDate}`}
+          className="absolute top-0 right-6 bg-primary text-primary-foreground text-sm px-2 rounded-b"
+        >
+          {renderDate}
+        </time>
+
+        <div className="space-y-2">
+          <span className="sr-only">Etiquetas del recurso: </span>
+          <ResourceTagsRender
+            tags={tags[3]}
+            srTitle="Grupo biológico"
+            className="[&_li]:bg-blue-200 [&_li]:text-blue-800 font-normal"
+          />
+          <ResourceTagsRender
+            tags={tags[4]}
+            srTitle="Ecosistemas estratégicos"
+            className="[&_li]:bg-green-100 [&_li]:text-green-800 font-normal"
+          />
+        </div>
       </div>
-      <div className="absolute top-0 right-6 bg-primary text-primary-foreground text-sm px-2 rounded-b">
-        <span className="sr-only">Fecha de publicación</span>
-        <time dateTime={isoDate}>{renderDate}</time>
+
+      <div className="flex gap-4 justify-between">
+        <section className="relative flex gap-4">
+          <h5 className="sr-only">Este recuros contiene</h5>
+          <ResourceAttachmentsCounter
+            amount={resource.totalFiles}
+            icon={FileDown}
+            srText="Archivos para descargar"
+          />
+          <ResourceAttachmentsCounter
+            amount={resource.totalLinks}
+            icon={ExternalLink}
+            srText="Enlaces externos"
+          />
+        </section>
+
+        <LikeResourceButton
+          resource={resource}
+          disabled={true}
+          className="p-0"
+        />
       </div>
-
-      <ResourceTagsRender
-        tags={tags[3]}
-        srTitle="Grupo biológico"
-        className="[&_li]:bg-blue-200 [&_li]:text-blue-800 font-normal"
-      />
-      <ResourceTagsRender
-        tags={tags[4]}
-        srTitle="Ecosistemas estratégicos"
-        className="[&_li]:bg-green-100 [&_li]:text-green-800 font-normal"
-      />
-
-      <section className="relative flex gap-4">
-        <h5 className="sr-only">Este recuros contiene</h5>
-        <ResourceAttachmentsCounter
-          amount={resource.files.length}
-          icon={FileDown}
-          srText="Archivos para descargar"
-        />
-        <ResourceAttachmentsCounter
-          amount={resource.links.length}
-          icon={ExternalLink}
-          srText="Enlaces externos"
-        />
-      </section>
-
-      <LikeResourceButton resource={resource} disabled={true} />
 
       <Link
         to={`/Monitoreo/Recursos/${resource.id}`}
@@ -92,7 +111,7 @@ function ResourceAttachmentsCounter({
       title={srText}
     >
       <span className="font-medium">{amount}</span>
-      <Icon aria-hidden="true" className="size-6" />
+      <Icon aria-hidden="true" className="size-5" />
       <span className="sr-only">{srText}</span>
     </div>
   );

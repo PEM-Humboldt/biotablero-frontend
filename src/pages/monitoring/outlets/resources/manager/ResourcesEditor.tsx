@@ -8,7 +8,7 @@ import { TablePager } from "@composites/TablePager";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 
 import type {
-  MonitoringResource,
+  MonitoringResourceShort,
   ResourceType,
 } from "pages/monitoring/types/odataResponse";
 import {
@@ -31,7 +31,7 @@ export function ResourcesEditor({
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
-  const [resources, setResources] = useState<MonitoringResource[]>([]);
+  const [resources, setResources] = useState<MonitoringResourceShort[]>([]);
   const [editResource, setEditResource] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const { user } = useUserCTX();

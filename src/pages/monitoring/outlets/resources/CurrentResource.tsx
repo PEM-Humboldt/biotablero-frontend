@@ -10,16 +10,20 @@ import {
   FileText,
   FileIcon,
   type LucideIcon,
+  CircleXIcon,
 } from "lucide-react";
 import { Button } from "@ui/shadCN/component/button";
 import { LikeResourceButton } from "pages/monitoring/outlets/resources/ui/LikeResourseButton";
+import { cn } from "@ui/shadCN/lib/utils";
 
 export function CurrentResource({
   resource,
   updateResource,
+  closeCurrentResource,
 }: {
   resource: MonitoringResource | null;
   updateResource: () => Promise<void>;
+  closeCurrentResource: () => void;
 }) {
   if (!resource) {
     return null;
@@ -36,20 +40,49 @@ export function CurrentResource({
     return all;
   }, {});
 
+  const hasFiles = resource.files.length > 0;
+  const hasLinks = resource.links.length > 0;
+  const listsCount = [hasFiles, hasLinks].filter(Boolean).length;
+
+  const widthClass = {
+    0: "lg:w-1/2",
+    1: "lg:w-[75%]",
+    2: "lg:w-full",
+  }[listsCount as 0 | 1 | 2];
+
   return (
-    <div className="p-4">
-      <article className="relative max-w-[1200px] p-8 bg-background border-2 border-primary rounded-2xl shadow-xl mb-8">
-        <h3 className="text-primary text-5xl mb-0">{resource.name}</h3>
-        <div>
-          <span className="sr-only">Realizado por la iniciativa</span>{" "}
-          {resource.initiativeId}
+    <article
+      className={cn(
+        "relative w-full p-8 bg-background border-2 border-primary rounded-4xl shadow-xl mb-4",
+        widthClass,
+      )}
+    >
+      <header>
+        <div className="flex gap-2 justify-between">
+          <h3 className="text-primary text-5xl mb-0">{resource.name}</h3>
+          <Button
+            title="Cerrar"
+            variant="ghost"
+            size="icon-lg"
+            onClick={closeCurrentResource}
+            className="text-accent"
+          >
+            <span className="sr-only">Cerrar detalle</span>
+            <CircleXIcon className="size-8" aria-hidden="true" />
+          </Button>
         </div>
-        <div className="absolute top-0 right-6 bg-primary text-primary-foreground text-sm px-2 rounded-b">
+
+        <div>
+          <span className="sr-only">Realizado por la iniciativa </span>
+          <span className="italic">{resource.initiative.name}</span>
+        </div>
+
+        <div className="absolute top-0 right-8 bg-primary text-primary-foreground text-sm px-2 rounded-b">
           <span className="sr-only">Fecha de publicación</span>
           <time dateTime={isoDate}>{renderDate}</time>
         </div>
 
-        <div className="flex gap-2 py-4">
+        <div className="flex gap-2 pt-2 pb-6">
           <ResourceTagsRender
             tags={tags[3]}
             srTitle="Grupo biológico"
@@ -61,31 +94,30 @@ export function CurrentResource({
             className="[&_li]:bg-green-100 [&_li]:text-green-800 font-normal"
           />
         </div>
+      </header>
 
-        <hr />
-
-        <div className="flex flex-wrap w-fit max-w-full gap-8 *:flex-1">
-          <p className="min-w-[350px]">{resource.description}</p>
-
-          <ResourceAttachments
-            type="files"
-            title="Archivos adjuntos"
-            attachments={resource.files}
-            className="min-w-[250px]"
-          />
-          <ResourceAttachments
-            type="links"
-            title="Enlaces relacionados"
-            attachments={resource.links}
-            className="min-w-[250px]"
-          />
+      <div className="flex flex-wrap w-full gap-4 [&_h4]:text-primary [&_h4]:italic [&_h4]:mb-0">
+        <div className="flex-2 min-w-[350px]">
+          <h4>Descripción</h4>
+          <p className="text-lg">{resource.description}</p>
         </div>
-        <LikeResourceButton
-          resource={resource}
-          updateResorce={updateResource}
+
+        <ResourceAttachments
+          type="files"
+          title="Archivos adjuntos"
+          attachments={resource.files}
+          className="flex-1 min-w-[350px]"
         />
-      </article>
-    </div>
+
+        <ResourceAttachments
+          type="links"
+          title="Enlaces relacionados"
+          attachments={resource.links}
+          className="flex-1 min-w-[350px]"
+        />
+      </div>
+      <LikeResourceButton resource={resource} updateResorce={updateResource} />
+    </article>
   );
 }
 
@@ -121,10 +153,10 @@ function ResourceAttachments({
   };
 
   return (
-    <section>
-      <h4 className="sr-only">{title}</h4>
-      <ul>
-        {attachments.map((att) => {
+    <section className={cn("border-l border-l-grey-light pl-4", className)}>
+      <h4>{title}</h4>
+      <ul className="space-y-1">
+        {attachments.map((att, i) => {
           const Icon = icon(att.url);
           const isLink = type === "links";
           const extension =
@@ -134,25 +166,25 @@ function ResourceAttachments({
           return (
             <li
               key={`resource_${type}_${att.id}`}
-              className="flex gap-2 items-center"
+              className={cn(
+                "relative group flex gap-2 items-center justify-between hover:bg-accent/10 px-4 rounded-lg py-1",
+                i % 2 ? "bg-muted/50" : "",
+              )}
             >
-              <Button asChild variant="ghost">
-                <a
-                  href={att.url}
-                  target="_blank"
-                  rel={isLink ? "noopener noreferrer" : undefined}
-                  download={!isLink ? cleanName : undefined}
-                  title={
-                    isLink ? `Visitar ${att.url}` : `Descargar ${att.name}`
-                  }
-                >
-                  <Icon size={18} />
-                  <span className="sr-only">
-                    {isLink ? "Visitar" : "Descargar"}
-                  </span>
-                  {att.name}
-                </a>
-              </Button>
+              <div className="group-hover:underline">{att.name}</div>
+              <div className="flex gap-1 items-center text-accent text-sm font-normal">
+                <span>{isLink ? "Visitar" : "Descargar"}</span>
+                <Icon size={18} />
+              </div>
+
+              <a
+                href={att.url}
+                className="absolute inset-0"
+                target="_blank"
+                rel={isLink ? "noopener noreferrer" : undefined}
+                download={!isLink ? cleanName : undefined}
+                title={isLink ? `Visitar ${att.url}` : `Descargar ${att.name}`}
+              ></a>
             </li>
           );
         })}

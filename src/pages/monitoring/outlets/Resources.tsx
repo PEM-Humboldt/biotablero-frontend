@@ -12,6 +12,7 @@ import { cn } from "@ui/shadCN/lib/utils";
 import { Header } from "pages/monitoring/outlets/resources/Header";
 import type {
   MonitoringResource,
+  MonitoringResourceShort,
   ResourceType,
 } from "pages/monitoring/types/odataResponse";
 import {
@@ -33,7 +34,7 @@ export function Resources() {
   const [resourceTypes, setResourceTypes] = useState<ResourceType[]>([]);
   const [currentTab, setCurrentTab] = useState<number>(1);
   const [currentPage, setCurrentPage] = useState(1);
-  const [resources, setResources] = useState<MonitoringResource[]>([]);
+  const [resources, setResources] = useState<MonitoringResourceShort[]>([]);
   const [currentResource, setCurrentResource] =
     useState<MonitoringResource | null>(null);
   const [searchBarComponents, setSearchBarComponents] = useState<
@@ -135,6 +136,11 @@ export function Resources() {
     void navigate("/Monitoreo/Recursos");
   };
 
+  const handleCloseCurrentResource = () => {
+    setCurrentResource(null);
+    void navigate("/Monitoreo/Recursos");
+  };
+
   const filtersInjected = useMemo(() => {
     const filters = [`resourceType/id eq ${currentTab}`];
     if (currentResource !== null) {
@@ -146,7 +152,7 @@ export function Resources() {
   const plural = resourcesAvailable.current !== 1 ? "s " : " ";
 
   return (
-    <div className="flex flex-col gap-4 lg:gap-6 pb-8 w-full items-center bg-grey-form">
+    <div className="flex flex-col w-full bg-grey-form">
       <Header />
 
       <ErrorsList
@@ -154,77 +160,80 @@ export function Resources() {
         className="w-1/2 min-w-[300px] mx-12 p-4 bg-accent/10 border border-accent rounded-lg"
       />
 
-      <div className="flex flex-wrap gap-4 w-full max-w-[1600px] px-4">
-        {resourceTypes.map((resType) => (
-          <div
-            key={`resTypeTrigger_${resType.id}`}
-            className={cn(
-              "isolate relative flex-[1_1_200px] flex flex-col p-4 lg:p-6 border-2 border-transparent rounded-xl shadow-xl transition-all duration-200",
-              resType.id === currentTab
-                ? "bg-primary text-primary-foreground"
-                : "hover:bg-primary/10 hover:shadow hover:scale-107 hover:border-primary",
-            )}
-          >
-            <h3 className="text-4xl font-bold text-balance">{resType.name}</h3>
+      <div className="flex flex-col mx-auto p-4 gap-4 lg:gap-6 pb-16 w-full max-w-[1600px] items-center">
+        <div className="flex flex-wrap gap-4 mt-4 w-full">
+          {resourceTypes.map((resType) => (
+            <div
+              key={`resTypeTrigger_${resType.id}`}
+              className={cn(
+                "isolate relative flex-[1_1_200px] flex flex-col p-4 lg:p-6 border-2 border-transparent rounded-xl shadow-xl transition-all duration-200",
+                resType.id === currentTab
+                  ? "bg-primary text-primary-foreground"
+                  : "hover:bg-primary/10 hover:shadow hover:scale-107 hover:border-primary",
+              )}
+            >
+              <h3 className="text-2xl md:text-3xl xl:text-4xl font-bold text-balance">
+                {resType.name}
+              </h3>
 
-            <p className="text-pretty m-0">{resType.description}</p>
+              <p className="text-pretty m-0">{resType.description}</p>
 
-            {resType.id !== currentTab && (
-              <button
-                onClick={() => handleTabChange(resType.id)}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                aria-label={`Seleccionar tipo de recurso: ${resType.name}`}
-              />
-            )}
-          </div>
-        ))}
-      </div>
+              {resType.id !== currentTab && (
+                <button
+                  onClick={() => handleTabChange(resType.id)}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  aria-label={`Seleccionar tipo de recurso: ${resType.name}`}
+                />
+              )}
+            </div>
+          ))}
+        </div>
 
-      {searchBarComponents && (
-        <div className="w-full px-4 max-w-[1200px] flex flex-col items-center">
-          <ODataSearchBar
-            components={searchBarComponents}
-            setSearchParams={setSearchParams}
-            className="w-full bg-muted [&_select]:bg-background flex-wrap! py-2"
-            filterInjection={filtersInjected}
-            reset="Reiniciar consulta"
-          />
-          <div className="text-primary text-left w-full mb-0 px-6">
+        {searchBarComponents && (
+          <div className="w-full max-w-[800px] text-primary bg-muted px-4 py-2 mt-4 rounded-lg">
+            <ODataSearchBar
+              components={searchBarComponents}
+              setSearchParams={setSearchParams}
+              className="[&_select]:bg-background flex-wrap! p-0 mb-1 font-normal"
+              filterInjection={filtersInjected}
+              reset="Reiniciar búsqueda"
+            />
             <strong>{resourcesAvailable.current} </strong>
             Recurso{plural}encontrado{plural}
           </div>
-        </div>
-      )}
+        )}
 
-      {isLoading > 0 && (
-        <LoadingDiv className="bg-transparent border-none text-center" />
-      )}
+        {isLoading > 0 && (
+          <LoadingDiv className="bg-transparent border-none text-center" />
+        )}
 
-      <CurrentResource
-        resource={currentResource}
-        updateResource={fetchCurrentResource}
-      />
+        <CurrentResource
+          resource={currentResource}
+          updateResource={fetchCurrentResource}
+          closeCurrentResource={handleCloseCurrentResource}
+        />
 
-      {resources.length > 0 ? (
-        <section className="w-full max-w-[1600px]">
-          <h3 className="sr-only">Recursos disponibles</h3>
-          <ul className="px-4 grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8">
-            {resources.map((resource) => (
-              <ResourceCard key={resource.id} resource={resource} />
-            ))}
-          </ul>
-        </section>
-      ) : (
-        "Todavíano hay recursos en esta categoría"
-      )}
+        {resources.length > 0 ? (
+          <section className="w-full">
+            <h3 className="sr-only">Recursos disponibles</h3>
+            <ul className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8">
+              {resources.map((resource) => (
+                <ResourceCard key={resource.id} resource={resource} />
+              ))}
+            </ul>
+          </section>
+        ) : (
+          "Todavíano hay recursos en esta categoría"
+        )}
 
-      <TablePager
-        currentPage={currentPage}
-        recordsAvailable={resourcesAvailable.current}
-        onPageChange={setCurrentPage}
-        recordsPerPage={RESOURCES_PER_PAGE}
-        paginated={3}
-      />
+        <TablePager
+          currentPage={currentPage}
+          recordsAvailable={resourcesAvailable.current}
+          onPageChange={setCurrentPage}
+          recordsPerPage={RESOURCES_PER_PAGE}
+          paginated={3}
+        />
+      </div>
     </div>
   );
 }

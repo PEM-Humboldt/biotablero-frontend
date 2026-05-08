@@ -1,4 +1,7 @@
-import type { MonitoringResource } from "pages/monitoring/types/odataResponse";
+import type {
+  MonitoringResource,
+  MonitoringResourceShort,
+} from "pages/monitoring/types/odataResponse";
 import { LikeButton } from "pages/monitoring/ui/LikeButton";
 import { likedResource } from "pages/monitoring/api/services/monitoringResources";
 
@@ -8,7 +11,7 @@ export function LikeResourceButton({
   className,
   updateResorce,
 }: {
-  resource: MonitoringResource;
+  resource: MonitoringResource | MonitoringResourceShort;
   disabled?: boolean;
   className?: string;
   updateResorce?: () => Promise<void>;

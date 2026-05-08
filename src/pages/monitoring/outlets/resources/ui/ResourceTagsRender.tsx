@@ -18,7 +18,7 @@ export function ResourceTagsRender({
       <h5 className="sr-only">{srTitle}</h5>
       <ul className={cn("flex flex-wrap gap-2", className)}>
         {tags.map((tag) => (
-          <li key={`${srTitle}_${tag}`} className="rounded text-sm px-1">
+          <li key={`${srTitle}_${tag}`} className="rounded text-sm px-2 py-0.5">
             {tag}
           </li>
         ))}
