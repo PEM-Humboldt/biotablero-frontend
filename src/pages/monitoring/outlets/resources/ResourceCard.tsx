@@ -3,6 +3,7 @@ import { cn } from "@ui/shadCN/lib/utils";
 import { ExternalLink, FileDown, type LucideIcon } from "lucide-react";
 import { Link } from "react-router";
 import { ResourceTagsRender } from "pages/monitoring/outlets/resources/ui/ResourceTagsRender";
+import { LikeResourceButton } from "pages/monitoring/outlets/resources/ui/LikeResourseButton";
 
 export function ResourceCard({ resource }: { resource: MonitoringResource }) {
   const lastUpdate = new Date(resource.publicationDate);
@@ -20,7 +21,7 @@ export function ResourceCard({ resource }: { resource: MonitoringResource }) {
   return (
     <div
       className={cn(
-        "relative overflow-hidden shadow-xl transition-all space-y-2 bg-background border border-grey rounded-2xl p-4 lg:p-6",
+        "isolate relative overflow-hidden shadow-xl transition-all space-y-2 bg-background border border-grey rounded-2xl p-4 lg:p-6",
         "hover:scale-107 hover:shadow-sm hover:border-primary",
       )}
     >
@@ -45,7 +46,7 @@ export function ResourceCard({ resource }: { resource: MonitoringResource }) {
         className="[&_li]:bg-green-100 [&_li]:text-green-800 font-normal"
       />
 
-      <section className="flex gap-4">
+      <section className="relative flex gap-4">
         <h5 className="sr-only">Este recuros contiene</h5>
         <ResourceAttachmentsCounter
           amount={resource.files.length}
@@ -59,9 +60,11 @@ export function ResourceCard({ resource }: { resource: MonitoringResource }) {
         />
       </section>
 
+      <LikeResourceButton resource={resource} disabled={true} />
+
       <Link
         to={`/Monitoreo/Recursos/${resource.id}`}
-        className="absolute inset-0 cursor-pointer"
+        className="absolute inset-0 bg-transparent cursor-pointer"
       >
         <span className="sr-only">Ir al recurso</span>
       </Link>
@@ -84,12 +87,12 @@ function ResourceAttachmentsCounter({
 
   return (
     <div
-      className="flex items-center gap-1"
+      className="flex items-center gap-1 text-primary"
       aria-hidden="false"
-      title={`${amount} ${srText}`}
+      title={srText}
     >
       <span className="font-medium">{amount}</span>
-      <Icon aria-hidden="true" className="size-4" />
+      <Icon aria-hidden="true" className="size-6" />
       <span className="sr-only">{srText}</span>
     </div>
   );

@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useParams } from "react-router";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router";
 
 import { LoadingDiv } from "@ui/LoadingDiv";
 import { ErrorsList } from "@ui/LabelingWithErrors";
@@ -26,6 +26,7 @@ import { CurrentResource } from "pages/monitoring/outlets/resources/CurrentResou
 
 export function Resources() {
   const { resourceId } = useParams();
+  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(0);
   const [errors, setErrors] = useState<string[]>([]);
@@ -47,60 +48,65 @@ export function Resources() {
   const resourcesAvailable = useRef(0);
 
   useEffect(() => {
-    setIsLoading((prvLoads) => prvLoads + 1);
-    const fetchResourcesType = async () => {
-      const res = await getResourcesType();
+    const fetchUIinfo = async () => {
+      setIsLoading((prvLoads) => prvLoads + 1);
+      const resTypes = await getResourcesType();
 
-      if (isMonitoringAPIError(res)) {
+      if (isMonitoringAPIError(resTypes)) {
         setResourceTypes([]);
-        setErrors(res.data.map((err) => err.msg));
+        setErrors(resTypes.data.map((err) => err.msg));
+        setIsLoading((prvLoads) => prvLoads - 1);
         return;
       }
 
-      setResourceTypes(res.value);
+      setResourceTypes(resTypes.value);
+
+      const resSearch = await makeSearchResourcesComponents();
+      setIsLoading((prvLoads) => prvLoads - 1);
+
+      setSearchBarComponents(resSearch);
     };
 
-    const fetchSearchBarInfo = async () => {
-      const res = await makeSearchResourcesComponents();
-      setSearchBarComponents(res);
-    };
-    setIsLoading((prvLoads) => prvLoads - 1);
-
-    void fetchSearchBarInfo();
-    void fetchResourcesType();
+    void fetchUIinfo();
   }, []);
 
-  useEffect(() => {
+  const fetchCurrentResource = useCallback(async () => {
     if (!resourceId) {
       setCurrentResource(null);
       return;
     }
 
-    const fetchCurrentResource = async () => {
-      setIsLoading((prvLoads) => prvLoads + 1);
-      const res = await getResource(Number(resourceId));
+    setIsLoading((prvLoads) => prvLoads + 1);
+    const res = await getResource(Number(resourceId));
 
-      setIsLoading((prvLoads) => prvLoads - 1);
-      if (isMonitoringAPIError(res)) {
-        setCurrentResource(null);
-        setErrors(res.data.map((err) => err.msg));
-        return;
-      }
+    setIsLoading((prvLoads) => prvLoads - 1);
+    if (isMonitoringAPIError(res)) {
+      setCurrentResource(null);
+      setErrors(res.data.map((err) => err.msg));
+      return;
+    }
 
-      setCurrentTab(res.resourceType.id);
-      setCurrentResource(res);
-    };
-
-    void fetchCurrentResource();
+    setCurrentTab(res.resourceType.id);
+    setCurrentResource(res);
   }, [resourceId]);
 
   useEffect(() => {
+    setResources([]);
+    void fetchCurrentResource();
+  }, [fetchCurrentResource]);
+
+  useEffect(() => {
+    if (!resourceTypes || !searchBarComponents) {
+      return;
+    }
+
     const fetchResources = async () => {
       if (prevSearchParamsRef.current !== searchParams) {
         setCurrentPage(1);
         prevSearchParamsRef.current = searchParams;
       }
 
+      setResources([]);
       setErrors([]);
       setIsLoading((prvLoads) => prvLoads + 1);
 
@@ -120,7 +126,14 @@ export function Resources() {
     };
 
     void fetchResources();
-  }, [searchParams, currentPage]);
+  }, [searchParams, currentPage, resourceTypes, searchBarComponents]);
+
+  const handleTabChange = (resTypeId: number) => {
+    setCurrentTab(resTypeId);
+    setResources([]);
+    setCurrentResource(null);
+    void navigate("/Monitoreo/Recursos");
+  };
 
   const filtersInjected = useMemo(() => {
     const filters = [`resourceType/id eq ${currentTab}`];
@@ -158,10 +171,7 @@ export function Resources() {
 
             {resType.id !== currentTab && (
               <button
-                onClick={() => {
-                  setCurrentTab(resType.id);
-                  setCurrentResource(null);
-                }}
+                onClick={() => handleTabChange(resType.id)}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                 aria-label={`Seleccionar tipo de recurso: ${resType.name}`}
               />
@@ -190,7 +200,10 @@ export function Resources() {
         <LoadingDiv className="bg-transparent border-none text-center" />
       )}
 
-      <CurrentResource resource={currentResource} />
+      <CurrentResource
+        resource={currentResource}
+        updateResource={fetchCurrentResource}
+      />
 
       {resources.length > 0 ? (
         <section className="w-full max-w-[1600px]">

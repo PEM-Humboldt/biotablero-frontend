@@ -12,11 +12,14 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Button } from "@ui/shadCN/component/button";
+import { LikeResourceButton } from "pages/monitoring/outlets/resources/ui/LikeResourseButton";
 
 export function CurrentResource({
   resource,
+  updateResource,
 }: {
   resource: MonitoringResource | null;
+  updateResource: () => Promise<void>;
 }) {
   if (!resource) {
     return null;
@@ -77,6 +80,10 @@ export function CurrentResource({
             className="min-w-[250px]"
           />
         </div>
+        <LikeResourceButton
+          resource={resource}
+          updateResorce={updateResource}
+        />
       </article>
     </div>
   );
@@ -125,7 +132,10 @@ function ResourceAttachments({
           const cleanName = `${att.name.replace(/\s+/g, "_")}.${extension}`;
 
           return (
-            <li className="flex gap-2 items-center">
+            <li
+              key={`resource_${type}_${att.id}`}
+              className="flex gap-2 items-center"
+            >
               <Button asChild variant="ghost">
                 <a
                   href={att.url}
