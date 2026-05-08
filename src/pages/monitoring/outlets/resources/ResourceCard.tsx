@@ -1,9 +1,12 @@
-import type { MonitoringResourceShort } from "pages/monitoring/types/odataResponse";
-import { cn } from "@ui/shadCN/lib/utils";
-import { ExternalLink, FileDown, type LucideIcon } from "lucide-react";
 import { Link } from "react-router";
+
+import { cn } from "@ui/shadCN/lib/utils";
+
+import type { MonitoringResourceShort } from "pages/monitoring/types/odataResponse";
+import { ExternalLink, FileDown, type LucideIcon } from "lucide-react";
 import { ResourceTagsRender } from "pages/monitoring/outlets/resources/ui/ResourceTagsRender";
 import { LikeResourceButton } from "pages/monitoring/outlets/resources/ui/LikeResourseButton";
+import { uiText } from "pages/monitoring/outlets/resources/layout/uiText";
 
 export function ResourceCard({
   resource,
@@ -32,28 +35,30 @@ export function ResourceCard({
       <div>
         <header className="mb-4">
           <h4 className="text-2xl mb-0">{resource.name}</h4>
-          <span className="sr-only">Realizado por la iniciativa </span>
+          <span className="sr-only">
+            {uiText.resourseMadeUnderInitiativePrefixSr}
+          </span>
           <span className="text-sm italic">{resource.initiative.name}</span>
         </header>
 
         <time
           dateTime={isoDate}
-          aria-label={`Fecha de publicación: ${renderDate}`}
+          aria-label={`${uiText.resourcePublicationDatePrefixSr}${renderDate}`}
           className="absolute top-0 right-6 bg-primary text-primary-foreground text-sm px-2 rounded-b"
         >
           {renderDate}
         </time>
 
         <div className="space-y-2">
-          <span className="sr-only">Etiquetas del recurso: </span>
+          <span className="sr-only">{uiText.tagsTitle.all}</span>
           <ResourceTagsRender
             tags={tags[3]}
-            srTitle="Grupo biológico"
+            srTitle={uiText.tagsTitle.BiologicalGroup}
             className="[&_li]:bg-blue-200 [&_li]:text-blue-800 font-normal"
           />
           <ResourceTagsRender
             tags={tags[4]}
-            srTitle="Ecosistemas estratégicos"
+            srTitle={uiText.tagsTitle.ecosystem}
             className="[&_li]:bg-green-100 [&_li]:text-green-800 font-normal"
           />
         </div>
@@ -61,16 +66,16 @@ export function ResourceCard({
 
       <div className="flex gap-4 justify-between">
         <section className="relative flex gap-4">
-          <h5 className="sr-only">Este recuros contiene</h5>
+          <h5 className="sr-only">{uiText.smallCard.attachments.title}</h5>
           <ResourceAttachmentsCounter
             amount={resource.totalFiles}
             icon={FileDown}
-            srText="Archivos para descargar"
+            srText={uiText.smallCard.attachments.files}
           />
           <ResourceAttachmentsCounter
             amount={resource.totalLinks}
             icon={ExternalLink}
-            srText="Enlaces externos"
+            srText={uiText.smallCard.attachments.links}
           />
         </section>
 
@@ -85,7 +90,7 @@ export function ResourceCard({
         to={`/Monitoreo/Recursos/${resource.id}`}
         className="absolute inset-0 bg-transparent cursor-pointer"
       >
-        <span className="sr-only">Ir al recurso</span>
+        <span className="sr-only">{uiText.smallCard.gotoResource}</span>
       </Link>
     </div>
   );

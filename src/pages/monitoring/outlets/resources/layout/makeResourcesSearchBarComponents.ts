@@ -2,6 +2,7 @@ import type { MonitoringResource } from "pages/monitoring/types/odataResponse";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import type { SearchBarComponent } from "@appTypes/odata";
 import { getTags } from "pages/monitoring/api/services/tags";
+import { uiText } from "pages/monitoring/outlets/resources/layout/uiText";
 
 export async function makeSearchResourcesComponents(): Promise<
   SearchBarComponent<MonitoringResource>[]
@@ -40,7 +41,7 @@ export async function makeSearchResourcesComponents(): Promise<
     searchComponents.push({
       type: "select",
       values: tagGroups[3],
-      label: "Escala Biológica",
+      label: uiText.tagsTitle.ecosystem,
       oDataEntity: "ResourceTags",
       source: ["tag/id"],
     });
@@ -49,7 +50,7 @@ export async function makeSearchResourcesComponents(): Promise<
     searchComponents.push({
       type: "select",
       values: tagGroups[4],
-      label: "Escala Biológica",
+      label: uiText.tagsTitle.BiologicalGroup,
       oDataEntity: "ResourceTags",
       source: ["tag/id"],
     });

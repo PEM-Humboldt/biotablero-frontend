@@ -1,8 +1,3 @@
-import type {
-  MonitoringResource,
-  ResourceAttachment,
-} from "pages/monitoring/types/odataResponse";
-import { ResourceTagsRender } from "pages/monitoring/outlets/resources/ui/ResourceTagsRender";
 import {
   ExternalLink,
   FileImage,
@@ -12,9 +7,17 @@ import {
   type LucideIcon,
   CircleXIcon,
 } from "lucide-react";
+
 import { Button } from "@ui/shadCN/component/button";
-import { LikeResourceButton } from "pages/monitoring/outlets/resources/ui/LikeResourseButton";
 import { cn } from "@ui/shadCN/lib/utils";
+
+import type {
+  MonitoringResource,
+  ResourceAttachment,
+} from "pages/monitoring/types/odataResponse";
+import { ResourceTagsRender } from "pages/monitoring/outlets/resources/ui/ResourceTagsRender";
+import { LikeResourceButton } from "pages/monitoring/outlets/resources/ui/LikeResourseButton";
+import { uiText } from "pages/monitoring/outlets/resources/layout/uiText";
 
 export function CurrentResource({
   resource,
@@ -61,36 +64,42 @@ export function CurrentResource({
         <div className="flex gap-2 justify-between">
           <h3 className="text-primary text-5xl mb-0">{resource.name}</h3>
           <Button
-            title="Cerrar"
+            title={uiText.currentResource.closeBtn.title}
             variant="ghost"
             size="icon-lg"
             onClick={closeCurrentResource}
             className="text-accent"
           >
-            <span className="sr-only">Cerrar detalle</span>
+            <span className="sr-only">
+              {uiText.currentResource.closeBtn.sr}
+            </span>
             <CircleXIcon className="size-8" aria-hidden="true" />
           </Button>
         </div>
 
         <div>
-          <span className="sr-only">Realizado por la iniciativa </span>
+          <span className="sr-only">
+            {uiText.resourseMadeUnderInitiativePrefixSr}
+          </span>
           <span className="italic">{resource.initiative.name}</span>
         </div>
 
         <div className="absolute top-0 right-8 bg-primary text-primary-foreground text-sm px-2 rounded-b">
-          <span className="sr-only">Fecha de publicación</span>
+          <span className="sr-only">
+            {uiText.resourcePublicationDatePrefixSr}
+          </span>
           <time dateTime={isoDate}>{renderDate}</time>
         </div>
 
         <div className="flex gap-2 pt-2 pb-6">
           <ResourceTagsRender
             tags={tags[3]}
-            srTitle="Grupo biológico"
+            srTitle={uiText.tagsTitle.BiologicalGroup}
             className="[&_li]:bg-blue-200 [&_li]:text-blue-800 font-normal"
           />
           <ResourceTagsRender
             tags={tags[4]}
-            srTitle="Ecosistemas estratégicos"
+            srTitle={uiText.tagsTitle.ecosystem}
             className="[&_li]:bg-green-100 [&_li]:text-green-800 font-normal"
           />
         </div>
@@ -98,20 +107,20 @@ export function CurrentResource({
 
       <div className="flex flex-wrap w-full gap-4 [&_h4]:text-primary [&_h4]:italic [&_h4]:mb-0">
         <div className="flex-2 min-w-[350px]">
-          <h4>Descripción</h4>
+          <h4>{uiText.resourceDesciptionTitle}</h4>
           <p className="text-lg">{resource.description}</p>
         </div>
 
         <ResourceAttachments
           type="files"
-          title="Archivos adjuntos"
+          title={uiText.attachmentsTitle.files}
           attachments={resource.files}
           className="flex-1 min-w-[350px]"
         />
 
         <ResourceAttachments
           type="links"
-          title="Enlaces relacionados"
+          title={uiText.attachmentsTitle.files}
           attachments={resource.links}
           className="flex-1 min-w-[350px]"
         />
@@ -183,7 +192,11 @@ function ResourceAttachments({
                 target="_blank"
                 rel={isLink ? "noopener noreferrer" : undefined}
                 download={!isLink ? cleanName : undefined}
-                title={isLink ? `Visitar ${att.url}` : `Descargar ${att.name}`}
+                title={
+                  isLink
+                    ? uiText.currentResource.attachmentAction.link(att.url)
+                    : uiText.currentResource.attachmentAction.file(att.name)
+                }
               ></a>
             </li>
           );

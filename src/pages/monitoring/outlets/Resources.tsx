@@ -24,6 +24,7 @@ import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { makeSearchResourcesComponents } from "pages/monitoring/outlets/resources/layout/makeResourcesSearchBarComponents";
 import { ResourceCard } from "pages/monitoring/outlets/resources/ResourceCard";
 import { CurrentResource } from "pages/monitoring/outlets/resources/CurrentResource";
+import { uiText } from "pages/monitoring/outlets/resources/layout/uiText";
 
 export function Resources() {
   const { resourceId } = useParams();
@@ -149,8 +150,6 @@ export function Resources() {
     return filters.join(" and ");
   }, [currentResource, currentTab]);
 
-  const plural = resourcesAvailable.current !== 1 ? "s " : " ";
-
   return (
     <div className="flex flex-col w-full bg-grey-form">
       <Header />
@@ -181,8 +180,8 @@ export function Resources() {
               {resType.id !== currentTab && (
                 <button
                   onClick={() => handleTabChange(resType.id)}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-                  aria-label={`Seleccionar tipo de recurso: ${resType.name}`}
+                  className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                  aria-label={uiText.resourceTypeSelectorBtn(resType.name)}
                 />
               )}
             </div>
@@ -196,10 +195,10 @@ export function Resources() {
               setSearchParams={setSearchParams}
               className="[&_select]:bg-background flex-wrap! p-0 mb-1 font-normal"
               filterInjection={filtersInjected}
-              reset="Reiniciar búsqueda"
+              reset={uiText.searchBar.reset}
             />
             <strong>{resourcesAvailable.current} </strong>
-            Recurso{plural}encontrado{plural}
+            {uiText.searchBar.results(resourcesAvailable.current)}
           </div>
         )}
 
@@ -213,17 +212,15 @@ export function Resources() {
           closeCurrentResource={handleCloseCurrentResource}
         />
 
-        {resources.length > 0 ? (
+        {resources.length > 0 && (
           <section className="w-full">
-            <h3 className="sr-only">Recursos disponibles</h3>
+            <h3 className="sr-only">{uiText.smallCard.title}</h3>
             <ul className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8">
               {resources.map((resource) => (
                 <ResourceCard key={resource.id} resource={resource} />
               ))}
             </ul>
           </section>
-        ) : (
-          "Todavíano hay recursos en esta categoría"
         )}
 
         <TablePager
