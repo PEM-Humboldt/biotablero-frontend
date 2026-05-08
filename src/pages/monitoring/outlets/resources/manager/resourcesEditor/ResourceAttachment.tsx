@@ -63,7 +63,7 @@ export function AttachmentInput({
   setHelper: Dispatch<SetStateAction<keyof typeof helperInfo | null>>;
 }) {
   const [isLoading, setIsLoading] = useState(false);
-  const [desctiptionErrors, setDescriptionErrors] = useState<string[]>([]);
+  const [descriptionErrors, setDescriptionErrors] = useState<string[]>([]);
   const [contentErrors, setContentErrors] = useState<string[]>([]);
   const [description, setDescription] = useState("");
   const [content, setContent] = useState<string | File | null>(
@@ -141,7 +141,7 @@ export function AttachmentInput({
     return true;
   };
 
-  const handleLinkValiadtion = async () => {
+  const handleLinkValidation = async () => {
     if (inputType === "file") {
       return true;
     }
@@ -152,6 +152,7 @@ export function AttachmentInput({
         .sanitize()
         .isRequired()
         .isURL()
+        .isUniqueIn(new Set(items.map((item) => item.url!)))
         .customAsync(urlIsActive, uiText.validations.checkUrl)
     ).result;
 
@@ -165,7 +166,7 @@ export function AttachmentInput({
   };
 
   const handleAdd = async () => {
-    if (!handleDescriptionValidation() || !(await handleLinkValiadtion())) {
+    if (!handleDescriptionValidation() || !(await handleLinkValidation())) {
       return;
     }
 
@@ -191,7 +192,7 @@ export function AttachmentInput({
     }
   };
 
-  const unifiedErrors = [...validationErrors, ...desctiptionErrors];
+  const unifiedErrors = [...validationErrors, ...descriptionErrors];
   const accept =
     currentHelper && helperInfo[currentHelper].type === "files"
       ? helperInfo[currentHelper].fileType.join(", ")
@@ -247,7 +248,7 @@ export function AttachmentInput({
                       </a>
                     </Button>
                   )}
-                  {inputType === "text" && (
+                  {inputType === "text" && editingItemRef.current === null && (
                     <Button
                       type="button"
                       variant="ghost-clean"
@@ -332,7 +333,7 @@ export function AttachmentInput({
                   texts={text.resource}
                   state={content as string}
                   stateSetter={setContent}
-                  validator={handleLinkValiadtion}
+                  validator={handleLinkValidation}
                   validationErrors={contentErrors}
                   disabled={!helpers.includes(currentHelper ?? "")}
                   autoComplete="off"

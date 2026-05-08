@@ -2,11 +2,11 @@ import type {
   MonitoringResource,
   ResourceTag,
 } from "pages/monitoring/types/odataResponse";
-import type { MonirotingResourceForm } from "pages/monitoring/outlets/resources/manager/resourcesEditor/types/resources";
+import type { MonitoringResourceForm } from "pages/monitoring/outlets/resources/manager/resourcesEditor/types/resources";
 
 export function setInitialInformation(
   resource: MonitoringResource | null,
-): MonirotingResourceForm {
+): MonitoringResourceForm {
   return {
     initiativeId: resource?.initiativeId || null,
     name: resource?.name || "",

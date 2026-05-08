@@ -4,7 +4,7 @@ import type {
   ResourceTag,
 } from "pages/monitoring/types/odataResponse";
 
-export type MonirotingResourceForm = {
+export type MonitoringResourceForm = {
   initiativeId: number | null;
   name: string;
   description: string;

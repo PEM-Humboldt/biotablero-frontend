@@ -33,7 +33,7 @@ export const uiText = {
     one: "Recurso bajo la iniciativa ",
     many: "Selecciona la iniciativa con la que se relaciona el recurso",
   },
-  desctiption: {
+  description: {
     label: "Descripción",
     placeholder:
       "Describe brevemente el recurso que quieres compartir, indicando su contenido, propósito y utilidad. La descripción no debe superar las 500 palabras.",
