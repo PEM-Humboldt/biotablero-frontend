@@ -156,3 +156,12 @@ export async function removeResourceFile(fileInresourceId: number) {
 
   return res;
 }
+
+export async function likedResource(resourceId: number) {
+  const res = await monitoringAPI<MonitoringResource>({
+    type: "post",
+    endpoint: `Resource/Like/${resourceId}`,
+  });
+
+  return res;
+}
