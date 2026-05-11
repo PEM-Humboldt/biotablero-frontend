@@ -22,17 +22,15 @@ import type {
 import { monitoringAPI } from "pages/monitoring/api/core";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { MapPin } from "lucide-react";
-
-type InitiativeByLocation = {
-  initiativeId: number;
-  initiativeName: string;
-  mainLocationId: number;
-  coordinate: [number, number];
-};
+import { createGradientScale } from "pages/monitoring/utils/createGradientScale";
+import { useNavigate, useParams } from "react-router";
+import { type InitiativeByLocation } from "pages/monitoring/types/initiative";
+import { INITIAVIVES_MAP_GRADIENT } from "@config/monitoring";
+import { getInitiativeLocations } from "pages/monitoring/api/services/initiatives";
 
 interface DeptProperties {
   geofence_name: string;
-  id?: string | number;
+  gid: number;
 }
 
 type DeptFeature = Feature<Polygon | MultiPolygon, DeptProperties>;
@@ -46,43 +44,17 @@ const MapMarker = L.divIcon({
 
 function ChangeView({ bounds }: { bounds: LatLngBoundsLiteral }) {
   const map = useMap();
-  if (bounds) {
-    map.fitBounds(bounds, { animate: true });
-  }
-  return null;
-}
 
-function getGradientColor(
-  min: number,
-  max: number,
-  minColor: string,
-  maxColor: string,
-) {
-  return function getColor(count: number) {
-    if (count <= 0) {
-      return "transparent";
+  useEffect(() => {
+    if (bounds) {
+      map.fitBounds(bounds, {
+        animate: true,
+        duration: 2,
+      });
     }
+  }, [bounds, map]);
 
-    const t = Math.min(Math.max((count - min) / (max - min), 0), 1);
-
-    const hexToRgb = (hex: string) => {
-      const r = parseInt(hex.slice(1, 3), 16);
-      const g = parseInt(hex.slice(3, 5), 16);
-      const b = parseInt(hex.slice(5, 7), 16);
-      return { r, g, b };
-    };
-
-    const c1 = hexToRgb(minColor);
-    const c2 = hexToRgb(maxColor);
-
-    const r = Math.round(c1.r + t * (c2.r - c1.r));
-    const g = Math.round(c1.g + t * (c2.g - c1.g));
-    const b = Math.round(c1.b + t * (c2.b - c1.b));
-
-    const toHex = (n: number) => n.toString(16).padStart(2, "0");
-
-    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-  };
+  return null;
 }
 
 export function MapFinder({
@@ -93,13 +65,11 @@ export function MapFinder({
   const [bounds, setBounds] = useState(startingBounds);
   const [initiatives, setInitiatives] = useState<InitiativeByLocation[]>([]);
   const [nation, setNation] = useState<FeatureCollection | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchInitiativeLocations = async () => {
-      const res = await monitoringAPI<InitiativeByLocation[]>({
-        type: "get",
-        endpoint: "Initiative/GetByLocation",
-      });
+      const res = await getInitiativeLocations();
 
       if (isMonitoringAPIError(res)) {
         setInitiatives([]);
@@ -168,12 +138,21 @@ export function MapFinder({
     return results;
   }, [initiatives, nation]);
 
-  const getColor = getGradientColor(
-    1,
-    Math.max(...processedData.map((dep) => dep.count), 1),
-    "#ff0000",
-    "#ffff00",
-  );
+  const getColor = useMemo(() => {
+    const [min, max] = processedData.reduce(
+      (result, current) => {
+        if (current.count <= result[0]) {
+          result[0] = current.count;
+        }
+        if (current.count >= result[1]) {
+          result[1] = current.count;
+        }
+        return result;
+      },
+      [Infinity, 0],
+    );
+    return createGradientScale(min, max, INITIAVIVES_MAP_GRADIENT);
+  }, [processedData]);
 
   return (
     <MapContainer id="map" bounds={bounds} zoom={6} maxZoom={10} minZoom={6}>
@@ -188,7 +167,9 @@ export function MapFinder({
           </Marker>
         );
       })}
+
       <ChangeView bounds={bounds} />
+
       <GeoJSON
         key={`geojson-layer-${processedData.length}`}
         data={
@@ -206,11 +187,13 @@ export function MapFinder({
           );
 
           const count = dataItem ? dataItem.count : 0;
+          const color = getColor(count);
+
           return {
-            fillColor: getColor(count),
-            weight: 1,
+            fillColor: color,
+            weight: 10,
             opacity: 1,
-            color: "white",
+            color: color,
             fillOpacity: 0.7,
           };
         }}
@@ -229,6 +212,8 @@ export function MapFinder({
 
           layer.on("click", (e) => {
             const target = e.target as L.Polygon;
+            const f = feature as DeptFeature;
+
             if (typeof target.getBounds === "function") {
               const bounds = target.getBounds();
               const boundsLiteral: L.LatLngBoundsLiteral = [
@@ -237,6 +222,16 @@ export function MapFinder({
               ];
 
               setBounds(boundsLiteral);
+
+              // NOTE: Delay para que la animación empalme con la actualizción
+              // de info en el recuadro
+              if (!("gid" in f.properties)) {
+                return;
+              }
+
+              setTimeout(() => {
+                void navigate(`/Monitoreo/Departamento/${f.properties.gid}`);
+              }, 800);
             }
           });
         }}
