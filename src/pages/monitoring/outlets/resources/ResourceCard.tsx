@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
 
 import { cn } from "@ui/shadCN/lib/utils";
 
@@ -13,6 +13,8 @@ export function ResourceCard({
 }: {
   resource: MonitoringResourceShort;
 }) {
+  const { resourceId } = useParams();
+
   const lastUpdate = new Date(resource.publicationDate);
   const isoDate = lastUpdate.toISOString().split("T")[0];
   const renderDate = lastUpdate.toLocaleDateString();
@@ -21,7 +23,9 @@ export function ResourceCard({
     if (!all[tag.tag.category.id]) {
       all[tag.tag.category.id] = [];
     }
-    all[tag.tag.category.id].push(tag.tag.name);
+    if (tag.tag?.name) {
+      all[tag.tag.category.id].push(tag.tag.name);
+    }
     return all;
   }, {});
 
@@ -30,6 +34,9 @@ export function ResourceCard({
       className={cn(
         "isolate flex flex-col gap-4 justify-between relative overflow-hidden shadow-xl transition-all border border-transparent rounded-2xl p-4 pb-3 lg:p-6 lg:pb-4",
         "hover:scale-107 hover:shadow-sm hover:border-primary",
+        resourceId && Number(resourceId) === resource.id
+          ? "bg-primary/10 hover:scale-100 hover:border-transparent hover:shadow-xl"
+          : "",
       )}
     >
       <div>
@@ -38,7 +45,9 @@ export function ResourceCard({
           <span className="sr-only">
             {uiText.resourseMadeUnderInitiativePrefixSr}
           </span>
-          <span className="text-sm italic">{resource.initiative.name}</span>
+          <span className="text-sm italic">
+            {resource.initiative?.name ?? ""}
+          </span>
         </header>
 
         <time
@@ -86,12 +95,14 @@ export function ResourceCard({
         />
       </div>
 
-      <Link
-        to={`/Monitoreo/Recursos/${resource.id}`}
-        className="absolute inset-0 bg-transparent cursor-pointer"
-      >
-        <span className="sr-only">{uiText.smallCard.gotoResource}</span>
-      </Link>
+      {(resourceId === undefined || Number(resourceId) !== resource.id) && (
+        <Link
+          to={`/Monitoreo/Recursos/${resource.id}`}
+          className="absolute inset-0 bg-transparent cursor-pointer"
+        >
+          <span className="sr-only">{uiText.smallCard.gotoResource}</span>
+        </Link>
+      )}
     </div>
   );
 }

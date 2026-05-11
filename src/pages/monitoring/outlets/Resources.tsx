@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
 import { LoadingDiv } from "@ui/LoadingDiv";
@@ -73,8 +73,9 @@ export function Resources() {
   }, []);
 
   const fetchCurrentResource = useCallback(async () => {
+    setCurrentResource(null);
+
     if (!resourceId) {
-      setCurrentResource(null);
       return;
     }
 
@@ -93,7 +94,6 @@ export function Resources() {
   }, [resourceId]);
 
   useEffect(() => {
-    setResources([]);
     void fetchCurrentResource();
   }, [fetchCurrentResource]);
 
@@ -102,13 +102,13 @@ export function Resources() {
       return;
     }
 
+    setResources([]);
     const fetchResources = async () => {
       if (prevSearchParamsRef.current !== searchParams) {
         setCurrentPage(1);
         prevSearchParamsRef.current = searchParams;
       }
 
-      setResources([]);
       setErrors([]);
       setIsLoading((prvLoads) => prvLoads + 1);
 
@@ -142,13 +142,14 @@ export function Resources() {
     void navigate("/Monitoreo/Recursos");
   };
 
-  const filtersInjected = useMemo(() => {
-    const filters = [`resourceType/id eq ${currentTab}`];
-    if (currentResource !== null) {
-      filters.push(`id ne ${currentResource.id}`);
-    }
-    return filters.join(" and ");
-  }, [currentResource, currentTab]);
+  const filtersInjected = `resourceType/id eq ${currentTab}`;
+  // const filtersInjected = useMemo(() => {
+  //   const filters = [`resourceType/id eq ${currentTab}`];
+  //   if (currentResource !== null) {
+  //     filters.push(`id ne ${currentResource.id}`);
+  //   }
+  //   return filters.join(" and ");
+  // }, [currentResource, currentTab]);
 
   return (
     <div className="flex flex-col w-full bg-grey-form">

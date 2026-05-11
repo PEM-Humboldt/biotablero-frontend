@@ -62,7 +62,7 @@ export function CurrentResource({
     >
       <header>
         <div className="flex gap-2 justify-between">
-          <h3 className="text-primary text-5xl mb-0">{resource.name}</h3>
+          <h3 className="text-primary text-5xl mb-0">{resource?.name ?? ""}</h3>
           <Button
             title={uiText.currentResource.closeBtn.title}
             variant="ghost"
@@ -81,7 +81,7 @@ export function CurrentResource({
           <span className="sr-only">
             {uiText.resourseMadeUnderInitiativePrefixSr}
           </span>
-          <span className="italic">{resource.initiative.name}</span>
+          <span className="italic">{resource.initiative?.name ?? ""}</span>
         </div>
 
         <div className="absolute top-0 right-8 bg-primary text-primary-foreground text-sm px-2 rounded-b">

@@ -5,6 +5,7 @@ import {
   type Dispatch,
   type SetStateAction,
   useEffect,
+  useCallback,
 } from "react";
 
 import { cn } from "@ui/shadCN/lib/utils";
@@ -55,7 +56,7 @@ export function ODataSearchBar<T>({
     Record<string, HTMLInputElement | HTMLSelectElement>
   >({});
 
-  const getSearchValues = () => {
+  const getSearchValues = useCallback(() => {
     const filters: string[] = [];
     const searchParams: ODataParams = {};
 
@@ -87,24 +88,14 @@ export function ODataSearchBar<T>({
     searchParams.filter = filters.length ? filters.join(" and ") : "";
 
     return searchParams;
-  };
-
-  useEffect(() => {
-    if (submit === "") {
-      onChangeHandler();
-    } else {
-      setSearchParams((oldParams) => ({ ...oldParams, ...getSearchValues() }));
-    }
-    // NOTE: En los reset al hacer el useEffect sensible a todas las
-    // dependencias que pide, entramos los rerenderizados pueden causar un r
-    // etorno al estado anterior y forzar al usuario a hacer clic dos veces
+    // NOTE: Hay dependencias que pide y no cambian, como components o
+    // parentData, pero que al incorporarla, vuelve a renderizar el componente
+    // haciendo una petición extra o perdiendo el estado anterior forzando
+    // una doble interacción o una petición innecesaria, por lo que solo se
+    // deja filterinjection, que es una que puede cambiar segun el contexto en
+    // el cual se encuentra el componente
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterInjection]);
-
-  const submitSearch = (event: FormEvent) => {
-    event.preventDefault();
-    setSearchParams((oldParams) => ({ ...oldParams, ...getSearchValues() }));
-  };
 
   // NOTE: con useRef no se pierde el timer de búsqueda si cambian los filtros
   const debouncedSearch = useRef(
@@ -113,8 +104,27 @@ export function ODataSearchBar<T>({
     }, 0.5),
   ).current;
 
-  const onChangeHandler = () => {
+  const onChangeHandler = useCallback(() => {
     debouncedSearch(getSearchValues());
+  }, [debouncedSearch, getSearchValues]);
+
+  useEffect(() => {
+    if (submit === "") {
+      onChangeHandler();
+    } else {
+      setSearchParams((oldParams) => ({ ...oldParams, ...getSearchValues() }));
+    }
+  }, [
+    filterInjection,
+    onChangeHandler,
+    getSearchValues,
+    submit,
+    setSearchParams,
+  ]);
+
+  const submitSearch = (event: FormEvent) => {
+    event.preventDefault();
+    setSearchParams((oldParams) => ({ ...oldParams, ...getSearchValues() }));
   };
 
   const clearSearch = () => {
