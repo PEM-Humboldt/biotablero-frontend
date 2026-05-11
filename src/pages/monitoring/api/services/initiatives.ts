@@ -5,6 +5,7 @@ import type {
   UserInInitiative,
 } from "pages/monitoring/types/odataResponse";
 import type {
+  InitiativeByLocation,
   InitiativeContact,
   InitiativeFullInfo,
   LocationDataBasic,
@@ -335,6 +336,15 @@ export async function makeJoinRequestToInitiative(
     type: "post",
     endpoint: "JoinRequest",
     options: { data: { initiativeId, level: { id: asRole } } },
+  });
+
+  return res;
+}
+
+export async function getInitiativeLocations(departmentId?: number) {
+  const res = await monitoringAPI<InitiativeByLocation[]>({
+    type: "get",
+    endpoint: `Initiative/GetByLocation${departmentId ? `?locationId=${departmentId}` : ""}`,
   });
 
   return res;
