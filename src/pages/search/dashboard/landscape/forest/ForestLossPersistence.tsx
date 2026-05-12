@@ -1,4 +1,4 @@
-import React from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
 import {
@@ -19,223 +19,195 @@ import { ForestLossPersistenceController } from "pages/search/dashboard/landscap
 import { RasterLayer } from "pages/search/types/layers";
 import colorPalettes from "pages/search/utils/colorPalettes";
 
-interface Props {}
-interface State {
-  showInfoGraph: boolean;
-  forestLP: Array<ForestLPExt>;
-  message: MessageWrapperType;
-  currentPersistence: number;
-  texts: {
-    forestLP: textsObject;
+export default function () {
+  const context = useContext(SearchLegacyCTX) as LegacyContextValues;
+  const {
+    areaType,
+    areaId,
+    setRasterLayers,
+    setLoadingLayer,
+    setLayerError,
+    setMapTitle,
+  } = context;
+
+  const [showInfoGraph, setShowInfoGraph] = useState(true);
+  const [forestLP, setForestLP] = useState<Array<ForestLPExt>>([]);
+  const [message, setMessage] = useState<MessageWrapperType>("loading");
+  const [currentPersistence, setCurrentPersistence] = useState(0);
+  const [texts, setTexts] = useState<{ forestLP: textsObject }>({
+    forestLP: { info: "", cons: "", meto: "", quote: "" },
+  });
+  const [layers, setLayers] = useState<Array<RasterLayer>>([]);
+  const [currentPeriod, setCurrentPeriod] = useState("");
+
+  const controllerRef = useRef(new ForestLossPersistenceController());
+  const controller = controllerRef.current;
+
+  const areaTypeId = areaType?.id;
+  const areaIdId = areaId?.id;
+
+  const toggleInfoGraph = () => {
+    setShowInfoGraph((prev) => !prev);
   };
-  layers: Array<RasterLayer>;
-}
 
-class ForestLossPersistence extends React.Component<Props, State> {
-  static contextType = SearchLegacyCTX;
-  mounted = false;
-  componentName = "forestLP";
-  flpController;
-  currentPeriod = "";
+  const switchLayer = useCallback(
+    (period: string) => {
+      setLoadingLayer(true);
+      controller
+        .getLayers(period)
+        .then((layersRes) => {
+          setLayers(layersRes);
+          setRasterLayers(layersRes);
+          setLoadingLayer(false);
+          setMapTitle({
+            name: `Pérdida y persistencia de bosque (${period})`,
+          });
+        })
+        .catch((e) => {
+          if (e.toString() !== "Error: request canceled") {
+            setLayerError(e.toString());
+          }
+          setLoadingLayer(false);
+        });
+    },
+    [setLayerError, setLoadingLayer, setMapTitle, setRasterLayers],
+  );
 
-  constructor(props: Props) {
-    super(props);
-    this.flpController = new ForestLossPersistenceController();
-    this.state = {
-      showInfoGraph: true,
-      forestLP: [],
-      message: "loading",
-      currentPersistence: 0,
-      texts: {
-        forestLP: { info: "", cons: "", meto: "", quote: "" },
-      },
-      layers: [],
-    };
-  }
+  useEffect(() => {
+    const controller = controllerRef.current;
+    let isCurrent = true;
 
-  componentDidMount() {
-    this.mounted = true;
-    const { areaType, areaId, setLoadingLayer } = this
-      .context as LegacyContextValues;
-
-    if (!areaType || !areaId) {
+    if (!areaTypeId || !areaIdId) {
       setLoadingLayer(false);
       return;
     }
 
-    const areaTypeId = areaType.id;
-    const areaIdId = areaId.id;
-
-    this.flpController.setArea(areaTypeId, areaIdId);
+    controller.setArea(areaTypeId, areaIdId);
 
     setLoadingLayer(true);
-    this.flpController
+    controller
       .getForestLPData()
       .then((data) => {
-        this.currentPeriod = data.forestLP[data.forestLP.length - 1].id;
-        this.switchLayer(this.currentPeriod);
-        if (this.mounted) {
-          this.setState({
-            forestLP: data.forestLP,
-            currentPersistence: data.currentPersistence,
-            message: null,
-          });
+        if (!isCurrent) return;
+
+        const nextPeriod = data.forestLP[data.forestLP.length - 1]?.id || "";
+        setCurrentPeriod(nextPeriod);
+        setForestLP(data.forestLP);
+        setCurrentPersistence(data.currentPersistence);
+        setMessage(null);
+
+        if (nextPeriod) {
+          switchLayer(nextPeriod);
+        } else {
+          setLoadingLayer(false);
         }
       })
       .catch(() => {
-        this.setState({ message: "no-data" });
+        if (!isCurrent) return;
+        setMessage("no-data");
+        setLoadingLayer(false);
       });
 
-    this.flpController
+    controller
       .getForestLPTexts("forestLP")
       .then((res) => {
-        if (this.mounted) {
-          this.setState({ texts: { forestLP: res } });
-        }
+        if (!isCurrent) return;
+        setTexts({ forestLP: res });
       })
       .catch(() => {});
+
+    return () => {
+      isCurrent = false;
+      controller.cancelActiveRequests();
+    };
+  }, [areaTypeId, areaIdId, setLoadingLayer, switchLayer]);
+
+  if (!areaTypeId || !areaIdId) {
+    return null;
   }
 
-  componentWillUnmount() {
-    this.mounted = false;
-    this.flpController.cancelActiveRequests();
-  }
+  const areaIdStr = areaIdId.toString();
+  const graphData = controllerRef.current.getGraphData(forestLP);
 
-  /**
-   * Show or hide the detailed information on each graph
-   */
-  toggleInfoGraph = () => {
-    this.setState((prevState) => ({
-      showInfoGraph: !prevState.showInfoGraph,
-    }));
-  };
-
-  render() {
-    const {
-      forestLP,
-      currentPersistence,
-      showInfoGraph,
-      message,
-      texts,
-      layers,
-    } = this.state;
-    const { areaType, areaId, setRasterLayers } = this
-      .context as LegacyContextValues;
-
-    const areaTypeId = areaType!.id;
-    const areaIdId = areaId!.id.toString();
-
-    const graphData = this.flpController.getGraphData(forestLP);
-
-    const selectedIndex = this.currentPeriod;
-
-    return (
-      <div className="graphcontainer pt6">
-        <h2>
-          <IconTooltip title="Interpretación">
-            <InfoIcon
-              className={`metrics-info-icon${showInfoGraph ? " activeBox" : ""}`}
-              onClick={this.toggleInfoGraph}
-            />
-          </IconTooltip>
-        </h2>
-        {showInfoGraph && (
-          <ShortInfo
-            description={`<p>${texts.forestLP.info}</p>`}
-            className="graphinfo2"
-            collapseButton={false}
+  return (
+    <div className="graphcontainer pt6">
+      <h2>
+        <IconTooltip title="Interpretación">
+          <InfoIcon
+            className={`metrics-info-icon${showInfoGraph ? " activeBox" : ""}`}
+            onClick={toggleInfoGraph}
           />
-        )}
-        <div>
-          <h6>Cobertura actual</h6>
-          <h5
-            style={{
-              backgroundColor:
-                matchColor("forestLP")("Persistencia") ||
-                colorPalettes.default[0],
-            }}
-          >
-            {`${formatNumber(currentPersistence, 0)} ha `}
-          </h5>
-        </div>
-        <div>
-          <h6>Cobertura de bosque en el tiempo</h6>
-        </div>
-        <div>
-          <SmallBars
-            data={graphData.transformedData}
-            keys={graphData.keys}
-            tooltips={graphData.tooltips}
-            loadStatus={message}
-            margin={{
-              left: 100,
-              bottom: 50,
-            }}
-            axisY={{
-              enabled: true,
-              legend: "Periodo",
-            }}
-            axisX={{
-              enabled: true,
-              legend: "Hectáreas",
-              format: ".2s",
-            }}
-            colors={(key: string) =>
-              matchColor("forestLP")(key) || colorPalettes.default[0]
+        </IconTooltip>
+      </h2>
+      {showInfoGraph && (
+        <ShortInfo
+          description={`<p>${texts.forestLP.info}</p>`}
+          className="graphinfo2"
+          collapseButton={false}
+        />
+      )}
+      <div>
+        <h6>Cobertura actual</h6>
+        <h5
+          style={{
+            backgroundColor:
+              matchColor("forestLP")("Persistencia") ||
+              colorPalettes.default[0],
+          }}
+        >
+          {`${formatNumber(currentPersistence, 0)} ha `}
+        </h5>
+      </div>
+      <div>
+        <h6>Cobertura de bosque en el tiempo</h6>
+      </div>
+      <div>
+        <SmallBars
+          data={graphData.transformedData}
+          keys={graphData.keys}
+          tooltips={graphData.tooltips}
+          loadStatus={message}
+          margin={{
+            left: 100,
+            bottom: 50,
+          }}
+          axisY={{
+            enabled: true,
+            legend: "Periodo",
+          }}
+          axisX={{
+            enabled: true,
+            legend: "Hectáreas",
+            format: ".2s",
+          }}
+          colors={(key: string) =>
+            matchColor("forestLP")(key) || colorPalettes.default[0]
+          }
+          onClickHandler={(period, category) => {
+            if (period === currentPeriod) {
+              setRasterLayers(
+                layers.map((layer) => ({
+                  ...layer,
+                  selected: layer.id === category,
+                })),
+              );
+            } else {
+              setCurrentPeriod(period);
+              switchLayer(period);
             }
-            onClickHandler={(period, category) => {
-              if (period === this.currentPeriod) {
-                setRasterLayers(
-                  layers.map((layer) => ({
-                    ...layer,
-                    selected: layer.id === category,
-                  })),
-                );
-              } else {
-                this.currentPeriod = period;
-                this.switchLayer(period);
-              }
-            }}
-            selectedIndexValue={selectedIndex}
-          />
-        </div>
-        <TextBoxes
-          consText={texts.forestLP.cons}
-          metoText={texts.forestLP.meto}
-          quoteText={texts.forestLP.quote}
-          downloadData={this.flpController.getDownloadData(forestLP)}
-          downloadName={`forest_loss_persistence_${areaTypeId}_${areaIdId}.csv`}
-          isInfoOpen={showInfoGraph}
-          toggleInfo={this.toggleInfoGraph}
+          }}
+          selectedIndexValue={currentPeriod}
         />
       </div>
-    );
-  }
-
-  switchLayer = (period: string) => {
-    const { setRasterLayers, setLoadingLayer, setLayerError, setMapTitle } =
-      this.context as LegacyContextValues;
-
-    setLoadingLayer(true);
-    this.flpController
-      .getLayers(period)
-      .then((layers) => {
-        this.setState({ layers: layers });
-
-        if (this.mounted) {
-          setRasterLayers(layers);
-          setLoadingLayer(false);
-          setMapTitle({
-            name: `Pérdida y persistencia de bosque (${this.currentPeriod})`,
-          });
-        }
-      })
-      .catch((e) => {
-        if (e.toString() != "Error: request canceled") {
-          setLayerError(e.toString());
-        }
-      });
-  };
+      <TextBoxes
+        consText={texts.forestLP.cons}
+        metoText={texts.forestLP.meto}
+        quoteText={texts.forestLP.quote}
+        downloadData={controllerRef.current.getDownloadData(forestLP)}
+        downloadName={`forest_loss_persistence_${areaTypeId}_${areaIdStr}.csv`}
+        isInfoOpen={showInfoGraph}
+        toggleInfo={toggleInfoGraph}
+      />
+    </div>
+  );
 }
-
-export default ForestLossPersistence;

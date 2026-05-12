@@ -1,4 +1,4 @@
-import { useContext, useEffect, useReducer } from "react";
+import { useContext, useEffect, useReducer, useRef } from "react";
 
 import InfoIcon from "@mui/icons-material/Info";
 
@@ -134,7 +134,8 @@ export function CurrentFootprint() {
     layers,
   } = state;
 
-  const controller = new CurrentFootprintController();
+  const controllerRef = useRef(new CurrentFootprintController());
+  const controller = controllerRef.current;
 
   if (!areaType || !areaId) {
     context.setLoadingLayer(false);
@@ -144,9 +145,9 @@ export function CurrentFootprint() {
   const areaTypeId = areaType.id;
   const areaIdId = areaId.id;
 
-  controller.setArea(areaTypeId, areaIdId);
-
   useEffect(() => {
+    controller.setArea(areaTypeId, areaIdId);
+
     setLoadingLayer(true);
 
     controller.getCurrentHFAverage().then((res) => {

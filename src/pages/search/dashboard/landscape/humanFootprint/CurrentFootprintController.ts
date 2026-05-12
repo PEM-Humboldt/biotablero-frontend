@@ -1,6 +1,4 @@
-import { formatNumber } from "@utils/format";
 import { RasterLayer } from "pages/search/types/layers";
-import { matchColor } from "pages/search/utils/matchColor";
 import { CancelTokenSource } from "axios";
 
 import { LargeStackedBarData } from "@composites/charts/LargeStackedBar";
@@ -44,17 +42,26 @@ export class CurrentFootprintController {
    * @returns { Promise<{ id: string; average: number, category: string }> }
    */
   getCurrentHFAverage() {
-    return SearchAPI.requestMetricsValues<"currentHF_average">(
-      "currentHF_average",
-      this.areaId,
-    ).request.then((averageValues) => {
-      const average = Number(averageValues.average);
+    const requestKey = "current-hf-average-values";
+    const { request, source } =
+      SearchAPI.requestMetricsValues<"currentHF_average">(
+        "currentHF_average",
+        this.areaId,
+      );
+    this.activeRequests.set(requestKey, source);
 
-      return {
-        ...averageValues,
-        category: this.getHFCategory(average),
-      };
-    });
+    return request
+      .then((averageValues) => {
+        const average = Number(averageValues.average);
+
+        return {
+          ...averageValues,
+          category: this.getHFCategory(average),
+        };
+      })
+      .finally(() => {
+        this.activeRequests.delete(requestKey);
+      });
   }
 
   private getHFCategory(value: number): HFCategory {
@@ -75,19 +82,27 @@ export class CurrentFootprintController {
    * @returns { Promise<SmallStackedBarData[]>}
    */
   getCurrentHFValues() {
-    return SearchAPI.requestMetricsValues<"currentHF">(
+    const requestKey = "current-hf-values";
+    const { request, source } = SearchAPI.requestMetricsValues<"currentHF">(
       "currentHF",
       this.areaId,
-    ).request.then((res) => {
-      const { id, ...classes } = res;
-      this.itemId = id;
-      this.classes = new Set(
-        Object.keys(classes).filter(
-          (classId) => classes[classId as keyof typeof classes] != 0.0,
-        ),
-      );
-      return this.transformData(res);
-    });
+    );
+    this.activeRequests.set(requestKey, source);
+
+    return request
+      .then((res) => {
+        const { id, ...classes } = res;
+        this.itemId = id;
+        this.classes = new Set(
+          Object.keys(classes).filter(
+            (classId) => classes[classId as keyof typeof classes] != 0.0,
+          ),
+        );
+        return this.transformData(res);
+      })
+      .finally(() => {
+        this.activeRequests.delete(requestKey);
+      });
   }
 
   /**
