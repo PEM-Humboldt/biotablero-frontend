@@ -1,13 +1,10 @@
-import { useEffect, useContext, useReducer } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 
 import InfoIcon from "@mui/icons-material/Info";
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
 
-import {
-  SearchLegacyCTX,
-  LegacyContextValues,
-} from "pages/search/hooks/SearchContext";
+import { useSearchLegacyCTX } from "pages/search/hooks/SearchContext";
 
 import BackendAPI from "pages/search/api/backendAPI";
 import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
@@ -15,7 +12,7 @@ import { EcosystemsController } from "pages/search/dashboard/EcosystemsControlle
 import { RasterLayer } from "pages/search/types/layers";
 
 import { Coverage } from "pages/search/dashboard/ecosystems/Coverage";
-// import { ProtectedAreas } from "pages/search/dashboard/ecosystems/ProtectedAreas";
+import { ProtectedAreas } from "pages/search/dashboard/ecosystems/ProtectedAreas";
 import { StrategicEcosystems } from "pages/search/dashboard/ecosystems/StrategicEcosystems";
 import { SmallStackedBarData } from "@composites/charts/SmallStackedBar";
 
@@ -83,13 +80,23 @@ const initialState: EcosystemsState = {
 type EcosystemsAction =
   | { type: "TOGGLE_MAIN_INFO" }
   | { type: "TOGGLE_SECTION_INFO"; payload: string }
+  | { type: "COVERAGE_LOADING" }
   | { type: "COVERAGE_VALUES_SUCCEEDED"; payload: SmallStackedBarData[] }
   | { type: "COVERAGE_LAYERS_SUCCEEDED"; payload: RasterLayer[] }
   | { type: "COVERAGE_VALUES_FAILED" }
+  | { type: "PROTECTED_AREAS_VALUES_SUCCEEDED"; payload: SmallStackedBarData[] }
+  | { type: "PROTECTED_AREAS_VALUES_FAILED" }
   | {
       type: "SET_TEXTS";
       payload: { section: keyof EcosystemsState["texts"]; value: TextsContent };
     };
+
+const isNoProtected = (value: string) =>
+  value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s|_/g, "") === "noprotegida";
 
 function ecosystemsReducer(
   state: EcosystemsState,
@@ -108,6 +115,17 @@ function ecosystemsReducer(
       return { ...state, infoShown: newSet };
     }
 
+    case "COVERAGE_LOADING":
+      return {
+        ...state,
+        coverageData: [],
+        layers: [],
+        messages: {
+          ...state.messages,
+          cov: "loading",
+        },
+      };
+
     case "COVERAGE_VALUES_SUCCEEDED":
       return {
         ...state,
@@ -119,7 +137,10 @@ function ecosystemsReducer(
       };
 
     case "COVERAGE_LAYERS_SUCCEEDED":
-      return { ...state, layers: action.payload };
+      return {
+        ...state,
+        layers: action.payload,
+      };
 
     case "COVERAGE_VALUES_FAILED":
       return {
@@ -127,6 +148,32 @@ function ecosystemsReducer(
         messages: {
           ...state.messages,
           cov: "no-data",
+        },
+      };
+
+    case "PROTECTED_AREAS_VALUES_SUCCEEDED":
+      return {
+        ...state,
+        PAAreas: action.payload,
+        PATotalArea: action.payload.reduce(
+          (acc, item) => (isNoProtected(item.key) ? acc : acc + item.area),
+          0,
+        ),
+        PADivergentData: action.payload.some(
+          (item) => item.percentage > 0 && item.percentage < 0.01,
+        ),
+        messages: {
+          ...state.messages,
+          pa: null,
+        },
+      };
+
+    case "PROTECTED_AREAS_VALUES_FAILED":
+      return {
+        ...state,
+        messages: {
+          ...state.messages,
+          pa: "no-data",
         },
       };
 
@@ -144,55 +191,100 @@ function ecosystemsReducer(
   }
 }
 
-const controller = new EcosystemsController();
-
 export function Ecosystems() {
-  const context = useContext(SearchLegacyCTX) as LegacyContextValues;
-  const { areaType, areaId, areaHa } = context;
+  const {
+    areaType,
+    areaId,
+    areaHa,
+    setLoadingLayer,
+    setRasterLayers,
+    setMapTitle,
+    setLayerError,
+    clearLayers,
+  } = useSearchLegacyCTX();
+  const [hasActiveSE, setHasActiveSE] = useState(false);
+  const controllerRef = useRef(new EcosystemsController());
+  const controller = controllerRef.current;
 
   const [state, dispatch] = useReducer(ecosystemsReducer, initialState);
 
-  const { showInfoMain, infoShown, coverageData, layers, messages, texts } =
-    state;
+  const {
+    showInfoMain,
+    infoShown,
+    coverageData,
+    PAAreas,
+    PATotalArea,
+    PADivergentData,
+    layers,
+    messages,
+    texts,
+  } = state;
 
-  if (!areaType || !areaId) {
-    context.setLoadingLayer(false);
-    return;
-  }
-
-  const areaTypeId = areaType.id;
-  const areaIdId = areaId.id;
+  const areaTypeId = areaType?.id;
+  const areaIdId = areaId?.id;
 
   useEffect(() => {
+    let isCurrent = true;
+
+    if (!areaTypeId || !areaIdId) {
+      setLoadingLayer(false);
+      return;
+    }
+
+    dispatch({ type: "COVERAGE_LOADING" });
     controller.setArea(areaTypeId, areaIdId);
 
-    context.setLoadingLayer(true);
+    setLoadingLayer(true);
 
     controller
       .getCoverageValues()
       .then((coverageDataRes) => {
+        if (!isCurrent) return;
         controller
           .getCoveragesLayers()
           .then((layersRes) => {
+            if (!isCurrent) return;
             dispatch({ type: "COVERAGE_LAYERS_SUCCEEDED", payload: layersRes });
-            context.setRasterLayers(layersRes);
-            context.setLoadingLayer(false);
-            context.setMapTitle({ name: "Coberturas" });
+            setRasterLayers(layersRes);
+            setLoadingLayer(false);
+            setMapTitle({ name: "Coberturas" });
           })
           .catch((e) => {
-            context.setLoadingLayer(false);
-            if (!e.toString().includes("request canceled")) {
-              context.setLayerError?.(e.toString());
+            if (!isCurrent) return;
+            const errorMessage = e?.toString?.() ?? String(e);
+            if (errorMessage.includes("request canceled")) {
+              return;
             }
+            setLoadingLayer(false);
+            setLayerError?.(errorMessage);
           });
         dispatch({
           type: "COVERAGE_VALUES_SUCCEEDED",
           payload: coverageDataRes,
         });
       })
-      .catch(() => {
+      .catch((e) => {
+        if (!isCurrent) return;
+        const errorMessage = e?.toString?.() ?? String(e);
+        if (errorMessage.includes("request canceled")) {
+          return;
+        }
         dispatch({ type: "COVERAGE_VALUES_FAILED" });
-        context.setLoadingLayer(false);
+        setLoadingLayer(false);
+      });
+
+    controller
+      .getProtectedAreasValues(areaHa ?? 0)
+      .then((PAAreas) => {
+        if (!isCurrent) return;
+        dispatch({
+          type: "PROTECTED_AREAS_VALUES_SUCCEEDED",
+          payload: PAAreas,
+        });
+      })
+      .catch(() => {
+        if (!isCurrent) return;
+        dispatch({ type: "PROTECTED_AREAS_VALUES_FAILED" });
       });
 
     const TEXT_SECTIONS: TextSection[] = ["ecosystems", "coverage", "pa", "se"];
@@ -217,10 +309,15 @@ export function Ecosystems() {
     });
 
     return () => {
-      context.clearLayers();
+      isCurrent = false;
+      clearLayers();
       controller.cancelActiveRequests();
     };
-  }, [areaTypeId, areaIdId]);
+  }, [areaTypeId, areaIdId, areaHa]);
+
+  if (!areaType || !areaId) {
+    return null;
+  }
 
   /**
    * Toggles the visibility state of the main tooltip.
@@ -240,12 +337,17 @@ export function Ecosystems() {
    *  @param {string} selectedKey Special Ecosystem type
    */
   const clickOnGraph = (selectedKey: string) => {
-    context.setRasterLayers(
+    setRasterLayers(
       layers.map((layer) => ({
         ...layer,
         selected: layer.id === selectedKey,
       })),
     );
+  };
+
+  const restoreCoverageLayers = () => {
+    setRasterLayers(layers);
+    setMapTitle({ name: "Coberturas" });
   };
 
   return (
@@ -265,10 +367,10 @@ export function Ecosystems() {
       )}
 
       <div className="graphcontainer pt5">
-        {/* COVERAGE */}
         <Coverage
           coverage={coverageData}
           infoOpen={infoShown.has("coverage")}
+          disableGraphClick={hasActiveSE}
           toggleInfo={() => toggleInfo("coverage")}
           texts={texts.coverage}
           messages={messages.cov}
@@ -276,8 +378,6 @@ export function Ecosystems() {
           onClickGraph={clickOnGraph}
         />
 
-        {/* PROTECTED AREAS */}
-        {/*}
         <ProtectedAreas
           PAAreas={PAAreas}
           PATotalArea={PATotalArea}
@@ -287,15 +387,16 @@ export function Ecosystems() {
           toggleInfo={() => toggleInfo("pa")}
           texts={texts.pa}
           messages={messages.pa}
-          areaIdStr={areaIdStr}
+          areaIdStr={`${areaIdId}`}
         />
-        {*/}
 
         <StrategicEcosystems
-          areaTypeId={areaTypeId}
-          areaIdId={areaIdId}
+          areaTypeId={areaTypeId!}
+          areaIdId={areaIdId!}
           areaHa={areaHa!}
           texts={texts.se}
+          onActiveSEChange={setHasActiveSE}
+          onSEDetailClose={restoreCoverageLayers}
         />
       </div>
     </div>

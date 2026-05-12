@@ -12,6 +12,7 @@ import colorPalettes from "pages/search/utils/colorPalettes";
 interface Props {
   coverage: SmallStackedBarData[];
   infoOpen: boolean;
+  disableGraphClick?: boolean;
   toggleInfo: () => void;
   texts: {
     info: string;
@@ -28,6 +29,7 @@ interface Props {
 export function Coverage({
   coverage,
   infoOpen,
+  disableGraphClick = false,
   toggleInfo,
   texts,
   messages,
@@ -35,6 +37,13 @@ export function Coverage({
   onClickGraph,
   resetActiveSE,
 }: Props) {
+  const onCoverageClick = (id: string) => {
+    if (disableGraphClick) {
+      return;
+    }
+    onClickGraph(id);
+  };
+
   return (
     <>
       <div className="graphcontainer">
@@ -48,7 +57,7 @@ export function Coverage({
           <span className="iconWrapper">
             <InfoIcon
               fontSize="medium"
-              className={`ecoest-info-icon${infoOpen ? " activeBox" : ""}`}
+              className={`metrics-info-icon${infoOpen ? " activeBox" : ""}`}
               onClick={toggleInfo}
             />
           </span>
@@ -74,7 +83,7 @@ export function Coverage({
             colors={(key: string) =>
               matchColor("coverage")(key) || colorPalettes.default[0]
             }
-            onClickGraphHandler={onClickGraph}
+            onClickGraphHandler={onCoverageClick}
           />
         </div>
       </div>

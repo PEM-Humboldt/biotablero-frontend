@@ -15,3 +15,8 @@ export interface BlobAPIObject {
   request: Promise<Blob>;
   source: CancelTokenSource;
 }
+
+export interface RequestAPIObject<T> {
+  request: Promise<T>;
+  source: CancelTokenSource;
+}

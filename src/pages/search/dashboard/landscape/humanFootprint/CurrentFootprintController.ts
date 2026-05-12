@@ -47,7 +47,7 @@ export class CurrentFootprintController {
     return SearchAPI.requestMetricsValues<"currentHF_average">(
       "currentHF_average",
       this.areaId,
-    ).then((averageValues) => {
+    ).request.then((averageValues) => {
       const average = Number(averageValues.average);
 
       return {
@@ -78,7 +78,7 @@ export class CurrentFootprintController {
     return SearchAPI.requestMetricsValues<"currentHF">(
       "currentHF",
       this.areaId,
-    ).then((res) => {
+    ).request.then((res) => {
       const { id, ...classes } = res;
       this.itemId = id;
       this.classes = new Set(

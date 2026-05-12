@@ -4,13 +4,13 @@ import { RasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import { transformCoverageValues } from "pages/search/dashboard/ecosystems/transformData";
-import { SmallStackedBarData } from "@composites/charts/SmallStackedBar";
+import { SEKey } from "pages/search/types/ecosystems";
 
 /**
- * Controller for Ecosystems Component
+ * Controller for Strategic Ecosystems Distribution Component
  * @class
  */
-export class EcosystemsController {
+export class StrategicEcosystemsDistributionController {
   areaType: string = "";
   areaId: number = 0;
   activeRequests: Map<string, CancelTokenSource> = new Map();
@@ -29,14 +29,15 @@ export class EcosystemsController {
   }
 
   /**
-   * Get the coverage values for the current area
+   * Get the coverage values for strategic ecosystems of the current area
    *
    * @returns { Promise<SmallStackedBarData[]>}
    */
-  getCoverageValues() {
-    const requestKey = "coverage-values";
-    const { request, source } = SearchAPI.requestMetricsValues<"coverage">(
-      "coverage",
+  getStrategicEcosystemsDistributionValues(SEType: SEKey) {
+    const metricId = `coverage_${SEType}` as const;
+    const requestKey = `strategic-ecosystems-distribution-values-${SEType}`;
+    const { request, source } = SearchAPI.requestMetricsValues(
+      metricId,
       this.areaId,
     );
     this.activeRequests.set(requestKey, source);
@@ -58,76 +59,19 @@ export class EcosystemsController {
   }
 
   /**
-   * Get the protected areas values for the current area
-   *
-   * @returns { Promise<SmallStackedBarData[]>}
-   */
-  getProtectedAreasValues(totalArea: number): Promise<SmallStackedBarData[]> {
-    const requestKey = "protected-areas-values";
-    const { request, source } =
-      SearchAPI.requestMetricsValues<"protectedAreas">(
-        "protectedAreas",
-        this.areaId,
-      );
-    this.activeRequests.set(requestKey, source);
-
-    return request
-      .then((response) => {
-        const { id, ...rawValues } = response;
-        const items = Object.entries(rawValues)
-          .filter(([, value]) => value > 0)
-          .map(([key, area]) => ({
-            key,
-            label: key,
-            area,
-          }));
-
-        const isNoProtected = (value: string) =>
-          value
-            .toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .replace(/\s|_/g, "") === "noprotegida";
-
-        const hasNoProtected = items.some((item) => isNoProtected(item.key));
-        const PATotalArea = items.reduce(
-          (acc, item) => (isNoProtected(item.key) ? acc : acc + item.area),
-          0,
-        );
-
-        if (!hasNoProtected) {
-          const noProtectedArea = Math.max(totalArea - PATotalArea, 0);
-          items.push({
-            area: noProtectedArea,
-            label: "No Protegida",
-            key: "No Protegida",
-          });
-        }
-
-        const PAAreas: SmallStackedBarData[] = items.map((item) => ({
-          ...item,
-          percentage: totalArea > 0 ? item.area / totalArea : 0,
-        }));
-
-        return PAAreas;
-      })
-      .finally(() => {
-        this.activeRequests.delete(requestKey);
-      });
-  }
-
-  /**
-   * Get the coverage raster layers for the current area
+   * Get the coverage raster layers for strategic ecosystems of the current area
    *
    * @returns { Promise<Array<RasterLayer>> } layers for the classes in the current area
    */
-  async getCoveragesLayers(): Promise<Array<RasterLayer>> {
+  async getStrategicEcosystemsDistributionLayers(
+    SEType: SEKey,
+  ): Promise<Array<RasterLayer>> {
     if (this.areaId) {
       const requests: Array<Promise<{ layer: string }>> = [];
 
       this.classes.forEach((classId) => {
         const { request, source } = SearchAPI.requestMetricsLayer(
-          "coverage",
+          `coverage_${SEType}`,
           this.itemId,
           classId,
           Number(this.areaId),
@@ -182,7 +126,7 @@ export class EcosystemsController {
   }
 
   /**
-   * Cancel all active requests and remove them from the map
+   * Send the cancel signal to all active requests and remove them from the map
    */
   cancelActiveRequests = () => {
     this.activeRequests.forEach((value, key) => {

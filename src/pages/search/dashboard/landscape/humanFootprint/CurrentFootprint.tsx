@@ -221,7 +221,7 @@ export function CurrentFootprint() {
         <IconTooltip title="Interpretación">
           <span className="iconWrapper">
             <InfoIcon
-              className={`ecoest-info-icon${showInfoGraph ? " activeBox" : ""}`}
+              className={`metrics-info-icon${showInfoGraph ? " activeBox" : ""}`}
               onClick={toggleInfoGraph}
             />
           </span>
