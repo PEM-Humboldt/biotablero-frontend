@@ -68,3 +68,19 @@ export const TERRITORY_STORY_YT_VID_MAX_AMOUNT = 6;
 export const TAG_NAME_MAX_LENGTH = 40;
 export const TAG_URL_MAX_LENGTH = 150;
 export const TAG_RECORDS_PER_PAGE = 20;
+
+// Resources
+export const RESOURCES_MAX_ITEMS_EDIT_LIST = 10;
+export const RESOURCE_NAME_MIN_LENGTH = 3;
+export const RESOURCE_NAME_MAX_LENGTH = 100;
+export const RESOURCE_DESCRIPTION_MAX_LENGTH = 500;
+export const RESOURCE_TAGS_LIMIT_ECOSYSTEM = 2;
+export const RESOURCE_TAGS_LIMIT_BIOLOGICAL_GROUP = 2;
+export const RESOURCE_ATTACHMENT_DESCRIPTION_MAX_LENGTH = 100;
+export const RESOURCE_LINKS_MAX_AMOUNT = 10;
+export const RESOURCE_LINK_MAX_LENGTH = 250;
+export const RESOURCE_FILES_MAX_AMOUNT = 3;
+export const RESOURCE_FILE_MAX_SIZE = 10; // size in megabytes;
+export const RESOURCES_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS: ODataParams = {
+  orderby: "name asc",
+};
