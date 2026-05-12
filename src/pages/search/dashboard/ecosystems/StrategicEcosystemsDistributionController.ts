@@ -5,7 +5,6 @@ import { CancelTokenSource } from "axios";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import { transformCoverageValues } from "pages/search/dashboard/ecosystems/transformData";
 import { SEKey } from "pages/search/types/ecosystems";
-import axios from "axios";
 
 /**
  * Controller for Strategic Ecosystems Distribution Component
@@ -37,12 +36,13 @@ export class StrategicEcosystemsDistributionController {
   getStrategicEcosystemsDistributionValues(SEType: SEKey) {
     const metricId = `coverage_${SEType}` as const;
     const requestKey = `strategic-ecosystems-distribution-values-${SEType}`;
-    const source = axios.CancelToken.source();
+    const { request, source } = SearchAPI.requestMetricsValues(
+      metricId,
+      this.areaId,
+    );
     this.activeRequests.set(requestKey, source);
 
-    return SearchAPI.requestMetricsValues(metricId, this.areaId, {
-      cancelToken: source.token,
-    })
+    return request
       .then((res) => {
         const { id, ...classes } = res;
         this.itemId = id;

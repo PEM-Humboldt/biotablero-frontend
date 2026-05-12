@@ -1,6 +1,6 @@
 import SearchAPI from "pages/search/api/searchAPI";
 import { SEData, SETypes } from "pages/search/types/ecosystems";
-import axios, { CancelTokenSource } from "axios";
+import { CancelTokenSource } from "axios";
 
 /**
  * Controller for Strategic Ecosystems Component
@@ -30,11 +30,12 @@ export class StrategicEcosystemsController {
   async getStrategicEcosystemsValues(areaHa: number): Promise<SEData[]> {
     const requests = SETypes.map((key) => {
       const requestKey = `strategic-ecosystem-values-${key}`;
-      const source = axios.CancelToken.source();
+      const { request, source } = SearchAPI.requestMetricsValues(
+        key,
+        this.areaId,
+      );
       this.activeRequests.set(requestKey, source);
-      return SearchAPI.requestMetricsValues(key, this.areaId, {
-        cancelToken: source.token,
-      }).finally(() => {
+      return request.finally(() => {
         this.activeRequests.delete(requestKey);
       });
     });

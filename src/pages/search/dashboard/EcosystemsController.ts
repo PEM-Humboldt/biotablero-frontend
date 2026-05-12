@@ -5,7 +5,6 @@ import { CancelTokenSource } from "axios";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import { transformCoverageValues } from "pages/search/dashboard/ecosystems/transformData";
 import { SmallStackedBarData } from "@composites/charts/SmallStackedBar";
-import axios from "axios";
 
 /**
  * Controller for Ecosystems Component
@@ -36,12 +35,13 @@ export class EcosystemsController {
    */
   getCoverageValues() {
     const requestKey = "coverage-values";
-    const source = axios.CancelToken.source();
+    const { request, source } = SearchAPI.requestMetricsValues<"coverage">(
+      "coverage",
+      this.areaId,
+    );
     this.activeRequests.set(requestKey, source);
 
-    return SearchAPI.requestMetricsValues<"coverage">("coverage", this.areaId, {
-      cancelToken: source.token,
-    })
+    return request
       .then((res) => {
         const { id, ...classes } = res;
         this.itemId = id;
@@ -64,14 +64,14 @@ export class EcosystemsController {
    */
   getProtectedAreasValues(totalArea: number): Promise<SmallStackedBarData[]> {
     const requestKey = "protected-areas-values";
-    const source = axios.CancelToken.source();
+    const { request, source } =
+      SearchAPI.requestMetricsValues<"protectedAreas">(
+        "protectedAreas",
+        this.areaId,
+      );
     this.activeRequests.set(requestKey, source);
 
-    return SearchAPI.requestMetricsValues<"protectedAreas">(
-      "protectedAreas",
-      this.areaId,
-      { cancelToken: source.token },
-    )
+    return request
       .then((response) => {
         const { id, ...rawValues } = response;
         const items = Object.entries(rawValues)
