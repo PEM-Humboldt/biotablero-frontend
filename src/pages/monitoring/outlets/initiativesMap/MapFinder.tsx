@@ -1,13 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import L, { type LatLngBoundsLiteral } from "leaflet";
-import {
-  MapContainer,
-  TileLayer,
-  GeoJSON,
-  Marker,
-  Tooltip,
-} from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
 import type {
   Feature,
   FeatureCollection,
@@ -23,11 +17,8 @@ import { monitoringAPI } from "pages/monitoring/api/core";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { createGradientScale } from "pages/monitoring/utils/createGradientScale";
 import { type InitiativeByLocation } from "pages/monitoring/types/initiative";
-import { getInitiativeLocations } from "pages/monitoring/api/services/initiatives";
 import { ChangeView } from "pages/monitoring/outlets/initiativesMap/mapFinder/ChangeView";
 import { MapMarker } from "pages/monitoring/outlets/initiativesMap/mapFinder/MapMarker";
-
-// import "leaflet/dist/leaflet.css";
 
 interface DeptProperties {
   geofence_name: string;
@@ -36,25 +27,19 @@ interface DeptProperties {
 
 type DeptFeature = Feature<Polygon | MultiPolygon, DeptProperties>;
 
-export function MapFinder() {
-  const [center, setCenter] = useState<L.LatLng | null>(null);
-  const [bounds, setBounds] = useState<LatLngBoundsLiteral | null>(null);
-  const [initiatives, setInitiatives] = useState<InitiativeByLocation[]>([]);
-  const [nation, setNation] = useState<FeatureCollection | null>(null);
+export function MapFinder({
+  initiatives,
+}: {
+  initiatives: InitiativeByLocation[];
+}) {
   const { departmentId, initiativeId } = useParams();
   const navigate = useNavigate();
 
+  const [center, setCenter] = useState<L.LatLng | null>(null);
+  const [bounds, setBounds] = useState<LatLngBoundsLiteral | null>(null);
+  const [nation, setNation] = useState<FeatureCollection | null>(null);
+
   useEffect(() => {
-    const fetchInitiativeLocations = async () => {
-      const res = await getInitiativeLocations();
-
-      if (isMonitoringAPIError(res)) {
-        setInitiatives([]);
-        return;
-      }
-      setInitiatives(res);
-    };
-
     const fetchCountryMap = async () => {
       const res = await monitoringAPI<FeatureCollection>({
         type: "get",
@@ -62,13 +47,11 @@ export function MapFinder() {
       });
 
       if (isMonitoringAPIError(res)) {
-        setInitiatives([]);
         return;
       }
       setNation(res);
     };
 
-    void fetchInitiativeLocations();
     void fetchCountryMap();
   }, []);
 
@@ -171,33 +154,61 @@ export function MapFinder() {
     return createGradientScale(min, max, INITIAVIVES_MAP_GRADIENT);
   }, [processedData]);
 
+  const setDeptStyle = (feature?: Feature) => {
+    const f = feature as DeptFeature;
+    const dataItem = processedData.find(
+      (d) =>
+        d.feature.properties?.geofence_name === f.properties?.geofence_name,
+    );
+
+    const count = dataItem ? dataItem.count : 0;
+    const color = getColor(count);
+
+    return {
+      fillColor: color,
+      weight: 2,
+      opacity: 1,
+      color: color,
+      fillOpacity: 0.7,
+    };
+  };
+
+  const setFeatureBeahviour = (feature: Feature, layer: L.Layer) => {
+    const f = feature as DeptFeature;
+
+    const dataItem = processedData.find(
+      (d) =>
+        d.feature.properties?.geofence_name === f.properties?.geofence_name,
+    );
+
+    layer.bindTooltip(
+      `<strong>${f.properties?.geofence_name ?? "N/A"}</strong><br />${dataItem?.count ?? 0} iniciativas`,
+      {
+        sticky: true,
+        direction: "top",
+        offset: [0, -10],
+        opacity: 1,
+        className: "bg-primary! before:border-t-primary! px-4! py-2!",
+      },
+    );
+
+    layer.on("click", () => {
+      const f = feature as DeptFeature;
+      void navigate(`/Monitoreo/Dept/${f.properties.gid}`);
+    });
+  };
+
   return (
     <MapContainer
       bounds={bounds ?? COUNTRY_BOUNDS}
       zoom={6}
       maxZoom={10}
       minZoom={6}
+      className="outline-none [&_.leaflet-interactive]:outline-none"
     >
-      {initiatives.map((initiative) => {
-        return (
-          <Marker
-            key={initiative.initiativeId}
-            icon={MapMarker}
-            position={initiative.coordinate}
-            eventHandlers={{
-              click: () => {
-                void navigate(
-                  `/Monitoreo/Dept/${initiative.mainLocationId}/${initiative.initiativeId}`,
-                );
-              },
-            }}
-          >
-            <Tooltip direction="top" offset={[0, -20]} opacity={1}>
-              {initiative.initiativeName}
-            </Tooltip>
-          </Marker>
-        );
-      })}
+      {initiatives.map((initiative) => (
+        <MapMarker initiative={initiative} />
+      ))}
 
       <ChangeView bounds={bounds ?? COUNTRY_BOUNDS} center={center} />
 
@@ -209,44 +220,10 @@ export function MapFinder() {
             features: processedData.map((d) => d.feature),
           } as FeatureCollection<Geometry, DeptProperties>
         }
-        style={(feature) => {
-          const f = feature as DeptFeature;
-          const dataItem = processedData.find(
-            (d) =>
-              d.feature.properties?.geofence_name ===
-              f.properties?.geofence_name,
-          );
-
-          const count = dataItem ? dataItem.count : 0;
-          const color = getColor(count);
-
-          return {
-            fillColor: color,
-            weight: 2,
-            opacity: 1,
-            color: color,
-            fillOpacity: 0.7,
-          };
-        }}
-        onEachFeature={(feature, layer) => {
-          const f = feature as DeptFeature;
-
-          const dataItem = processedData.find(
-            (d) =>
-              d.feature.properties?.geofence_name ===
-              f.properties?.geofence_name,
-          );
-
-          layer.bindPopup(
-            `Departamento: ${f.properties?.geofence_name ?? "N/A"}<br/>Iniciativas: ${dataItem?.count ?? 0}`,
-          );
-
-          layer.on("click", () => {
-            const f = feature as DeptFeature;
-            void navigate(`/Monitoreo/Dept/${f.properties.gid}`);
-          });
-        }}
+        style={setDeptStyle}
+        onEachFeature={setFeatureBeahviour}
       />
+
       <TileLayer
         attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
