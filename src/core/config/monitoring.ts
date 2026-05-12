@@ -1,11 +1,17 @@
 import type { ImageMimeType } from "@appTypes/formats";
 import type { ODataParams } from "@appTypes/odata";
+import type { LatLngBoundsLiteral } from "leaflet";
 
 export const LOG_RECORDS_PER_PAGE = 20; // registrys on the logs summary
 export const INITIATIVES_PER_PAGE = 10; // Initiatives on the admin panel
 export const LOGIN_URL = "/";
 
 // Initiative description and properties
+
+export const COUNTRY_BOUNDS: LatLngBoundsLiteral = [
+  [-4.2316872, -82.1243666],
+  [16.0571269, -66.85119073],
+];
 
 export const INITIAVIVE_NAME_MAX_LENGTH = 100;
 export const INITIAVIVE_SHORTNAME_MAX_LENGTH = 120;
