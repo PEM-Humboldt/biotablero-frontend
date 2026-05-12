@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { RasterAPIObject } from "pages/search/types/api";
+import { RequestAPIObject, RasterAPIObject } from "pages/search/types/api";
 import { AreaIdBasic, AreaType, AreaId } from "pages/search/types/dashboard";
 import { MetricTypesMap, MetricsTypes } from "pages/search/types/metrics";
 import * as geojson from "geojson";
@@ -86,11 +86,18 @@ class SearchAPI {
     metricId: Metric,
     polygonId: number,
     options: AxiosRequestConfig = {},
-  ): Promise<MetricTypesMap[Metric]> {
-    return SearchAPI.makeGetRequest(
-      `metrics/${metricId}/values/${polygonId}`,
-      options,
-    );
+  ): RequestAPIObject<MetricTypesMap[Metric]> {
+    const source = axios.CancelToken.source();
+    return {
+      request: SearchAPI.makeGetRequest(
+        `metrics/${metricId}/values/${polygonId}`,
+        {
+          ...options,
+          cancelToken: source.token,
+        },
+      ),
+      source,
+    };
   }
 
   /**
