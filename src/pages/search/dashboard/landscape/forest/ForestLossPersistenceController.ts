@@ -64,11 +64,16 @@ export class ForestLossPersistenceController {
    * @returns Object with forest LP data and persistence value
    */
   getForestLPData = (): Promise<ForestLPData> => {
-    return SearchAPI.requestMetricsValues<"lossPersistence">(
-      "lossPersistence",
-      this.areaId,
-    )
-      .request.then((data: MetricTypesMap["lossPersistence"]) => {
+    const requestKey = "forest-loss-persistence-values";
+    const { request, source } =
+      SearchAPI.requestMetricsValues<"lossPersistence">(
+        "lossPersistence",
+        this.areaId,
+      );
+    this.activeRequests.set(requestKey, source);
+
+    return request
+      .then((data: MetricTypesMap["lossPersistence"]) => {
         const mappedData = data.map((periodObj) => {
           const { id, ...classes } = periodObj;
           this.allClasses.set(
@@ -110,6 +115,9 @@ export class ForestLossPersistenceController {
           forestLP: mappedData,
           currentPersistence,
         };
+      })
+      .finally(() => {
+        this.activeRequests.delete(requestKey);
       })
       .catch(() => {
         throw new Error("Error getting data");
