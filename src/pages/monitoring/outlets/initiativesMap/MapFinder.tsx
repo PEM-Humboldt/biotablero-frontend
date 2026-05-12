@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import L, { type LatLngBoundsLiteral } from "leaflet";
 import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
 import type {
   Feature,
   FeatureCollection,
@@ -18,7 +19,10 @@ import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { createGradientScale } from "pages/monitoring/utils/createGradientScale";
 import { type InitiativeByLocation } from "pages/monitoring/types/initiative";
 import { ChangeView } from "pages/monitoring/outlets/initiativesMap/mapFinder/ChangeView";
-import { MapMarker } from "pages/monitoring/outlets/initiativesMap/mapFinder/MapMarker";
+import {
+  clusterCustomIcon,
+  MapMarker,
+} from "pages/monitoring/outlets/initiativesMap/mapFinder/MapMarker";
 
 interface DeptProperties {
   geofence_name: string;
@@ -206,9 +210,19 @@ export function MapFinder({
       minZoom={6}
       className="outline-none [&_.leaflet-interactive]:outline-none"
     >
-      {initiatives.map((initiative) => (
-        <MapMarker initiative={initiative} />
-      ))}
+      <MarkerClusterGroup
+        iconCreateFunction={clusterCustomIcon}
+        maxClusterRadius={50}
+        spiderfyOnMaxZoom={true}
+        showCoverageOnHover={true}
+      >
+        {initiatives.map((initiative) => (
+          <MapMarker
+            key={`marker_${initiative.initiativeId}`}
+            initiative={initiative}
+          />
+        ))}
+      </MarkerClusterGroup>
 
       <ChangeView bounds={bounds ?? COUNTRY_BOUNDS} center={center} />
 

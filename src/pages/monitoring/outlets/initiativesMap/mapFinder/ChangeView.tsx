@@ -25,7 +25,7 @@ export function ChangeView({
 
       const currentZoom = map.getZoom();
       const animationOptions = {
-        duration: 2,
+        duration: 1,
         easeLinearity: 0.25,
         noMoveStart: true,
       };

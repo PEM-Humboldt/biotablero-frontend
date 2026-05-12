@@ -1,5 +1,5 @@
 import { renderToString } from "react-dom/server";
-import L from "leaflet";
+import L, { type MarkerCluster } from "leaflet";
 import { Marker, Tooltip } from "react-leaflet";
 import type { InitiativeByLocation } from "pages/monitoring/types/initiative";
 import { useNavigate } from "react-router";
@@ -11,6 +11,15 @@ const markerIcon = L.divIcon({
   iconAnchor: [14, 14],
   className: "bg-transparent border-none",
 });
+
+export function clusterCustomIcon(cluster: MarkerCluster) {
+  return L.divIcon({
+    html: `<span>${cluster.getChildCount()}</span>`,
+    className:
+      "bg-primary! rounded-full! text-center! text-lg! text-background! font-normal! border-4! border-background/50!",
+    iconSize: L.point(33, 33, true),
+  });
+}
 
 export function MapMarker({
   initiative,
