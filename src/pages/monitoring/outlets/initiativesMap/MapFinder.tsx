@@ -1,16 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
-import { renderToString } from "react-dom/server";
+import { useNavigate, useParams } from "react-router";
+import L, { type LatLngBoundsLiteral } from "leaflet";
 import {
   MapContainer,
   TileLayer,
   GeoJSON,
   Marker,
-  Popup,
-  useMap,
+  Tooltip,
 } from "react-leaflet";
-import L, { type LatLngBoundsLiteral } from "leaflet";
-import "leaflet/dist/leaflet.css";
-import { COLOMBIA_BOUNDS } from "pages/utils/settings";
 import type {
   Feature,
   FeatureCollection,
@@ -19,14 +16,18 @@ import type {
   MultiPolygon,
   Polygon,
 } from "geojson";
+
+import { INITIAVIVES_MAP_GRADIENT, COUNTRY_BOUNDS } from "@config/monitoring";
+
 import { monitoringAPI } from "pages/monitoring/api/core";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import { MapPin } from "lucide-react";
 import { createGradientScale } from "pages/monitoring/utils/createGradientScale";
-import { useNavigate, useParams } from "react-router";
 import { type InitiativeByLocation } from "pages/monitoring/types/initiative";
-import { INITIAVIVES_MAP_GRADIENT } from "@config/monitoring";
 import { getInitiativeLocations } from "pages/monitoring/api/services/initiatives";
+import { ChangeView } from "pages/monitoring/outlets/initiativesMap/mapFinder/ChangeView";
+import { MapMarker } from "pages/monitoring/outlets/initiativesMap/mapFinder/MapMarker";
+
+// import "leaflet/dist/leaflet.css";
 
 interface DeptProperties {
   geofence_name: string;
@@ -35,36 +36,12 @@ interface DeptProperties {
 
 type DeptFeature = Feature<Polygon | MultiPolygon, DeptProperties>;
 
-const MapMarker = L.divIcon({
-  html: renderToString(<MapPin color="black" size={32} />),
-  className: "custom-icon",
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-});
-
-function ChangeView({ bounds }: { bounds: LatLngBoundsLiteral }) {
-  const map = useMap();
-
-  useEffect(() => {
-    if (bounds) {
-      map.fitBounds(bounds, {
-        animate: true,
-        duration: 2,
-      });
-    }
-  }, [bounds, map]);
-
-  return null;
-}
-
-export function MapFinder({
-  startingBounds = COLOMBIA_BOUNDS,
-}: {
-  startingBounds: LatLngBoundsLiteral;
-}) {
-  const [bounds, setBounds] = useState(startingBounds);
+export function MapFinder() {
+  const [center, setCenter] = useState<L.LatLng | null>(null);
+  const [bounds, setBounds] = useState<LatLngBoundsLiteral | null>(null);
   const [initiatives, setInitiatives] = useState<InitiativeByLocation[]>([]);
   const [nation, setNation] = useState<FeatureCollection | null>(null);
+  const { departmentId, initiativeId } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -75,7 +52,6 @@ export function MapFinder({
         setInitiatives([]);
         return;
       }
-
       setInitiatives(res);
     };
 
@@ -89,13 +65,54 @@ export function MapFinder({
         setInitiatives([]);
         return;
       }
-
       setNation(res);
     };
 
     void fetchInitiativeLocations();
     void fetchCountryMap();
   }, []);
+
+  useEffect(() => {
+    if (!nation || !nation.features) {
+      return;
+    }
+
+    setCenter(null);
+    if (departmentId === undefined) {
+      setBounds(COUNTRY_BOUNDS);
+      return;
+    }
+
+    const selectedDept = nation.features.find(
+      (f) => String(f.properties?.gid) === departmentId,
+    );
+
+    if (selectedDept) {
+      const layer = L.geoJSON(selectedDept);
+      const gBounds = layer.getBounds();
+      const boundsLiteral: LatLngBoundsLiteral = [
+        [gBounds.getSouthWest().lat, gBounds.getSouthWest().lng],
+        [gBounds.getNorthEast().lat, gBounds.getNorthEast().lng],
+      ];
+
+      setBounds(boundsLiteral);
+    }
+
+    if (initiativeId && initiatives.length > 0) {
+      const selectedInitiative = initiatives.find(
+        (i) => String(i.initiativeId) === initiativeId,
+      );
+
+      if (selectedInitiative) {
+        const latLng = L.latLng(
+          selectedInitiative.coordinate[0],
+          selectedInitiative.coordinate[1],
+        );
+
+        setCenter(latLng);
+      }
+    }
+  }, [departmentId, nation, initiativeId, initiatives]);
 
   const processedData = useMemo<
     { feature: Feature<Geometry, GeoJsonProperties>; count: number }[]
@@ -155,20 +172,34 @@ export function MapFinder({
   }, [processedData]);
 
   return (
-    <MapContainer id="map" bounds={bounds} zoom={6} maxZoom={10} minZoom={6}>
+    <MapContainer
+      bounds={bounds ?? COUNTRY_BOUNDS}
+      zoom={6}
+      maxZoom={10}
+      minZoom={6}
+    >
       {initiatives.map((initiative) => {
         return (
           <Marker
             key={initiative.initiativeId}
             icon={MapMarker}
             position={initiative.coordinate}
+            eventHandlers={{
+              click: () => {
+                void navigate(
+                  `/Monitoreo/Dept/${initiative.mainLocationId}/${initiative.initiativeId}`,
+                );
+              },
+            }}
           >
-            <Popup>{initiative.initiativeName}</Popup>
+            <Tooltip direction="top" offset={[0, -20]} opacity={1}>
+              {initiative.initiativeName}
+            </Tooltip>
           </Marker>
         );
       })}
 
-      <ChangeView bounds={bounds} />
+      <ChangeView bounds={bounds ?? COUNTRY_BOUNDS} center={center} />
 
       <GeoJSON
         key={`geojson-layer-${processedData.length}`}
@@ -191,7 +222,7 @@ export function MapFinder({
 
           return {
             fillColor: color,
-            weight: 10,
+            weight: 2,
             opacity: 1,
             color: color,
             fillOpacity: 0.7,
@@ -210,29 +241,9 @@ export function MapFinder({
             `Departamento: ${f.properties?.geofence_name ?? "N/A"}<br/>Iniciativas: ${dataItem?.count ?? 0}`,
           );
 
-          layer.on("click", (e) => {
-            const target = e.target as L.Polygon;
+          layer.on("click", () => {
             const f = feature as DeptFeature;
-
-            if (typeof target.getBounds === "function") {
-              const bounds = target.getBounds();
-              const boundsLiteral: L.LatLngBoundsLiteral = [
-                [bounds.getSouthWest().lat, bounds.getSouthWest().lng],
-                [bounds.getNorthEast().lat, bounds.getNorthEast().lng],
-              ];
-
-              setBounds(boundsLiteral);
-
-              // NOTE: Delay para que la animación empalme con la actualizción
-              // de info en el recuadro
-              if (!("gid" in f.properties)) {
-                return;
-              }
-
-              setTimeout(() => {
-                void navigate(`/Monitoreo/Departamento/${f.properties.gid}`);
-              }, 800);
-            }
+            void navigate(`/Monitoreo/Dept/${f.properties.gid}`);
           });
         }}
       />
