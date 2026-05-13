@@ -48,21 +48,7 @@ export const routes = createBrowserRouter([
           },
           {
             path: "Iniciativas/:initiativeId?/:tabSection?/:detailItem?",
-            children: [
-              {
-                Component: ResourcesManager,
-                path: "Admin",
-                loader: () =>
-                  checkNLoad({
-                    requirements: { roles: ["User"] },
-                    redirectPath: "/Monitoreo/Recursos",
-                  }),
-              },
-              {
-                Component: MonitoringResources,
-                path: ":resourceId?",
-              },
-            ],
+            Component: Initiatives,
           },
           {
             path: "Recursos",
@@ -76,10 +62,7 @@ export const routes = createBrowserRouter([
                     redirectPath: "/Monitoreo/Recursos",
                   }),
               },
-              {
-                Component: MonitoringResources,
-                path: ":resourceId?",
-              },
+              { Component: MonitoringResources, path: ":resourceId?" },
             ],
           },
           {
