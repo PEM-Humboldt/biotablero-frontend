@@ -1,6 +1,7 @@
+import { useEffect, useState } from "react";
+
 import { MapFinder } from "pages/monitoring/outlets/initiativesMap/MapFinder";
 import { CurrentInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
-import { useEffect, useState } from "react";
 import { Browser } from "pages/monitoring/outlets/initiativesMap/Browser";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { getInitiativeLocations } from "pages/monitoring/api/services/initiatives";
@@ -28,7 +29,6 @@ export function InitiativesMap() {
       <div className="relative flex flex-col h-full w-full">
         <Browser />
         <MapFinder initiatives={initiatives} />
-        {/* <MapLegend initiatives={initiatives} /> */}
       </div>
     </CurrentInitiativeCTX>
   );

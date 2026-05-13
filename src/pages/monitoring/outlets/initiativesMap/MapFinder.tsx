@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import L, { type LatLngBoundsLiteral } from "leaflet";
 import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
@@ -12,9 +12,9 @@ import type {
   Polygon,
 } from "geojson";
 
+import { ErrorsList } from "@ui/LabelingWithErrors";
 import { INITIAVIVES_MAP_GRADIENT, COUNTRY_BOUNDS } from "@config/monitoring";
 
-import { monitoringAPI } from "pages/monitoring/api/core";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { createGradientScale } from "pages/monitoring/utils/createGradientScale";
 import { type InitiativeByLocation } from "pages/monitoring/types/initiative";
@@ -26,6 +26,7 @@ import {
 import { ZoomControls } from "pages/monitoring/outlets/initiativesMap/mapFinder/ZoomControls";
 import { MapLegend } from "pages/monitoring/outlets/initiativesMap/mapFinder/MapLegend";
 import { MAP_LAYERS } from "pages/monitoring/outlets/initiativesMap/layout/layers";
+import { getGeoJsonMap } from "pages/monitoring/api/services/location";
 
 interface DeptProperties {
   geofence_name: string;
@@ -42,6 +43,7 @@ export function MapFinder({
   const { departmentId, initiativeId } = useParams();
   const navigate = useNavigate();
 
+  const [errors, setErrors] = useState<string[]>([]);
   const [center, setCenter] = useState<L.LatLng | null>(null);
   const [bounds, setBounds] = useState<LatLngBoundsLiteral | null>(null);
   const [nation, setNation] = useState<FeatureCollection | null>(null);
@@ -49,12 +51,10 @@ export function MapFinder({
 
   useEffect(() => {
     const fetchCountryMap = async () => {
-      const res = await monitoringAPI<FeatureCollection>({
-        type: "get",
-        endpoint: "Location/Polygon/0",
-      });
+      const res = await getGeoJsonMap();
 
       if (isMonitoringAPIError(res)) {
+        setErrors(res.data.map((err) => err.msg));
         return;
       }
       setNation(res);
@@ -221,7 +221,9 @@ export function MapFinder({
     });
   };
 
-  return (
+  return errors.length > 0 ? (
+    <ErrorsList errorItems={errors} />
+  ) : (
     <MapContainer
       bounds={bounds ?? COUNTRY_BOUNDS}
       zoom={6}

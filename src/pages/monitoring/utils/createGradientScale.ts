@@ -1,16 +1,36 @@
 type ColorStop = {
   color: string;
-  position: number; // Valor de 0 a 1
+  position: number; // Valor de 0 a 1, todo se maneja normalizado
 };
 
+/**
+ * Converts a hex color string to its RGB components.
+ *
+ * @param hex - The hex color string (e.g., "#RRGGBB").
+ * @returns An object containing the decimal values for r, g, and b.
+ */
 const hexToRgb = (hex: string) => ({
   r: parseInt(hex.slice(1, 3), 16),
   g: parseInt(hex.slice(3, 5), 16),
   b: parseInt(hex.slice(5, 7), 16),
 });
 
+/**
+ * Converts a decimal number to a 2-character hex string.
+ *
+ * @param n - The decimal number to convert.
+ * @returns A zero-padded hex string.
+ */
 const decToHex = (n: number) => n.toString(16).padStart(2, "0");
 
+/**
+ * Generates a color scale function based on numerical range and color stops.
+ *
+ * @param min - The minimum value of the scale.
+ * @param max - The maximum value of the scale.
+ * @param stops - An array of color stops defining the gradient.
+ * @returns A function that maps a count to a hex color string.
+ */
 export function createGradientScale(
   min: number,
   max: number,
@@ -18,6 +38,12 @@ export function createGradientScale(
 ) {
   const sortedStops = [...stops].sort((a, b) => a.position - b.position);
 
+  /**
+   * Calculates the interpolated hex color for a given count.
+   *
+   * @param count - The numerical value to evaluate.
+   * @returns A hex color string or "transparent" if count is zero or less.
+   */
   return function getColor(count: number) {
     if (count <= 0) {
       return "transparent";
@@ -36,7 +62,7 @@ export function createGradientScale(
     const lower = sortedStops[upperIndex - 1];
     const upper = sortedStops[upperIndex];
 
-    // 3. Normalización local (0 a 1 dentro del segmento)
+    // NOTE: Normalización local del valor (0 a 1 dentro del segmento)
     const range = upper.position - lower.position;
     const localT = range === 0 ? 0 : (t - lower.position) / range;
 

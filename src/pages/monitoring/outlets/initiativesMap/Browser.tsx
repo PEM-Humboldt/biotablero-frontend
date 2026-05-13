@@ -1,10 +1,13 @@
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 
 import { Button } from "@ui/shadCN/component/button";
+
 import { getLocationsList } from "pages/monitoring/api/services/location";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import { useEffect, useMemo, useState } from "react";
 
+// NOTE: Este componente en este momento es un dummy para comprobar y
+// la testear la relación con el mapa, su desarrollo es en otro ticket
 export function Browser() {
   const navigate = useNavigate();
   const [locations, setLocations] = useState<Record<number, string>>({});
