@@ -62,7 +62,7 @@ export function CurrentResource({
     >
       <header>
         <div className="flex gap-2 justify-between">
-          <h3 className="text-primary text-5xl mb-0">{resource?.name ?? ""}</h3>
+          <h3 className="text-primary text-5xl mb-0">{resource.name}</h3>
           <Button
             title={uiText.currentResource.closeBtn.title}
             variant="ghost"

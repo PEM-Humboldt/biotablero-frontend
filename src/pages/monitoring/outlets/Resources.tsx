@@ -97,6 +97,12 @@ export function Resources() {
     void fetchCurrentResource();
   }, [fetchCurrentResource]);
 
+  const updateCurrentPage = useCallback(() => {
+    if (prevSearchParamsRef.current.filter !== searchParams.filter) {
+      setCurrentPage(1);
+    }
+  }, [prevSearchParamsRef, searchParams]);
+
   useEffect(() => {
     if (!resourceTypes || !searchBarComponents) {
       return;
@@ -104,17 +110,15 @@ export function Resources() {
 
     setResources([]);
     const fetchResources = async () => {
-      if (prevSearchParamsRef.current !== searchParams) {
-        setCurrentPage(1);
-        prevSearchParamsRef.current = searchParams;
-      }
-
       setErrors([]);
       setIsLoading((prvLoads) => prvLoads + 1);
 
       const res = await getResources({
         ...searchParams,
-        skip: (currentPage - 1) * RESOURCES_PER_PAGE,
+        skip:
+          searchParams.filter === prevSearchParamsRef.current.filter
+            ? (currentPage - 1) * RESOURCES_PER_PAGE
+            : 0,
       });
 
       setIsLoading((prvLoads) => prvLoads - 1);
@@ -123,12 +127,20 @@ export function Resources() {
         return;
       }
 
+      prevSearchParamsRef.current = searchParams;
       resourcesAvailable.current = res["@odata.count"];
+      updateCurrentPage();
       setResources(res.value);
     };
 
     void fetchResources();
-  }, [searchParams, currentPage, resourceTypes, searchBarComponents]);
+  }, [
+    searchParams,
+    currentPage,
+    resourceTypes,
+    searchBarComponents,
+    updateCurrentPage,
+  ]);
 
   const handleTabChange = (resTypeId: number) => {
     setCurrentTab(resTypeId);
@@ -143,13 +155,6 @@ export function Resources() {
   };
 
   const filtersInjected = `resourceType/id eq ${currentTab}`;
-  // const filtersInjected = useMemo(() => {
-  //   const filters = [`resourceType/id eq ${currentTab}`];
-  //   if (currentResource !== null) {
-  //     filters.push(`id ne ${currentResource.id}`);
-  //   }
-  //   return filters.join(" and ");
-  // }, [currentResource, currentTab]);
 
   return (
     <div className="flex flex-col w-full bg-grey-form">
