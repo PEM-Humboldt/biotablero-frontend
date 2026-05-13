@@ -5,34 +5,40 @@ import {
   getMunicipalitiesByDepartment,
 } from "pages/monitoring/utils/manageLocation";
 
-export const searchBarItems: SearchBarComponent<ODataInitiativeShortEntry>[] = [
-  { label: "", type: "text", source: ["name"] },
-  {
-    label: "",
-    type: "date",
-    source: ["creationDate"],
-    dateOperator: "ge",
-  },
-  {
-    label: "",
-    type: "date",
-    source: ["creationDate"],
-    dateOperator: "le",
-  },
-  {
-    label: "",
-    type: "select",
-    source: ["location/id", "location/parent/id"],
-    values: await getColombianDepartments(),
-    oDataEntity: "InitiativeLocations",
-    childUpdater: getMunicipalitiesByDepartment,
-  },
-  {
-    label: "",
-    type: "select",
-    source: ["location/id"],
-    oDataEntity: "InitiativeLocations",
-    values: null,
-    dependsOnLabel: "Departamento",
-  },
-];
+export async function searchBarItems(): Promise<
+  SearchBarComponent<ODataInitiativeShortEntry>[]
+> {
+  const departments = await getColombianDepartments();
+
+  return [
+    { label: "", type: "text", source: ["name"] },
+    {
+      label: "",
+      type: "date",
+      source: ["creationDate"],
+      dateOperator: "ge",
+    },
+    {
+      label: "",
+      type: "date",
+      source: ["creationDate"],
+      dateOperator: "le",
+    },
+    {
+      label: "",
+      type: "select",
+      source: ["location/id", "location/parent/id"],
+      values: departments,
+      oDataEntity: "InitiativeLocations",
+      childUpdater: getMunicipalitiesByDepartment,
+    },
+    {
+      label: "",
+      type: "select",
+      source: ["location/id"],
+      oDataEntity: "InitiativeLocations",
+      values: null,
+      dependsOnLabel: "Departamento",
+    },
+  ];
+}

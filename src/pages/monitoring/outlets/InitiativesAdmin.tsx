@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import type { ODataParams } from "@appTypes/odata";
+import type { ODataParams, SearchBarComponent } from "@appTypes/odata";
 import { ODataSearchBar } from "@composites/ODataSearchBar";
 import { INITIATIVES_PER_PAGE } from "@config/monitoring";
 import { Button } from "@ui/shadCN/component/button";
@@ -30,6 +30,7 @@ import { InitiativeTag } from "pages/monitoring/outlets/initiativesAdmin/Initiat
 import { cn } from "@ui/shadCN/lib/utils";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
+import type { ODataInitiativeShortEntry } from "pages/monitoring/types/odataResponse";
 
 export function InitiativesAdmin() {
   const [initiatives, setInitiatives] = useState<Map<
@@ -46,7 +47,9 @@ export function InitiativesAdmin() {
   const prevSearchParamsRef = useRef(searchParams);
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState(true);
-
+  const [searchBarComponents, setSearchBarComponents] = useState<
+    SearchBarComponent<ODataInitiativeShortEntry>[] | null
+  >([]);
   const loadInitiatives = useCallback(async () => {
     if (prevSearchParamsRef.current !== searchParams) {
       setCurrentPage(1);
@@ -80,6 +83,15 @@ export function InitiativesAdmin() {
     setInitiatives(initiativesObj);
     setInitiativesFound(res["@odata.count"]);
   }, [searchParams, currentPage]);
+
+  useEffect(() => {
+    const fetchSearchBarComponents = async () => {
+      const res = await searchBarItems();
+      setSearchBarComponents(res);
+    };
+
+    void fetchSearchBarComponents();
+  }, []);
 
   useEffect(() => {
     void loadInitiatives();
@@ -121,12 +133,14 @@ export function InitiativesAdmin() {
         <InitiativeDataForm onSuccess={onCreateSuccess} />
       ) : (
         <>
-          <ODataSearchBar
-            components={searchBarItems}
-            setSearchParams={setSearchParams}
-            reset={"reset"}
-            className="bg-muted w-full"
-          />
+          {searchBarComponents && (
+            <ODataSearchBar
+              components={searchBarComponents}
+              setSearchParams={setSearchParams}
+              reset={"reset"}
+              className="bg-muted w-full"
+            />
+          )}
 
           {initiatives === null ? (
             <div className="text-2xl text-primary font-semibold p-10">
