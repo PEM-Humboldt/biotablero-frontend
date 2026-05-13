@@ -50,12 +50,14 @@ export function InitiativesAdmin() {
   const [searchBarComponents, setSearchBarComponents] = useState<
     SearchBarComponent<ODataInitiativeShortEntry>[] | null
   >([]);
-  const loadInitiatives = useCallback(async () => {
-    if (prevSearchParamsRef.current !== searchParams) {
-      setCurrentPage(1);
-      prevSearchParamsRef.current = searchParams;
-    }
 
+  const updateCurrentPage = useCallback(() => {
+    if (prevSearchParamsRef.current.filter !== searchParams.filter) {
+      setCurrentPage(1);
+    }
+  }, [prevSearchParamsRef, searchParams]);
+
+  const loadInitiatives = useCallback(async () => {
     const skip = (currentPage - 1) * INITIATIVES_PER_PAGE;
     const newSearchParams = { ...searchParams, skip };
 
@@ -81,8 +83,10 @@ export function InitiativesAdmin() {
 
     setError("");
     setInitiatives(initiativesObj);
+    updateCurrentPage();
+    prevSearchParamsRef.current = searchParams;
     setInitiativesFound(res["@odata.count"]);
-  }, [searchParams, currentPage]);
+  }, [searchParams, currentPage, updateCurrentPage]);
 
   useEffect(() => {
     const fetchSearchBarComponents = async () => {

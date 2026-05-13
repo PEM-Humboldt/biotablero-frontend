@@ -60,18 +60,18 @@ export function TerritoryStorysCTX({ children }: { children: ReactNode }) {
 
   const { detailItem: currentStoryId } = useParams();
 
+  const updateCurrentPage = useCallback(() => {
+    if (prevSearchParamsRef.current.filter !== searchStorysParams.filter) {
+      setCurrentPage(1);
+    }
+  }, [prevSearchParamsRef, searchStorysParams]);
+
   const getStorys = useCallback(async () => {
     if (!initiativeInfo) {
       return;
     }
 
     setIsLoading(true);
-
-    if (prevSearchParamsRef.current !== searchStorysParams) {
-      setCurrentPage(1);
-      prevSearchParamsRef.current = searchStorysParams;
-    }
-
     const skip = (currentPage - 1) * TERRITORY_STORIES_PER_PAGE;
 
     const res = await getTerritoryStoriesFromInitiative(initiativeInfo.id)({
@@ -84,10 +84,12 @@ export function TerritoryStorysCTX({ children }: { children: ReactNode }) {
       return;
     }
 
+    updateCurrentPage();
     setIsLoading(false);
     setStorys(res?.value ?? []);
+    prevSearchParamsRef.current = searchStorysParams;
     storysAmount.current = res["@odata.count"];
-  }, [initiativeInfo, searchStorysParams, currentPage]);
+  }, [initiativeInfo, searchStorysParams, currentPage, updateCurrentPage]);
 
   const getCurrentStory = useCallback(async () => {
     if (!currentStoryId) {

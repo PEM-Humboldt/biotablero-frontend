@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { FileDown } from "lucide-react";
 
 import { ODataSearchBar } from "@composites/ODataSearchBar";
@@ -61,14 +61,16 @@ export function Logs() {
     void fetchSearchBarItems();
   }, []);
 
+  const updateCurrentPage = useCallback(() => {
+    if (prevSearchParamsRef.current.filter !== searchParams.filter) {
+      setCurrentPage(1);
+    }
+  }, [prevSearchParamsRef, searchParams]);
+
   useEffect(() => {
     setIsDownloading(true);
-    const filterChange = async () => {
-      if (prevSearchParamsRef.current !== searchParams) {
-        setCurrentPage(1);
-        prevSearchParamsRef.current = searchParams;
-      }
 
+    const filterChange = async () => {
       setLoadMsg({
         message: uiText.logLoadingStates.loading,
         type: "normal",
@@ -91,11 +93,13 @@ export function Logs() {
         message: null,
         type: "normal",
       });
+
+      updateCurrentPage();
+      prevSearchParamsRef.current = searchParams;
       setIsDownloading(false);
     };
-
     void filterChange();
-  }, [searchParams, currentPage]);
+  }, [searchParams, currentPage, updateCurrentPage]);
 
   const handleDownload = async () => {
     const { top: _top, skip: _skip, ...downloadParams } = searchParams;
