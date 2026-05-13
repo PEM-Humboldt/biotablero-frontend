@@ -4,7 +4,7 @@ import { FileDown } from "lucide-react";
 import { ODataSearchBar } from "@composites/ODataSearchBar";
 import { TablePager } from "@composites/TablePager";
 import { LOG_RECORDS_PER_PAGE } from "@config/monitoring";
-import type { ODataParams } from "@appTypes/odata";
+import type { ODataParams, SearchBarComponent } from "@appTypes/odata";
 import { Button } from "@ui/shadCN/component/button";
 import {
   LoadStatusMsgBar,
@@ -47,7 +47,19 @@ export function Logs() {
     top: LOG_RECORDS_PER_PAGE,
     orderby: "timeStamp desc",
   });
+  const [searchBarComponents, setSearchBarComponents] = useState<
+    SearchBarComponent<ODataLogEntryShort>[] | null
+  >(null);
   const prevSearchParamsRef = useRef(searchParams);
+
+  useEffect(() => {
+    const fetchSearchBarItems = async () => {
+      const res = await searchBarItems();
+      setSearchBarComponents(res);
+    };
+
+    void fetchSearchBarItems();
+  }, []);
 
   useEffect(() => {
     setIsDownloading(true);
@@ -139,13 +151,15 @@ export function Logs() {
         </div>
       </header>
 
-      <ODataSearchBar
-        components={searchBarItems}
-        setSearchParams={setSearchParams}
-        submit={uiText.searchBar.submitBtn}
-        reset={uiText.searchBar.resetBtn}
-        className="w-full bg-muted"
-      />
+      {searchBarComponents && (
+        <ODataSearchBar
+          components={searchBarComponents}
+          setSearchParams={setSearchParams}
+          submit={uiText.searchBar.submitBtn}
+          reset={uiText.searchBar.resetBtn}
+          className="w-full bg-muted"
+        />
+      )}
 
       {loadMsg.message !== null ? (
         <LoadStatusMsgBar message={loadMsg.message} type={loadMsg.type} />
