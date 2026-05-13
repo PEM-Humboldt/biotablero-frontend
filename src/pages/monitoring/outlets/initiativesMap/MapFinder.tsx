@@ -23,8 +23,9 @@ import {
   clusterCustomIcon,
   MapMarker,
 } from "pages/monitoring/outlets/initiativesMap/mapFinder/MapMarker";
-import { ZoomControls } from "./mapFinder/ZoomControls";
-import { MapLegend } from "./mapFinder/MapLegend";
+import { ZoomControls } from "pages/monitoring/outlets/initiativesMap/mapFinder/ZoomControls";
+import { MapLegend } from "pages/monitoring/outlets/initiativesMap/mapFinder/MapLegend";
+import { MAP_LAYERS } from "pages/monitoring/outlets/initiativesMap/layout/layers";
 
 interface DeptProperties {
   geofence_name: string;
@@ -44,9 +45,7 @@ export function MapFinder({
   const [center, setCenter] = useState<L.LatLng | null>(null);
   const [bounds, setBounds] = useState<LatLngBoundsLiteral | null>(null);
   const [nation, setNation] = useState<FeatureCollection | null>(null);
-  const [deptswithinitiatives, setDeptswithinitiatives] = useState<
-    { value: number; label: string }[]
-  >([]);
+  const [layer, setLayer] = useState<keyof typeof MAP_LAYERS>(0);
 
   useEffect(() => {
     const fetchCountryMap = async () => {
@@ -151,7 +150,7 @@ export function MapFinder({
     () =>
       processedData.map(({ feature }) => {
         const f = feature.properties as DeptProperties;
-        return { value: f.gid, label: f.geofence_name };
+        return { value: String(f.gid), label: f.geofence_name };
       }),
     [processedData],
   );
@@ -236,6 +235,8 @@ export function MapFinder({
         lowInitiativePerDepartment={min}
         highInitiativePerDepartment={max}
         departments={depstWithInitiatives}
+        layer={layer}
+        setLayer={setLayer}
       />
       <MarkerClusterGroup
         iconCreateFunction={clusterCustomIcon}
@@ -266,8 +267,9 @@ export function MapFinder({
       />
 
       <TileLayer
-        attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        key={`tile-layer-${layer}`}
+        attribution={MAP_LAYERS[layer].attribution}
+        url={MAP_LAYERS[layer].url}
       />
     </MapContainer>
   );

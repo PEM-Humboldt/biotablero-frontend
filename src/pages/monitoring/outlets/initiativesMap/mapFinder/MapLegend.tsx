@@ -1,8 +1,8 @@
 import { INITIAVIVES_MAP_GRADIENT } from "@config/monitoring";
 import { InitiativeIcon } from "pages/monitoring/outlets/initiativesMap/mapFinder/InitiativeIcon";
 import {
-  Dispatch,
-  SetStateAction,
+  type Dispatch,
+  type SetStateAction,
   useEffect,
   useMemo,
   useRef,
@@ -10,19 +10,24 @@ import {
 } from "react";
 import { Combobox } from "@ui/ComboBox";
 import { useNavigate, useParams } from "react-router";
+import { MAP_LAYERS } from "pages/monitoring/outlets/initiativesMap/layout/layers";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@ui/shadCN/component/native-select";
 
 export function MapLegend({
   lowInitiativePerDepartment,
   highInitiativePerDepartment,
   departments,
-  layers,
-  setLayers,
+  layer,
+  setLayer,
 }: {
   lowInitiativePerDepartment: number;
   highInitiativePerDepartment: number;
   departments: { value: string; label: string }[];
-  layers: { value: string; label: string }[];
-  setLayer: Dispatch<SetStateAction<string>>;
+  layer: keyof typeof MAP_LAYERS;
+  setLayer: Dispatch<SetStateAction<keyof typeof MAP_LAYERS>>;
 }) {
   const navigate = useNavigate();
   const [department, setDepartment] = useState<string>("");
@@ -97,6 +102,20 @@ export function MapLegend({
           </div>
         </li>
       </ul>
+
+      <NativeSelect
+        className="pointer-events-auto mt-2"
+        value={layer}
+        onChange={(e) =>
+          setLayer(Number(e.target.value) as keyof typeof MAP_LAYERS)
+        }
+      >
+        {Object.entries(MAP_LAYERS).map(([key, value]) => (
+          <NativeSelectOption key={`mapLayer_${key}`} value={key}>
+            {value.label}
+          </NativeSelectOption>
+        ))}
+      </NativeSelect>
     </div>
   );
 }
