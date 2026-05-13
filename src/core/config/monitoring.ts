@@ -70,6 +70,7 @@ export const TAG_URL_MAX_LENGTH = 150;
 export const TAG_RECORDS_PER_PAGE = 20;
 
 // Resources
+export const RESOURCES_PER_PAGE = 10;
 export const RESOURCES_MAX_ITEMS_EDIT_LIST = 10;
 export const RESOURCE_NAME_MIN_LENGTH = 3;
 export const RESOURCE_NAME_MAX_LENGTH = 100;

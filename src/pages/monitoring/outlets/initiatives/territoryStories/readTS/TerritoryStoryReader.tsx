@@ -15,7 +15,7 @@ import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorys
 import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
 import { getFeaturedImage } from "pages/monitoring/outlets/initiatives/territoryStories/utils/getFeaturedImage";
 import { InitiativeError } from "pages/monitoring/outlets/initiatives/InitiativeError";
-import { LikeButton } from "pages/monitoring/outlets/initiatives/territoryStories/ui/LikeButton";
+import { LikeTSButton } from "pages/monitoring/outlets/initiatives/territoryStories/ui/LikeButton";
 import { MediaGallery } from "pages/monitoring/outlets/initiatives/territoryStories/readTS/territoryStoryReader/MediaGallery";
 import {
   StoryCreator,
@@ -121,7 +121,7 @@ export function TerritoryStoryReader() {
             </ul>
           )}
 
-          <LikeButton story={currentStory} className="-ml-2 mt-2 mb-6" />
+          <LikeTSButton story={currentStory} className="-ml-2 mt-2 mb-6" />
         </header>
 
         <section className="markdown-renderer m-4 lg:m-8 mt-0 w-full max-w-[75ch]">
