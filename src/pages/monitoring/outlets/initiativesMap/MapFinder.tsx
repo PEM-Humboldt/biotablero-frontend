@@ -217,7 +217,7 @@ export function MapFinder({
 
     layer.on("click", () => {
       const f = feature as DeptFeature;
-      void navigate(`/Monitoreo/Dept/${f.properties.gid}`);
+      void navigate(`/Monitoreo/Departamento/${f.properties.gid}`);
     });
   };
 

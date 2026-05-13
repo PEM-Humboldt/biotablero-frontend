@@ -1,9 +1,11 @@
+import { useNavigate } from "react-router";
 import { useMap } from "react-leaflet";
 import L from "leaflet";
 import { Birdhouse, ZoomIn, ZoomOut } from "lucide-react";
+
 import { Button } from "@ui/shadCN/component/button";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
-import { useNavigate } from "react-router";
+
 import { COLOMBIA_BOUNDS } from "pages/utils/settings";
 
 export function ZoomControls() {

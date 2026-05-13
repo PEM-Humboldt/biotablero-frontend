@@ -1,20 +1,21 @@
-import { INITIAVIVES_MAP_GRADIENT } from "@config/monitoring";
-import { InitiativeIcon } from "pages/monitoring/outlets/initiativesMap/mapFinder/InitiativeIcon";
 import {
   type Dispatch,
   type SetStateAction,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
-import { Combobox } from "@ui/ComboBox";
 import { useNavigate, useParams } from "react-router";
-import { MAP_LAYERS } from "pages/monitoring/outlets/initiativesMap/layout/layers";
+
 import {
   NativeSelect,
   NativeSelectOption,
 } from "@ui/shadCN/component/native-select";
+import { Combobox } from "@ui/ComboBox";
+import { INITIAVIVES_MAP_GRADIENT } from "@config/monitoring";
+
+import { InitiativeIcon } from "pages/monitoring/outlets/initiativesMap/mapFinder/InitiativeIcon";
+import { MAP_LAYERS } from "pages/monitoring/outlets/initiativesMap/layout/layers";
 
 export function MapLegend({
   lowInitiativePerDepartment,
@@ -31,16 +32,19 @@ export function MapLegend({
 }) {
   const navigate = useNavigate();
   const [department, setDepartment] = useState<string>("");
-  const prvDept = useRef<string | undefined>(undefined);
   const { departmentId, initiativeId } = useParams();
 
   useEffect(() => {
-    const changeTo = department === prvDept.current ? departmentId : department;
-    prvDept.current = changeTo;
-    setDepartment(changeTo ?? "");
+    setDepartment(departmentId ?? "");
+  }, [departmentId]);
 
-    void navigate(changeTo ? `/Monitoreo/Dept/${changeTo}` : "/Monitoreo");
-  }, [departmentId, department, navigate]);
+  useEffect(() => {
+    const inInitiative = initiativeId ? `/${initiativeId}` : "";
+    const pathParams = department
+      ? `/Departamento/${department}${inInitiative}`
+      : "";
+    void navigate(`/Monitoreo${pathParams}`);
+  }, [department, initiativeId, navigate]);
 
   const gradientStyle = useMemo(() => {
     if (INITIAVIVES_MAP_GRADIENT.length === 0) {

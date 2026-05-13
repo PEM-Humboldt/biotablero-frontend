@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
-import { useMap } from "react-leaflet";
 import L, { type LatLng, type LatLngBoundsLiteral } from "leaflet";
-import "leaflet/dist/leaflet.css";
+import { useMap } from "react-leaflet";
 
 export function ChangeView({
   bounds,

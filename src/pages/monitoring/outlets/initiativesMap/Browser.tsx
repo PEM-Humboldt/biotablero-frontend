@@ -42,13 +42,27 @@ export function Browser() {
           <span>Colombia</span>
         )}
         {initiativeId ? (
-          <Button
-            className="p-0"
-            onClick={() => void navigate(`/Monitoreo/Dept/${departmentId}`)}
-            variant="link"
-          >
-            {locations[Number(departmentId)] ?? ""}
-          </Button>
+          <>
+            <Button
+              className="p-0"
+              onClick={() =>
+                void navigate(`/Monitoreo/Departamento/${departmentId}`)
+              }
+              variant="link"
+            >
+              {locations[Number(departmentId)] ?? ""}
+            </Button>
+
+            <Button
+              className="p-0"
+              onClick={() =>
+                void navigate(`/Monitoreo/Iniciativas/${initiativeId}`)
+              }
+              variant="link"
+            >
+              Ir a la iniciativa
+            </Button>
+          </>
         ) : (
           <span>{locations[Number(departmentId)] ?? ""}</span>
         )}

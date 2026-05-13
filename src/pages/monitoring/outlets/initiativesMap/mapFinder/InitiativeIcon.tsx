@@ -1,5 +1,6 @@
-import { cn } from "@ui/shadCN/lib/utils";
 import { Binoculars } from "lucide-react";
+
+import { cn } from "@ui/shadCN/lib/utils";
 
 export function InitiativeIcon({ className }: { className?: string }) {
   return (

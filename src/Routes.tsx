@@ -38,7 +38,7 @@ export const routes = createBrowserRouter([
         children: [
           { index: true, Component: InitiativesMap },
           {
-            path: "Dept/:departmentId?/:initiativeId?",
+            path: "Departamento/:departmentId?/:initiativeId?",
             Component: InitiativesMap,
           },
           {

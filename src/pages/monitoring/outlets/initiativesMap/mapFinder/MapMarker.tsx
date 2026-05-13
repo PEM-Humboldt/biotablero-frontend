@@ -1,8 +1,9 @@
+import { useNavigate } from "react-router";
 import { renderToString } from "react-dom/server";
 import L, { type MarkerCluster } from "leaflet";
 import { Marker, Tooltip } from "react-leaflet";
+
 import type { InitiativeByLocation } from "pages/monitoring/types/initiative";
-import { useNavigate } from "react-router";
 import { InitiativeIcon } from "pages/monitoring/outlets/initiativesMap/mapFinder/InitiativeIcon";
 
 const markerIcon = L.divIcon({
@@ -36,7 +37,7 @@ export function MapMarker({
       eventHandlers={{
         click: () => {
           void navigate(
-            `/Monitoreo/Dept/${initiative.mainLocationId}/${initiative.initiativeId}`,
+            `/Monitoreo/Departamento/${initiative.mainLocationId}/${initiative.initiativeId}`,
           );
         },
       }}
