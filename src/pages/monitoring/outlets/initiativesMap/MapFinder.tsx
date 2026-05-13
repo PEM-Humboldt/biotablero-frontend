@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import L, { type LatLngBoundsLiteral } from "leaflet";
 import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
@@ -23,6 +23,8 @@ import {
   clusterCustomIcon,
   MapMarker,
 } from "pages/monitoring/outlets/initiativesMap/mapFinder/MapMarker";
+import { ZoomControls } from "./mapFinder/ZoomControls";
+import { MapLegend } from "./mapFinder/MapLegend";
 
 interface DeptProperties {
   geofence_name: string;
@@ -42,6 +44,9 @@ export function MapFinder({
   const [center, setCenter] = useState<L.LatLng | null>(null);
   const [bounds, setBounds] = useState<LatLngBoundsLiteral | null>(null);
   const [nation, setNation] = useState<FeatureCollection | null>(null);
+  const [deptswithinitiatives, setDeptswithinitiatives] = useState<
+    { value: number; label: string }[]
+  >([]);
 
   useEffect(() => {
     const fetchCountryMap = async () => {
@@ -142,21 +147,36 @@ export function MapFinder({
     return results;
   }, [initiatives, nation]);
 
-  const getColor = useMemo(() => {
-    const [min, max] = processedData.reduce(
-      (result, current) => {
-        if (current.count <= result[0]) {
-          result[0] = current.count;
-        }
-        if (current.count >= result[1]) {
-          result[1] = current.count;
-        }
-        return result;
-      },
-      [Infinity, 0],
-    );
-    return createGradientScale(min, max, INITIAVIVES_MAP_GRADIENT);
-  }, [processedData]);
+  const depstWithInitiatives = useMemo(
+    () =>
+      processedData.map(({ feature }) => {
+        const f = feature.properties as DeptProperties;
+        return { value: f.gid, label: f.geofence_name };
+      }),
+    [processedData],
+  );
+
+  const [min, max] = useMemo(
+    () =>
+      processedData.reduce(
+        (result, current) => {
+          if (current.count <= result[0]) {
+            result[0] = current.count;
+          }
+          if (current.count >= result[1]) {
+            result[1] = current.count;
+          }
+          return result;
+        },
+        [Infinity, 0],
+      ),
+    [processedData],
+  );
+
+  const getColor = useMemo(
+    () => createGradientScale(min, max, INITIAVIVES_MAP_GRADIENT),
+    [min, max],
+  );
 
   const setDeptStyle = (feature?: Feature) => {
     const f = feature as DeptFeature;
@@ -209,7 +229,14 @@ export function MapFinder({
       maxZoom={10}
       minZoom={6}
       className="outline-none [&_.leaflet-interactive]:outline-none"
+      zoomControl={false}
     >
+      <ZoomControls />
+      <MapLegend
+        lowInitiativePerDepartment={min}
+        highInitiativePerDepartment={max}
+        departments={depstWithInitiatives}
+      />
       <MarkerClusterGroup
         iconCreateFunction={clusterCustomIcon}
         maxClusterRadius={50}
