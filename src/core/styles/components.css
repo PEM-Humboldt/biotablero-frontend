@@ -16,7 +16,7 @@
     @apply w-full;
 
     & > .tabs-list {
-      @apply py-6! px-2! bg-grey-light text-grey-dark rounded-lg space-x-2;
+      @apply p-2! px-2! bg-grey-light text-grey-dark rounded-lg space-x-2;
 
       & > .tabs-trigger {
         @apply gap-4 text-base! border-b border-b-grey-light text-primary data-[state=active]:bg-primary rounded-lg data-[state=active]:text-primary-foreground hover:data-[state=inactive]:bg-blue-800 hover:text-primary-foreground hover:data-[state=inactive]:cursor-pointer data-[state=active]:shadow;

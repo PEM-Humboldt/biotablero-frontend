@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ODataParams, ODataResponse } from "@appTypes/odata";
 import { debouncer } from "@utils/debouncer";
 import { Combobox } from "@ui/ComboBox";
@@ -19,6 +19,7 @@ type ComboboxODataProps<T> = {
   fixedSearchParams?: ODataParams;
   fixedFilter?: string;
   maxItems: number;
+  shownItems?: number;
   disabled?: boolean;
   uiText: {
     itemNotFound: string;
@@ -46,6 +47,7 @@ type ComboboxODataProps<T> = {
  * @param fixedSearchParams - Static parameters (like $expand) merged into every request.
  * @param fixedFilter - Odata filter string injected with precedence to all querys
  * @param maxItems - The $top limit for API results.
+ * @param shownItems - The minimum amount of items shown by the component.
  * @param disabled - Disables user interaction and visual state.
  * @param uiText - I18n object for not found messages, trigger labels, and placeholders.
  * @param className - Custom CSS classes for the container.
@@ -69,6 +71,7 @@ export function ComboboxOData<T>({
   fixedSearchParams,
   fixedFilter,
   maxItems,
+  shownItems = 4,
   disabled,
   uiText,
   className,
@@ -77,10 +80,15 @@ export function ComboboxOData<T>({
   const [errors, setErrors] = useState<string[]>([]);
   const [items, setItems] = useState<{ value: string; label: string }[]>([]);
   const [writing, setWriting] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<{
+    value: string;
+    label: string;
+  } | null>();
+  const effectiveTop = Math.max(maxItems, shownItems);
   const [searchParams, setSearchParams] = useState<ODataParams>({
     ...(fixedSearchParams ?? {}),
     ...(fixedFilter ? { filter: fixedFilter } : {}),
-    top: maxItems,
+    top: effectiveTop,
   });
 
   const makeODataSearchString = useCallback(
@@ -122,6 +130,17 @@ export function ComboboxOData<T>({
   }, [makeODataSearchString]);
 
   useEffect(() => {
+    if (value) {
+      const found = items.find((i) => i.value === value);
+      if (found) {
+        setSelectedItem(found);
+      }
+    } else {
+      setSelectedItem(null);
+    }
+  }, [value, items]);
+
+  useEffect(() => {
     const controller = new AbortController();
 
     const fetchData = async () => {
@@ -158,6 +177,15 @@ export function ComboboxOData<T>({
     };
   }, [endpoint, loadOnEmpty, searchParams, sourceProcess]);
 
+  const displayItems = useMemo(() => {
+    if (!selectedItem) {
+      return items;
+    }
+
+    const exists = items.some((i) => i.value === selectedItem.value);
+    return exists ? items : [selectedItem, ...items];
+  }, [items, selectedItem]);
+
   const handleSearch = useRef(
     debouncer((searchString: string) => {
       if (!loadOnEmpty && searchString.trim() === "") {
@@ -171,7 +199,7 @@ export function ComboboxOData<T>({
 
       setSearchParams((oldParams) => ({
         ...oldParams,
-        top: maxItems,
+        top: effectiveTop,
         filter: makeODataSearchString(searchString),
       }));
     }, 0.5),
@@ -185,10 +213,10 @@ export function ComboboxOData<T>({
       />
       <Combobox
         id={id}
-        items={items}
+        items={displayItems}
         value={value}
         setValue={setValue}
-        maxItems={maxItems}
+        maxItems={shownItems}
         onSearchChange={(w) => {
           setWriting(true);
           handleSearch(w);

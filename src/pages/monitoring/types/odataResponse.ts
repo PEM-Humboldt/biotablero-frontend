@@ -145,9 +145,44 @@ export interface TagInInitiative {
   tag: Omit<ODataTag, "categoryName">;
 }
 
+// NOTE: Recursos monitoreo
+export interface ResourceType extends HasId {
+  name: string;
+  description: string;
+}
+
+export interface ResourceAttachment extends HasId {
+  resourceId: number;
+  name: string;
+  url: string;
+}
+
+export interface ResourceTag {
+  resourceTagId: number;
+  tag: Omit<ODataTag, "categoryName">;
+}
+
+export interface MonitoringResource extends HasId {
+  initiativeId: number;
+  authorUserName: string;
+  name: string;
+  description: string;
+  isDraft: boolean;
+  likes: number;
+  iLikedIt?: boolean;
+  resourceType: ResourceType;
+  creationDate: string;
+  publicationDate: string;
+  files: ResourceAttachment[];
+  links: ResourceAttachment[];
+  tags: ResourceTag[];
+}
+
 export type ODataLog = ODataResponse<ODataLogEntryShort>;
 export type ODataInitiative = ODataResponse<ODataInitiativeShortEntry>;
 export type ODataUserRequest = ODataResponse<ODataInitiativeUserRequest>;
 export type ODataUserInfo = ODataResponse<ODataUser>;
 export type ODataTerritoryStory = ODataResponse<TerritoryStoryShort>;
 export type ODataTagInfo = ODataResponse<ODataTag>;
+export type ODataResourceType = ODataResponse<ResourceType>;
+export type ODataMonitoringResources = ODataResponse<MonitoringResource>;

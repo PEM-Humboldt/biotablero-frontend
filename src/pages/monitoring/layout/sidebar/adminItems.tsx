@@ -5,16 +5,16 @@ export const adminItems: DashboardItem[] = [
   {
     description: "Administrador de iniciativas",
     icon: UserRoundCog,
-    linkTo: "administrarIniciativas",
+    linkTo: "Admin/Iniciativas",
   },
   {
     description: "Administrador de etiquetas",
     icon: Tags,
-    linkTo: "administrarEtiquetas",
+    linkTo: "Admin/Etiquetas",
   },
   {
     description: "Registros de actividad",
     icon: Logs,
-    linkTo: "logs",
+    linkTo: "Admin/Registros",
   },
 ];

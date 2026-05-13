@@ -282,8 +282,8 @@ export function GeneralInfoInput<T extends GeneralInfo>({
               0.95,
             )} flex-row-reverse`}
           >
-            {`${generalInfo.description.length} / ${INITIAVIVE_DESCRIPTION_MAX_LENGTH}
-		  `}
+            {generalInfo.description.length} /{" "}
+            {INITIAVIVE_DESCRIPTION_MAX_LENGTH}
           </InputGroupAddon>
         </InputGroup>
       </div>
