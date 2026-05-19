@@ -2,6 +2,26 @@ import type { LocationBasicInfo } from "pages/monitoring/types/odataResponse";
 import type { Location } from "pages/monitoring/types/catalog";
 
 import { monitoringAPI } from "pages/monitoring/api/core";
+import { type FeatureCollection } from "geojson";
+
+/**
+ * Gets the simplifyed GeoJson shape from the specified
+ * department.
+ *
+ * @param departmentId [Optional] The ID of the department in the db. If omitted, the function returns the GeoJson of the country.
+ *
+ * @returns A `Promise` resolving to:
+ * - On success: FeatureCollection
+ * - On failure: A `ApiRequestError` object.
+ */
+export async function getGeoJsonMap(departmentId?: number) {
+  const res = await monitoringAPI<FeatureCollection>({
+    type: "get",
+    endpoint: `Location/Polygon/${departmentId ?? 0}`,
+  });
+
+  return res;
+}
 
 /**
  * Retrieves the list of available all the locations from the Monitoring API.

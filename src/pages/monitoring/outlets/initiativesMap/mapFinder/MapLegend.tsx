@@ -1,0 +1,129 @@
+import {
+  type Dispatch,
+  type SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { useNavigate, useParams } from "react-router";
+
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@ui/shadCN/component/native-select";
+import { Combobox } from "@ui/ComboBox";
+import { INITIAVIVES_MAP_GRADIENT } from "@config/monitoring";
+
+import { InitiativeIcon } from "pages/monitoring/outlets/initiativesMap/mapFinder/InitiativeIcon";
+import { MAP_LAYERS } from "pages/monitoring/outlets/initiativesMap/layout/layers";
+import { uiText } from "pages/monitoring/outlets/initiativesMap/layout/uiText";
+
+export function MapLegend({
+  lowInitiativePerDepartment,
+  highInitiativePerDepartment,
+  departments,
+  layer,
+  setLayer,
+}: {
+  lowInitiativePerDepartment: number;
+  highInitiativePerDepartment: number;
+  departments: { value: string; label: string }[];
+  layer: keyof typeof MAP_LAYERS;
+  setLayer: Dispatch<SetStateAction<keyof typeof MAP_LAYERS>>;
+}) {
+  const navigate = useNavigate();
+  const [department, setDepartment] = useState<string>("");
+  const { departmentId, initiativeId } = useParams();
+
+  useEffect(() => {
+    setDepartment(departmentId ?? "");
+  }, [departmentId]);
+
+  useEffect(() => {
+    const inInitiative = initiativeId ? `/${initiativeId}` : "";
+    const pathParams = department
+      ? `/Departamento/${department}${inInitiative}`
+      : "";
+    void navigate(`/Monitoreo${pathParams}`);
+  }, [department, initiativeId, navigate]);
+
+  const gradientStyle = useMemo(() => {
+    if (INITIAVIVES_MAP_GRADIENT.length === 0) {
+      return { backgroundColor: "transparent" };
+    }
+    if (INITIAVIVES_MAP_GRADIENT.length === 1) {
+      return { backgroundColor: INITIAVIVES_MAP_GRADIENT[0].color };
+    }
+
+    const colors = INITIAVIVES_MAP_GRADIENT.map(
+      (g) => `${g.color} ${g.position * 100}%`,
+    ).join(", ");
+
+    return { backgroundImage: `linear-gradient(to right, ${colors})` };
+  }, []);
+
+  return (
+    <div
+      className="leaflet-top leaflet-right mr-12 mt-2 bg-background p-4 rounded-lg max-w-[300px] space-y-4 text-sm"
+      role="group"
+      aria-label={uiText.mapLegend.labelSr}
+    >
+      <div className="text-sm/5">
+        {uiText.mapLegend.description}
+        {!initiativeId && (
+          <Combobox
+            items={departments}
+            value={department ?? ""}
+            setValue={setDepartment}
+            keys={{ forLabel: "label", forValue: "value" }}
+            uiText={uiText.mapLegend.deptSelection}
+            className="pointer-events-auto mt-2"
+          />
+        )}
+      </div>
+
+      <hr className="border-muted" />
+
+      <ul className="flex flex-col gap-2">
+        <li className="flex items-center gap-3 pl-0.5">
+          <InitiativeIcon className="w-6" />
+          <span>{uiText.mapLegend.legends.initiative}</span>
+        </li>
+        <li className="flex items-center gap-2">
+          <div className="flex items-center justify-center w-7 h-7 rounded-full bg-primary font-bold text-[10px] text-background border-4 border-background/40">
+            12
+          </div>
+          <span>{uiText.mapLegend.legends.nearByInitiatives}</span>
+        </li>
+        <li className="flex flex-col">
+          <span>{uiText.mapLegend.legends.initiativesPerDepartment}</span>
+          <div className="border-l border-r border-foreground/40">
+            <div className="h-6 w-full " style={gradientStyle} />
+            <div className="flex justify-between px-1 text-foreground/80">
+              <span>{lowInitiativePerDepartment}</span>
+              <span>{highInitiativePerDepartment}</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+      <label htmlFor="layerSelector" className="sr-only">
+        {uiText.mapLegend.layerSelectorLabel}
+      </label>
+      <NativeSelect
+        id="layerSelector"
+        className="pointer-events-auto mt-2"
+        value={layer}
+        onChange={(e) =>
+          setLayer(Number(e.target.value) as keyof typeof MAP_LAYERS)
+        }
+      >
+        {Object.entries(MAP_LAYERS).map(([key, value]) => (
+          <NativeSelectOption key={`mapLayer_${key}`} value={key}>
+            {value.label}
+          </NativeSelectOption>
+        ))}
+      </NativeSelect>
+    </div>
+  );
+}

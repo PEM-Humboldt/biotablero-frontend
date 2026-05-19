@@ -2,7 +2,6 @@ import {
   BadgeQuestionMark,
   BookMarked,
   ChartBar,
-  FlaskConical,
   House,
   Lightbulb,
   NotepadText,
@@ -17,9 +16,4 @@ export const generalItems: DashboardItem[] = [
   { description: "Glosario", icon: NotepadText, linkTo: "/Monitoreo" },
   { description: "Preguntas", icon: BadgeQuestionMark, linkTo: "/Monitoreo" },
   { description: "Ayudas", icon: Lightbulb, linkTo: "/Monitoreo" },
-  {
-    description: "Iniciativas (Provicional)",
-    icon: FlaskConical,
-    linkTo: "/Monitoreo/Iniciativas",
-  },
 ];
