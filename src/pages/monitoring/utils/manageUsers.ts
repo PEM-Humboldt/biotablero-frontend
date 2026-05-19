@@ -3,6 +3,12 @@ import type { UserItem, UserLevel } from "pages/monitoring/types/catalog";
 import type { ODataUserInfo } from "pages/monitoring/types/odataResponse";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
+/**
+ * Creates a function that retrieves the user levels and caches the response.
+ *
+ * @returns A function that, when invoked, returns a promise resolving to
+ * an array containing all user levels or the cached info.
+ */
 function fetchUserLevels() {
   let userLevels: UserLevel[] = [];
 
