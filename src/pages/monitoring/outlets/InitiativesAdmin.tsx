@@ -37,7 +37,6 @@ export function InitiativesAdmin() {
     number,
     InitiativeDisplayInfoShort | InitiativeDisplayInfo
   > | null>(null);
-  const [initiativesFound, setInitiativesFound] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchParams, setSearchParams] = useState<ODataParams>({
     top: INITIATIVES_PER_PAGE,
@@ -46,28 +45,28 @@ export function InitiativesAdmin() {
   const [newInitiative, setNewInitiative] = useState(false);
   const prevSearchParamsRef = useRef(searchParams);
   const [error, setError] = useState<string>("");
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [searchBarComponents, setSearchBarComponents] = useState<
     SearchBarComponent<ODataInitiativeShortEntry>[] | null
   >([]);
+  const initiativesFound = useRef(0);
 
-  const updateCurrentPage = useCallback(() => {
-    if (prevSearchParamsRef.current.filter !== searchParams.filter) {
-      setCurrentPage(1);
-    }
-  }, [prevSearchParamsRef, searchParams]);
+  const isNewFilter =
+    prevSearchParamsRef.current.filter !== searchParams.filter;
+  const resolvedPage = isNewFilter ? 1 : currentPage;
 
   const loadInitiatives = useCallback(async () => {
-    const skip = (currentPage - 1) * INITIATIVES_PER_PAGE;
+    const skip = (resolvedPage - 1) * INITIATIVES_PER_PAGE;
     const newSearchParams = { ...searchParams, skip };
+    setIsLoading(true);
 
     const res = await getInitiatives(newSearchParams);
+    setIsLoading(false);
 
     if (isMonitoringAPIError(res)) {
       setError(res.data[0].msg);
       setInitiatives(null);
-      setInitiativesFound(0);
-      setLoading(false);
+      initiativesFound.current = 0;
       return;
     }
 
@@ -83,10 +82,8 @@ export function InitiativesAdmin() {
 
     setError("");
     setInitiatives(initiativesObj);
-    updateCurrentPage();
-    prevSearchParamsRef.current = searchParams;
-    setInitiativesFound(res["@odata.count"]);
-  }, [searchParams, currentPage, updateCurrentPage]);
+    initiativesFound.current = res["@odata.count"];
+  }, [searchParams, resolvedPage]);
 
   useEffect(() => {
     const fetchSearchBarComponents = async () => {
@@ -96,6 +93,13 @@ export function InitiativesAdmin() {
 
     void fetchSearchBarComponents();
   }, []);
+
+  useEffect(() => {
+    if (resolvedPage !== currentPage) {
+      setCurrentPage(resolvedPage);
+    }
+    prevSearchParamsRef.current = searchParams;
+  }, [resolvedPage, currentPage, searchParams]);
 
   useEffect(() => {
     void loadInitiatives();
@@ -148,7 +152,7 @@ export function InitiativesAdmin() {
 
           {initiatives === null ? (
             <div className="text-2xl text-primary font-semibold p-10">
-              {loading ? uiText.loading : uiText.initiative.noInitiatives}
+              {isLoading ? uiText.loading : uiText.initiative.noInitiatives}
             </div>
           ) : (
             <Accordion type="single" collapsible className="w-full space-y-3">
@@ -175,7 +179,7 @@ export function InitiativesAdmin() {
 
           <TablePager
             currentPage={currentPage}
-            recordsAvailable={initiativesFound}
+            recordsAvailable={initiativesFound.current}
             onPageChange={setCurrentPage}
             recordsPerPage={INITIATIVES_PER_PAGE}
             paginated={3}

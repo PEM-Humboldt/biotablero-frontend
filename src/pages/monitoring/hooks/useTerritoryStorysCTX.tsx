@@ -60,54 +60,54 @@ export function TerritoryStorysCTX({ children }: { children: ReactNode }) {
 
   const { detailItem: currentStoryId } = useParams();
 
-  const updateCurrentPage = useCallback(() => {
-    if (prevSearchParamsRef.current.filter !== searchStorysParams.filter) {
-      setCurrentPage(1);
-    }
-  }, [prevSearchParamsRef, searchStorysParams]);
+  const isNewFilter =
+    searchStorysParams.filter !== prevSearchParamsRef.current.filter;
+  const resolvedPage = isNewFilter ? 1 : currentPage;
 
   const getStorys = useCallback(async () => {
     if (!initiativeInfo) {
       return;
     }
-
     setIsLoading(true);
-    const skip = (currentPage - 1) * TERRITORY_STORIES_PER_PAGE;
+    const skip = (resolvedPage - 1) * TERRITORY_STORIES_PER_PAGE;
 
     const res = await getTerritoryStoriesFromInitiative(initiativeInfo.id)({
       ...searchStorysParams,
       skip,
     });
+    setIsLoading(false);
     if (isMonitoringAPIError(res)) {
-      setIsLoading(false);
       setErrors(res.data.map((err) => err.msg));
       return;
     }
 
-    updateCurrentPage();
-    setIsLoading(false);
-    setStorys(res?.value ?? []);
-    prevSearchParamsRef.current = searchStorysParams;
+    setStorys(res.value);
     storysAmount.current = res["@odata.count"];
-  }, [initiativeInfo, searchStorysParams, currentPage, updateCurrentPage]);
+  }, [initiativeInfo, searchStorysParams, resolvedPage]);
 
   const getCurrentStory = useCallback(async () => {
     if (!currentStoryId) {
       setCurrentStory(null);
       return;
     }
-
     setIsLoading(true);
+
     const res = await getTerritoryStory(Number(currentStoryId));
+    setIsLoading(false);
     if (isMonitoringAPIError(res)) {
-      setIsLoading(false);
       setErrors(res.data.map((err) => err.msg));
       return;
     }
 
-    setIsLoading(false);
     setCurrentStory(res);
   }, [currentStoryId]);
+
+  useEffect(() => {
+    if (resolvedPage !== currentPage) {
+      setCurrentPage(resolvedPage);
+    }
+    prevSearchParamsRef.current = searchStorysParams;
+  }, [resolvedPage, currentPage, searchStorysParams]);
 
   useEffect(() => {
     void getStorys();

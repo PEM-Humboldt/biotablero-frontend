@@ -36,7 +36,7 @@ function parseODataLogs(odataLogs: ODataLog): LogEntryShort[] {
 }
 
 export function Logs() {
-  const [isDownloading, setIsDownloading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [logs, setLogs] = useState<ODataLog | null>(null);
   const [loadMsg, setLoadMsg] = useState<LoadStatusMsgBarProp>({
@@ -61,49 +61,51 @@ export function Logs() {
     void fetchSearchBarItems();
   }, []);
 
-  const updateCurrentPage = useCallback(() => {
-    if (prevSearchParamsRef.current.filter !== searchParams.filter) {
-      setCurrentPage(1);
+  const isNewFilter =
+    searchParams.filter !== prevSearchParamsRef.current.filter;
+  const resolvedPage = isNewFilter ? 1 : currentPage;
+
+  const fetchLogs = useCallback(async () => {
+    setIsLoading(true);
+
+    setLoadMsg({
+      message: uiText.logLoadingStates.loading,
+      type: "normal",
+    });
+    const skip = (resolvedPage - 1) * LOG_RECORDS_PER_PAGE;
+    const newSearchParams = {
+      ...searchParams,
+      skip: skip,
+    };
+
+    const updatedLogs = await getLogs(newSearchParams);
+    setIsLoading(false);
+    if (isMonitoringAPIError(updatedLogs)) {
+      setLogs(null);
+      return;
     }
-  }, [prevSearchParamsRef, searchParams]);
+
+    setLogs(updatedLogs);
+    setLoadMsg({
+      message: null,
+      type: "normal",
+    });
+  }, [searchParams, resolvedPage]);
 
   useEffect(() => {
-    setIsDownloading(true);
+    void fetchLogs();
+  }, [fetchLogs]);
 
-    const filterChange = async () => {
-      setLoadMsg({
-        message: uiText.logLoadingStates.loading,
-        type: "normal",
-      });
-      const skip = (currentPage - 1) * LOG_RECORDS_PER_PAGE;
-      const newSearchParams = {
-        ...searchParams,
-        skip: skip,
-      };
-
-      const updatedLogs = await getLogs(newSearchParams);
-      if (isMonitoringAPIError(updatedLogs)) {
-        setIsDownloading(false);
-        setLogs(null);
-        return;
-      }
-
-      setLogs(updatedLogs);
-      setLoadMsg({
-        message: null,
-        type: "normal",
-      });
-
-      updateCurrentPage();
-      prevSearchParamsRef.current = searchParams;
-      setIsDownloading(false);
-    };
-    void filterChange();
-  }, [searchParams, currentPage, updateCurrentPage]);
+  useEffect(() => {
+    if (resolvedPage !== currentPage) {
+      setCurrentPage(resolvedPage);
+    }
+    prevSearchParamsRef.current = searchParams;
+  }, [resolvedPage, currentPage, searchParams]);
 
   const handleDownload = async () => {
     const { top: _top, skip: _skip, ...downloadParams } = searchParams;
-    setIsDownloading(true);
+    setIsLoading(true);
 
     const res = await downloadLogs(downloadParams);
 
@@ -112,11 +114,11 @@ export function Logs() {
         message: res.data.map((error) => error.msg).join(". "),
         type: "error",
       });
-      setIsDownloading(false);
+      setIsLoading(false);
       return;
     }
 
-    setIsDownloading(false);
+    setIsLoading(false);
     const url = window.URL.createObjectURL(res);
     const link = document.createElement("a");
 
@@ -146,10 +148,10 @@ export function Logs() {
               onClick={() => void handleDownload()}
               disabled={recordsAvailable === 0}
             >
-              {isDownloading
+              {isLoading
                 ? uiText.download.button.isDownloading
                 : uiText.download.button.isReady}
-              {!isDownloading && <FileDown aria-hidden="true" />}
+              {!isLoading && <FileDown aria-hidden="true" />}
             </Button>
           )}
         </div>
