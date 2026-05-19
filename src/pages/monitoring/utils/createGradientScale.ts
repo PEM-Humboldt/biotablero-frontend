@@ -1,6 +1,6 @@
 type ColorStop = {
   color: string;
-  position: number; // Valor de 0 a 1, todo se maneja normalizado
+  position: number;
 };
 
 /**
