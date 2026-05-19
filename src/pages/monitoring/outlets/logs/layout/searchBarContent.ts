@@ -13,8 +13,12 @@ async function getLogTypesNames() {
   return res.map(({ name }) => name);
 }
 
-export const searchBarItems: SearchBarComponent<ODataLogEntryShort>[] =
-  await (async () => [
+export async function searchBarItems(): Promise<
+  SearchBarComponent<ODataLogEntryShort>[]
+> {
+  const logTypes = await getLogTypesNames();
+
+  return [
     { label: "Usuario", type: "text", source: ["userName"] },
     {
       label: "fecha inicio",
@@ -33,6 +37,7 @@ export const searchBarItems: SearchBarComponent<ODataLogEntryShort>[] =
       placeholder: "Seleciona el tipo",
       type: "select",
       source: ["type"],
-      values: await getLogTypesNames(),
+      values: logTypes,
     },
-  ])();
+  ];
+}
