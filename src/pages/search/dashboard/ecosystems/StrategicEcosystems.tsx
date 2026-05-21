@@ -28,7 +28,6 @@ type State = {
   loading: boolean;
   noData: boolean;
   showInfoGraph: boolean;
-  activeSE: string | null;
 };
 
 const initialState: State = {
@@ -37,15 +36,12 @@ const initialState: State = {
   loading: true,
   noData: false,
   showInfoGraph: false,
-  activeSE: null,
 };
 
 type Action =
   | { type: "LOAD_SUCCESS"; payload: SEData[] }
   | { type: "LOAD_FAIL" }
-  | { type: "SET_ACTIVE"; payload: string }
-  | { type: "TOGGLE_INFO_GRAPH" }
-  | { type: "TOGGLE_DETAIL"; payload: string };
+  | { type: "TOGGLE_INFO_GRAPH" };
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -66,12 +62,6 @@ function reducer(state: State, action: Action): State {
         showInfoGraph: !state.showInfoGraph,
       };
 
-    case "TOGGLE_DETAIL":
-      return {
-        ...state,
-        activeSE: state.activeSE === action.payload ? null : action.payload,
-      };
-
     default:
       return state;
   }
@@ -82,7 +72,8 @@ interface Props {
   areaIdId: number;
   areaHa: number;
   texts: { info: string; cons: string; meto: string; quote: string };
-  onActiveSEChange?: (hasActiveSE: boolean) => void;
+  activeSE: string | null;
+  onToggleSEDetail: (type: string) => void;
   onSEDetailClose?: () => void;
 }
 
@@ -91,13 +82,13 @@ export function StrategicEcosystems({
   areaIdId,
   areaHa,
   texts,
-  onActiveSEChange,
+  activeSE,
+  onToggleSEDetail,
   onSEDetailClose,
 }: Props) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const { SEAreas, SETotalArea, loading, noData, showInfoGraph, activeSE } =
-    state;
+  const { SEAreas, SETotalArea, loading, noData, showInfoGraph } = state;
 
   const controllerRef = useRef(new StrategicEcosystemsController());
   const controller = controllerRef.current;
@@ -121,10 +112,6 @@ export function StrategicEcosystems({
       controller.cancelActiveRequests();
     };
   }, [areaTypeId, areaIdId, areaHa]);
-
-  useEffect(() => {
-    onActiveSEChange?.(Boolean(activeSE));
-  }, [activeSE, onActiveSEChange]);
 
   const percentage = Number(
     (areaHa > 0 ? (SETotalArea * 100) / areaHa : 0).toFixed(2),
@@ -200,10 +187,7 @@ export function StrategicEcosystems({
                     type="button"
                     onClick={() => {
                       const isClosingDetail = activeSE === SEValues.type;
-                      dispatch({
-                        type: "TOGGLE_DETAIL",
-                        payload: SEValues.type,
-                      });
+                      onToggleSEDetail(SEValues.type);
                       if (isClosingDetail) {
                         onSEDetailClose?.();
                       }
@@ -225,10 +209,7 @@ export function StrategicEcosystems({
                 )}
 
                 {hasArea && activeSE === SEValues.type && (
-                  <StrategicEcosystemsDistribution
-                    SEType={SEValues.type}
-                    disableGraphClick={showInfoGraph}
-                  />
+                  <StrategicEcosystemsDistribution SEType={SEValues.type} />
                 )}
               </div>
             );

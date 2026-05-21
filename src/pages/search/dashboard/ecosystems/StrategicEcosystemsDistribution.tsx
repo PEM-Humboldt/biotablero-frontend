@@ -16,15 +16,11 @@ import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
 
 interface Props {
   SEType: SEKey;
-  disableGraphClick?: boolean;
 }
 
 type ChartStatus = "loading" | "ready" | "error";
 
-export function StrategicEcosystemsDistribution({
-  SEType,
-  disableGraphClick = false,
-}: Props) {
+export function StrategicEcosystemsDistribution({ SEType }: Props) {
   const [distributionData, setDistributionData] = useState<
     SmallStackedBarData[]
   >([]);
@@ -56,9 +52,6 @@ export function StrategicEcosystemsDistribution({
   const areaIdId = areaId?.id;
 
   const clickOnGraph = (selectedKey: string) => {
-    if (disableGraphClick) {
-      return;
-    }
     setRasterLayers(
       layers.map((layer) => ({
         ...layer,

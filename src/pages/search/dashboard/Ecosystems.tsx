@@ -202,9 +202,9 @@ export function Ecosystems() {
     setLayerError,
     clearLayers,
   } = useSearchLegacyCTX();
-  const [hasActiveSE, setHasActiveSE] = useState(false);
   const controllerRef = useRef(new EcosystemsController());
   const controller = controllerRef.current;
+  const [activeSE, setActiveSE] = useState<string | null>(null);
 
   const [state, dispatch] = useReducer(ecosystemsReducer, initialState);
 
@@ -337,17 +337,24 @@ export function Ecosystems() {
    *  @param {string} selectedKey Special Ecosystem type
    */
   const clickOnGraph = (selectedKey: string) => {
+    setActiveSE(null);
     setRasterLayers(
       layers.map((layer) => ({
         ...layer,
         selected: layer.id === selectedKey,
       })),
     );
+    setMapTitle({ name: "Coberturas" });
   };
 
   const restoreCoverageLayers = () => {
+    setActiveSE(null);
     setRasterLayers(layers);
     setMapTitle({ name: "Coberturas" });
+  };
+
+  const toggleSEDetail = (type: string) => {
+    setActiveSE((current) => (current === type ? null : type));
   };
 
   return (
@@ -370,12 +377,12 @@ export function Ecosystems() {
         <Coverage
           coverage={coverageData}
           infoOpen={infoShown.has("coverage")}
-          disableGraphClick={hasActiveSE}
           toggleInfo={() => toggleInfo("coverage")}
           texts={texts.coverage}
           messages={messages.cov}
           areaIdStr={`${areaIdId}`}
           onClickGraph={clickOnGraph}
+          resetActiveSE={restoreCoverageLayers}
         />
 
         <ProtectedAreas
@@ -395,7 +402,8 @@ export function Ecosystems() {
           areaIdId={areaIdId!}
           areaHa={areaHa!}
           texts={texts.se}
-          onActiveSEChange={setHasActiveSE}
+          activeSE={activeSE}
+          onToggleSEDetail={toggleSEDetail}
           onSEDetailClose={restoreCoverageLayers}
         />
       </div>

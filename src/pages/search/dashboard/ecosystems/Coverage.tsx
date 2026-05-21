@@ -12,7 +12,6 @@ import colorPalettes from "pages/search/utils/colorPalettes";
 interface Props {
   coverage: SmallStackedBarData[];
   infoOpen: boolean;
-  disableGraphClick?: boolean;
   toggleInfo: () => void;
   texts: {
     info: string;
@@ -29,7 +28,6 @@ interface Props {
 export function Coverage({
   coverage,
   infoOpen,
-  disableGraphClick = false,
   toggleInfo,
   texts,
   messages,
@@ -38,9 +36,6 @@ export function Coverage({
   resetActiveSE,
 }: Props) {
   const onCoverageClick = (id: string) => {
-    if (disableGraphClick) {
-      return;
-    }
     onClickGraph(id);
   };
 
