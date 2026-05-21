@@ -79,7 +79,7 @@ export function useUserCTX() {
   const context = useContext(UserContext);
 
   if (!context) {
-    throw new Error("useUserCTX must be within the UserProviderCTX");
+    throw new Error("useUserCTX must be within the UserCTX");
   }
 
   // HACK: mientras se cuadran los usuarios de compensaciones en el
