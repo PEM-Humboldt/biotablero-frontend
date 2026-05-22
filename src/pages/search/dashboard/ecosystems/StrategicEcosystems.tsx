@@ -20,9 +20,8 @@ import {
 import { matchColor } from "pages/search/utils/matchColor";
 import colorPalettes from "pages/search/utils/colorPalettes";
 
-import { useReport } from "@hooks/useReport";
-import { Button } from "@ui/shadCN/component/button";
-import { ClipboardPlus } from "lucide-react";
+import { AddToReportButton } from "@hooks/useReport/AddReportButton";
+import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
 
 type State = {
   SEAreas: SEData[];
@@ -84,9 +83,9 @@ export function StrategicEcosystems({
   texts,
 }: Props) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { addSection } = useReport();
 
   const { SEAreas, SETotalArea, loading, noData, showInfoGraph } = state;
+  const { mapTitle } = useSearchStateCTX();
 
   const controller = new StrategicEcosystemsController();
 
@@ -194,22 +193,14 @@ export function StrategicEcosystems({
         </div>
       )}
 
-      <Button
-        onClick={() =>
-          void addSection(
-            {
-              title: "Ecosistemas",
-              description: texts.info,
-              includeMap: true,
-            },
-            "ecosystems",
-            { mapDOMId: "map" },
-          )
-        }
-      >
-        <ClipboardPlus />
-        Añadir a reporte
-      </Button>
+      <AddToReportButton
+        sectionTitle={mapTitle.name}
+        sectionDescription={texts.info ?? "Testeo"}
+        graphContainerId="ecosystems"
+        includeMap={true}
+        mapContainerId="map"
+        graphStateId={null}
+      />
 
       <TextBoxes
         downloadData={SEAreas}

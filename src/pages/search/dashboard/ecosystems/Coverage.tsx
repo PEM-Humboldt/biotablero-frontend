@@ -8,10 +8,8 @@ import TextBoxes from "@ui/TextBoxes";
 import { matchColor } from "pages/search/utils/matchColor";
 import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import colorPalettes from "pages/search/utils/colorPalettes";
-import { useReport } from "@hooks/useReport";
+import { AddToReportButton } from "@hooks/useReport/AddReportButton";
 import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
-import { Button } from "@ui/shadCN/component/button";
-import { ClipboardPlus } from "lucide-react";
 
 interface Props {
   coverage: SmallStackedBarData[];
@@ -39,7 +37,6 @@ export function Coverage({
   onClickGraph,
   resetActiveSE,
 }: Props) {
-  const { addSection } = useReport();
   const { mapTitle } = useSearchStateCTX();
 
   return (
@@ -70,7 +67,7 @@ export function Coverage({
         )}
       </div>
 
-      <div id="coveruras">
+      <div id="coverageGraph">
         <h6>Natural, Secundaria y Transformada:</h6>
 
         <div className="graficaeco">
@@ -88,22 +85,13 @@ export function Coverage({
         </div>
       </div>
 
-      <Button
-        onClick={() =>
-          void addSection(
-            {
-              title: "Coverturas",
-              description: "123 456",
-              includeMap: true,
-            },
-            "coveruras",
-            { mapDOMId: "map" },
-          )
-        }
-      >
-        <ClipboardPlus />
-        Añadir a reporte
-      </Button>
+      <AddToReportButton
+        sectionTitle={mapTitle.name}
+        sectionDescription={texts.info ?? "Testeo"}
+        graphContainerId="coverageGraph"
+        includeMap={true}
+        mapContainerId="map"
+      />
 
       <TextBoxes
         downloadData={coverage}

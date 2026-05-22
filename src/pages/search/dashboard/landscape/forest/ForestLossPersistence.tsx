@@ -18,6 +18,7 @@ import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { ForestLossPersistenceController } from "pages/search/dashboard/landscape/forest/ForestLossPersistenceController";
 import { RasterLayer } from "pages/search/types/layers";
 import colorPalettes from "pages/search/utils/colorPalettes";
+import { AddToReportButton } from "@hooks/useReport/AddReportButton";
 
 interface Props {}
 interface State {
@@ -161,7 +162,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
         <div>
           <h6>Cobertura de bosque en el tiempo</h6>
         </div>
-        <div>
+        <div id="forestsss" className="bg-accent">
           <SmallBars
             data={graphData.transformedData}
             keys={graphData.keys}
@@ -199,6 +200,16 @@ class ForestLossPersistence extends React.Component<Props, State> {
             selectedIndexValue={selectedIndex}
           />
         </div>
+
+        <AddToReportButton
+          sectionTitle={"Cobertura actual"}
+          sectionDescription={texts.forestLP.info ?? "Testeo"}
+          graphContainerId="forestsss"
+          includeMap={true}
+          mapContainerId="map"
+          graphStateId={null}
+        />
+
         <TextBoxes
           consText={texts.forestLP.cons}
           metoText={texts.forestLP.meto}
