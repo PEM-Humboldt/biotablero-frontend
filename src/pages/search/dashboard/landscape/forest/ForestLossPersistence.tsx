@@ -74,7 +74,6 @@ export default function () {
   );
 
   useEffect(() => {
-    const controller = controllerRef.current;
     let isCurrent = true;
 
     if (!areaTypeId || !areaIdId) {

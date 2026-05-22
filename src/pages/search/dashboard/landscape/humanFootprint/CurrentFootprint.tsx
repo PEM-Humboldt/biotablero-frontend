@@ -136,29 +136,45 @@ export function CurrentFootprint() {
 
   const controllerRef = useRef(new CurrentFootprintController());
   const controller = controllerRef.current;
-
-  if (!areaType || !areaId) {
-    context.setLoadingLayer(false);
-    return;
-  }
-
-  const areaTypeId = areaType.id;
-  const areaIdId = areaId.id;
+  const areaTypeId = areaType?.id;
+  const areaIdId = areaId?.id;
 
   useEffect(() => {
+    let isCurrent = true;
+
+    if (!areaTypeId || !areaIdId) {
+      setLoadingLayer(false);
+      return () => {
+        isCurrent = false;
+        controller.cancelActiveRequests();
+      };
+    }
+
     controller.setArea(areaTypeId, areaIdId);
 
     setLoadingLayer(true);
 
-    controller.getCurrentHFAverage().then((res) => {
-      dispatch({ type: "AVERAGE_SUCCEEDED", payload: res });
-    });
+    controller
+      .getCurrentHFAverage()
+      .then((res) => {
+        if (!isCurrent) return;
+        dispatch({ type: "AVERAGE_SUCCEEDED", payload: res });
+      })
+      .catch((e) => {
+        if (!isCurrent) return;
+        if (e.toString() !== "Error: request canceled") {
+          setLayerError(e.toString());
+        }
+      });
+
     controller
       .getCurrentHFValues()
       .then((currentHFValues) => {
+        if (!isCurrent) return;
         controller
           .getCurrentHFLayers()
           .then((layersRes) => {
+            if (!isCurrent) return;
             dispatch({
               type: "CURRENTHF_LAYERS_SUCCEEDED",
               payload: layersRes,
@@ -166,13 +182,15 @@ export function CurrentFootprint() {
             setRasterLayers(layersRes);
             setLoadingLayer(false);
             setMapTitle({
-              name: `HH promedio · ${period}`,
+              name: `HH promedio · ${controller.itemId}`,
             });
           })
           .catch((e) => {
+            if (!isCurrent) return;
             if (e.toString() !== "Error: request canceled") {
               setLayerError(e.toString());
             }
+            setLoadingLayer(false);
           });
 
         dispatch({
@@ -181,17 +199,21 @@ export function CurrentFootprint() {
         });
       })
       .catch(() => {
+        if (!isCurrent) return;
         dispatch({ type: "CURRENTHF_VALUES_FAILED" });
+        setLoadingLayer(false);
       });
 
     BackendAPI.requestSectionTexts("hfCurrent")
       .then((res) => {
+        if (!isCurrent) return;
         dispatch({
           type: "SET_TEXTS",
           payload: res,
         });
       })
       .catch(() => {
+        if (!isCurrent) return;
         dispatch({
           type: "SET_TEXTS",
           payload: { info: "", cons: "", meto: "", quote: "" },
@@ -199,9 +221,22 @@ export function CurrentFootprint() {
       });
 
     return () => {
+      isCurrent = false;
       controller.cancelActiveRequests();
     };
-  }, [areaTypeId, areaIdId]);
+  }, [
+    areaTypeId,
+    areaIdId,
+    controller,
+    setLayerError,
+    setLoadingLayer,
+    setMapTitle,
+    setRasterLayers,
+  ]);
+
+  if (!areaTypeId || !areaIdId) {
+    return null;
+  }
 
   const toggleInfoGraph = () => {
     dispatch({ type: "TOGGLE_INFO_GRAPH" });
