@@ -20,6 +20,10 @@ import {
 import { matchColor } from "pages/search/utils/matchColor";
 import colorPalettes from "pages/search/utils/colorPalettes";
 
+import { useReport } from "@hooks/useReport";
+import { Button } from "@ui/shadCN/component/button";
+import { ClipboardPlus } from "lucide-react";
+
 type State = {
   SEAreas: SEData[];
   SETotalArea: number;
@@ -80,6 +84,7 @@ export function StrategicEcosystems({
   texts,
 }: Props) {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const { addSection } = useReport();
 
   const { SEAreas, SETotalArea, loading, noData, showInfoGraph } = state;
 
@@ -154,7 +159,7 @@ export function StrategicEcosystems({
       {!loading && noData && "No hay información"}
 
       {!loading && !noData && (
-        <div className="ecosystems">
+        <div id="ecosystems" className="ecosystems">
           {SEAreas.map((SEValues) => {
             const hasArea = SEValues.area > 0;
             const SEChartData = transformSEValues(SEValues, SETotalArea);
@@ -188,6 +193,23 @@ export function StrategicEcosystems({
           })}
         </div>
       )}
+
+      <Button
+        onClick={() =>
+          void addSection(
+            {
+              title: "Ecosistemas",
+              description: texts.info,
+              includeMap: true,
+            },
+            "ecosystems",
+            { mapDOMId: "map" },
+          )
+        }
+      >
+        <ClipboardPlus />
+        Añadir a reporte
+      </Button>
 
       <TextBoxes
         downloadData={SEAreas}

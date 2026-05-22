@@ -8,6 +8,7 @@ import {
   Pane,
   GeoJSON,
   Polygon,
+  ScaleControl,
 } from "react-leaflet";
 
 import { Modal } from "@mui/material";
@@ -188,6 +189,7 @@ export function MapViewer({
         />
       )}
 
+      <ScaleControl imperial={false} position="bottomright" />
       {/* TODO: Catch warning from OpenStreetMap when cannot load the tiles */}
 
       {/* HACK: Pendiente a la integración de la db con el sistema de usuarios */}

@@ -17,6 +17,7 @@ import {
   searchReducer,
   SearchUpdated,
 } from "pages/search/hooks/SearchReducer";
+import { ReportCTX } from "@hooks/useReport";
 
 export function Search() {
   const { layoutDispatch } = useOutletContext<UiManager>();
@@ -198,24 +199,26 @@ export function Search() {
 
   return (
     <SearchCTX state={searchState} dispatch={searchDispatch}>
-      <LegacyCTX>
-        <div className="flex h-full">
-          <MapViewer
-            bounds={bounds}
-            polygon={null}
-            loadPolygonInfo={() => {}}
-            geoServerUrl={GeoServerAPI.getRequestURL()}
-          />
+      <ReportCTX>
+        <LegacyCTX>
+          <div className="flex h-full">
+            <MapViewer
+              bounds={bounds}
+              polygon={null}
+              loadPolygonInfo={() => {}}
+              geoServerUrl={GeoServerAPI.getRequestURL()}
+            />
 
-          <div className="flex-[1_1_40%] flex-col order-2">
-            {showDashboard ? (
-              <Dashboard goBackClick={handleGoBackClick} />
-            ) : (
-              <Selector showDrawControls={handleShowDrawControls} />
-            )}
+            <div className="flex-[1_1_40%] flex-col order-2">
+              {showDashboard ? (
+                <Dashboard goBackClick={handleGoBackClick} />
+              ) : (
+                <Selector showDrawControls={handleShowDrawControls} />
+              )}
+            </div>
           </div>
-        </div>
-      </LegacyCTX>
+        </LegacyCTX>
+      </ReportCTX>
     </SearchCTX>
   );
 }

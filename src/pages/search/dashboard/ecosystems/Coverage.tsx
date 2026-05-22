@@ -8,6 +8,10 @@ import TextBoxes from "@ui/TextBoxes";
 import { matchColor } from "pages/search/utils/matchColor";
 import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import colorPalettes from "pages/search/utils/colorPalettes";
+import { useReport } from "@hooks/useReport";
+import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
+import { Button } from "@ui/shadCN/component/button";
+import { ClipboardPlus } from "lucide-react";
 
 interface Props {
   coverage: SmallStackedBarData[];
@@ -35,6 +39,9 @@ export function Coverage({
   onClickGraph,
   resetActiveSE,
 }: Props) {
+  const { addSection } = useReport();
+  const { mapTitle } = useSearchStateCTX();
+
   return (
     <>
       <div className="graphcontainer">
@@ -63,21 +70,40 @@ export function Coverage({
         )}
       </div>
 
-      <h6>Natural, Secundaria y Transformada:</h6>
+      <div id="coveruras">
+        <h6>Natural, Secundaria y Transformada:</h6>
 
-      <div className="graficaeco">
-        <div className="svgPointer">
-          <SmallStackedBar
-            loadStatus={messages}
-            data={coverage}
-            units="ha"
-            colors={(key: string) =>
-              matchColor("coverage")(key) || colorPalettes.default[0]
-            }
-            onClickGraphHandler={onClickGraph}
-          />
+        <div className="graficaeco">
+          <div className="svgPointer">
+            <SmallStackedBar
+              loadStatus={messages}
+              data={coverage}
+              units="ha"
+              colors={(key: string) =>
+                matchColor("coverage")(key) || colorPalettes.default[0]
+              }
+              onClickGraphHandler={onClickGraph}
+            />
+          </div>
         </div>
       </div>
+
+      <Button
+        onClick={() =>
+          void addSection(
+            {
+              title: "Coverturas",
+              description: "123 456",
+              includeMap: true,
+            },
+            "coveruras",
+            { mapDOMId: "map" },
+          )
+        }
+      >
+        <ClipboardPlus />
+        Añadir a reporte
+      </Button>
 
       <TextBoxes
         downloadData={coverage}
