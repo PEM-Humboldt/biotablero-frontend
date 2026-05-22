@@ -51,6 +51,7 @@
     "@radix-ui/react-switch": "1.2.6",
     "@radix-ui/react-tabs": "1.1.13",
     "@radix-ui/react-tooltip": "1.2.8",
+    "@react-pdf/renderer": "^4.5.1",
     "@react-spring/web": "9.3.1",
     "@tailwindcss/vite": "4.1.17",
     "@vx/responsive": "0.0.199",
