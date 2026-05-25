@@ -116,11 +116,11 @@ export class ForestLossPersistenceController {
           currentPersistence,
         };
       })
-      .finally(() => {
-        this.activeRequests.delete(requestKey);
-      })
       .catch(() => {
         throw new Error("Error getting data");
+      })
+      .finally(() => {
+        this.activeRequests.delete(requestKey);
       });
   };
 
