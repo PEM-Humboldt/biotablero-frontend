@@ -6,10 +6,9 @@ import { useUserCTX } from "@hooks/UserContext";
 import { DestructiveConfirmationDialog } from "@ui/DestructiveConfirmationDialog";
 
 import type {
-  MonitoringResource,
+  MonitoringResourceShort,
   ResourceType,
 } from "pages/monitoring/types/odataResponse";
-import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 import { uiText } from "pages/monitoring/outlets/resources/manager/resourcesEditor/layout/uiText";
 
 export function ResourcesList({
@@ -18,13 +17,12 @@ export function ResourcesList({
   removeResource,
   resourceType,
 }: {
-  resources: MonitoringResource[];
+  resources: MonitoringResourceShort[];
   setEditResource: Dispatch<SetStateAction<number | null>>;
   removeResource: (resourceId: number, resourceName: string) => Promise<void>;
   resourceType: ResourceType;
 }) {
   const { user } = useUserCTX();
-  const { userInitiativesById } = useUserInMonitoringCTX();
 
   return (
     <div>
@@ -59,9 +57,7 @@ export function ResourcesList({
                       : null,
                   )}
                 </td>
-                <td>
-                  {userInitiativesById[resource.initiativeId]?.name ?? ""}
-                </td>
+                <td>{resource.initiative.name}</td>
                 <td className="table-form-actions">
                   <Button
                     type="button"

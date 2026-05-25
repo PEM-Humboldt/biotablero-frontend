@@ -162,8 +162,23 @@ export interface ResourceTag {
   tag: Omit<ODataTag, "categoryName">;
 }
 
+export interface MonitoringResourceShort extends HasId {
+  initiative: { id: number; name: string };
+  authorUserName: string;
+  name: string;
+  isDraft: boolean;
+  likes: number;
+  iLikedIt?: boolean;
+  resourceType: ResourceType;
+  creationDate: string;
+  publicationDate: string;
+  totalFiles: number;
+  totalLinks: number;
+  tags: ResourceTag[];
+}
+
 export interface MonitoringResource extends HasId {
-  initiativeId: number;
+  initiative: { id: number; name: string };
   authorUserName: string;
   name: string;
   description: string;
@@ -185,4 +200,4 @@ export type ODataUserInfo = ODataResponse<ODataUser>;
 export type ODataTerritoryStory = ODataResponse<TerritoryStoryShort>;
 export type ODataTagInfo = ODataResponse<ODataTag>;
 export type ODataResourceType = ODataResponse<ResourceType>;
-export type ODataMonitoringResources = ODataResponse<MonitoringResource>;
+export type ODataMonitoringResources = ODataResponse<MonitoringResourceShort>;
