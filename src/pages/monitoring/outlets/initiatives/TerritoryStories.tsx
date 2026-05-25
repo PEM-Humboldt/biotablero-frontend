@@ -11,7 +11,7 @@ import {
   panelAccessButtons,
   panelView,
 } from "pages/monitoring/outlets/initiatives/layout/territoryStoryPanels";
-import { TerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
+import { TerritoryStoriesCTX } from "pages/monitoring/hooks/useTerritoryStoriesCTX";
 import { HeaderTS } from "pages/monitoring/outlets/initiatives/territoryStories/HeaderTS";
 import { TSAside } from "pages/monitoring/outlets/initiatives/territoryStories/TSAside";
 
@@ -47,7 +47,7 @@ export function TerritoryStories() {
 
   return (
     <div className="flex flex-col items-center bg-grey-form">
-      <TerritoryStorysCTX>
+      <TerritoryStoriesCTX>
         <HeaderTS />
 
         <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr] w-full max-w-[1600px]">
@@ -61,7 +61,7 @@ export function TerritoryStories() {
           </main>
           <TSAside />
         </div>
-      </TerritoryStorysCTX>
+      </TerritoryStoriesCTX>
     </div>
   );
 }

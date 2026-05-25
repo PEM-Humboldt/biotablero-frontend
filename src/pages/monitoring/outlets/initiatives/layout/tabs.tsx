@@ -34,7 +34,7 @@ export const initiativeTabs = new Map<
     },
   ],
   [
-    "storys",
+    "stories",
     {
       label: "Relatos del territorio",
       slug: "Relatos",

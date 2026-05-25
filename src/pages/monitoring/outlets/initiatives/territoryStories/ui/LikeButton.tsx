@@ -9,7 +9,7 @@ import { useUserCTX } from "@hooks/UserContext";
 import type { TerritoryStoryFull } from "pages/monitoring/types/territoryStory";
 import { likedTerritoryStory } from "pages/monitoring/api/services/territoryStory";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
+import { useTerritoryStoriesCTX } from "pages/monitoring/hooks/useTerritoryStoriesCTX";
 import { uiText } from "pages/monitoring/outlets/initiatives/territoryStories/readTS/territoryStoryReader/layout/uiText";
 
 export function LikeButton({
@@ -24,7 +24,7 @@ export function LikeButton({
   const { user } = useUserCTX();
   const [errors, setErrors] = useState<string[]>([]);
   const [iLikeIt, setILikeIt] = useState(!!story.iLikedIt);
-  const { updateCurrentStory } = useTerritoryStorysCTX();
+  const { updateCurrentStory } = useTerritoryStoriesCTX();
 
   const handleLike = async () => {
     setErrors([]);

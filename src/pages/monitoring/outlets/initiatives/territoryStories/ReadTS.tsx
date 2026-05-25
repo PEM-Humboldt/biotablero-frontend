@@ -7,11 +7,12 @@ import type { PanelComponentProp } from "pages/monitoring/outlets/initiatives/ty
 import { FeaturedStory } from "pages/monitoring/outlets/initiatives/territoryStories/readTS/FeaturedStory";
 import { TerritoryStoriesList } from "pages/monitoring/outlets/initiatives/territoryStories/readTS/TerritoryStoriesList";
 import { TerritoryStoryReader } from "pages/monitoring/outlets/initiatives/territoryStories/readTS/TerritoryStoryReader";
-import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
+import { useTerritoryStoriesCTX } from "pages/monitoring/hooks/useTerritoryStoriesCTX";
 import { TSSearchBar } from "pages/monitoring/outlets/initiatives/territoryStories/TSSearchBar";
 
 export function ReadTS({ moveToPanel: _ }: PanelComponentProp) {
-  const { storysAmount, currentPage, setCurrentPage } = useTerritoryStorysCTX();
+  const { storiesAmount, currentPage, setCurrentPage } =
+    useTerritoryStoriesCTX();
   const { detailItem } = useParams();
 
   return detailItem ? (
@@ -23,7 +24,7 @@ export function ReadTS({ moveToPanel: _ }: PanelComponentProp) {
       <TerritoryStoriesList />
       <TablePager
         currentPage={currentPage}
-        recordsAvailable={storysAmount}
+        recordsAvailable={storiesAmount}
         onPageChange={setCurrentPage}
         recordsPerPage={TERRITORY_STORIES_PER_PAGE}
         paginated={3}

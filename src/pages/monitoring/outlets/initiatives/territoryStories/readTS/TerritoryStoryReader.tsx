@@ -11,7 +11,7 @@ import { TERRITORY_STORY_HEADINGS_OFFSET } from "@config/monitoring";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
 
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
-import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
+import { useTerritoryStoriesCTX } from "pages/monitoring/hooks/useTerritoryStoriesCTX";
 import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
 import { getFeaturedImage } from "pages/monitoring/outlets/initiatives/territoryStories/utils/getFeaturedImage";
 import { InitiativeError } from "pages/monitoring/outlets/initiatives/InitiativeError";
@@ -27,7 +27,7 @@ export function TerritoryStoryReader() {
   const { initiativeId } = useParams();
   const { userStateInInitiative } = useInitiativeCTX();
   const { errors, isLoading, currentStory, prevStory, nextStory } =
-    useTerritoryStorysCTX();
+    useTerritoryStoriesCTX();
   const navigate = useNavigate();
   const baseUrl = `/Monitoreo/Iniciativas/${initiativeId}/Relatos/`;
 

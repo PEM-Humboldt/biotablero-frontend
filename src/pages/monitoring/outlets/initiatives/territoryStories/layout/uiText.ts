@@ -3,7 +3,7 @@ import backgroundImage from "pages/home/assets/biotablero-slider.webp";
 
 export const uiText = {
   loading: "Cargando...",
-  noStorys: "No hay historias disponibles",
+  noStories: "No hay historias disponibles",
   editMode: "Editando...",
   storyBy: "Por: ",
   storyByDateSeparator: ", ",

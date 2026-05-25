@@ -26,34 +26,34 @@ import { TERRITORY_STORIES_PER_PAGE } from "@config/monitoring";
 
 type StoryContextValues = {
   stories: TerritoryStoryShort[];
-  storysAmount: number;
+  storiesAmount: number;
   currentStory: TerritoryStoryFull | null;
   nextStory: TerritoryStoryShort | null;
   prevStory: TerritoryStoryShort | null;
   currentPage: number;
   setCurrentPage: (page: number) => void;
-  setStorysSearchParams: Dispatch<SetStateAction<ODataParams>>;
+  setStoriesSearchParams: Dispatch<SetStateAction<ODataParams>>;
   isLoading: boolean;
   errors: string[];
-  updateStorys: () => Promise<void>;
+  updateStories: () => Promise<void>;
   updateCurrentStory: () => Promise<void>;
 };
 
-const StorysCTX = createContext<StoryContextValues | null>(null);
+const StoriesCTX = createContext<StoryContextValues | null>(null);
 
-export function TerritoryStorysCTX({ children }: { children: ReactNode }) {
+export function TerritoryStoriesCTX({ children }: { children: ReactNode }) {
   const { initiativeInfo } = useInitiativeCTX();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
-  const [searchStorysParams, setStorysSearchParams] = useState<ODataParams>({
+  const [searchStoriesParams, setStoriesSearchParams] = useState<ODataParams>({
     top: TERRITORY_STORIES_PER_PAGE,
     orderby: "creationDate desc",
   });
-  const storysAmount = useRef(0);
-  const prevSearchParamsRef = useRef(searchStorysParams);
+  const storiesAmount = useRef(0);
+  const prevSearchParamsRef = useRef(searchStoriesParams);
 
-  const [stories, setStorys] = useState<TerritoryStoryShort[]>([]);
+  const [stories, setStories] = useState<TerritoryStoryShort[]>([]);
   const [currentStory, setCurrentStory] = useState<TerritoryStoryFull | null>(
     null,
   );
@@ -61,10 +61,10 @@ export function TerritoryStorysCTX({ children }: { children: ReactNode }) {
   const { detailItem: currentStoryId } = useParams();
 
   const isNewFilter =
-    searchStorysParams.filter !== prevSearchParamsRef.current.filter;
+    searchStoriesParams.filter !== prevSearchParamsRef.current.filter;
   const resolvedPage = isNewFilter ? 1 : currentPage;
 
-  const getStorys = useCallback(async () => {
+  const getStories = useCallback(async () => {
     if (!initiativeInfo) {
       return;
     }
@@ -72,7 +72,7 @@ export function TerritoryStorysCTX({ children }: { children: ReactNode }) {
     const skip = (resolvedPage - 1) * TERRITORY_STORIES_PER_PAGE;
 
     const res = await getTerritoryStoriesFromInitiative(initiativeInfo.id)({
-      ...searchStorysParams,
+      ...searchStoriesParams,
       skip,
     });
     setIsLoading(false);
@@ -81,9 +81,9 @@ export function TerritoryStorysCTX({ children }: { children: ReactNode }) {
       return;
     }
 
-    setStorys(res.value);
-    storysAmount.current = res["@odata.count"];
-  }, [initiativeInfo, searchStorysParams, resolvedPage]);
+    setStories(res.value);
+    storiesAmount.current = res["@odata.count"];
+  }, [initiativeInfo, searchStoriesParams, resolvedPage]);
 
   const getCurrentStory = useCallback(async () => {
     if (!currentStoryId) {
@@ -106,12 +106,12 @@ export function TerritoryStorysCTX({ children }: { children: ReactNode }) {
     if (resolvedPage !== currentPage) {
       setCurrentPage(resolvedPage);
     }
-    prevSearchParamsRef.current = searchStorysParams;
-  }, [resolvedPage, currentPage, searchStorysParams]);
+    prevSearchParamsRef.current = searchStoriesParams;
+  }, [resolvedPage, currentPage, searchStoriesParams]);
 
   useEffect(() => {
-    void getStorys();
-  }, [getStorys]);
+    void getStories();
+  }, [getStories]);
 
   useEffect(() => {
     void getCurrentStory();
@@ -133,10 +133,10 @@ export function TerritoryStorysCTX({ children }: { children: ReactNode }) {
   }, [stories, currentStoryId]);
 
   return (
-    <StorysCTX.Provider
+    <StoriesCTX.Provider
       value={{
         stories,
-        storysAmount: storysAmount.current,
+        storiesAmount: storiesAmount.current,
         currentPage,
         setCurrentPage,
         currentStory,
@@ -144,22 +144,22 @@ export function TerritoryStorysCTX({ children }: { children: ReactNode }) {
         prevStory,
         isLoading,
         errors,
-        setStorysSearchParams,
+        setStoriesSearchParams,
         updateCurrentStory: getCurrentStory,
-        updateStorys: getStorys,
+        updateStories: getStories,
       }}
     >
       {children}
-    </StorysCTX.Provider>
+    </StoriesCTX.Provider>
   );
 }
 
-export function useTerritoryStorysCTX() {
-  const context = useContext(StorysCTX);
+export function useTerritoryStoriesCTX() {
+  const context = useContext(StoriesCTX);
 
   if (!context) {
     throw new Error(
-      "useTerritoryStorysCTX must be used within the TerritoryStorysCTX",
+      "useTerritoryStoriesCTX must be used within the TerritoryStoriesCTX",
     );
   }
 

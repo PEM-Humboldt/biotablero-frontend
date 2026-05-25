@@ -1,4 +1,4 @@
-import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
+import { useTerritoryStoriesCTX } from "pages/monitoring/hooks/useTerritoryStoriesCTX";
 import { Button } from "@ui/shadCN/component/button";
 import { type LucideIcon } from "lucide-react";
 import { CreateEditTSForm } from "pages/monitoring/outlets/initiatives/territoryStories/ui/CreateEditTSForm";
@@ -23,14 +23,14 @@ import { TSSearchBar } from "pages/monitoring/outlets/initiatives/territoryStori
 export function ManageTS({ moveToPanel: _ }: PanelComponentProp) {
   const {
     stories,
-    storysAmount,
+    storiesAmount,
     currentPage,
     setCurrentPage,
-    updateStorys,
-    setStorysSearchParams,
+    updateStories,
+    setStoriesSearchParams,
     isLoading,
     errors,
-  } = useTerritoryStorysCTX();
+  } = useTerritoryStoriesCTX();
   const { userStateInInitiative } = useInitiativeCTX();
   const { user } = useUserCTX();
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -38,9 +38,9 @@ export function ManageTS({ moveToPanel: _ }: PanelComponentProp) {
 
   useEffect(() => {
     if (userStateInInitiative === UserStateInInitiative.USER_PARTICIPANT) {
-      setStorysSearchParams((oldParams) => ({ ...oldParams, filter: "" }));
+      setStoriesSearchParams((oldParams) => ({ ...oldParams, filter: "" }));
     }
-  }, [setStorysSearchParams, userStateInInitiative]);
+  }, [setStoriesSearchParams, userStateInInitiative]);
 
   useEffect(() => {
     if (editingId !== null) {
@@ -75,7 +75,7 @@ export function ManageTS({ moveToPanel: _ }: PanelComponentProp) {
       setManageErrors(res.data.map((err) => err.msg));
     }
 
-    await updateStorys();
+    await updateStories();
   };
 
   const handleFeatured = async (storyId: number) => {
@@ -85,7 +85,7 @@ export function ManageTS({ moveToPanel: _ }: PanelComponentProp) {
       setManageErrors(res.data.map((err) => err.msg));
     }
 
-    await updateStorys();
+    await updateStories();
   };
 
   const isAdmin = userStateInInitiative === UserStateInInitiative.USER_LEADER;
@@ -107,7 +107,7 @@ export function ManageTS({ moveToPanel: _ }: PanelComponentProp) {
 
           {stories.length === 0 && (
             <div className="bg-muted p-10 text-2xl rounded-lg text-primary text-center">
-              {uiText.noStorys}
+              {uiText.noStories}
             </div>
           )}
 
@@ -216,7 +216,7 @@ export function ManageTS({ moveToPanel: _ }: PanelComponentProp) {
                       territoryStoryId={story.id}
                       onEditSuccess={() => {
                         setEditingId(null);
-                        void updateStorys();
+                        void updateStories();
                       }}
                     />
                   </div>
@@ -226,7 +226,7 @@ export function ManageTS({ moveToPanel: _ }: PanelComponentProp) {
           })}
           <TablePager
             currentPage={currentPage}
-            recordsAvailable={storysAmount}
+            recordsAvailable={storiesAmount}
             onPageChange={setCurrentPage}
             recordsPerPage={TERRITORY_STORIES_PER_PAGE}
             paginated={3}
