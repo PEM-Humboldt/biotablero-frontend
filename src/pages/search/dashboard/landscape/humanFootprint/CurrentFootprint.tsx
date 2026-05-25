@@ -24,6 +24,7 @@ import { RasterLayer } from "pages/search/types/layers";
 import { textsObject } from "pages/search/types/texts";
 import colorPalettes from "pages/search/utils/colorPalettes";
 import { formatNumber } from "@utils/format";
+import { AddToReportButton } from "@hooks/useReport/AddReportButton";
 
 interface State {
   showInfoGraph: boolean;
@@ -120,6 +121,7 @@ export function CurrentFootprint() {
     setLoadingLayer,
     setLayerError,
     setMapTitle,
+    mapTitle,
   } = context;
 
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -215,6 +217,18 @@ export function CurrentFootprint() {
     );
   };
 
+  const graph = (
+    <LargeStackedBar
+      data={hfCurrent}
+      labelX="Hectáreas"
+      labelY="Huella Humana Actual"
+      units="ha"
+      colors={(key) => matchColor("hfCurrent")(key) || colorPalettes.default[0]}
+      padding={0.25}
+      onClickGraphHandler={clickOnGraph}
+    />
+  );
+
   return (
     <div className="graphcontainer pt6">
       <h2>
@@ -251,16 +265,21 @@ export function CurrentFootprint() {
 
       <h6>Natural, Baja, Media, Alta y Muy Alta</h6>
 
-      <LargeStackedBar
-        data={hfCurrent}
-        labelX="Hectáreas"
-        labelY="Huella Humana Actual"
-        units="ha"
-        colors={(key) =>
-          matchColor("hfCurrent")(key) || colorPalettes.default[0]
+      {graph}
+
+      <AddToReportButton
+        sectionTitle={mapTitle.name}
+        sectionDescription={texts.hfCurrent.info ?? "Testeo"}
+        graphElement={
+          <>
+            <h2>test elementos extra, Huella humana promedio · {period}</h2>
+            <div>{formatNumber(hfCurrentValue, 2)}</div>
+            {graph}
+          </>
         }
-        padding={0.25}
-        onClickGraphHandler={clickOnGraph}
+        includeMap={true}
+        mapContainerId="map"
+        graphStateId={null}
       />
 
       <TextBoxes

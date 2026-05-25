@@ -1,5 +1,6 @@
 import {
   createContext,
+  ReactElement,
   type ReactNode,
   useContext,
   useRef,
@@ -8,6 +9,7 @@ import {
 import { useUserCTX } from "@hooks/UserContext";
 import { domToBlob, type Options as ScrenshotOptions } from "modern-screenshot";
 import workerUrl from "modern-screenshot/worker?url";
+import { createRoot } from "react-dom/client";
 
 type MapDTO = { title: string; blobUrl: string };
 type GraphDTO = { state: string; blobUrl: string; maps: MapDTO[] };
@@ -28,7 +30,7 @@ type SectionInfo = {
 type ReportContextType = {
   addSection: (
     sectionInfo: SectionInfo,
-    graphDOMId: string,
+    graphComponent: ReactElement,
     graphStateId: string | null,
     map: { mapDOMId: string } | null,
   ) => Promise<void>;
@@ -58,7 +60,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
 
   const addSection = async (
     sectionInfo: SectionInfo,
-    graphDOMId: string,
+    graphComponent: ReactElement,
     graphStateId: string | null,
     map: { mapDOMId: string } | null,
   ) => {
@@ -78,16 +80,15 @@ export function ReportCTX({ children }: { children: ReactNode }) {
         ...sectionInfo.aditionalInfo,
       };
 
-      const graphElement = document.getElementById(graphDOMId);
-      let mapDTO: MapDTO | null = null;
-      let mapElement: HTMLElement | null = null;
-      let mapTitle = null;
-
       const screenshotOptions: ScrenshotOptions = {
         scale: 2,
         workerUrl,
         timeout: 10000,
       };
+
+      let mapDTO: MapDTO | null = null;
+      let mapElement: HTMLElement | null = null;
+      let mapTitle = null;
 
       if (map) {
         mapElement = document.getElementById(map.mapDOMId);
@@ -108,12 +109,21 @@ export function ReportCTX({ children }: { children: ReactNode }) {
         };
       }
 
-      if (!graphElement) {
-        console.error("Cannot find the graph in the DOM");
-        return;
-      }
+      const tempContainer = document.createElement("div");
+      tempContainer.style.position = "absolute";
+      tempContainer.style.left = "-9999px";
+      tempContainer.style.width = "800px";
+      tempContainer.style.height = "500px";
+      document.body.appendChild(tempContainer);
 
-      const graphBlob = await domToBlob(graphElement, screenshotOptions);
+      const root = createRoot(tempContainer);
+      root.render(graphComponent);
+
+      await new Promise((resolve) => setTimeout(resolve, 1200));
+      const graphBlob = await domToBlob(tempContainer, screenshotOptions);
+
+      root.unmount();
+      document.body.removeChild(tempContainer);
 
       const graphDTO: GraphDTO = {
         state: "",

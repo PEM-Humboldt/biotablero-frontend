@@ -7,15 +7,15 @@ import { Button } from "@ui/shadCN/component/button";
 export function AddToReportButton({
   sectionTitle,
   sectionDescription,
+  graphElement,
   mapContainerId,
-  graphContainerId,
   graphStateId = null,
   includeMap = true,
   aditionalInfo,
 }: {
   sectionTitle: string;
   sectionDescription: string;
-  graphContainerId: string;
+  graphElement: React.ReactElement;
   graphStateId: string | null;
   mapContainerId?: string;
   includeMap?: boolean;
@@ -35,7 +35,7 @@ export function AddToReportButton({
             description: sectionDescription,
             aditionalInfo,
           },
-          graphContainerId,
+          graphElement,
           graphStateId,
           includeMap && mapContainerId ? { mapDOMId: mapContainerId } : null,
         )

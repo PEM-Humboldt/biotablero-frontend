@@ -39,6 +39,26 @@ export function Coverage({
 }: Props) {
   const { mapTitle } = useSearchStateCTX();
 
+  const graph = (
+    <>
+      <h6>Natural, Secundaria y Transformada:</h6>
+
+      <div className="graficaeco">
+        <div className="svgPointer">
+          <SmallStackedBar
+            loadStatus={messages}
+            data={coverage}
+            units="ha"
+            colors={(key: string) =>
+              matchColor("coverage")(key) || colorPalettes.default[0]
+            }
+            onClickGraphHandler={onClickGraph}
+          />
+        </div>
+      </div>
+    </>
+  );
+
   return (
     <>
       <div className="graphcontainer">
@@ -67,30 +87,15 @@ export function Coverage({
         )}
       </div>
 
-      <div id="coverageGraph">
-        <h6>Natural, Secundaria y Transformada:</h6>
-
-        <div className="graficaeco">
-          <div className="svgPointer">
-            <SmallStackedBar
-              loadStatus={messages}
-              data={coverage}
-              units="ha"
-              colors={(key: string) =>
-                matchColor("coverage")(key) || colorPalettes.default[0]
-              }
-              onClickGraphHandler={onClickGraph}
-            />
-          </div>
-        </div>
-      </div>
+      {graph}
 
       <AddToReportButton
         sectionTitle={mapTitle.name}
         sectionDescription={texts.info ?? "Testeo"}
-        graphContainerId="coverageGraph"
+        graphElement={graph}
         includeMap={true}
         mapContainerId="map"
+        graphStateId={null}
       />
 
       <TextBoxes

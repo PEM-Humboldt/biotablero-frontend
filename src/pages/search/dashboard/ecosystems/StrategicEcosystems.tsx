@@ -118,6 +118,42 @@ export function StrategicEcosystems({
     dispatch({ type: "TOGGLE_INFO_GRAPH" });
   };
 
+  const graph = (
+    <div id="ecosystems" className="ecosystems">
+      {SEAreas.map((SEValues) => {
+        const hasArea = SEValues.area > 0;
+        const SEChartData = transformSEValues(SEValues, SETotalArea);
+
+        return (
+          <div className="mb10" key={SEValues.type}>
+            <div className="singleeco">{SELabels[SEValues.type]}</div>
+
+            <div className="singleeco2">
+              {formatNumber(SEValues.area, 0)} ha
+            </div>
+
+            {hasArea && (
+              <button className="rotate-false" type="button">
+                <ExpandMoreIcon />
+              </button>
+            )}
+
+            {hasArea && (
+              <SmallStackedBar
+                loadStatus={null}
+                data={SEChartData}
+                units="ha"
+                colors={(key) =>
+                  matchColor("se")(key) || colorPalettes.default[0]
+                }
+              />
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+
   return (
     <div className="ecoest">
       <div className="ecoest-header">
@@ -157,46 +193,12 @@ export function StrategicEcosystems({
 
       {!loading && noData && "No hay información"}
 
-      {!loading && !noData && (
-        <div id="ecosystems" className="ecosystems">
-          {SEAreas.map((SEValues) => {
-            const hasArea = SEValues.area > 0;
-            const SEChartData = transformSEValues(SEValues, SETotalArea);
-
-            return (
-              <div className="mb10" key={SEValues.type}>
-                <div className="singleeco">{SELabels[SEValues.type]}</div>
-
-                <div className="singleeco2">
-                  {formatNumber(SEValues.area, 0)} ha
-                </div>
-
-                {hasArea && (
-                  <button className="rotate-false" type="button">
-                    <ExpandMoreIcon />
-                  </button>
-                )}
-
-                {hasArea && (
-                  <SmallStackedBar
-                    loadStatus={null}
-                    data={SEChartData}
-                    units="ha"
-                    colors={(key) =>
-                      matchColor("se")(key) || colorPalettes.default[0]
-                    }
-                  />
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
+      {!loading && !noData && graph}
 
       <AddToReportButton
         sectionTitle={mapTitle.name}
         sectionDescription={texts.info ?? "Testeo"}
-        graphContainerId="ecosystems"
+        graphElement={graph}
         includeMap={true}
         mapContainerId="map"
         graphStateId={null}
