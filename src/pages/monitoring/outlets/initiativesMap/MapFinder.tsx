@@ -112,41 +112,34 @@ export function MapFinder({
       return [];
     }
 
-    let remaining = [...initiatives];
+    const groupedInitiatives = initiatives.reduce<Record<number, number>>(
+      (all, current) => {
+        if (!all[current.mainLocationId]) {
+          all[current.mainLocationId] = 0;
+        }
+        all[current.mainLocationId] += 1;
+        return all;
+      },
+      {},
+    );
+
     const results = [];
 
     for (const feature of nation.features as Feature<
       Polygon | MultiPolygon
     >[]) {
-      if (remaining.length === 0) {
-        break;
-      }
-
-      const matches: InitiativeByLocation[] = [];
-      const rest: InitiativeByLocation[] = [];
-
-      for (const initiative of remaining) {
-        if (initiative.mainLocationId === feature.properties?.gid) {
-          matches.push(initiative);
-        } else {
-          rest.push(initiative);
-        }
-      }
-
-      if (matches.length > 0) {
+      if (groupedInitiatives[feature.properties?.gid as number] > 0) {
         results.push({
           feature,
-          count: matches.length,
+          count: groupedInitiatives[feature.properties?.gid as number],
         });
       }
-
-      remaining = rest;
     }
 
     return results;
   }, [initiatives, nation]);
 
-  const depstWithInitiatives = useMemo(
+  const departmentsWithInitiatives = useMemo(
     () =>
       processedData.map(({ feature }) => {
         const f = feature.properties as DeptProperties;
@@ -196,7 +189,7 @@ export function MapFinder({
     };
   };
 
-  const setFeatureBeahviour = (feature: Feature, layer: L.Layer) => {
+  const setFeatureBehavior = (feature: Feature, layer: L.Layer) => {
     const f = feature as DeptFeature;
 
     const dataItem = processedData.find(
@@ -236,7 +229,7 @@ export function MapFinder({
       <MapLegend
         lowInitiativePerDepartment={min}
         highInitiativePerDepartment={max}
-        departments={depstWithInitiatives}
+        departments={departmentsWithInitiatives}
         layer={layer}
         setLayer={setLayer}
       />
@@ -265,7 +258,7 @@ export function MapFinder({
           } as FeatureCollection<Geometry, DeptProperties>
         }
         style={setDeptStyle}
-        onEachFeature={setFeatureBeahviour}
+        onEachFeature={setFeatureBehavior}
       />
 
       <TileLayer
