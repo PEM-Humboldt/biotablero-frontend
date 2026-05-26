@@ -43,6 +43,14 @@ export const routes = createBrowserRouter([
             Component: InitiativesMap,
           },
           {
+            path: "Departamento/:departmentId?/:initiativeId?",
+            Component: InitiativesMap,
+          },
+          {
+            path: "Iniciativas/:initiativeId?/:tabSection?/:detailItem?",
+            Component: Initiatives,
+          },
+          {
             path: "Recursos",
             children: [
               {
@@ -54,15 +62,8 @@ export const routes = createBrowserRouter([
                     redirectPath: "/Monitoreo/Recursos",
                   }),
               },
-              {
-                Component: MonitoringResources,
-                path: ":resourceId?",
-              },
+              { Component: MonitoringResources, path: ":resourceId?" },
             ],
-          },
-          {
-            path: "Iniciativas/:initiativeId?/:tabSection?/:detailItem?",
-            Component: Initiatives,
           },
           {
             path: "gestionarIniciativas",
