@@ -4,7 +4,6 @@ import {
   type ReactNode,
   useContext,
   useEffect,
-  useRef,
   useState,
 } from "react";
 import { useUserCTX } from "@hooks/UserContext";
@@ -61,10 +60,6 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     Map<string, SectionDTO>
   >(new Map());
   const [errors, setErrors] = useState<string[]>([]);
-
-  const documentMeta = useRef(
-    user ? { creator: user?.name, creatorEmail: user.email } : null,
-  );
 
   useEffect(() => {
     setReportDownloaded(false);
@@ -346,9 +341,17 @@ export function ReportCTX({ children }: { children: ReactNode }) {
   };
 
   const openReportInNewTab = async () => {
+    if (!user) {
+      return;
+    }
     try {
       const sections = Array.from(documentSections.values());
-      const blob = await pdf(<Report sections={sections} />).toBlob();
+      const blob = await pdf(
+        <Report
+          sections={sections}
+          creator={{ name: user.name ?? user.email, email: user.email }}
+        />,
+      ).toBlob();
       const pdfUrl = URL.createObjectURL(blob);
       window.open(pdfUrl, "_blank");
       setTimeout(() => URL.revokeObjectURL(pdfUrl), 1000);

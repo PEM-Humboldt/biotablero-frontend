@@ -1,133 +1,124 @@
-import {
-  Document,
-  Page,
-  Text,
-  View,
-  StyleSheet,
-  Image,
-} from "@react-pdf/renderer";
+import { Document, Page, Text, View, Image, Link } from "@react-pdf/renderer";
+
 import type { SectionDTO } from "@hooks/useReport/types/useReport";
+import logoHumboldt from "@assets/logos/humboldt.png";
+import { reportStyles } from "@hooks/useReport/layout/reportStyles";
 
-const styles = StyleSheet.create({
-  page: {
-    padding: 40,
-    fontFamily: "Helvetica",
-  },
-  coverPage: {
-    padding: 40,
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  titleGeneral: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  textGeneral: {
-    fontSize: 14,
-    textAlign: "center",
-  },
-  sectionHeader: {
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 10,
-    color: "#333",
-  },
-  sectionDescription: {
-    fontSize: 12,
-    color: "#555",
-    marginBottom: 15,
-  },
-  infoContainer: {
-    marginBottom: 15,
-    padding: 10,
-    backgroundColor: "#f5f5f5",
-    borderRadius: 4,
-  },
-  infoRow: {
-    flexDirection: "row",
-    marginBottom: 4,
-  },
-  infoKey: {
-    fontSize: 11,
-    fontWeight: "bold",
-    marginRight: 5,
-  },
-  infoValue: {
-    fontSize: 11,
-    color: "#444",
-  },
-  graphBlock: {
-    marginBottom: 20,
-  },
-  image: {
-    width: "100%",
-    borderRadius: 4,
-    marginBottom: 10,
-  },
-  mapBlock: {
-    marginTop: 10,
-    paddingLeft: 10,
-    borderLeft: "2px solid #ddd",
-  },
-  mapTitle: {
-    fontSize: 12,
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-});
+export function Report({
+  sections,
+  creator,
+}: {
+  sections: SectionDTO[];
+  creator: { name: string; email: string };
+}) {
+  const coverBookmark = { bookmark: { title: "Portada", fit: true } };
 
-export function Report({ sections }: { sections: SectionDTO[] }) {
   return (
     <Document>
-      <Page size="A4" style={styles.coverPage}>
-        <View>
-          <Text style={styles.titleGeneral}>Reporte General</Text>
-          <Text style={styles.textGeneral}>
+      <Page size="LETTER" style={reportStyles.coverPage} {...coverBookmark}>
+        <View style={{ alignItems: "center" }}>
+          <View style={reportStyles.logoContainer}>
+            <Image src={logoHumboldt} style={reportStyles.logo} />
+          </View>
+
+          <Text style={reportStyles.titleGeneral}>Reporte General</Text>
+          <Text style={[reportStyles.textGeneral, { marginBottom: 25 }]}>
             Intro, el Humboldt y sus cositas...
           </Text>
+
+          <View style={{ marginTop: 15, alignItems: "center" }}>
+            <Text style={reportStyles.textGeneral}>
+              Informe recopilado por: {creator.name}
+            </Text>
+
+            <Text style={reportStyles.textGeneral}>
+              Fecha de recopilación: {new Date().toLocaleDateString()}
+            </Text>
+
+            <Link
+              style={[
+                reportStyles.textGeneral,
+                { color: "blue", marginTop: 2 },
+              ]}
+              src={`mailto:${creator.email}`}
+            >
+              Contactar: {creator.email}
+            </Link>
+          </View>
         </View>
       </Page>
 
-      {sections.map((section, sIndex) => (
-        <Page key={`sec-${sIndex}`} size="A4" style={styles.page}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>{section.title}</Text>
-            <Text style={styles.sectionDescription}>{section.description}</Text>
-          </View>
+      {sections.map((section, sIndex) => {
+        const sectionBookmark = {
+          bookmark: { title: section.title, fit: true },
+        };
 
-          {section.graphs.map((graph, gIndex) => (
-            <View key={`g-${gIndex}`} style={styles.graphBlock}>
-              {graph.info && Object.keys(graph.info).length > 0 && (
-                <View style={styles.infoContainer} wrap={false}>
-                  {Object.entries(graph.info).map(([key, value]) => (
-                    <View key={key} style={styles.infoRow}>
-                      <Text style={styles.infoKey}>{key}:</Text>
-                      <Text style={styles.infoValue}>{value}</Text>
+        return (
+          <Page
+            key={`sec-${sIndex}`}
+            size="LETTER"
+            style={reportStyles.page}
+            {...sectionBookmark}
+          >
+            <View style={reportStyles.sectionHeader}>
+              <Text style={reportStyles.sectionTitle}>{section.title}</Text>
+              <Text style={reportStyles.sectionDescription}>
+                {section.description}
+              </Text>
+            </View>
+
+            {section.graphs.map((graph, gIndex) => {
+              const graphBookmarkTitle = graph.state
+                ? `Gráfica: ${graph.state}`
+                : `Gráfica ${gIndex + 1}`;
+
+              const bookmarkProps = {
+                bookmark: { title: graphBookmarkTitle, fit: true },
+              };
+
+              return (
+                <View key={`g-${gIndex}`} style={reportStyles.graphBlock}>
+                  {graph.info && Object.keys(graph.info).length > 0 && (
+                    <View style={reportStyles.infoContainer} wrap={false}>
+                      {Object.entries(graph.info).map(([key, value]) => (
+                        <View key={key} style={reportStyles.infoRow}>
+                          <Text style={reportStyles.infoKey}>{key}:</Text>
+                          <Text style={reportStyles.infoValue}>{value}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  )}
+
+                  <View wrap={false} {...bookmarkProps}>
+                    <Image src={graph.blobUrl} style={reportStyles.graph} />
+                  </View>
+
+                  {graph.maps.map((map, mIndex) => (
+                    <View
+                      key={`m-${mIndex}`}
+                      style={reportStyles.mapBlock}
+                      wrap={false}
+                    >
+                      <Text style={reportStyles.mapTitle}>
+                        {map.title}, mapa {mIndex + 1}
+                      </Text>
+                      <Image src={map.blobUrl} style={reportStyles.map} />
                     </View>
                   ))}
                 </View>
-              )}
+              );
+            })}
 
-              <View wrap={false}>
-                <Image src={graph.blobUrl} style={styles.image} />
-              </View>
-
-              {graph.maps.map((map, mIndex) => (
-                <View key={`m-${mIndex}`} style={styles.mapBlock} wrap={false}>
-                  <Text style={styles.mapTitle}>{map.title}</Text>
-                  <Image src={map.blobUrl} style={styles.image} />
-                </View>
-              ))}
-            </View>
-          ))}
-        </Page>
-      ))}
+            <Text
+              style={reportStyles.pageNumber}
+              render={({ pageNumber, totalPages }) =>
+                pageNumber > 1 ? `${pageNumber} / ${totalPages}` : ""
+              }
+              fixed
+            />
+          </Page>
+        );
+      })}
     </Document>
   );
 }
