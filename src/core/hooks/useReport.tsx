@@ -11,22 +11,13 @@ import { useUserCTX } from "@hooks/UserContext";
 import { domToBlob, type Options as ScrenshotOptions } from "modern-screenshot";
 import workerUrl from "modern-screenshot/worker?url";
 import { createRoot } from "react-dom/client";
-
-type MapDTO = { title: string; blobUrl: string };
-type GraphDTO = { state: string; blobUrl: string; maps: MapDTO[] };
-type SectionDTO = {
-  title: string;
-  description: string;
-  link: string;
-  graphs: GraphDTO[];
-};
-
-type SectionInfo = {
-  title: string;
-  description: string;
-  includeMap: boolean;
-  aditionalInfo?: Record<string, string>;
-};
+import type {
+  MapDTO,
+  SectionDTO,
+  SectionInfo,
+} from "@hooks/useReport/types/useReport";
+import { Report } from "@hooks/useReport/Report";
+import { pdf } from "@react-pdf/renderer";
 
 type ReportContextType = {
   isBusy: boolean;
@@ -37,7 +28,7 @@ type ReportContextType = {
     sectionInfo: SectionInfo,
     graphComponent: ReactElement,
     graphStateId: string | null,
-    map: { mapDOMId: string } | null,
+    map: string | null,
   ) => Promise<void>;
   removeElement: (
     sectionId: string,
@@ -50,6 +41,7 @@ type ReportContextType = {
     graphStateId?: string,
     mapIndex?: number,
   ) => void;
+  openReportInNewTab: () => Promise<void>;
   documentSections: Map<string, SectionDTO>;
 };
 
@@ -83,7 +75,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     sectionInfo: SectionInfo,
     graphComponent: ReactElement,
     graphStateId: string | null,
-    map: { mapDOMId: string } | null,
+    map: string | null,
   ) => {
     if (!user) {
       return;
@@ -96,7 +88,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       let mapDTO: MapDTO | null = null;
 
       if (map) {
-        const mapElement = document.getElementById(map.mapDOMId);
+        const mapElement = document.getElementById(map);
         if (!mapElement) {
           console.error("Cannot get the map from the DOM");
           setIsBusy(false);
@@ -137,7 +129,6 @@ export function ReportCTX({ children }: { children: ReactNode }) {
         const existingSection = newSections.get(sectionId) ?? {
           title: sectionInfo.title,
           description: sectionInfo.description,
-          additionalInfo: sectionInfo.aditionalInfo,
           link: window.location.href,
           graphs: [],
         };
@@ -156,12 +147,14 @@ export function ReportCTX({ children }: { children: ReactNode }) {
           updatedGraphs[graphIndex] = {
             state: targetGraphState,
             blobUrl: newGraphBlobUrl,
+            info: sectionInfo?.graphInfo,
             maps: updatedMaps,
           };
         } else {
           updatedGraphs.push({
             state: targetGraphState,
             blobUrl: newGraphBlobUrl,
+            info: sectionInfo?.graphInfo,
             maps: mapDTO ? [mapDTO] : [],
           });
         }
@@ -352,6 +345,18 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     });
   };
 
+  const openReportInNewTab = async () => {
+    try {
+      const sections = Array.from(documentSections.values());
+      const blob = await pdf(<Report sections={sections} />).toBlob();
+      const pdfUrl = URL.createObjectURL(blob);
+      window.open(pdfUrl, "_blank");
+      setTimeout(() => URL.revokeObjectURL(pdfUrl), 1000);
+    } catch (error) {
+      console.error("Error al generar el PDF:", error);
+    }
+  };
+
   return (
     <ReportContext.Provider
       value={{
@@ -361,6 +366,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
         addSection,
         removeElement,
         moveElement,
+        openReportInNewTab,
         documentSections,
       }}
     >

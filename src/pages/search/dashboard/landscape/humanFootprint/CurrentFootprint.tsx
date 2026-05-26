@@ -24,7 +24,7 @@ import { RasterLayer } from "pages/search/types/layers";
 import { textsObject } from "pages/search/types/texts";
 import colorPalettes from "pages/search/utils/colorPalettes";
 import { formatNumber } from "@utils/format";
-import { AddToReportButton } from "@hooks/useReport/AddReportButton";
+import { AddToReportButton } from "@hooks/useReport/AddToReportButton";
 
 interface State {
   showInfoGraph: boolean;

@@ -20,7 +20,7 @@ import {
 import { matchColor } from "pages/search/utils/matchColor";
 import colorPalettes from "pages/search/utils/colorPalettes";
 
-import { AddToReportButton } from "@hooks/useReport/AddReportButton";
+import { AddToReportButton } from "@hooks/useReport/AddToReportButton";
 import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
 
 type State = {

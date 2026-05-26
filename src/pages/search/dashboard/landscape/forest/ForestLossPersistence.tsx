@@ -18,7 +18,7 @@ import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { ForestLossPersistenceController } from "pages/search/dashboard/landscape/forest/ForestLossPersistenceController";
 import { RasterLayer } from "pages/search/types/layers";
 import colorPalettes from "pages/search/utils/colorPalettes";
-import { AddToReportButton } from "@hooks/useReport/AddReportButton";
+import { AddToReportButton } from "@hooks/useReport/AddToReportButton";
 
 interface Props {}
 interface State {

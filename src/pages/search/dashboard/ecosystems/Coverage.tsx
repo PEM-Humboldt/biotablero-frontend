@@ -8,7 +8,7 @@ import TextBoxes from "@ui/TextBoxes";
 import { matchColor } from "pages/search/utils/matchColor";
 import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import colorPalettes from "pages/search/utils/colorPalettes";
-import { AddToReportButton } from "@hooks/useReport/AddReportButton";
+import { AddToReportButton } from "@hooks/useReport/AddToReportButton";
 import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
 
 interface Props {
@@ -61,8 +61,9 @@ export function Coverage({
 
   const reportId = [
     "coverage",
-    areaId ? areaId.area_type.id : null,
-    areaId ? areaId.name : null,
+    areaId ? areaId.area_type?.id : null,
+    areaId ? areaId?.name : null,
+    areaId ? areaId?.id : null,
   ]
     .filter(Boolean)
     .join("_");
@@ -72,7 +73,7 @@ export function Coverage({
       searchType === "definedArea"
         ? "Areas definidas"
         : "Polígono personalizado",
-    ["Tipo de area"]: areaId?.area_type.label ?? "Indefinida",
+    ["Tipo de area"]: areaId?.area_type?.label ?? "Indefinida",
     ["Ubicación"]: areaId?.name.toLocaleLowerCase() ?? "Sin ubicación base",
   };
 
@@ -111,7 +112,6 @@ export function Coverage({
         sectionTitle={mapTitle.name}
         sectionDescription={texts.info ?? "Testeo"}
         graphElement={graph}
-        includeMap={true}
         mapContainerId="map"
         graphStateId={null}
         aditionalInfo={reportAdditionalInfo}
