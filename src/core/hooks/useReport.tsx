@@ -1,8 +1,9 @@
 import {
   createContext,
-  ReactElement,
+  type ReactElement,
   type ReactNode,
   useContext,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -28,37 +29,57 @@ type SectionInfo = {
 };
 
 type ReportContextType = {
+  isBusy: boolean;
+  errors: string[];
+  reportDownloaded: boolean;
   addSection: (
+    sectionId: string,
     sectionInfo: SectionInfo,
     graphComponent: ReactElement,
     graphStateId: string | null,
     map: { mapDOMId: string } | null,
   ) => Promise<void>;
-  documentSections: SectionDTO[];
-  removeSection: (sectionTitle: string) => void;
-  removeGraphFromSection: (sectionTitle: string, graphStateId: string) => void;
-  removeMapFromSection: (
-    sectionTitle: string,
-    graphStateId: string | null,
-    mapIndex: number,
+  removeElement: (
+    sectionId: string,
+    graphStateId?: string,
+    mapIndex?: number,
   ) => void;
-  isBusy: boolean;
-  errors: string[];
+  moveElement: (
+    direction: "prev" | "next",
+    sectionId: string,
+    graphStateId?: string,
+    mapIndex?: number,
+  ) => void;
+  documentSections: Map<string, SectionDTO>;
 };
 
 const ReportContext = createContext<ReportContextType | null>(null);
 
+const screenshotOptions: ScrenshotOptions = {
+  scale: 2,
+  workerUrl,
+  timeout: 10000,
+};
+
 export function ReportCTX({ children }: { children: ReactNode }) {
   const { user } = useUserCTX();
   const [isBusy, setIsBusy] = useState(false);
-  const [documentSections, setDocumentSections] = useState<SectionDTO[]>([]);
+  const [reportDownloaded, setReportDownloaded] = useState(true);
+  const [documentSections, setDocumentSections] = useState<
+    Map<string, SectionDTO>
+  >(new Map());
   const [errors, setErrors] = useState<string[]>([]);
 
   const documentMeta = useRef(
     user ? { creator: user?.name, creatorEmail: user.email } : null,
   );
 
+  useEffect(() => {
+    setReportDownloaded(false);
+  }, [documentSections]);
+
   const addSection = async (
+    sectionId: string,
     sectionInfo: SectionInfo,
     graphComponent: ReactElement,
     graphStateId: string | null,
@@ -72,35 +93,18 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     setErrors([]);
 
     try {
-      const sectionInfoObject: SectionDTO = {
-        title: sectionInfo.title,
-        description: sectionInfo.description,
-        link: window.location.href,
-        graphs: [],
-        ...sectionInfo.aditionalInfo,
-      };
-
-      const screenshotOptions: ScrenshotOptions = {
-        scale: 2,
-        workerUrl,
-        timeout: 10000,
-      };
-
       let mapDTO: MapDTO | null = null;
-      let mapElement: HTMLElement | null = null;
-      let mapTitle = null;
 
       if (map) {
-        mapElement = document.getElementById(map.mapDOMId);
-
+        const mapElement = document.getElementById(map.mapDOMId);
         if (!mapElement) {
           console.error("Cannot get the map from the DOM");
+          setIsBusy(false);
           return;
         }
 
-        mapTitle =
+        const mapTitle =
           mapElement.getElementsByClassName("title")[0]?.textContent || "";
-
         const mapBlob = await domToBlob(mapElement, screenshotOptions);
 
         mapDTO = {
@@ -112,43 +116,63 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       const tempContainer = document.createElement("div");
       tempContainer.style.position = "absolute";
       tempContainer.style.left = "-9999px";
-      tempContainer.style.width = "800px";
-      tempContainer.style.height = "500px";
+      tempContainer.style.width = "1200px";
       document.body.appendChild(tempContainer);
 
       const root = createRoot(tempContainer);
       root.render(graphComponent);
 
-      await new Promise((resolve) => setTimeout(resolve, 1200));
-      const graphBlob = await domToBlob(tempContainer, screenshotOptions);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
+      const graphBlob = await domToBlob(tempContainer, screenshotOptions);
       root.unmount();
       document.body.removeChild(tempContainer);
 
-      const graphDTO: GraphDTO = {
-        state: "",
-        blobUrl: URL.createObjectURL(graphBlob),
-        maps: mapDTO ? [mapDTO] : [],
-      };
+      const targetGraphState = graphStateId ?? "";
+      const newGraphBlobUrl = URL.createObjectURL(graphBlob);
 
-      sectionInfoObject.graphs.push(graphDTO);
+      setDocumentSections((oldSections) => {
+        const newSections = new Map(oldSections);
 
-      const preview = window.open();
-      if (preview) {
-        if (mapDTO) {
-          const mapImg = preview.document.createElement("img");
-          mapImg.src = mapDTO.blobUrl;
-          mapImg.alt = "Preview mapa";
-          preview.document.body.appendChild(mapImg);
+        const existingSection = newSections.get(sectionId) ?? {
+          title: sectionInfo.title,
+          description: sectionInfo.description,
+          additionalInfo: sectionInfo.aditionalInfo,
+          link: window.location.href,
+          graphs: [],
+        };
+
+        const graphIndex = existingSection.graphs.findIndex(
+          (g) => g.state === targetGraphState,
+        );
+
+        const updatedGraphs = [...existingSection.graphs];
+
+        if (graphIndex !== -1) {
+          URL.revokeObjectURL(updatedGraphs[graphIndex].blobUrl);
+
+          const existingMaps = updatedGraphs[graphIndex].maps;
+          const updatedMaps = mapDTO ? [...existingMaps, mapDTO] : existingMaps;
+          updatedGraphs[graphIndex] = {
+            state: targetGraphState,
+            blobUrl: newGraphBlobUrl,
+            maps: updatedMaps,
+          };
+        } else {
+          updatedGraphs.push({
+            state: targetGraphState,
+            blobUrl: newGraphBlobUrl,
+            maps: mapDTO ? [mapDTO] : [],
+          });
         }
 
-        const graphImg = preview.document.createElement("img");
-        graphImg.src = graphDTO.blobUrl;
-        graphImg.alt = "Preview gráfica";
-        preview.document.body.appendChild(graphImg);
-      }
+        newSections.set(sectionId, {
+          ...existingSection,
+          graphs: updatedGraphs,
+        });
 
-      setDocumentSections((oldSections) => [...oldSections, sectionInfoObject]);
+        return newSections;
+      });
     } catch (error) {
       console.error("Error while serializing DOM elements:", error);
     } finally {
@@ -156,134 +180,188 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     }
   };
 
-  const removeSection = (sectionTitle: string) => {
-    const selectedSection = documentSections.find(
-      (s) => s.title === sectionTitle,
-    );
-    if (!selectedSection) {
-      return;
-    }
-
-    selectedSection.graphs.forEach((graph) => {
-      URL.revokeObjectURL(graph.blobUrl);
-
-      graph.maps.forEach((map) => {
-        URL.revokeObjectURL(map.blobUrl);
-      });
-    });
-
-    setDocumentSections((oldSections) =>
-      oldSections.filter((s) => s.title !== sectionTitle),
-    );
-  };
-
-  const removeGraphFromSection = (
-    sectionTitle: string,
-    graphStateId: string,
+  const removeElement = (
+    sectionId: string,
+    graphStateId?: string,
+    mapIndex?: number,
   ) => {
-    const sectionIdx = documentSections.findIndex(
-      (s) => s.title === sectionTitle,
-    );
-    if (sectionIdx === -1) {
+    if (!documentSections.has(sectionId)) {
       return;
     }
 
-    const section = documentSections[sectionIdx];
-    if (section.graphs.length <= 1) {
-      return;
-    }
+    const isMapDel = graphStateId !== undefined && mapIndex !== undefined;
+    const isGraphDel = graphStateId !== undefined && mapIndex === undefined;
 
-    const graphIdx = section.graphs.findIndex((g) => g.state === graphStateId);
-    if (graphIdx === -1) {
-      return;
-    }
+    setDocumentSections((oldSections) => {
+      const nextSections = new Map(oldSections);
+      const section = nextSections.get(sectionId)!;
 
-    const graphToRemove = section.graphs[graphIdx];
-    if (graphToRemove.blobUrl && graphToRemove.blobUrl.startsWith("blob:")) {
-      URL.revokeObjectURL(graphToRemove.blobUrl);
-    }
-    graphToRemove.maps.forEach((m) => {
-      if (m.blobUrl && m.blobUrl.startsWith("blob:")) {
-        URL.revokeObjectURL(m.blobUrl);
+      if (isMapDel) {
+        const graph = section.graphs.find((g) => g.state === graphStateId);
+        if (!graph || graph.maps.length <= 1) {
+          return oldSections;
+        }
+
+        const mapToRemove = graph.maps[mapIndex];
+        if (!mapToRemove) {
+          return oldSections;
+        }
+
+        URL.revokeObjectURL(mapToRemove.blobUrl);
+        nextSections.set(sectionId, {
+          ...section,
+          graphs: section.graphs.map((g) =>
+            g.state === graphStateId
+              ? { ...g, maps: g.maps.filter((_, index) => index !== mapIndex) }
+              : g,
+          ),
+        });
+
+        return nextSections;
       }
-    });
 
-    setDocumentSections((oldSections) => {
-      const newSections = [...oldSections];
+      if (isGraphDel) {
+        if (section.graphs.length <= 1) {
+          return oldSections;
+        }
+        const graph = section.graphs.find((g) => g.state === graphStateId);
+        if (!graph) {
+          return oldSections;
+        }
 
-      newSections[sectionIdx] = {
-        ...newSections[sectionIdx],
-        graphs: newSections[sectionIdx].graphs.filter(
-          (g) => g.state !== graphStateId,
-        ),
-      };
+        URL.revokeObjectURL(graph.blobUrl);
+        graph.maps.forEach((m) => URL.revokeObjectURL(m.blobUrl));
 
-      return newSections;
+        nextSections.set(sectionId, {
+          ...section,
+          graphs: section.graphs.filter((g) => g.state !== graphStateId),
+        });
+
+        return nextSections;
+      }
+
+      section.graphs.forEach((g) => {
+        URL.revokeObjectURL(g.blobUrl);
+        g.maps.forEach((m) => URL.revokeObjectURL(m.blobUrl));
+      });
+
+      nextSections.delete(sectionId);
+      return nextSections;
     });
   };
 
-  const removeMapFromSection = (
-    sectionTitle: string,
-    graphStateId: string | null,
-    mapIndex: number,
+  const moveElement = (
+    direction: "prev" | "next",
+    sectionId: string,
+    graphStateId?: string,
+    mapIndex?: number,
   ) => {
-    const sectionIdx = documentSections.findIndex(
-      (s) => s.title === sectionTitle,
-    );
-    if (sectionIdx === -1) {
-      return;
-    }
-    const section = documentSections[sectionIdx];
-    const graphIdx = graphStateId
-      ? section.graphs.findIndex((g) => g.state === graphStateId)
-      : 0;
-
-    if (
-      section.graphs[graphIdx].maps.length === 1 ||
-      graphIdx === -1 ||
-      !section.graphs[graphIdx]
-    ) {
+    const section = documentSections.get(sectionId);
+    if (!section) {
       return;
     }
 
-    const graph = section.graphs[graphIdx];
-    const mapToRemove = graph.maps[mapIndex];
-    if (!mapToRemove) {
-      return;
+    const isMapMove = graphStateId !== undefined && mapIndex !== undefined;
+    const isGraphMove = graphStateId !== undefined && mapIndex === undefined;
+
+    if (isMapMove) {
+      const graph = section.graphs.find((g) => g.state === graphStateId);
+      if (
+        !graph ||
+        (direction === "prev" && mapIndex === 0) ||
+        (direction === "next" && mapIndex === graph.maps.length - 1)
+      ) {
+        return;
+      }
     }
 
-    if (mapToRemove.blobUrl && mapToRemove.blobUrl.startsWith("blob:")) {
-      URL.revokeObjectURL(mapToRemove.blobUrl);
+    if (isGraphMove) {
+      const graphIndex = section.graphs.findIndex(
+        (g) => g.state === graphStateId,
+      );
+      if (
+        graphIndex === -1 ||
+        (direction === "prev" && graphIndex === 0) ||
+        (direction === "next" && graphIndex === section.graphs.length - 1)
+      ) {
+        return;
+      }
+    }
+
+    if (graphStateId === undefined) {
+      const keys = Array.from(documentSections.keys());
+      const sectionIndex = keys.indexOf(sectionId);
+      if (
+        sectionIndex === -1 ||
+        (direction === "prev" && sectionIndex === 0) ||
+        (direction === "next" && sectionIndex === keys.length - 1)
+      ) {
+        return;
+      }
+    }
+
+    function reorderArray<T>(
+      arr: T[],
+      index: number,
+      dir: "prev" | "next",
+    ): T[] {
+      const targetIndex = dir === "prev" ? index - 1 : index + 1;
+      const result = [...arr];
+      const [movedItem] = result.splice(index, 1);
+      result.splice(targetIndex, 0, movedItem);
+      return result;
     }
 
     setDocumentSections((oldSections) => {
-      const newSections = [...oldSections];
-      const newGraphs = [...newSections[sectionIdx].graphs];
-      const newMaps = [...newGraphs[graphIdx].maps];
-      newMaps.splice(mapIndex, 1);
-      newGraphs[graphIdx] = {
-        ...newGraphs[graphIdx],
-        maps: newMaps,
-      };
-      newSections[sectionIdx] = {
-        ...newSections[sectionIdx],
-        graphs: newGraphs,
-      };
+      const nextSections = new Map(oldSections);
+      const currentSection = oldSections.get(sectionId)!;
 
-      return newSections;
+      if (isMapMove) {
+        nextSections.set(sectionId, {
+          ...currentSection,
+          graphs: currentSection.graphs.map((g) =>
+            g.state === graphStateId
+              ? { ...g, maps: reorderArray(g.maps, mapIndex, direction) }
+              : g,
+          ),
+        });
+        return nextSections;
+      }
+
+      if (isGraphMove) {
+        const graphIndex = currentSection.graphs.findIndex(
+          (g) => g.state === graphStateId,
+        );
+        nextSections.set(sectionId, {
+          ...currentSection,
+          graphs: reorderArray(currentSection.graphs, graphIndex, direction),
+        });
+        return nextSections;
+      }
+
+      const keys = Array.from(oldSections.keys());
+      const sectionIndex = keys.indexOf(sectionId);
+      const reorderedKeys = reorderArray(keys, sectionIndex, direction);
+
+      const orderedSections = new Map<string, SectionDTO>();
+      reorderedKeys.forEach((key) => {
+        orderedSections.set(key, oldSections.get(key)!);
+      });
+
+      return orderedSections;
     });
   };
 
   return (
     <ReportContext.Provider
       value={{
-        addSection,
-        documentSections,
         isBusy,
         errors,
-        removeSection,
-        removeGraphFromSection,
-        removeMapFromSection,
+        reportDownloaded,
+        addSection,
+        removeElement,
+        moveElement,
+        documentSections,
       }}
     >
       {children}

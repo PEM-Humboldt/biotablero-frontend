@@ -268,6 +268,7 @@ export function CurrentFootprint() {
       {graph}
 
       <AddToReportButton
+        sectionId="CurrentFootprint"
         sectionTitle={mapTitle.name}
         sectionDescription={texts.hfCurrent.info ?? "Testeo"}
         graphElement={

@@ -196,6 +196,7 @@ export function StrategicEcosystems({
       {!loading && !noData && graph}
 
       <AddToReportButton
+        sectionId="StrategicEcosystems"
         sectionTitle={mapTitle.name}
         sectionDescription={texts.info ?? "Testeo"}
         graphElement={graph}

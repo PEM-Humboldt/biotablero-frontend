@@ -205,6 +205,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
         </div>
 
         <AddToReportButton
+          sectionId="ForestLossPersistence"
           sectionTitle={"Cobertura actual"}
           sectionDescription={texts.forestLP.info ?? "Testeo"}
           graphElement={

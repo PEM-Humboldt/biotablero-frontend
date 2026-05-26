@@ -5,6 +5,7 @@ import { useReport } from "@hooks/useReport";
 import { Button } from "@ui/shadCN/component/button";
 
 export function AddToReportButton({
+  sectionId,
   sectionTitle,
   sectionDescription,
   graphElement,
@@ -13,6 +14,7 @@ export function AddToReportButton({
   includeMap = true,
   aditionalInfo,
 }: {
+  sectionId: string;
   sectionTitle: string;
   sectionDescription: string;
   graphElement: React.ReactElement;
@@ -29,6 +31,7 @@ export function AddToReportButton({
       disabled={!user || isBusy}
       onClick={() =>
         void addSection(
+          sectionId,
           {
             title: sectionTitle,
             includeMap,

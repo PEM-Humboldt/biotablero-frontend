@@ -37,7 +37,7 @@ export function Coverage({
   onClickGraph,
   resetActiveSE,
 }: Props) {
-  const { mapTitle } = useSearchStateCTX();
+  const { mapTitle, searchType, areaId } = useSearchStateCTX();
 
   const graph = (
     <>
@@ -58,6 +58,23 @@ export function Coverage({
       </div>
     </>
   );
+
+  const reportId = [
+    "coverage",
+    areaId ? areaId.area_type.id : null,
+    areaId ? areaId.name : null,
+  ]
+    .filter(Boolean)
+    .join("_");
+
+  const reportAdditionalInfo = {
+    ["Tipo de consulta"]:
+      searchType === "definedArea"
+        ? "Areas definidas"
+        : "Polígono personalizado",
+    ["Tipo de area"]: areaId?.area_type.label ?? "Indefinida",
+    ["Ubicación"]: areaId?.name.toLocaleLowerCase() ?? "Sin ubicación base",
+  };
 
   return (
     <>
@@ -90,12 +107,14 @@ export function Coverage({
       {graph}
 
       <AddToReportButton
+        sectionId={reportId}
         sectionTitle={mapTitle.name}
         sectionDescription={texts.info ?? "Testeo"}
         graphElement={graph}
         includeMap={true}
         mapContainerId="map"
         graphStateId={null}
+        aditionalInfo={reportAdditionalInfo}
       />
 
       <TextBoxes
