@@ -21,6 +21,13 @@ export type InitiativeAditionalInfo = {
   tags: TagInInitiative[];
 };
 
+export type InitiativeByLocation = {
+  initiativeId: number;
+  initiativeName: string;
+  mainLocationId: number;
+  coordinate: [number, number];
+};
+
 export type ImagesData = {
   imageUrl?: File | string | null;
   bannerUrl?: File | string | null;

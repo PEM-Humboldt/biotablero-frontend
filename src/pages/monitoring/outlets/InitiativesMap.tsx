@@ -1,25 +1,34 @@
-import { ODataParams } from "@appTypes/odata";
-import { ODataSearchBar } from "@composites/ODataSearchBar";
+import { useEffect, useState } from "react";
+
 import { MapFinder } from "pages/monitoring/outlets/initiativesMap/MapFinder";
 import { CurrentInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
-import { searchBarItems } from "pages/monitoring/outlets/initiativesMap/layout/searchBarContent";
-import { useState } from "react";
 import { Browser } from "pages/monitoring/outlets/initiativesMap/Browser";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import { getInitiativeLocations } from "pages/monitoring/api/services/initiatives";
+import { type InitiativeByLocation } from "pages/monitoring/types/initiative";
 
 export function InitiativesMap() {
-  const [searchParams, setSearchParams] = useState<ODataParams>({});
+  const [initiatives, setInitiatives] = useState<InitiativeByLocation[]>([]);
+
+  useEffect(() => {
+    const fetchInitiativeLocations = async () => {
+      const res = await getInitiativeLocations();
+
+      if (isMonitoringAPIError(res)) {
+        setInitiatives([]);
+        return;
+      }
+      setInitiatives(res);
+    };
+
+    void fetchInitiativeLocations();
+  }, []);
 
   return (
     <CurrentInitiativeCTX>
       <div className="relative flex flex-col h-full w-full">
-        <ODataSearchBar
-          components={searchBarItems}
-          setSearchParams={setSearchParams}
-          reset={"reset"}
-          className="bg-background w-full px-16"
-        />
         <Browser />
-        <MapFinder />
+        <MapFinder initiatives={initiatives} />
       </div>
     </CurrentInitiativeCTX>
   );

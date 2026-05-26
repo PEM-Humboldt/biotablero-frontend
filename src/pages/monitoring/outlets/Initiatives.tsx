@@ -6,7 +6,6 @@ import {
 } from "@ui/shadCN/component/tabs";
 import type { UiManager } from "core/layout/MainLayout";
 import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
-import { InitiativeSelector_NOT_FOR_PRODUCTION } from "pages/monitoring/outlets/initiatives/Selector";
 import { useEffect } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
@@ -48,7 +47,6 @@ export function Initiatives() {
 
   return (
     <div className="flex flex-col w-full">
-      <InitiativeSelector_NOT_FOR_PRODUCTION />
       {!initiativeInfo ? (
         <h1>Acá iría un buscador muy nais</h1>
       ) : (
