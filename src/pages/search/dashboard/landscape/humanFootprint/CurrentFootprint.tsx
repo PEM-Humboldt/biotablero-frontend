@@ -117,6 +117,7 @@ export function CurrentFootprint() {
   const {
     areaType,
     areaId,
+    searchType,
     setRasterLayers,
     setLoadingLayer,
     setLayerError,
@@ -229,6 +230,24 @@ export function CurrentFootprint() {
     />
   );
 
+  const reportId = [
+    "CurrentFootprint",
+    areaId ? areaId.area_type?.id : null,
+    areaId ? areaId?.name : null,
+    areaId ? areaId?.id : null,
+  ]
+    .filter(Boolean)
+    .join("_");
+
+  const reportAdditionalInfo = {
+    ["Tipo de consulta"]:
+      searchType === "definedArea"
+        ? "Areas definidas"
+        : "Polígono personalizado",
+    ["Tipo de area"]: areaId?.area_type?.label ?? "Indefinida",
+    ["Ubicación"]: areaId?.name.toLocaleLowerCase() ?? "Sin ubicación base",
+  };
+
   return (
     <div className="graphcontainer pt6">
       <h2>
@@ -268,7 +287,7 @@ export function CurrentFootprint() {
       {graph}
 
       <AddToReportButton
-        sectionId="CurrentFootprint"
+        sectionId={reportId}
         sectionTitle={mapTitle.name}
         sectionDescription={texts.hfCurrent.info ?? "Testeo"}
         graphElement={
@@ -278,9 +297,9 @@ export function CurrentFootprint() {
             {graph}
           </>
         }
-        includeMap={true}
         mapContainerId="map"
         graphStateId={null}
+        aditionalInfo={reportAdditionalInfo}
       />
 
       <TextBoxes

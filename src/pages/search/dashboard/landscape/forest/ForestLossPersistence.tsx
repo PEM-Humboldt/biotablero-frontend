@@ -120,7 +120,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
       texts,
       layers,
     } = this.state;
-    const { areaType, areaId, setRasterLayers } = this
+    const { mapTitle, searchType, areaType, areaId, setRasterLayers } = this
       .context as LegacyContextValues;
 
     const areaTypeId = areaType!.id;
@@ -169,6 +169,24 @@ class ForestLossPersistence extends React.Component<Props, State> {
       />
     );
 
+    const reportId = [
+      "ForestLossPersistence",
+      areaId ? areaId.area_type?.id : null,
+      areaId ? areaId?.name : null,
+      areaId ? areaId?.id : null,
+    ]
+      .filter(Boolean)
+      .join("_");
+
+    const reportAdditionalInfo = {
+      ["Tipo de consulta"]:
+        searchType === "definedArea"
+          ? "Areas definidas"
+          : "Polígono personalizado",
+      ["Tipo de area"]: areaId?.area_type?.label ?? "Indefinida",
+      ["Ubicación"]: areaId?.name.toLocaleLowerCase() ?? "Sin ubicación base",
+    };
+
     return (
       <div className="graphcontainer pt6">
         <h2>
@@ -205,9 +223,9 @@ class ForestLossPersistence extends React.Component<Props, State> {
         </div>
 
         <AddToReportButton
-          sectionId="ForestLossPersistence"
-          sectionTitle={"Cobertura actual"}
-          sectionDescription={texts.forestLP.info ?? "Testeo"}
+          sectionId={reportId}
+          sectionTitle={mapTitle.name}
+          sectionDescription={texts.forestLP.info || "Testeo"}
           graphElement={
             <>
               <h2>Cobertura actual</h2>
@@ -215,9 +233,9 @@ class ForestLossPersistence extends React.Component<Props, State> {
               {graph}
             </>
           }
-          includeMap={true}
           mapContainerId="map"
           graphStateId={selectedIndex}
+          aditionalInfo={reportAdditionalInfo}
         />
 
         <TextBoxes

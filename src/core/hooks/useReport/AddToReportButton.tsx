@@ -1,8 +1,9 @@
-import { ClipboardPlus } from "lucide-react";
+import { ClipboardPlus, FileCheck } from "lucide-react";
 
 import { useUserCTX } from "@hooks/UserContext";
 import { useReport } from "@hooks/useReport";
 import { Button } from "@ui/shadCN/component/button";
+import { ButtonGroup } from "@ui/shadCN/component/button-group";
 
 export function AddToReportButton({
   sectionId,
@@ -22,10 +23,11 @@ export function AddToReportButton({
   aditionalInfo?: Record<string, string>;
 }) {
   const { user } = useUserCTX();
-  const { addSection, isBusy, openReportInNewTab } = useReport();
+  const { addSection, isBusy, openReportInNewTab, documentSections } =
+    useReport();
 
   return (
-    <div>
+    <ButtonGroup>
       <Button
         disabled={!user || isBusy}
         onClick={() =>
@@ -46,7 +48,15 @@ export function AddToReportButton({
         <ClipboardPlus />
         {isBusy ? "Agregando al reporte" : "Añadir a reporte"}
       </Button>
-      <Button onClick={() => void openReportInNewTab()}>ver</Button>
-    </div>
+      {documentSections.size > 0 && (
+        <Button
+          disabled={!user || isBusy}
+          onClick={() => void openReportInNewTab()}
+        >
+          <FileCheck />
+          ver reporte
+        </Button>
+      )}
+    </ButtonGroup>
   );
 }

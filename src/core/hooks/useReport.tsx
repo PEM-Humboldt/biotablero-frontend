@@ -345,6 +345,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       return;
     }
     try {
+      setIsBusy(true);
       const sections = Array.from(documentSections.values());
       const blob = await pdf(
         <Report
@@ -357,6 +358,8 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       setTimeout(() => URL.revokeObjectURL(pdfUrl), 1000);
     } catch (error) {
       console.error("Error al generar el PDF:", error);
+    } finally {
+      setIsBusy(false);
     }
   };
 

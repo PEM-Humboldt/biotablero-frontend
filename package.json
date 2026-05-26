@@ -56,6 +56,7 @@
     "@tailwindcss/vite": "4.1.17",
     "@vx/responsive": "0.0.199",
     "axios": "1.12.0",
+    "buffer": "^6.0.3",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "cmdk": "1.1.1",

@@ -110,7 +110,7 @@ export function Coverage({
       <AddToReportButton
         sectionId={reportId}
         sectionTitle={mapTitle.name}
-        sectionDescription={texts.info ?? "Testeo"}
+        sectionDescription={texts.info || "Testeo"}
         graphElement={graph}
         mapContainerId="map"
         graphStateId={null}

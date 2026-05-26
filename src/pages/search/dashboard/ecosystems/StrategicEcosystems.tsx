@@ -85,7 +85,7 @@ export function StrategicEcosystems({
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const { SEAreas, SETotalArea, loading, noData, showInfoGraph } = state;
-  const { mapTitle } = useSearchStateCTX();
+  const { mapTitle, searchType, areaId } = useSearchStateCTX();
 
   const controller = new StrategicEcosystemsController();
 
@@ -154,6 +154,24 @@ export function StrategicEcosystems({
     </div>
   );
 
+  const reportId = [
+    "strategic_ecosystems",
+    areaId ? areaId.area_type?.id : null,
+    areaId ? areaId?.name : null,
+    areaId ? areaId?.id : null,
+  ]
+    .filter(Boolean)
+    .join("_");
+
+  const reportAdditionalInfo = {
+    ["Tipo de consulta"]:
+      searchType === "definedArea"
+        ? "Areas definidas"
+        : "Polígono personalizado",
+    ["Tipo de area"]: areaId?.area_type?.label ?? "Indefinida",
+    ["Ubicación"]: areaId?.name.toLocaleLowerCase() ?? "Sin ubicación base",
+  };
+
   return (
     <div className="ecoest">
       <div className="ecoest-header">
@@ -196,13 +214,13 @@ export function StrategicEcosystems({
       {!loading && !noData && graph}
 
       <AddToReportButton
-        sectionId="StrategicEcosystems"
+        sectionId={reportId}
         sectionTitle={mapTitle.name}
-        sectionDescription={texts.info ?? "Testeo"}
+        sectionDescription={texts.info || "Testeo"}
         graphElement={graph}
-        includeMap={true}
         mapContainerId="map"
         graphStateId={null}
+        aditionalInfo={reportAdditionalInfo}
       />
 
       <TextBoxes
