@@ -68,7 +68,7 @@ export class ForestLossPersistenceController {
       "lossPersistence",
       this.areaId,
     )
-      .then((data: MetricTypesMap["lossPersistence"]) => {
+      .request.then((data: MetricTypesMap["lossPersistence"]) => {
         const mappedData = data.map((periodObj) => {
           const { id, ...classes } = periodObj;
           this.allClasses.set(

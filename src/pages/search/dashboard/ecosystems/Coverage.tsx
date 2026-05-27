@@ -35,6 +35,10 @@ export function Coverage({
   onClickGraph,
   resetActiveSE,
 }: Props) {
+  const onCoverageClick = (id: string) => {
+    onClickGraph(id);
+  };
+
   return (
     <>
       <div className="graphcontainer">
@@ -48,7 +52,7 @@ export function Coverage({
           <span className="iconWrapper">
             <InfoIcon
               fontSize="medium"
-              className={`ecoest-info-icon${infoOpen ? " activeBox" : ""}`}
+              className={`metrics-info-icon${infoOpen ? " activeBox" : ""}`}
               onClick={toggleInfo}
             />
           </span>
@@ -74,7 +78,7 @@ export function Coverage({
             colors={(key: string) =>
               matchColor("coverage")(key) || colorPalettes.default[0]
             }
-            onClickGraphHandler={onClickGraph}
+            onClickGraphHandler={onCoverageClick}
           />
         </div>
       </div>

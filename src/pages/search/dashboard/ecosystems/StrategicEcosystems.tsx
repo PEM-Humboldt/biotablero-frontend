@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useRef } from "react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InfoIcon from "@mui/icons-material/Info";
 
@@ -20,6 +20,8 @@ import {
 import { matchColor } from "pages/search/utils/matchColor";
 import colorPalettes from "pages/search/utils/colorPalettes";
 
+import { StrategicEcosystemsDistribution } from "pages/search/dashboard/ecosystems/StrategicEcosystemsDistribution";
+
 type State = {
   SEAreas: SEData[];
   SETotalArea: number;
@@ -39,7 +41,6 @@ const initialState: State = {
 type Action =
   | { type: "LOAD_SUCCESS"; payload: SEData[] }
   | { type: "LOAD_FAIL" }
-  | { type: "SET_ACTIVE"; payload: string }
   | { type: "TOGGLE_INFO_GRAPH" };
 
 function reducer(state: State, action: Action): State {
@@ -71,6 +72,9 @@ interface Props {
   areaIdId: number;
   areaHa: number;
   texts: { info: string; cons: string; meto: string; quote: string };
+  activeSE: string | null;
+  onToggleSEDetail: (type: string) => void;
+  onSEDetailClose?: () => void;
 }
 
 export function StrategicEcosystems({
@@ -78,12 +82,16 @@ export function StrategicEcosystems({
   areaIdId,
   areaHa,
   texts,
+  activeSE,
+  onToggleSEDetail,
+  onSEDetailClose,
 }: Props) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const { SEAreas, SETotalArea, loading, noData, showInfoGraph } = state;
 
-  const controller = new StrategicEcosystemsController();
+  const controllerRef = useRef(new StrategicEcosystemsController());
+  const controller = controllerRef.current;
 
   useEffect(() => {
     controller.setArea(areaTypeId, areaIdId);
@@ -99,6 +107,10 @@ export function StrategicEcosystems({
       .catch(() => {
         dispatch({ type: "LOAD_FAIL" });
       });
+
+    return () => {
+      controller.cancelActiveRequests();
+    };
   }, [areaTypeId, areaIdId, areaHa]);
 
   const percentage = Number(
@@ -125,7 +137,7 @@ export function StrategicEcosystems({
           <span className="iconWrapper">
             <InfoIcon
               fontSize="medium"
-              className={`ecoest-info-icon${showInfoGraph ? " activeBox" : ""}`}
+              className={`metrics-info-icon${showInfoGraph ? " activeBox" : ""}`}
               onClick={toggleInfo}
             />
           </span>
@@ -168,7 +180,19 @@ export function StrategicEcosystems({
                 </div>
 
                 {hasArea && (
-                  <button className="rotate-false" type="button">
+                  <button
+                    className={`icongraph2 rotate-${
+                      activeSE === SEValues.type ? "false" : "true"
+                    }`}
+                    type="button"
+                    onClick={() => {
+                      const isClosingDetail = activeSE === SEValues.type;
+                      onToggleSEDetail(SEValues.type);
+                      if (isClosingDetail) {
+                        onSEDetailClose?.();
+                      }
+                    }}
+                  >
                     <ExpandMoreIcon />
                   </button>
                 )}
@@ -182,6 +206,10 @@ export function StrategicEcosystems({
                       matchColor("se")(key) || colorPalettes.default[0]
                     }
                   />
+                )}
+
+                {hasArea && activeSE === SEValues.type && (
+                  <StrategicEcosystemsDistribution SEType={SEValues.type} />
                 )}
               </div>
             );
