@@ -1,5 +1,5 @@
 import { ODataSearchBar } from "@composites/ODataSearchBar";
-import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
+import { useTerritoryStoriesCTX } from "pages/monitoring/hooks/useTerritoryStoriesCTX";
 import { searchBarItems } from "pages/monitoring/outlets/initiatives/territoryStories/tsSearchBar/layout/searchBarItems";
 import { Button } from "@ui/shadCN/component/button";
 import { useState } from "react";
@@ -14,7 +14,7 @@ import {
 
 export function TSSearchBar({ className }: { className: string }) {
   const { user } = useUserCTX();
-  const { setStorysSearchParams } = useTerritoryStorysCTX();
+  const { setStoriesSearchParams } = useTerritoryStoriesCTX();
   const { userStateInInitiative } = useInitiativeCTX();
   const [orderDate, setOrderDate] = useState(0);
   const [myStories, setMyStories] = useState(false);
@@ -43,7 +43,7 @@ export function TSSearchBar({ className }: { className: string }) {
 
     setOrderDate(nextIndex);
 
-    setStorysSearchParams((oldParams) => {
+    setStoriesSearchParams((oldParams) => {
       const { orderby: _, ...otherParams } = oldParams;
       if (nextValue === "none") {
         return { ...otherParams, skip: 0 };
@@ -61,7 +61,7 @@ export function TSSearchBar({ className }: { className: string }) {
     <div className={cn("flex gap-2 items-end", className)}>
       <ODataSearchBar
         components={searchBarItems}
-        setSearchParams={setStorysSearchParams}
+        setSearchParams={setStoriesSearchParams}
         filterInjection={filterByMyUser}
         className="p-0 gap-0 m-0 w-1/2 min-w-[250px] shrink-0"
       />

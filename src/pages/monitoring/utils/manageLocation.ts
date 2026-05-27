@@ -5,7 +5,7 @@ import {
 import type { LocationBasicInfo } from "pages/monitoring/types/odataResponse";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
-export const getColombianDepartments = (() => {
+const fetchDepartmentsList = () => {
   let cachedDeps: { name: string; value: number }[] = [];
 
   return async () => {
@@ -22,9 +22,9 @@ export const getColombianDepartments = (() => {
 
     return cachedDeps;
   };
-})();
+};
 
-void getColombianDepartments();
+export const getColombianDepartments = fetchDepartmentsList();
 
 const municipalitiesCache: {
   [key: string | number]: { name: string; value: number }[];

@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { ErrorsList } from "@ui/LabelingWithErrors";
 
-import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
+import { useTerritoryStoriesCTX } from "pages/monitoring/hooks/useTerritoryStoriesCTX";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
 import { getFeaturedImage } from "pages/monitoring/outlets/initiatives/territoryStories/utils/getFeaturedImage";
@@ -11,7 +11,7 @@ import { StoryCardActions } from "pages/monitoring/outlets/initiatives/territory
 import { uiText } from "pages/monitoring/outlets/initiatives/territoryStories/readTS/territoryStoryReader/layout/uiText";
 
 export function TerritoryStoriesList() {
-  const { stories, errors, isLoading } = useTerritoryStorysCTX();
+  const { stories, errors, isLoading } = useTerritoryStoriesCTX();
   const { userStateInInitiative } = useInitiativeCTX();
 
   const userHasAccess = [

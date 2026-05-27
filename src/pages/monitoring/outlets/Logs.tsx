@@ -1,10 +1,10 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { FileDown } from "lucide-react";
 
 import { ODataSearchBar } from "@composites/ODataSearchBar";
 import { TablePager } from "@composites/TablePager";
 import { LOG_RECORDS_PER_PAGE } from "@config/monitoring";
-import type { ODataParams } from "@appTypes/odata";
+import type { ODataParams, SearchBarComponent } from "@appTypes/odata";
 import { Button } from "@ui/shadCN/component/button";
 import {
   LoadStatusMsgBar,
@@ -36,7 +36,7 @@ function parseODataLogs(odataLogs: ODataLog): LogEntryShort[] {
 }
 
 export function Logs() {
-  const [isDownloading, setIsDownloading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [logs, setLogs] = useState<ODataLog | null>(null);
   const [loadMsg, setLoadMsg] = useState<LoadStatusMsgBarProp>({
@@ -47,47 +47,65 @@ export function Logs() {
     top: LOG_RECORDS_PER_PAGE,
     orderby: "timeStamp desc",
   });
+  const [searchBarComponents, setSearchBarComponents] = useState<
+    SearchBarComponent<ODataLogEntryShort>[] | null
+  >(null);
   const prevSearchParamsRef = useRef(searchParams);
 
   useEffect(() => {
-    setIsDownloading(true);
-    const filterChange = async () => {
-      if (prevSearchParamsRef.current !== searchParams) {
-        setCurrentPage(1);
-        prevSearchParamsRef.current = searchParams;
-      }
-
-      setLoadMsg({
-        message: uiText.logLoadingStates.loading,
-        type: "normal",
-      });
-      const skip = (currentPage - 1) * LOG_RECORDS_PER_PAGE;
-      const newSearchParams = {
-        ...searchParams,
-        skip: skip,
-      };
-
-      const updatedLogs = await getLogs(newSearchParams);
-      if (isMonitoringAPIError(updatedLogs)) {
-        setIsDownloading(false);
-        setLogs(null);
-        return;
-      }
-
-      setLogs(updatedLogs);
-      setLoadMsg({
-        message: null,
-        type: "normal",
-      });
-      setIsDownloading(false);
+    const fetchSearchBarItems = async () => {
+      const res = await searchBarItems();
+      setSearchBarComponents(res);
     };
 
-    void filterChange();
-  }, [searchParams, currentPage]);
+    void fetchSearchBarItems();
+  }, []);
+
+  const isNewFilter =
+    searchParams.filter !== prevSearchParamsRef.current.filter;
+  const resolvedPage = isNewFilter ? 1 : currentPage;
+
+  const fetchLogs = useCallback(async () => {
+    setIsLoading(true);
+
+    setLoadMsg({
+      message: uiText.logLoadingStates.loading,
+      type: "normal",
+    });
+    const skip = (resolvedPage - 1) * LOG_RECORDS_PER_PAGE;
+    const newSearchParams = {
+      ...searchParams,
+      skip: skip,
+    };
+
+    const updatedLogs = await getLogs(newSearchParams);
+    setIsLoading(false);
+    if (isMonitoringAPIError(updatedLogs)) {
+      setLogs(null);
+      return;
+    }
+
+    setLogs(updatedLogs);
+    setLoadMsg({
+      message: null,
+      type: "normal",
+    });
+  }, [searchParams, resolvedPage]);
+
+  useEffect(() => {
+    void fetchLogs();
+  }, [fetchLogs]);
+
+  useEffect(() => {
+    if (resolvedPage !== currentPage) {
+      setCurrentPage(resolvedPage);
+    }
+    prevSearchParamsRef.current = searchParams;
+  }, [resolvedPage, currentPage, searchParams]);
 
   const handleDownload = async () => {
     const { top: _top, skip: _skip, ...downloadParams } = searchParams;
-    setIsDownloading(true);
+    setIsLoading(true);
 
     const res = await downloadLogs(downloadParams);
 
@@ -96,11 +114,11 @@ export function Logs() {
         message: res.data.map((error) => error.msg).join(". "),
         type: "error",
       });
-      setIsDownloading(false);
+      setIsLoading(false);
       return;
     }
 
-    setIsDownloading(false);
+    setIsLoading(false);
     const url = window.URL.createObjectURL(res);
     const link = document.createElement("a");
 
@@ -130,22 +148,24 @@ export function Logs() {
               onClick={() => void handleDownload()}
               disabled={recordsAvailable === 0}
             >
-              {isDownloading
+              {isLoading
                 ? uiText.download.button.isDownloading
                 : uiText.download.button.isReady}
-              {!isDownloading && <FileDown aria-hidden="true" />}
+              {!isLoading && <FileDown aria-hidden="true" />}
             </Button>
           )}
         </div>
       </header>
 
-      <ODataSearchBar
-        components={searchBarItems}
-        setSearchParams={setSearchParams}
-        submit={uiText.searchBar.submitBtn}
-        reset={uiText.searchBar.resetBtn}
-        className="w-full bg-muted"
-      />
+      {searchBarComponents && (
+        <ODataSearchBar
+          components={searchBarComponents}
+          setSearchParams={setSearchParams}
+          submit={uiText.searchBar.submitBtn}
+          reset={uiText.searchBar.resetBtn}
+          className="w-full bg-muted"
+        />
+      )}
 
       {loadMsg.message !== null ? (
         <LoadStatusMsgBar message={loadMsg.message} type={loadMsg.type} />

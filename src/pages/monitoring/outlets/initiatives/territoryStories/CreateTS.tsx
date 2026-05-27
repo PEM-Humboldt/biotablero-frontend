@@ -1,4 +1,4 @@
-import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
+import { useTerritoryStoriesCTX } from "pages/monitoring/hooks/useTerritoryStoriesCTX";
 import { CreateEditTSForm } from "pages/monitoring/outlets/initiatives/territoryStories/ui/CreateEditTSForm";
 import {
   PanelState,
@@ -6,7 +6,7 @@ import {
 } from "pages/monitoring/outlets/initiatives/types/territoryStory";
 
 export function CreateTS({ moveToPanel }: PanelComponentProp) {
-  const { updateStorys } = useTerritoryStorysCTX();
+  const { updateStories } = useTerritoryStoriesCTX();
   // TODO: Cuando esté el panel de visualización listo,
   // redirigir a la historia publicada
   return (
@@ -16,7 +16,7 @@ export function CreateTS({ moveToPanel }: PanelComponentProp) {
           return;
         }
         moveToPanel(PanelState.READ);
-        void updateStorys();
+        void updateStories();
       }}
     />
   );

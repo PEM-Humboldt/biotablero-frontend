@@ -41,27 +41,27 @@ function TSRecommendations() {
       }
       setIsLoading(true);
 
-      const storys = await getTerritoryStoriesFromInitiative(
+      const stories = await getTerritoryStoriesFromInitiative(
         Number(initiativeId),
       )({});
-      if (isMonitoringAPIError(storys)) {
+      if (isMonitoringAPIError(stories)) {
         setRandomStories([]);
-        setErrors(storys.data.map((err) => err.msg));
+        setErrors(stories.data.map((err) => err.msg));
         setIsLoading(false);
         return;
       }
 
-      const totalStorys = storys.value;
-      const rndStorys: TerritoryStoryShort[] = [];
+      const totalStories = stories.value;
+      const rndStories: TerritoryStoryShort[] = [];
       while (
-        rndStorys.length < TERRITORY_STORIES_FROM_OTHER_INITIATIVE &&
-        totalStorys.length > 0
+        rndStories.length < TERRITORY_STORIES_FROM_OTHER_INITIATIVE &&
+        totalStories.length > 0
       ) {
-        const randomStoryIndx = Math.floor(Math.random() * totalStorys.length);
-        rndStorys.push(...totalStorys.splice(randomStoryIndx, 1));
+        const randomStoryIndx = Math.floor(Math.random() * totalStories.length);
+        rndStories.push(...totalStories.splice(randomStoryIndx, 1));
       }
 
-      setRandomStories(rndStorys);
+      setRandomStories(rndStories);
       setIsLoading(false);
     };
 

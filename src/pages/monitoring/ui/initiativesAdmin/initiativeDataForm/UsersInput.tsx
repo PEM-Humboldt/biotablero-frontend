@@ -9,8 +9,8 @@ import type { UserItem } from "pages/monitoring/types/catalog";
 import { getUsers } from "pages/monitoring/api/services/user";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import {
-  NEW_ADMIN_CREDENTIALS,
   normalizeUsersFromOData,
+  userLevels,
 } from "pages/monitoring/utils/manageUsers";
 import { InputListActionButtons } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/InputListActionButtons";
 import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
@@ -58,13 +58,21 @@ export function UsersInput<T extends UserItem>({
     );
   }, [selectedItems, allUsers]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!user) {
       return;
     }
+
+    const usersCredentials = await userLevels();
+    if (usersCredentials.length === 0) {
+      setInputErr({ leaders: ["No fue posible asignar el rol del lider"] });
+      return;
+    }
+
+    const adminCredentials = usersCredentials[0];
     const newUser = {
       userName: user,
-      level: NEW_ADMIN_CREDENTIALS,
+      level: adminCredentials,
     } as UserItem;
 
     setter(newUser as T);
@@ -114,7 +122,7 @@ export function UsersInput<T extends UserItem>({
 
       <InputListActionButtons
         update={update}
-        handleSave={handleSave}
+        handleSave={() => void handleSave()}
         handleDiscard={handleDiscard}
         disabled={disabled}
       />

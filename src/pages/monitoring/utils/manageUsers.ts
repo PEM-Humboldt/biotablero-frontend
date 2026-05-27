@@ -3,16 +3,38 @@ import type { UserItem, UserLevel } from "pages/monitoring/types/catalog";
 import type { ODataUserInfo } from "pages/monitoring/types/odataResponse";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
-export const USER_LEVELS: UserLevel[] = await (async () => {
-  const userLevels = await getUserLevels();
-  if (isMonitoringAPIError(userLevels)) {
-    return [];
-  }
-  return userLevels as UserLevel[];
-})();
+/**
+ * Creates a function that retrieves the user levels and caches the response.
+ *
+ * @returns A function that, when invoked, returns a promise resolving to
+ * an array containing all user levels or the cached info.
+ */
+function fetchUserLevels() {
+  let userLevels: UserLevel[] = [];
 
-export const NEW_ADMIN_CREDENTIALS = USER_LEVELS[0];
+  return async () => {
+    if (userLevels.length > 0) {
+      return userLevels;
+    }
+    const res = await getUserLevels();
+    if (isMonitoringAPIError(res)) {
+      return [];
+    }
 
+    userLevels = res;
+
+    return userLevels;
+  };
+}
+
+export const userLevels = fetchUserLevels();
+
+/*
+ * It takes the sources of info and makes a normalized user object
+ *
+ * @param usersRaw - The OData response containig basic user info
+ * @returns An array containigg all the users info
+ */
 export function normalizeUsersFromOData(
   usersRaw: ODataUserInfo,
 ): Partial<UserItem>[] {

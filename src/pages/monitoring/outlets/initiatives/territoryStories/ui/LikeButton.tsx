@@ -1,6 +1,6 @@
 import type { TerritoryStoryFull } from "pages/monitoring/types/territoryStory";
 import { likedTerritoryStory } from "pages/monitoring/api/services/territoryStory";
-import { useTerritoryStorysCTX } from "pages/monitoring/hooks/useTerritoryStorysCTX";
+import { useTerritoryStoriesCTX } from "pages/monitoring/hooks/useTerritoryStoriesCTX";
 import { LikeButton } from "pages/monitoring/ui/LikeButton";
 
 export function LikeTSButton({
@@ -12,7 +12,7 @@ export function LikeTSButton({
   disabled?: boolean;
   className?: string;
 }) {
-  const { updateCurrentStory } = useTerritoryStorysCTX();
+  const { updateCurrentStory } = useTerritoryStoriesCTX();
 
   return (
     <LikeButton

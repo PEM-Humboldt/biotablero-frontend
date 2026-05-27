@@ -2,11 +2,14 @@ import type { ImageMimeType } from "@appTypes/formats";
 import type { ODataParams } from "@appTypes/odata";
 import type { LatLngBoundsLiteral } from "leaflet";
 
-export const LOG_RECORDS_PER_PAGE = 20; // registrys on the logs summary
-export const INITIATIVES_PER_PAGE = 10; // Initiatives on the admin panel
+// Global
 export const LOGIN_URL = "/";
 
+// Logs
+export const LOG_RECORDS_PER_PAGE = 20; // registrys on the logs summary
+
 // Initiative description and properties
+export const INITIATIVES_PER_PAGE = 10; // Initiatives on the admin panel
 
 export const COUNTRY_BOUNDS: LatLngBoundsLiteral = [
   [-4.2316872, -82.1243666],
@@ -43,7 +46,7 @@ export const INITIATIVES_IMG_ALLOWED_FORMATS: ImageMimeType[] = [
   "image/png",
   "image/webp",
 ];
-export const INITIATIVES_IMG_MAX_FILE_SIZE = 2; // size in megabytes
+export const INITIATIVES_IMG_MAX_FILE_SIZE = 2;
 
 // Initiatives browser
 export const INITIAVIVES_MAP_GRADIENT = [
@@ -56,7 +59,6 @@ export const INITIAVIVES_MAP_GRADIENT = [
 export const JOIN_REQUESTS_PER_PAGE = 10;
 
 // Initiative Join Invitations
-
 export const INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH = 200;
 
 // territoryStory
