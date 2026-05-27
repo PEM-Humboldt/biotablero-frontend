@@ -17,7 +17,7 @@ export interface RasterLayer {
   selected?: boolean;
   colorize?: {
     color: string;
-    method?: "alpha-mask-canvas" | "css-mask";
+    method?: "alpha-mask-canvas" | "css-mask" | "svg-filter";
   };
 }
 

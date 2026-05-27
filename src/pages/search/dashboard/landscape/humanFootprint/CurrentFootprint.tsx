@@ -168,8 +168,8 @@ export function CurrentFootprint() {
                   ? {
                       ...layer,
                       colorize: {
-                        method: "css-mask",
-                        color: "#2d7ff9",
+                        method: "svg-filter",
+                        color: "#5d1488",
                       },
                     }
                   : layer,

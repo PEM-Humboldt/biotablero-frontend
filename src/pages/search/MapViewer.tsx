@@ -22,6 +22,7 @@ import { COLOMBIA_BOUNDS } from "pages/utils/settings";
 import { OnLoadingModal } from "@ui/OnLoadingModal";
 import { colorizeRasterByAlphaMask } from "pages/search/utils/rasterColorizer";
 import { CssMaskRasterOverlay } from "pages/search/mapViewer/CssMaskRasterOverlay";
+import { SvgFilterRasterOverlay } from "pages/search/mapViewer/SvgFilterRasterOverlay";
 
 const config = {
   params: {
@@ -214,6 +215,18 @@ export function MapViewer({
               if (layer.colorize?.method === "css-mask") {
                 return (
                   <CssMaskRasterOverlay
+                    key={layerKey}
+                    source={layer.data}
+                    color={layer.colorize.color}
+                    bounds={bounds}
+                    opacity={opacity}
+                  />
+                );
+              }
+
+              if (layer.colorize?.method === "svg-filter") {
+                return (
+                  <SvgFilterRasterOverlay
                     key={layerKey}
                     source={layer.data}
                     color={layer.colorize.color}
