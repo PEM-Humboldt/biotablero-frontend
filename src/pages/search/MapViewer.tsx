@@ -20,6 +20,7 @@ import "leaflet/dist/leaflet.css";
 import { useUserCTX } from "@hooks/UserContext";
 import { COLOMBIA_BOUNDS } from "pages/utils/settings";
 import { OnLoadingModal } from "@ui/OnLoadingModal";
+import { colorizeRasterByAlphaMask } from "pages/search/utils/rasterColorizer";
 
 const config = {
   params: {
@@ -43,6 +44,7 @@ export function MapViewer({
   loadPolygonInfo: _,
 }: MapViewerProps) {
   const [errorModal, setErrorModal] = useState(true);
+  const [rasterUrls, setRasterUrls] = useState<Record<string, string>>({});
   const mapRef = useRef<Map>(null);
   const { user } = useUserCTX();
 
@@ -81,6 +83,44 @@ export function MapViewer({
       setErrorModal(true);
     }
   }, [layerError]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const resolveRasterUrls = async () => {
+      const entries = await Promise.all(
+        rasterLayers.map(async (layer) => {
+          const key = `${layer.id}-${layer.data}`;
+
+          if (layer.colorize?.method === "alpha-mask-canvas") {
+            try {
+              const colorized = await colorizeRasterByAlphaMask(
+                layer.data,
+                layer.colorize.color,
+              );
+              return [key, colorized] as const;
+            } catch (error) {
+              console.warn("Failed to colorize raster layer", layer.id, error);
+            }
+          }
+
+          return [key, layer.data] as const;
+        }),
+      );
+
+      if (!mounted) {
+        return;
+      }
+
+      setRasterUrls(Object.fromEntries(entries));
+    };
+
+    void resolveRasterUrls();
+
+    return () => {
+      mounted = false;
+    };
+  }, [rasterLayers]);
 
   const handleModalClose = () => setErrorModal(false);
 
@@ -167,10 +207,12 @@ export function MapViewer({
               if (layer.opacity) {
                 opacity = layer.opacity;
               }
+              const layerKey = `${layer.id}-${layer.data}`;
+              const rasterUrl = rasterUrls[layerKey] ?? layer.data;
               return (
                 <ImageOverlay
-                  key={`${layer.id}-${layer.data}`}
-                  url={layer.data}
+                  key={layerKey}
+                  url={rasterUrl}
                   bounds={bounds}
                   opacity={opacity}
                 />
