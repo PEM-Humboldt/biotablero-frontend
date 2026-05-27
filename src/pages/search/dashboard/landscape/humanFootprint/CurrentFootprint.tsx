@@ -162,7 +162,19 @@ export function CurrentFootprint() {
               type: "CURRENTHF_LAYERS_SUCCEEDED",
               payload: layersRes,
             });
-            setRasterLayers(layersRes);
+            setRasterLayers(
+              layersRes.map((layer, index) =>
+                index === 0
+                  ? {
+                      ...layer,
+                      colorize: {
+                        method: "css-mask",
+                        color: "#2d7ff9",
+                      },
+                    }
+                  : layer,
+              ),
+            );
             setLoadingLayer(false);
             setMapTitle({
               name: `HH promedio · ${period}`,

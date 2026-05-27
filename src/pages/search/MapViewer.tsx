@@ -21,6 +21,7 @@ import { useUserCTX } from "@hooks/UserContext";
 import { COLOMBIA_BOUNDS } from "pages/utils/settings";
 import { OnLoadingModal } from "@ui/OnLoadingModal";
 import { colorizeRasterByAlphaMask } from "pages/search/utils/rasterColorizer";
+import { CssMaskRasterOverlay } from "pages/search/mapViewer/CssMaskRasterOverlay";
 
 const config = {
   params: {
@@ -209,6 +210,19 @@ export function MapViewer({
               }
               const layerKey = `${layer.id}-${layer.data}`;
               const rasterUrl = rasterUrls[layerKey] ?? layer.data;
+
+              if (layer.colorize?.method === "css-mask") {
+                return (
+                  <CssMaskRasterOverlay
+                    key={layerKey}
+                    source={layer.data}
+                    color={layer.colorize.color}
+                    bounds={bounds}
+                    opacity={opacity}
+                  />
+                );
+              }
+
               return (
                 <ImageOverlay
                   key={layerKey}
