@@ -9,16 +9,16 @@ import { JOIN_REQUESTS_PER_PAGE } from "@config/monitoring";
 import type { GetKeysWithStringValues } from "@appTypes/utils";
 
 import type { ODataInitiativeUserRequest } from "pages/monitoring/types/odataResponse";
-import { useInitiativeJoinRequest } from "pages/monitoring/outlets/initiativesManagement/hooks/useInitiativeJoinRequest";
+import { useInitiativeJoinRequest } from "pages/monitoring/outlets/myProfile/hooks/useInitiativeJoinRequest";
 import {
   type FilterJoinRequestsCallback,
   JoinRequestStatus,
 } from "pages/monitoring/types/userJoinRequest";
-import { filterJoinRequestButtonsConfig } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/joinRequestFilterButtons";
-import { JoinRequestFilterButtons } from "pages/monitoring/outlets/initiativesManagement/joinRequest/JoinRequestFilterButtons";
-import { joinRequestTableParams } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/joinRequestTableParams";
-import { JoinRequestReviewButtons } from "pages/monitoring/outlets/initiativesManagement/joinRequest/JoinRequestReviewButtons";
-import { uiText } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/uiText";
+import { filterJoinRequestButtonsConfig } from "pages/monitoring/outlets/myProfile/joinRequest/layout/joinRequestFilterButtons";
+import { JoinRequestFilterButtons } from "pages/monitoring/outlets/myProfile/joinRequest/JoinRequestFilterButtons";
+import { joinRequestTableParams } from "pages/monitoring/outlets/myProfile/joinRequest/layout/joinRequestTableParams";
+import { JoinRequestReviewButtons } from "pages/monitoring/outlets/myProfile/joinRequest/JoinRequestReviewButtons";
+import { uiText } from "pages/monitoring/outlets/myProfile/joinRequest/layout/uiText";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 import { RoleInInitiative } from "pages/monitoring/types/catalog";

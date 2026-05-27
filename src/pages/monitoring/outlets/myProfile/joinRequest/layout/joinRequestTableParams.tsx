@@ -3,7 +3,7 @@ import { CornerDownRight } from "lucide-react";
 
 import type { ODataInitiativeUserRequest } from "pages/monitoring/types/odataResponse";
 import { JoinRequestStatus } from "pages/monitoring/types/userJoinRequest";
-import { uiText } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/uiText";
+import { uiText } from "pages/monitoring/outlets/myProfile/joinRequest/layout/uiText";
 
 export function joinRequestTableParams(
   initiativeNames: { [key: number]: string },

@@ -26,7 +26,7 @@ import { FormListUpdater } from "pages/monitoring/ui/initiativesAdmin/initiative
 import { LocationInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/LocationInput";
 import { ContactInput } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/ContactInput";
 import { GeneralInfoUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/GeneralInfoUpdater";
-import { uiText } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
+import { uiText } from "pages/monitoring/outlets/myProfile/initiativeUpdater/layout/uiText";
 
 import { LeaderInitiativeUpdateCtx } from "pages/monitoring/ui/initiativesAdmin/hooks/useAdminUpdateContext";
 import { TagsUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/TagsUpdater";

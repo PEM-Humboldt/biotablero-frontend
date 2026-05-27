@@ -23,14 +23,14 @@ import {
 import {
   roleDictionary,
   userStateInInitiativeDictionary,
-} from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
+} from "pages/monitoring/outlets/myProfile/initiativeUpdater/layout/uiText";
 import { type ButtonProps } from "@ui/shadCN/component/button";
 import type { InitiativeUser } from "pages/monitoring/types/odataResponse";
 import {
   INITIATIVE_LEADERS_MAX_AMOUNT,
   INITIATIVE_LEADERS_MIN_AMOUNT,
 } from "@config/monitoring";
-import { uiText } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
+import { uiText } from "pages/monitoring/outlets/myProfile/initiativeUpdater/layout/uiText";
 
 type RoleEventInfo = {
   dialog: {

@@ -12,11 +12,11 @@ import { RoleInInitiative } from "pages/monitoring/types/catalog";
 import { Combobox } from "@ui/ComboBox";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { getUsers } from "pages/monitoring/api/services/user";
-import { UsersListForManagement } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/UserListForManagement";
+import { UsersListForManagement } from "pages/monitoring/outlets/myProfile/initiativeUpdater/UserListForManagement";
 import type { InitiativeUser } from "pages/monitoring/types/odataResponse";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
-import { InitiativeInfoUpdater } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/InitiativeInfoUpdater";
-import { uiText } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
+import { InitiativeInfoUpdater } from "pages/monitoring/outlets/myProfile/initiativeUpdater/InitiativeInfoUpdater";
+import { uiText } from "pages/monitoring/outlets/myProfile/initiativeUpdater/layout/uiText";
 import { InitiativeInvitationForm } from "pages/monitoring/outlets/initiativeJoinInvitation/InitiativeInvitationForm";
 
 export function InitiativeUpdater() {

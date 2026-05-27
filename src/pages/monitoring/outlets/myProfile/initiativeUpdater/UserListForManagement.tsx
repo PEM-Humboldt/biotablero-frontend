@@ -19,8 +19,8 @@ import {
 import {
   roleEventInfo,
   roleEventRestrictions,
-} from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/roleEvents";
-import { uiText } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
+} from "pages/monitoring/outlets/myProfile/initiativeUpdater/layout/roleEvents";
+import { uiText } from "pages/monitoring/outlets/myProfile/initiativeUpdater/layout/uiText";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
 export function UsersListForManagement({
