@@ -18,6 +18,7 @@ import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { ForestLossPersistenceController } from "pages/search/dashboard/landscape/forest/ForestLossPersistenceController";
 import { RasterLayer } from "pages/search/types/layers";
 import colorPalettes from "pages/search/utils/colorPalettes";
+import { AddToReportButton } from "@hooks/useReport/AddToReportButton";
 
 interface Props {}
 interface State {
@@ -119,7 +120,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
       texts,
       layers,
     } = this.state;
-    const { areaType, areaId, setRasterLayers } = this
+    const { mapTitle, searchType, areaType, areaId, setRasterLayers } = this
       .context as LegacyContextValues;
 
     const areaTypeId = areaType!.id;
@@ -128,6 +129,63 @@ class ForestLossPersistence extends React.Component<Props, State> {
     const graphData = this.flpController.getGraphData(forestLP);
 
     const selectedIndex = this.currentPeriod;
+
+    const graph = (
+      <SmallBars
+        data={graphData.transformedData}
+        keys={graphData.keys}
+        tooltips={graphData.tooltips}
+        loadStatus={message}
+        margin={{
+          left: 100,
+          bottom: 50,
+        }}
+        axisY={{
+          enabled: true,
+          legend: "Periodo",
+        }}
+        axisX={{
+          enabled: true,
+          legend: "Hectáreas",
+          format: ".2s",
+        }}
+        colors={(key: string) =>
+          matchColor("forestLP")(key) || colorPalettes.default[0]
+        }
+        onClickHandler={(period, category) => {
+          if (period === this.currentPeriod) {
+            setRasterLayers(
+              layers.map((layer) => ({
+                ...layer,
+                selected: layer.id === category,
+              })),
+            );
+          } else {
+            this.currentPeriod = period;
+            this.switchLayer(period);
+          }
+        }}
+        selectedIndexValue={selectedIndex}
+      />
+    );
+
+    const reportId = [
+      "ForestLossPersistence",
+      areaId ? areaId.area_type?.id : null,
+      areaId ? areaId?.name : null,
+      areaId ? areaId?.id : null,
+    ]
+      .filter(Boolean)
+      .join("_");
+
+    const reportAdditionalInfo = {
+      ["Tipo de consulta"]:
+        searchType === "definedArea"
+          ? "Areas definidas"
+          : "Polígono personalizado",
+      ["Tipo de area"]: areaId?.area_type?.label ?? "Indefinida",
+      ["Ubicación"]: areaId?.name.toLocaleLowerCase() ?? "Sin ubicación base",
+    };
 
     return (
       <div className="graphcontainer pt6">
@@ -146,6 +204,7 @@ class ForestLossPersistence extends React.Component<Props, State> {
             collapseButton={false}
           />
         )}
+
         <div>
           <h6>Cobertura actual</h6>
           <h5
@@ -160,45 +219,25 @@ class ForestLossPersistence extends React.Component<Props, State> {
         </div>
         <div>
           <h6>Cobertura de bosque en el tiempo</h6>
+          {graph}
         </div>
-        <div>
-          <SmallBars
-            data={graphData.transformedData}
-            keys={graphData.keys}
-            tooltips={graphData.tooltips}
-            loadStatus={message}
-            margin={{
-              left: 100,
-              bottom: 50,
-            }}
-            axisY={{
-              enabled: true,
-              legend: "Periodo",
-            }}
-            axisX={{
-              enabled: true,
-              legend: "Hectáreas",
-              format: ".2s",
-            }}
-            colors={(key: string) =>
-              matchColor("forestLP")(key) || colorPalettes.default[0]
-            }
-            onClickHandler={(period, category) => {
-              if (period === this.currentPeriod) {
-                setRasterLayers(
-                  layers.map((layer) => ({
-                    ...layer,
-                    selected: layer.id === category,
-                  })),
-                );
-              } else {
-                this.currentPeriod = period;
-                this.switchLayer(period);
-              }
-            }}
-            selectedIndexValue={selectedIndex}
-          />
-        </div>
+
+        <AddToReportButton
+          sectionId={reportId}
+          sectionTitle={mapTitle.name}
+          sectionDescription={texts.forestLP.info || "Testeo"}
+          graphElement={
+            <>
+              <h2>Cobertura actual</h2>
+              <div>{`${formatNumber(currentPersistence, 0)} ha `}</div>
+              {graph}
+            </>
+          }
+          mapContainerId="map"
+          graphStateId={selectedIndex}
+          aditionalInfo={reportAdditionalInfo}
+        />
+
         <TextBoxes
           consText={texts.forestLP.cons}
           metoText={texts.forestLP.meto}

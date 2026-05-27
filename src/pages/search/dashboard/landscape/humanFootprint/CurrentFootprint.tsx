@@ -24,6 +24,7 @@ import { RasterLayer } from "pages/search/types/layers";
 import { textsObject } from "pages/search/types/texts";
 import colorPalettes from "pages/search/utils/colorPalettes";
 import { formatNumber } from "@utils/format";
+import { AddToReportButton } from "@hooks/useReport/AddToReportButton";
 
 interface State {
   showInfoGraph: boolean;
@@ -116,10 +117,12 @@ export function CurrentFootprint() {
   const {
     areaType,
     areaId,
+    searchType,
     setRasterLayers,
     setLoadingLayer,
     setLayerError,
     setMapTitle,
+    mapTitle,
   } = context;
 
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -215,6 +218,36 @@ export function CurrentFootprint() {
     );
   };
 
+  const graph = (
+    <LargeStackedBar
+      data={hfCurrent}
+      labelX="Hectáreas"
+      labelY="Huella Humana Actual"
+      units="ha"
+      colors={(key) => matchColor("hfCurrent")(key) || colorPalettes.default[0]}
+      padding={0.25}
+      onClickGraphHandler={clickOnGraph}
+    />
+  );
+
+  const reportId = [
+    "CurrentFootprint",
+    areaId ? areaId.area_type?.id : null,
+    areaId ? areaId?.name : null,
+    areaId ? areaId?.id : null,
+  ]
+    .filter(Boolean)
+    .join("_");
+
+  const reportAdditionalInfo = {
+    ["Tipo de consulta"]:
+      searchType === "definedArea"
+        ? "Areas definidas"
+        : "Polígono personalizado",
+    ["Tipo de area"]: areaId?.area_type?.label ?? "Indefinida",
+    ["Ubicación"]: areaId?.name.toLocaleLowerCase() ?? "Sin ubicación base",
+  };
+
   return (
     <div className="graphcontainer pt6">
       <h2>
@@ -251,16 +284,22 @@ export function CurrentFootprint() {
 
       <h6>Natural, Baja, Media, Alta y Muy Alta</h6>
 
-      <LargeStackedBar
-        data={hfCurrent}
-        labelX="Hectáreas"
-        labelY="Huella Humana Actual"
-        units="ha"
-        colors={(key) =>
-          matchColor("hfCurrent")(key) || colorPalettes.default[0]
+      {graph}
+
+      <AddToReportButton
+        sectionId={reportId}
+        sectionTitle={mapTitle.name}
+        sectionDescription={texts.hfCurrent.info ?? "Testeo"}
+        graphElement={
+          <>
+            <h2>test elementos extra, Huella humana promedio · {period}</h2>
+            <div>{formatNumber(hfCurrentValue, 2)}</div>
+            {graph}
+          </>
         }
-        padding={0.25}
-        onClickGraphHandler={clickOnGraph}
+        mapContainerId="map"
+        graphStateId={null}
+        aditionalInfo={reportAdditionalInfo}
       />
 
       <TextBoxes

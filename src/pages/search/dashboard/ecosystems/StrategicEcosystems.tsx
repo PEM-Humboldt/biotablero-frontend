@@ -20,6 +20,9 @@ import {
 import { matchColor } from "pages/search/utils/matchColor";
 import colorPalettes from "pages/search/utils/colorPalettes";
 
+import { AddToReportButton } from "@hooks/useReport/AddToReportButton";
+import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
+
 type State = {
   SEAreas: SEData[];
   SETotalArea: number;
@@ -82,6 +85,7 @@ export function StrategicEcosystems({
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const { SEAreas, SETotalArea, loading, noData, showInfoGraph } = state;
+  const { mapTitle, searchType, areaId } = useSearchStateCTX();
 
   const controller = new StrategicEcosystemsController();
 
@@ -112,6 +116,60 @@ export function StrategicEcosystems({
    */
   const toggleInfo = () => {
     dispatch({ type: "TOGGLE_INFO_GRAPH" });
+  };
+
+  const graph = (
+    <div id="ecosystems" className="ecosystems">
+      {SEAreas.map((SEValues) => {
+        const hasArea = SEValues.area > 0;
+        const SEChartData = transformSEValues(SEValues, SETotalArea);
+
+        return (
+          <div className="mb10" key={SEValues.type}>
+            <div className="singleeco">{SELabels[SEValues.type]}</div>
+
+            <div className="singleeco2">
+              {formatNumber(SEValues.area, 0)} ha
+            </div>
+
+            {hasArea && (
+              <button className="rotate-false" type="button">
+                <ExpandMoreIcon />
+              </button>
+            )}
+
+            {hasArea && (
+              <SmallStackedBar
+                loadStatus={null}
+                data={SEChartData}
+                units="ha"
+                colors={(key) =>
+                  matchColor("se")(key) || colorPalettes.default[0]
+                }
+              />
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+
+  const reportId = [
+    "strategic_ecosystems",
+    areaId ? areaId.area_type?.id : null,
+    areaId ? areaId?.name : null,
+    areaId ? areaId?.id : null,
+  ]
+    .filter(Boolean)
+    .join("_");
+
+  const reportAdditionalInfo = {
+    ["Tipo de consulta"]:
+      searchType === "definedArea"
+        ? "Areas definidas"
+        : "Polígono personalizado",
+    ["Tipo de area"]: areaId?.area_type?.label ?? "Indefinida",
+    ["Ubicación"]: areaId?.name.toLocaleLowerCase() ?? "Sin ubicación base",
   };
 
   return (
@@ -153,41 +211,17 @@ export function StrategicEcosystems({
 
       {!loading && noData && "No hay información"}
 
-      {!loading && !noData && (
-        <div className="ecosystems">
-          {SEAreas.map((SEValues) => {
-            const hasArea = SEValues.area > 0;
-            const SEChartData = transformSEValues(SEValues, SETotalArea);
+      {!loading && !noData && graph}
 
-            return (
-              <div className="mb10" key={SEValues.type}>
-                <div className="singleeco">{SELabels[SEValues.type]}</div>
-
-                <div className="singleeco2">
-                  {formatNumber(SEValues.area, 0)} ha
-                </div>
-
-                {hasArea && (
-                  <button className="rotate-false" type="button">
-                    <ExpandMoreIcon />
-                  </button>
-                )}
-
-                {hasArea && (
-                  <SmallStackedBar
-                    loadStatus={null}
-                    data={SEChartData}
-                    units="ha"
-                    colors={(key) =>
-                      matchColor("se")(key) || colorPalettes.default[0]
-                    }
-                  />
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
+      <AddToReportButton
+        sectionId={reportId}
+        sectionTitle={mapTitle.name}
+        sectionDescription={texts.info || "Testeo"}
+        graphElement={graph}
+        mapContainerId="map"
+        graphStateId={null}
+        aditionalInfo={reportAdditionalInfo}
+      />
 
       <TextBoxes
         downloadData={SEAreas}
