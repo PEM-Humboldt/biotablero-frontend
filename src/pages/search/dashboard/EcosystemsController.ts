@@ -4,6 +4,8 @@ import { RasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import { transformCoverageValues } from "pages/search/dashboard/ecosystems/transformData";
+import { matchColor } from "../utils/matchColor";
+import colorPalettes from "../utils/colorPalettes";
 
 /**
  * Controller for Ecosystems Component
@@ -108,6 +110,10 @@ export class EcosystemsController {
         data: layersBase64[index],
         selected: false,
         paneLevel: 2,
+        colorize: {
+          method: "alpha-mask-canvas",
+          color: matchColor("coverage")(classId) || colorPalettes.default[0],
+        },
       }));
     }
     throw Error("Polygon and area undefined");

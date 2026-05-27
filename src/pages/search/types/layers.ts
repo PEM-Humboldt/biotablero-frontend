@@ -15,6 +15,10 @@ export interface RasterLayer {
   data: string;
   opacity?: number;
   selected?: boolean;
+  colorize?: {
+    color: string;
+    method?: "alpha-mask-canvas";
+  };
 }
 
 export interface ConnectivityFeaturePropierties {
