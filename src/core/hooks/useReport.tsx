@@ -2,6 +2,7 @@ import {
   createContext,
   type ReactElement,
   type ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -34,6 +35,7 @@ type ReportContextType = {
     graphStateId?: string,
     mapIndex?: number,
   ) => void;
+  removeReport: () => void;
   moveElement: (
     direction: "prev" | "next",
     sectionId: string,
@@ -60,10 +62,6 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     Map<string, SectionDTO>
   >(new Map());
   const [errors, setErrors] = useState<string[]>([]);
-
-  useEffect(() => {
-    setReportDownloaded(false);
-  }, [documentSections]);
 
   const addSection = async (
     sectionId: string,
@@ -168,75 +166,83 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     }
   };
 
-  const removeElement = (
-    sectionId: string,
-    graphStateId?: string,
-    mapIndex?: number,
-  ) => {
-    if (!documentSections.has(sectionId)) {
-      return;
-    }
-
-    const isMapDel = graphStateId !== undefined && mapIndex !== undefined;
-    const isGraphDel = graphStateId !== undefined && mapIndex === undefined;
-
-    setDocumentSections((oldSections) => {
-      const nextSections = new Map(oldSections);
-      const section = nextSections.get(sectionId)!;
-
-      if (isMapDel) {
-        const graph = section.graphs.find((g) => g.state === graphStateId);
-        if (!graph || graph.maps.length <= 1) {
-          return oldSections;
-        }
-
-        const mapToRemove = graph.maps[mapIndex];
-        if (!mapToRemove) {
-          return oldSections;
-        }
-
-        URL.revokeObjectURL(mapToRemove.blobUrl);
-        nextSections.set(sectionId, {
-          ...section,
-          graphs: section.graphs.map((g) =>
-            g.state === graphStateId
-              ? { ...g, maps: g.maps.filter((_, index) => index !== mapIndex) }
-              : g,
-          ),
-        });
-
-        return nextSections;
+  const removeElement = useCallback(
+    (sectionId: string, graphStateId?: string, mapIndex?: number) => {
+      if (!documentSections.has(sectionId)) {
+        return;
       }
 
-      if (isGraphDel) {
-        if (section.graphs.length <= 1) {
-          return oldSections;
-        }
-        const graph = section.graphs.find((g) => g.state === graphStateId);
-        if (!graph) {
-          return oldSections;
+      const isMapDel = graphStateId !== undefined && mapIndex !== undefined;
+      const isGraphDel = graphStateId !== undefined && mapIndex === undefined;
+
+      setDocumentSections((oldSections) => {
+        const nextSections = new Map(oldSections);
+        const section = nextSections.get(sectionId)!;
+
+        if (isMapDel) {
+          const graph = section.graphs.find((g) => g.state === graphStateId);
+          if (!graph || graph.maps.length <= 1) {
+            return oldSections;
+          }
+
+          const mapToRemove = graph.maps[mapIndex];
+          if (!mapToRemove) {
+            return oldSections;
+          }
+
+          URL.revokeObjectURL(mapToRemove.blobUrl);
+          nextSections.set(sectionId, {
+            ...section,
+            graphs: section.graphs.map((g) =>
+              g.state === graphStateId
+                ? {
+                    ...g,
+                    maps: g.maps.filter((_, index) => index !== mapIndex),
+                  }
+                : g,
+            ),
+          });
+
+          return nextSections;
         }
 
-        URL.revokeObjectURL(graph.blobUrl);
-        graph.maps.forEach((m) => URL.revokeObjectURL(m.blobUrl));
+        if (isGraphDel) {
+          if (section.graphs.length <= 1) {
+            return oldSections;
+          }
+          const graph = section.graphs.find((g) => g.state === graphStateId);
+          if (!graph) {
+            return oldSections;
+          }
 
-        nextSections.set(sectionId, {
-          ...section,
-          graphs: section.graphs.filter((g) => g.state !== graphStateId),
+          URL.revokeObjectURL(graph.blobUrl);
+          graph.maps.forEach((m) => URL.revokeObjectURL(m.blobUrl));
+
+          nextSections.set(sectionId, {
+            ...section,
+            graphs: section.graphs.filter((g) => g.state !== graphStateId),
+          });
+
+          return nextSections;
+        }
+
+        section?.graphs.forEach((g) => {
+          URL.revokeObjectURL(g.blobUrl);
+          g?.maps.forEach((m) => URL.revokeObjectURL(m.blobUrl));
         });
 
+        nextSections.delete(sectionId);
         return nextSections;
-      }
-
-      section.graphs.forEach((g) => {
-        URL.revokeObjectURL(g.blobUrl);
-        g.maps.forEach((m) => URL.revokeObjectURL(m.blobUrl));
       });
+    },
+    [documentSections],
+  );
 
-      nextSections.delete(sectionId);
-      return nextSections;
-    });
-  };
+  const removeReport = useCallback(() => {
+    for (const section of documentSections.keys()) {
+      removeElement(section);
+    }
+  }, [documentSections, removeElement]);
 
   const moveElement = (
     direction: "prev" | "next",
@@ -363,6 +369,16 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     }
   };
 
+  useEffect(() => {
+    setReportDownloaded(false);
+  }, [documentSections]);
+
+  useEffect(() => {
+    return () => {
+      removeReport();
+    };
+  }, [removeReport]);
+
   return (
     <ReportContext.Provider
       value={{
@@ -371,6 +387,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
         reportDownloaded,
         addSection,
         removeElement,
+        removeReport,
         moveElement,
         openReportInNewTab,
         documentSections,

@@ -23,8 +23,13 @@ export function AddToReportButton({
   aditionalInfo?: Record<string, string>;
 }) {
   const { user } = useUserCTX();
-  const { addSection, isBusy, openReportInNewTab, documentSections } =
-    useReport();
+  const {
+    addSection,
+    isBusy,
+    openReportInNewTab,
+    removeReport,
+    documentSections,
+  } = useReport();
 
   return (
     <ButtonGroup>
@@ -49,13 +54,19 @@ export function AddToReportButton({
         {isBusy ? "Agregando al reporte" : "Añadir a reporte"}
       </Button>
       {documentSections.size > 0 && (
-        <Button
-          disabled={!user || isBusy}
-          onClick={() => void openReportInNewTab()}
-        >
-          <FileCheck />
-          ver reporte
-        </Button>
+        <>
+          <Button
+            disabled={!user || isBusy}
+            onClick={() => void openReportInNewTab()}
+          >
+            <FileCheck />
+            ver reporte
+          </Button>
+          <Button disabled={!user || isBusy} onClick={() => removeReport()}>
+            <FileCheck />
+            borrar reporte
+          </Button>
+        </>
       )}
     </ButtonGroup>
   );

@@ -86,6 +86,15 @@ export function Report({
                           <Text style={reportStyles.infoValue}>{value}</Text>
                         </View>
                       ))}
+                      <View style={reportStyles.infoRow}>
+                        <Text style={reportStyles.infoKey}>Fuente:</Text>
+                        <Link
+                          style={[reportStyles.infoValue, { color: "red" }]}
+                          src={section.link}
+                        >
+                          fuente: {section.link}
+                        </Link>
+                      </View>
                     </View>
                   )}
 
