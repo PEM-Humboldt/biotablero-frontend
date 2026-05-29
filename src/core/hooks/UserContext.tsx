@@ -2,74 +2,92 @@ import {
   useState,
   createContext,
   type ReactNode,
-  useCallback,
   useContext,
   useEffect,
+  useCallback,
 } from "react";
-import { useNavigate } from "react-router";
-import type { UserType } from "@appTypes/user";
-import {
-  deleteTokensFromLS,
-  getTokensFromLS,
-  parseUserFromJwt,
-  setTokensInLS,
-} from "@utils/JWTstorage";
-import { isResponseRequestError, refreshAccessToken } from "@api/auth";
+import type { UserProfile } from "@appTypes/user";
+
+// FIX: Revisar si todavía se necesita al finalizar la implementación del login
+// import {
+//   deleteTokensFromLS,
+//   getTokensFromLS,
+//   parseUserFromJwt,
+//   setTokensInLS,
+// } from "@utils/JWTstorage";
+// import { isResponseRequestError, refreshAccessToken } from "@api/auth";
+
+import { getKeycloak, keycloak } from "@api/auth";
+import { ErrorsList } from "@ui/LabelingWithErrors";
+import type { KeycloakProfile, KeycloakTokenParsed } from "keycloak-js";
 
 type UserContextType = {
-  user: UserType | null;
-  login: (userToLog: UserType) => void;
-  updateUser: (newUserData: Partial<UserType>) => void;
-  logout: (goTo?: string) => void;
+  user: UserProfile | null;
+  login: () => Promise<void>;
+  updateUser: () => Promise<void>;
+  logout: () => Promise<void>;
 };
 
 const UserContext = createContext<UserContextType | null>(null);
 
 export function UserCTX({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<UserType | null>(null);
-  const navigate = useNavigate();
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [errors, setErrors] = useState<string[]>([]);
 
-  const login = useCallback((userToLog: UserType) => {
-    setUser(userToLog);
-  }, []);
-
-  const updateUser = useCallback((newUserData: Partial<UserType>) => {
-    setUser((oldUser) => (oldUser ? { ...oldUser, ...newUserData } : null));
-  }, []);
-
-  const logout = useCallback(
-    (goTo?: string) => {
+  const loadUser = async () => {
+    const keycloak = await getKeycloak();
+    if (!keycloak.authenticated) {
+      console.log("chao");
       setUser(null);
-      deleteTokensFromLS();
-      void navigate(goTo ?? "/");
-    },
-    [navigate],
-  );
+    }
+
+    const userInfo: KeycloakProfile = await keycloak.loadUserProfile();
+    const { username, firstName, lastName, email, attributes } = userInfo;
+    const { realm_access } = keycloak.tokenParsed as KeycloakTokenParsed;
+    setUser({
+      username: username!,
+      firstName,
+      lastName,
+      email,
+      attributes: attributes as Record<string, string[]>,
+      ...(realm_access ?? { roles: [] }),
+    });
+  };
+
+  const handleLogin = useCallback(async () => {
+    const keycloak = await getKeycloak();
+    await keycloak.login({
+      redirectUri: window.location.href,
+    });
+  }, []);
+
+  const handleLogout = useCallback(async () => {
+    const keycloak = await getKeycloak();
+    setUser(null);
+    await keycloak.logout({
+      redirectUri: window.location.href,
+    });
+  }, []);
+
+  const handleUpdateUser = useCallback(async () => {
+    const keycloak = await getKeycloak();
+    void keycloak.accountManagement();
+  }, []);
 
   useEffect(() => {
-    const loadUser = async () => {
-      const { refreshToken } = getTokensFromLS();
-      if (refreshToken === null) {
-        return;
-      }
-
-      const newTokens = await refreshAccessToken(refreshToken);
-      if (isResponseRequestError(newTokens)) {
-        deleteTokensFromLS();
-        return;
-      }
-
-      setTokensInLS(newTokens.access_token, newTokens.refresh_token);
-      const user = parseUserFromJwt(newTokens.access_token);
-
-      login(user);
-    };
-
     void loadUser();
-  }, [login]);
+  }, []);
 
   return (
-    <UserContext.Provider value={{ user, login, updateUser, logout }}>
+    <UserContext.Provider
+      value={{
+        user,
+        login: handleLogin,
+        updateUser: handleUpdateUser,
+        logout: handleLogout,
+      }}
+    >
+      <ErrorsList errorItems={errors} />
       {children}
     </UserContext.Provider>
   );
@@ -88,7 +106,6 @@ export function useUserCTX() {
   useEffect(() => {
     if (user?.username === "geb") {
       updateUser({
-        id: 1,
         name: "Grupo Energía Bogotá",
         company: { id: 1, name: "Grupo Energía Bogotá" },
       });

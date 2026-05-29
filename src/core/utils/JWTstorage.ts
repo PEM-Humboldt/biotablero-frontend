@@ -1,4 +1,4 @@
-import type { Tokens, UserType } from "@appTypes/user";
+import type { Tokens, UserProfile } from "@appTypes/user";
 
 /**
  * Retrieves the JWT tokens stored in `localStorage`.
@@ -63,7 +63,7 @@ export function getJwtPayload<T>(token: string): T {
  * @param userObj - The object to validate.
  * @returns `true` if the object matches `UserType`, otherwise `false`.
  */
-export function isPayloadUserType(userObj: unknown): userObj is UserType {
+export function isPayloadUserType(userObj: unknown): userObj is UserProfile {
   return (
     userObj !== undefined &&
     userObj !== null &&
@@ -83,7 +83,7 @@ export function isPayloadUserType(userObj: unknown): userObj is UserType {
  *
  * @throws Will throw if the payload does not match the `UserType` structure.
  */
-export function parseUserFromJwt(token: string): UserType {
+export function parseUserFromJwt(token: string): UserProfile {
   const payload = getJwtPayload(token);
   if (!isPayloadUserType(payload)) {
     throw new Error("Cannot parse the user's object from the response");

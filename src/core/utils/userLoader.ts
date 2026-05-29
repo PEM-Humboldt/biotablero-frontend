@@ -1,4 +1,4 @@
-import type { UserType } from "@appTypes/user";
+import type { UserProfile } from "@appTypes/user";
 import type { CheckNLoadReturn } from "@appTypes/userLoader";
 import { getCredentials, partialComparison } from "@utils/getCredentials";
 import { redirect } from "react-router";
@@ -6,10 +6,10 @@ import { redirect } from "react-router";
 type Path = `/${string}`;
 
 type CheckNLoadProps<ReturnType, CriticalReturnType> = {
-  requirements: Partial<UserType>;
+  requirements: Partial<UserProfile>;
   redirectPath?: Path;
-  fetchCriticalData?: (user: UserType) => Promise<CriticalReturnType>;
-  fetchData?: (user: UserType) => Promise<ReturnType>;
+  fetchCriticalData?: (user: UserProfile) => Promise<CriticalReturnType>;
+  fetchData?: (user: UserProfile) => Promise<ReturnType>;
   onFetchFailure?: () => void;
 };
 

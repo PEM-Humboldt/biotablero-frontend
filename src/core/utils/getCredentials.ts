@@ -1,4 +1,4 @@
-import type { UserType } from "@appTypes/user";
+import type { UserProfile } from "@appTypes/user";
 import {
   deleteTokensFromLS,
   getTokensFromLS,
@@ -14,7 +14,7 @@ import { redirect } from "react-router";
  *
  * @returns The authenticated user or `null` if unavailable/invalid.
  */
-export async function getCredentials(): Promise<UserType | null> {
+export async function getCredentials(): Promise<UserProfile | null> {
   const { refreshToken: oldRefreshToken } = getTokensFromLS();
   if (!oldRefreshToken) {
     return null;

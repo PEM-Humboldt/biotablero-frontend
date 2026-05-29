@@ -1,6 +1,38 @@
 import axios, { isAxiosError } from "axios";
 import type { ApiRequestError } from "@appTypes/api";
 
+import Keycloak from "keycloak-js";
+
+export let keycloak: Keycloak | undefined;
+
+export async function getKeycloak() {
+  if (keycloak) {
+    return keycloak;
+  }
+
+  keycloak = new Keycloak({
+    url:
+      window._env_?.VITE_APP_KEYCLOAK_URL ||
+      import.meta.env.VITE_APP_KEYCLOAK_URL ||
+      "http://localhost:8080",
+    realm:
+      window._env_?.VITE_APP_KEYCLOAK_REALM ||
+      import.meta.env.VITE_APP_KEYCLOAK_REALM ||
+      "InstitutoHumboldt",
+    clientId:
+      window._env_?.VITE_APP_KEYCLOAK_CLIENT_ID ||
+      import.meta.env.VITE_APP_KEYCLOAK_CLIENT_ID ||
+      "Biotablero",
+  });
+
+  await keycloak.init({
+    checkLoginIframe: false,
+    onLoad: "check-sso",
+  });
+
+  return keycloak;
+}
+
 const AUTH_SERVER = "/realms/bt-cm/protocol/openid-connect/token";
 const LOGIN_ENDPOINT = `${AUTH_SERVER}?password`;
 const TOKEN_REFRESH_ENDPOINT = `${AUTH_SERVER}?refresh`;
@@ -13,6 +45,7 @@ type AuthData = {
 type AuthParams =
   | {
       grant_type: "password";
+      scope: "openid";
       username: string;
       password: string;
     }
@@ -105,6 +138,7 @@ export async function requestAccessToken(
 ): Promise<AuthData | ApiRequestError> {
   return makeAuthRequest(LOGIN_ENDPOINT, {
     grant_type: "password",
+    scope: "openid",
     username,
     password,
   });

@@ -1,10 +1,10 @@
-import type { UserType } from "@appTypes/user";
+import type { UserProfile } from "@appTypes/user";
 import type { Collaborators, Names } from "@appTypes/layout";
 
 export interface LayoutState {
   moduleName: string;
   headerNames: Names;
-  user: UserType | null;
+  user: UserProfile | null;
   logos: Set<Collaborators>;
   className?: string;
 }

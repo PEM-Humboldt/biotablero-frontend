@@ -71,11 +71,11 @@ export async function monitoringAPI<T>({
       if (data instanceof FormData) {
         payload = data;
         if (!payload.has("client_id")) {
-          payload.append("client_id", "bt-mc-client");
+          payload.append("client_id", "bt-cm-client");
         }
       } else {
         payload = {
-          client_id: "bt-mc-client",
+          client_id: "bt-cm-client",
           ...data,
         };
       }

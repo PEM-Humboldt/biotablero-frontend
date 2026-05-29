@@ -25,7 +25,7 @@ const defaultModalsValues: LogModalsTypes = {
 
 export function Uim() {
   const [modals, setModals] = useState<LogModalsTypes>(defaultModalsValues);
-  const { user, logout } = useUserCTX();
+  const { user, login, logout } = useUserCTX();
   const userCard = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -72,7 +72,6 @@ export function Uim() {
             <Button
               onClick={() => {
                 console.log("Perfil");
-                showModal(whichModal.modal)();
               }}
               variant="link"
               className="h-9 w-9 md:h-12 md:w-12"
@@ -86,7 +85,7 @@ export function Uim() {
             </Button>
 
             <Button
-              onClick={() => console.log("Cerrar sesión")}
+              onClick={() => void logout()}
               variant="link"
               className="h-9 w-9 md:h-12 md:w-12"
               title="Cerrar sesión"
@@ -97,7 +96,7 @@ export function Uim() {
           </>
         ) : (
           <Button
-            onClick={showModal(whichModal.modal)}
+            onClick={() => void login()}
             variant="link"
             className="h-9 w-9 md:h-12 md:w-12"
           >
