@@ -14,10 +14,19 @@ import { MyProfile } from "pages/monitoring/outlets/MyProfile";
 import { TagsAdmin } from "pages/monitoring/outlets/TagsAdmin";
 import { Resources as MonitoringResources } from "pages/monitoring/outlets/Resources";
 import { Manager as ResourcesManager } from "pages/monitoring/outlets/resources/Manager";
+import { getKeycloak } from "@api/auth";
 
 export const routes = createBrowserRouter([
   {
     path: "/",
+    loader: async () => {
+      try {
+        await getKeycloak();
+      } catch (err) {
+        console.error("Error handling authentication:", err);
+      }
+    },
+    HydrateFallback: () => <div>Cargando aplicación...</div>,
     Component: MainLayout,
     children: [
       {

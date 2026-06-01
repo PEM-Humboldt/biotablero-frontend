@@ -24,7 +24,6 @@ if (!container) {
 }
 
 const root = createRoot(container);
-await getKeycloak();
 root.render(
   <StrictMode>
     <App />
