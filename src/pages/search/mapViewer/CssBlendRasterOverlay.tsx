@@ -1,15 +1,16 @@
-import { useId, useEffect, useState } from "react";
+import { type CSSProperties, useEffect, useState } from "react";
 import L, {
   type LatLngBoundsExpression,
   type LatLngBoundsLiteral,
 } from "leaflet";
 import { useMap } from "react-leaflet";
 
-type SvgFilterRasterOverlayProps = {
+type CssBlendRasterOverlayProps = {
   bounds: LatLngBoundsExpression;
   source: string;
   color: string;
   opacity?: number;
+  blendMode?: CSSProperties["mixBlendMode"];
 };
 
 type OverlayStyle = {
@@ -19,20 +20,14 @@ type OverlayStyle = {
   height: number;
 };
 
-/**
- * Renders a raster through an SVG filter that colors the alpha channel.
- *
- * This is useful when the PNG is effectively a mask and we want to tint it
- * without doing pixel processing in JavaScript.
- */
-export function SvgFilterRasterOverlay({
+export function CssBlendRasterOverlay({
   bounds,
   source,
   color,
   opacity = 1,
-}: SvgFilterRasterOverlayProps) {
+  blendMode = "multiply",
+}: CssBlendRasterOverlayProps) {
   const map = useMap();
-  const filterId = useId().replace(/:/g, "");
   const [style, setStyle] = useState<OverlayStyle | null>(null);
 
   useEffect(() => {
@@ -74,38 +69,38 @@ export function SvgFilterRasterOverlay({
         top: style.top,
         width: style.width,
         height: style.height,
-        pointerEvents: "none",
         opacity,
+        pointerEvents: "none",
+        isolation: "isolate",
       }}
     >
-      <svg
-        aria-hidden="true"
-        focusable="false"
-        style={{
-          position: "absolute",
-          width: 0,
-          height: 0,
-          overflow: "hidden",
-        }}
-      >
-        <defs>
-          <filter id={filterId}>
-            <feFlood floodColor={color} floodOpacity="1" result="flood" />
-            <feComposite in="flood" in2="SourceAlpha" operator="in" />
-          </filter>
-        </defs>
-      </svg>
-
       <img
         alt=""
-        src={source}
         draggable={false}
+        src={source}
         style={{
+          position: "absolute",
+          inset: 0,
           width: "100%",
           height: "100%",
           display: "block",
-          filter: `url(#${filterId})`,
-          WebkitFilter: `url(#${filterId})`,
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          backgroundColor: color,
+          mixBlendMode: blendMode,
+          WebkitMaskImage: `url("${source}")`,
+          maskImage: `url("${source}")`,
+          WebkitMaskRepeat: "no-repeat",
+          maskRepeat: "no-repeat",
+          WebkitMaskPosition: "center",
+          maskPosition: "center",
+          WebkitMaskSize: "100% 100%",
+          maskSize: "100% 100%",
+          maskMode: "alpha",
         }}
       />
     </div>

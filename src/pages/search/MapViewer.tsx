@@ -22,7 +22,9 @@ import { COLOMBIA_BOUNDS } from "pages/utils/settings";
 import { OnLoadingModal } from "@ui/OnLoadingModal";
 import { colorizeRasterByAlphaMask } from "pages/search/utils/rasterColorizer";
 import { CssMaskRasterOverlay } from "pages/search/mapViewer/CssMaskRasterOverlay";
+import { CssFilterRasterOverlay } from "pages/search/mapViewer/CssFilterRasterOverlay";
 import { SvgFilterRasterOverlay } from "pages/search/mapViewer/SvgFilterRasterOverlay";
+import { CssBlendRasterOverlay } from "pages/search/mapViewer/CssBlendRasterOverlay";
 
 const config = {
   params: {
@@ -216,8 +218,33 @@ export function MapViewer({
                 return (
                   <CssMaskRasterOverlay
                     key={layerKey}
-                    source={layer.data}
+                    source={rasterUrl}
                     color={layer.colorize.color}
+                    bounds={bounds}
+                    opacity={opacity}
+                  />
+                );
+              }
+
+              if (layer.colorize?.method === "css-filter") {
+                return (
+                  <CssFilterRasterOverlay
+                    key={layerKey}
+                    source={rasterUrl}
+                    color={layer.colorize.color}
+                    bounds={bounds}
+                    opacity={opacity}
+                  />
+                );
+              }
+
+              if (layer.colorize?.method === "css-blend") {
+                return (
+                  <CssBlendRasterOverlay
+                    key={layerKey}
+                    source={rasterUrl}
+                    color={layer.colorize.color}
+                    blendMode={layer.colorize.blendMode}
                     bounds={bounds}
                     opacity={opacity}
                   />
@@ -228,7 +255,7 @@ export function MapViewer({
                 return (
                   <SvgFilterRasterOverlay
                     key={layerKey}
-                    source={layer.data}
+                    source={rasterUrl}
                     color={layer.colorize.color}
                     bounds={bounds}
                     opacity={opacity}

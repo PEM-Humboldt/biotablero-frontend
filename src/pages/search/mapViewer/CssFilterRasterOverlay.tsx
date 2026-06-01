@@ -1,11 +1,13 @@
-import { useId, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import L, {
   type LatLngBoundsExpression,
   type LatLngBoundsLiteral,
 } from "leaflet";
 import { useMap } from "react-leaflet";
 
-type SvgFilterRasterOverlayProps = {
+import { buildCssColorFilter } from "pages/search/utils/cssColorFilter";
+
+type CssFilterRasterOverlayProps = {
   bounds: LatLngBoundsExpression;
   source: string;
   color: string;
@@ -19,21 +21,15 @@ type OverlayStyle = {
   height: number;
 };
 
-/**
- * Renders a raster through an SVG filter that colors the alpha channel.
- *
- * This is useful when the PNG is effectively a mask and we want to tint it
- * without doing pixel processing in JavaScript.
- */
-export function SvgFilterRasterOverlay({
+export function CssFilterRasterOverlay({
   bounds,
   source,
   color,
   opacity = 1,
-}: SvgFilterRasterOverlayProps) {
+}: CssFilterRasterOverlayProps) {
   const map = useMap();
-  const filterId = useId().replace(/:/g, "");
   const [style, setStyle] = useState<OverlayStyle | null>(null);
+  const filter = buildCssColorFilter(color);
 
   useEffect(() => {
     const updatePosition = () => {
@@ -65,49 +61,24 @@ export function SvgFilterRasterOverlay({
   }
 
   return (
-    <div
+    <img
       aria-hidden="true"
+      alt=""
       className="leaflet-image-layer"
+      draggable={false}
+      src={source}
       style={{
         position: "absolute",
         left: style.left,
         top: style.top,
         width: style.width,
         height: style.height,
-        pointerEvents: "none",
         opacity,
+        pointerEvents: "none",
+        display: "block",
+        filter,
+        WebkitFilter: filter,
       }}
-    >
-      <svg
-        aria-hidden="true"
-        focusable="false"
-        style={{
-          position: "absolute",
-          width: 0,
-          height: 0,
-          overflow: "hidden",
-        }}
-      >
-        <defs>
-          <filter id={filterId}>
-            <feFlood floodColor={color} floodOpacity="1" result="flood" />
-            <feComposite in="flood" in2="SourceAlpha" operator="in" />
-          </filter>
-        </defs>
-      </svg>
-
-      <img
-        alt=""
-        src={source}
-        draggable={false}
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "block",
-          filter: `url(#${filterId})`,
-          WebkitFilter: `url(#${filterId})`,
-        }}
-      />
-    </div>
+    />
   );
 }
