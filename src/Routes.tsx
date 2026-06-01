@@ -1,5 +1,8 @@
 import { createBrowserRouter } from "react-router";
 
+import { getKeycloak } from "@api/auth";
+import { checkNLoad } from "@utils/userLoader";
+
 import { MainLayout } from "core/layout/MainLayout";
 import { Home } from "pages/Home";
 import { Indicators } from "pages/Indicators";
@@ -7,14 +10,12 @@ import { Portfolio } from "pages/Portfolio";
 import { InitiativesMap } from "pages/monitoring/outlets/InitiativesMap";
 import { Initiatives } from "pages/monitoring/outlets/Initiatives";
 
-import { checkNLoad } from "@utils/userLoader";
 import { Logs } from "pages/monitoring/outlets/Logs";
 import { InitiativesAdmin } from "pages/monitoring/outlets/InitiativesAdmin";
 import { MyProfile } from "pages/monitoring/outlets/MyProfile";
 import { TagsAdmin } from "pages/monitoring/outlets/TagsAdmin";
 import { Resources as MonitoringResources } from "pages/monitoring/outlets/Resources";
 import { Manager as ResourcesManager } from "pages/monitoring/outlets/resources/Manager";
-import { getKeycloak } from "@api/auth";
 
 export const routes = createBrowserRouter([
   {

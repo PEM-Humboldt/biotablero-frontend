@@ -1,5 +1,5 @@
 import type { ImageMimeType } from "@appTypes/formats";
-import { Dispatch, SetStateAction } from "react";
+import { type Dispatch, type SetStateAction } from "react";
 
 export type ImgValidatorResponse = [file: File | null, errors: string[]];
 

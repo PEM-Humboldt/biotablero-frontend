@@ -6,20 +6,13 @@ import {
   useEffect,
   useCallback,
 } from "react";
-import type { UserProfile } from "@appTypes/user";
+import type Keycloak from "keycloak-js";
 
-// FIX: Revisar si todavía se necesita al finalizar la implementación del login
-// import {
-//   deleteTokensFromLS,
-//   getTokensFromLS,
-//   parseUserFromJwt,
-//   setTokensInLS,
-// } from "@utils/JWTstorage";
-// import { isResponseRequestError, refreshAccessToken } from "@api/auth";
-
-import { getKeycloak, keycloak } from "@api/auth";
+import type { UserKeycloak, UserProfile } from "@appTypes/user";
+import { getKeycloak, getUserInfo } from "@api/auth";
 import { ErrorsList } from "@ui/LabelingWithErrors";
-import type { KeycloakProfile, KeycloakTokenParsed } from "keycloak-js";
+
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
 type UserContextType = {
   user: UserProfile | null;
@@ -30,29 +23,61 @@ type UserContextType = {
 
 const UserContext = createContext<UserContextType | null>(null);
 
+function generateUserFromKeycloak(userKC: UserKeycloak): UserProfile {
+  return {
+    username: userKC.username,
+    email: userKC.email,
+    firstName: userKC.firstName,
+    lastName: userKC.lastName,
+    roles: userKC.roles,
+    autorreconocimiento: userKC.autorreconocimiento,
+    picture: userKC.picture,
+    genero: userKC.genero,
+    organizacion: userKC.organizacion,
+  };
+}
+
 export function UserCTX({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
 
-  const loadUser = async () => {
+  const startTokenRefreshInterval = useCallback((keycloak: Keycloak) => {
+    const interval = setInterval(() => {
+      if (keycloak && keycloak.authenticated) {
+        keycloak
+          .updateToken(30)
+          .then((refreshed: boolean) => {
+            if (refreshed) {
+              console.log("Token refrescado en segundo plano exitosamente");
+            }
+          })
+          .catch(() => {
+            console.error("Error refrescando el token en segundo plano");
+          });
+      }
+    }, 30000);
+
+    return interval;
+  }, []);
+
+  const loadUser = useCallback(async () => {
     const keycloak = await getKeycloak();
     if (!keycloak.authenticated) {
-      console.log("chao");
       setUser(null);
+      return;
+    }
+    const refreshInterval = startTokenRefreshInterval(keycloak);
+
+    const res = await getUserInfo(keycloak.token ?? "");
+    if (isMonitoringAPIError(res)) {
+      setUser(null);
+      return setErrors([res.message]);
     }
 
-    const userInfo: KeycloakProfile = await keycloak.loadUserProfile();
-    const { username, firstName, lastName, email, attributes } = userInfo;
-    const { realm_access } = keycloak.tokenParsed as KeycloakTokenParsed;
-    setUser({
-      username: username!,
-      firstName,
-      lastName,
-      email,
-      attributes: attributes as Record<string, string[]>,
-      ...(realm_access ?? { roles: [] }),
-    });
-  };
+    setUser(generateUserFromKeycloak(res));
+
+    return () => clearInterval(refreshInterval);
+  }, [startTokenRefreshInterval]);
 
   const handleLogin = useCallback(async () => {
     const keycloak = await getKeycloak();
@@ -75,8 +100,18 @@ export function UserCTX({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    void loadUser();
-  }, []);
+    let clearInterval: void | (() => void) | undefined = undefined;
+
+    void loadUser().then((interval) => {
+      clearInterval = interval;
+    });
+
+    return () => {
+      if (clearInterval) {
+        clearInterval();
+      }
+    };
+  }, [loadUser]);
 
   return (
     <UserContext.Provider
