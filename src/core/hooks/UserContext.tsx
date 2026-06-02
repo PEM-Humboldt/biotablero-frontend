@@ -16,8 +16,6 @@ import {
 import { getKeycloak, getUserInfo } from "@api/auth";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 
-import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-
 type UserContextType = {
   user: UserProfile | null;
   login: () => Promise<void>;
@@ -48,16 +46,9 @@ export function UserCTX({ children }: { children: ReactNode }) {
   const startTokenRefreshInterval = useCallback((keycloak: Keycloak) => {
     const interval = setInterval(() => {
       if (keycloak && keycloak.authenticated) {
-        keycloak
-          .updateToken(30)
-          .then((refreshed: boolean) => {
-            if (refreshed) {
-              console.log("Token refrescado en segundo plano exitosamente");
-            }
-          })
-          .catch(() => {
-            console.error("Error refrescando el token en segundo plano");
-          });
+        keycloak.updateToken(30).catch((err) => {
+          console.error("Background token refresh failed:", err);
+        });
       }
     }, 30000);
 

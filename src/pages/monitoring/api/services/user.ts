@@ -9,6 +9,7 @@ import type {
 } from "pages/monitoring/types/catalog";
 import { monitoringAPI } from "pages/monitoring/api/core";
 import type { ApiRequestError } from "@appTypes/api";
+import type { UserStats } from "pages/monitoring/types/user";
 
 /**
  * Retrieves users from the Monitoring API.
@@ -112,6 +113,18 @@ export async function removeUserFromInitiative(userIdInInitiative: number) {
   const res = await monitoringAPI({
     type: "delete",
     endpoint: `InitiativeUser/${userIdInInitiative}`,
+  });
+
+  return res;
+}
+
+/*
+ * Retrieves user stats
+ */
+export async function getUserStats() {
+  const res = await monitoringAPI<UserStats>({
+    type: "get",
+    endpoint: "Auth/MyProfile",
   });
 
   return res;
