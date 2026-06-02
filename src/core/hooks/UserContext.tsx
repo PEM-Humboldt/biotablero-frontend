@@ -8,7 +8,11 @@ import {
 } from "react";
 import type Keycloak from "keycloak-js";
 
-import type { UserKeycloak, UserProfile } from "@appTypes/user";
+import {
+  isUserProfile,
+  type UserKeycloak,
+  type UserProfile,
+} from "@appTypes/user";
 import { getKeycloak, getUserInfo } from "@api/auth";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 
@@ -69,7 +73,7 @@ export function UserCTX({ children }: { children: ReactNode }) {
     const refreshInterval = startTokenRefreshInterval(keycloak);
 
     const res = await getUserInfo(keycloak.token ?? "");
-    if (isMonitoringAPIError(res)) {
+    if (!isUserProfile(res)) {
       setUser(null);
       return setErrors([res.message]);
     }

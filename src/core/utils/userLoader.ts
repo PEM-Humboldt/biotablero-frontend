@@ -1,5 +1,5 @@
 import { getKeycloak, getUserInfo } from "@api/auth";
-import type { UserProfile } from "@appTypes/user";
+import { isUserProfile, type UserProfile } from "@appTypes/user";
 import type { CheckNLoadReturn } from "@appTypes/userLoader";
 import { partialComparison } from "@utils/getCredentials";
 import { redirect } from "react-router";
@@ -47,12 +47,13 @@ export async function checkNLoad<T, U>({
 }: CheckNLoadProps<T, U>): CheckNLoadReturn<T, U> {
   const { token } = await getKeycloak();
   if (!token) {
-    return;
+    redirectTo(redirectPath);
+    return null;
   }
 
   const user = await getUserInfo(token);
 
-  if (!user) {
+  if (!isUserProfile(user)) {
     redirectTo(redirectPath);
     return null;
   }

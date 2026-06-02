@@ -27,3 +27,20 @@ export type UserKeycloak = {
   email: string;
   username: string;
 };
+
+export function isUserProfile(info: unknown): info is UserProfile {
+  return (
+    typeof info === "object" &&
+    info !== null &&
+    "username" in info &&
+    "email" in info &&
+    "firstName" in info &&
+    "lastName" in info &&
+    "roles" in info &&
+    Array.isArray(info.roles) &&
+    "autorreconocimiento" in info &&
+    "picture" in info &&
+    "genero" in info &&
+    "organizacion" in info
+  );
+}
