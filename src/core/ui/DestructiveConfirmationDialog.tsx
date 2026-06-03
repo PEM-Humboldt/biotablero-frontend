@@ -45,11 +45,11 @@ export function DestructiveConfirmationDialog({
           disabled={isDisabled || isLoading}
         >
           {isLoading && <Spinner />}
+          {texts.trigger.icon && <texts.trigger.icon />}
           {texts.trigger.sr && (
             <span className="sr-only">{texts.trigger.sr}</span>
           )}
           {texts.trigger.label}
-          {texts.trigger.icon && <texts.trigger.icon />}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

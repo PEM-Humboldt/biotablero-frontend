@@ -129,3 +129,26 @@ export async function getUserStats() {
 
   return res;
 }
+
+/**
+ * Updates the User focus area in the specified initiative.
+ *
+ * @param initiativeId - The unique identifier of the initiative
+ * @param focusArea - The new value for the focus area
+ *
+ * @returns A `Promise` resolving to:
+ * - On success: void.
+ * - On failure: A `ApiRequestError` object.
+ */
+export async function updateUserFocusAreaInInitiative(
+  initiativeId: number,
+  focusArea: string,
+) {
+  const res = await monitoringAPI({
+    type: "put",
+    endpoint: `Auth/MyFocusArea/${initiativeId}`,
+    options: { data: { focusArea: focusArea } },
+  });
+
+  return res;
+}

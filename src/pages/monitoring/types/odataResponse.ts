@@ -89,13 +89,13 @@ interface ODataUser extends HasId {
   fullName: string;
 }
 
-export type InitiativeUser = {
-  id: number;
+export interface InitiativeUser extends HasId {
   initiativeId: number;
   userName: string;
   level: UserLevel;
   creationDate: string;
-};
+  focusArea: string;
+}
 
 export type UserInInitiative = {
   id: number;
@@ -109,6 +109,8 @@ export type UserInInitiative = {
   polygonArea: number;
   enabled: boolean;
   users: InitiativeUser[];
+  bannerUrl?: string;
+  imageUrl?: string;
 };
 
 export interface TerritoryStoryShort extends HasId {

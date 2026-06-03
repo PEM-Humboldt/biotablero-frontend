@@ -1,0 +1,60 @@
+import { useUserCTX } from "@hooks/UserContext";
+import { useNavigate } from "react-router";
+import { Button } from "@ui/shadCN/component/button";
+import { NotebookPen } from "lucide-react";
+import { uiText } from "pages/monitoring/outlets/myProfile/layout/uiText";
+
+export function UserProfileCard() {
+  const { user, updateUser } = useUserCTX();
+  const navigate = useNavigate();
+
+  if (!user) {
+    void navigate("/Monitoreo");
+    return;
+  }
+
+  return !user ? null : (
+    <div className="rounded-lg bg-background p-4 lg:p-8 flex gap-4 lg:gap-8 items-start">
+      <img src={user.picture} className="rounded-full flex-1" alt="" />
+      <ul aria-label="Datos registrados" className="flex-2">
+        <li
+          className="text-3xl font-normal mb-4"
+          aria-label={uiText.profileCard.fullNameSrTitle}
+        >
+          {user.firstName} {user.lastName}
+        </li>
+        <li aria-label={uiText.profileCard.emailSrTitle} className="mb-4">
+          <a href={`mailto:${user.email}`} className="text-primary font-normal">
+            {user.email}
+          </a>
+        </li>
+        <li>
+          <span className="font-normal">{uiText.profileCard.genderTitle} </span>
+          {user.genero}
+        </li>
+        <li>
+          <span className="font-normal">{uiText.profileCard.ethnic} </span>
+          {user.autorreconocimiento}
+        </li>
+        <li>
+          <span className="font-normal">
+            {uiText.profileCard.organization}{" "}
+          </span>
+          {user.organizacion}
+        </li>
+        <li className="flex justify-end mt-6">
+          <Button
+            onClick={() => void updateUser()}
+            title={uiText.profileCard.editButton.title}
+            aria-label={uiText.profileCard.editButton.sr}
+          >
+            <NotebookPen aria-hidden="true" />
+            <span aria-hidden="true">
+              {uiText.profileCard.editButton.label}
+            </span>
+          </Button>
+        </li>
+      </ul>
+    </div>
+  );
+}
