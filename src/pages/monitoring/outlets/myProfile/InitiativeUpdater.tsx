@@ -18,6 +18,7 @@ import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiative
 import { InitiativeInfoUpdater } from "pages/monitoring/outlets/myProfile/initiativeUpdater/InitiativeInfoUpdater";
 import { uiText } from "pages/monitoring/outlets/myProfile/initiativeUpdater/layout/uiText";
 import { InitiativeInvitationForm } from "pages/monitoring/outlets/initiativeJoinInvitation/InitiativeInvitationForm";
+import { getInitiative } from "pages/monitoring/api/services/initiatives";
 
 export function InitiativeUpdater() {
   const [isLoading, setIsLoading] = useState(false);
@@ -48,7 +49,7 @@ export function InitiativeUpdater() {
     setInitiativeUsers([]);
     setIsLoading(true);
 
-    const res = await getUsers(selectedId);
+    const res = await getInitiative(Number(selectedId));
     if (isMonitoringAPIError(res)) {
       setError(res.data[0].msg);
 
@@ -56,7 +57,7 @@ export function InitiativeUpdater() {
       return;
     }
 
-    setInitiativeUsers(res);
+    setInitiativeUsers(res.users);
     setIsLoading(false);
   }, [selectedId]);
 

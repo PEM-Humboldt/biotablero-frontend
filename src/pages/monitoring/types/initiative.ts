@@ -4,7 +4,10 @@ import type {
   ODataInitiativeShort,
   TagInInitiative,
 } from "pages/monitoring/types/odataResponse";
-import type { UserInInitiativeBasicInfo } from "pages/monitoring/types/user";
+import type {
+  UserInInitiativeBasicInfo,
+  UserInInitiativeCompleteInfo,
+} from "pages/monitoring/types/user";
 
 export type GeneralInfo = {
   name: string;
@@ -71,12 +74,11 @@ export type InitiativeCompleteInfo = {
   coordinate: [number, number];
   polygonArea: number;
   enabled: boolean;
-  users: UserInInitiativeBasicInfo[];
+  users: UserInInitiativeCompleteInfo[];
   bannerUrl?: string;
   imageUrl?: string;
   locations: LocationCompleteInfo[];
   contacts?: ContactSRC[];
-
   tags: TagInInitiative[];
 };
 

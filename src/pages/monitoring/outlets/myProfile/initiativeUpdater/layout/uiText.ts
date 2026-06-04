@@ -54,13 +54,16 @@ export const uiText = {
   tabsContent: {
     usersManagement: {
       noUsers:
-        "Actualmente no hay usuarios dentro de la iniciativa en esta categoría",
+        "Actualmente no hay usuarios en esta categoría dentro de la iniciativa",
       joiningDate: {
-        title: "fecha de ingreso a la iniciativa",
-        sr: "fecha de ingreso a la iniciativa",
+        title: "Fecha de ingreso a la iniciativa",
+        sr: "Fecha de ingreso a la iniciativa",
         label: "",
       },
-      actions: { notAllowedError: "This role action is not allowed" },
+      actions: {
+        contactBtn: { title: "Contactar", sr: "Contactar", label: "Contactar" },
+        notAllowedError: "This role action is not allowed",
+      },
 
       roleEvents: {
         conditional: {
@@ -74,7 +77,7 @@ export const uiText = {
           trigger: (newUserState: string) => ({
             title: `Asignar rol de '${newUserState}'`,
             sr: `Asignar rol de '${newUserState}'`,
-            label: "",
+            label: "Promover",
           }),
 
           dialog: (username: string, newUserState: string) => ({
@@ -87,6 +90,7 @@ export const uiText = {
             cancel: undefined,
             exit: undefined,
           },
+
           toast: {
             title: "Usuario promovido",
             description: (username: string, newUserState: string) =>
@@ -98,7 +102,7 @@ export const uiText = {
           trigger: (newUserState: string) => ({
             title: `Asignar rol de '${newUserState}'`,
             sr: `Asignar rol de '${newUserState}'`,
-            label: "",
+            label: "Reasignar",
           }),
 
           dialog: (username: string, newUserState: string) => ({
@@ -111,6 +115,7 @@ export const uiText = {
             cancel: undefined,
             exit: undefined,
           },
+
           toast: {
             title: "Usuario reasignado",
             description: (username: string, newUserState: string) =>
@@ -122,7 +127,7 @@ export const uiText = {
           trigger: {
             title: "Retirar de la iniciativa",
             sr: "Retirar de la iniciativa",
-            label: "",
+            label: "Retirar",
           },
 
           dialog: (username: string, userState: string) => ({

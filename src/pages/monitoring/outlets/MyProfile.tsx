@@ -4,8 +4,20 @@ import { UserProfileCard } from "pages/monitoring/outlets/myProfile/UserProfileC
 import { UserStats } from "pages/monitoring/outlets/myProfile/UserStats";
 import { InitiativesInRoleSections } from "pages/monitoring/outlets/myProfile/InitiativesInRoleSections";
 import { uiText } from "pages/monitoring/outlets/myProfile/layout/uiText";
+import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
+import { RoleInInitiative } from "pages/monitoring/types/catalog";
+import { useMemo } from "react";
 
 export function MyProfile() {
+  const { userInitiativesAs } = useUserInMonitoringCTX();
+
+  const isLeader = useMemo<boolean>(
+    () =>
+      userInitiativesAs[RoleInInitiative.LEADER] !== undefined &&
+      userInitiativesAs[RoleInInitiative.LEADER]?.length > 0,
+    [userInitiativesAs],
+  );
+
   return (
     <main className="page-main [&>section]:w-full [&>section]:mb-4 lg:[&>section]:mb-8">
       <header>
@@ -21,11 +33,15 @@ export function MyProfile() {
         <UserStats />
       </section>
 
-      <section aria-label={uiText.manageInitiative.sr}>
-        {uiText.myAccountInfo.label && <h4>{uiText.manageInitiative.label}</h4>}
-        <JoinRequests />
-        <InitiativeUpdater />
-      </section>
+      {isLeader && (
+        <section aria-label={uiText.manageInitiative.sr}>
+          {uiText.myAccountInfo.label && (
+            <h4>{uiText.manageInitiative.label}</h4>
+          )}
+          <JoinRequests />
+          <InitiativeUpdater />
+        </section>
+      )}
 
       <InitiativesInRoleSections />
     </main>

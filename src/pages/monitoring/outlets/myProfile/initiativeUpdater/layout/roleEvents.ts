@@ -137,7 +137,7 @@ export const roleEventInfo: Record<
         className: "px-6! gap-6! border-2! border-primary!",
       },
       triggerBtnVariant: "default",
-      triggerBtnSize: "icon",
+      triggerBtnSize: "default",
       component: ConfirmationDialog,
     };
   },
@@ -177,7 +177,7 @@ export const roleEventInfo: Record<
         className: "px-6! gap-6! border-2! border-accent!",
       },
       triggerBtnVariant: "default",
-      triggerBtnSize: "icon",
+      triggerBtnSize: "default",
       component: ConfirmationDialog,
     };
   },
@@ -211,7 +211,7 @@ export const roleEventInfo: Record<
         className: "px-6! gap-6! border-2! border-accent!",
       },
       triggerBtnVariant: "outline_destructive",
-      triggerBtnSize: "icon",
+      triggerBtnSize: "default",
       component: DestructiveConfirmationDialog,
     };
   },
