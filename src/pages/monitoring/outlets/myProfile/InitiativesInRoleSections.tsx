@@ -33,13 +33,18 @@ export function InitiativesInRoleSections() {
         key={`initiatives_as_${role}`}
         aria-labelledby={`heading_${role}`}
       >
-        <h3
-          id={`heading_${role}`}
-          className="text-primary px-4 text-xl"
-          aria-label={sectionInfo.texts.title.sr}
-        >
-          {sectionInfo.texts.title.label}
-        </h3>
+        <div className="flex items-baseline">
+          <h3
+            id={`heading_${role}`}
+            className="text-primary px-4 text-xl"
+            aria-label={sectionInfo.texts.title.sr}
+          >
+            {sectionInfo.texts.title.label}
+          </h3>
+          <span className="text-primary italic">
+            {sectionInfo.texts.counterText(initiatives.length)}
+          </span>
+        </div>
         <ul
           className={cn(
             "grid gap-4",
