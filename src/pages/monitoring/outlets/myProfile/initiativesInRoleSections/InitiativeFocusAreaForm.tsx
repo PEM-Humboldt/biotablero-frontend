@@ -6,7 +6,7 @@ import { Button } from "@ui/shadCN/component/button";
 import { LabeledTextArea } from "@ui/LabeledTextArea";
 import { INITIATIVE_USER_FOCUS_AREA_LENGTH } from "@config/monitoring";
 
-import type { UserInInitiative } from "pages/monitoring/types/odataResponse";
+import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 import { updateUserFocusAreaInInitiative } from "pages/monitoring/api/services/user";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
@@ -18,7 +18,7 @@ export function InitiativeFocusAreaForm({
   onCancel,
   onSaveSuccess,
 }: {
-  initiative: UserInInitiative;
+  initiative: InitiativeCompleteInfo;
   initialFocusArea: string;
   onCancel: () => void;
   onSaveSuccess: () => void;

@@ -9,7 +9,7 @@ import {
 } from "react";
 
 import type {
-  InitiativeFullInfo,
+  InitiativeCompleteInfo,
   UserSRC,
 } from "pages/monitoring/types/initiative";
 import { getInitiative } from "pages/monitoring/api/services/initiatives";
@@ -25,7 +25,7 @@ import { useParams } from "react-router";
 
 type CurrentInitiativeCTXProps = {
   initiativeId: number | null;
-  initiativeInfo: InitiativeFullInfo | null;
+  initiativeInfo: InitiativeCompleteInfo | null;
   userInInitiativeInfo: UserSRC | null;
   setInitiative: (initiativeId?: number) => Promise<null | string>;
   updateInitiative: () => Promise<void>;
@@ -43,7 +43,9 @@ export function CurrentInitiativeCTX({
   initialInitiative?: number;
   children: ReactNode;
 }) {
-  const [initiative, setInitiative] = useState<InitiativeFullInfo | null>(null);
+  const [initiative, setInitiative] = useState<InitiativeCompleteInfo | null>(
+    null,
+  );
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useUserCTX();
   const { joinRequestsByInitiativeId } = useUserInMonitoringCTX();

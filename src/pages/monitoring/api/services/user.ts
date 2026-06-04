@@ -1,8 +1,6 @@
 import { isODataParams, type ODataParams } from "@appTypes/odata";
-import type {
-  InitiativeUser,
-  ODataUserInfo,
-} from "pages/monitoring/types/odataResponse";
+import type { UserInInitiativeBasicInfo } from "pages/monitoring/types/user";
+import type { ODataUserInfo } from "pages/monitoring/types/odataResponse";
 import type {
   RoleInInitiative,
   UserLevel,
@@ -27,10 +25,10 @@ export async function getUsers(
 ): Promise<ODataUserInfo | ApiRequestError>;
 export async function getUsers(
   byInitiativeId: number | string,
-): Promise<InitiativeUser[] | ApiRequestError>;
+): Promise<UserInInitiativeBasicInfo[] | ApiRequestError>;
 export async function getUsers(
   idOrOdata?: ODataParams | number | string,
-): Promise<InitiativeUser[] | ODataUserInfo | ApiRequestError> {
+): Promise<UserInInitiativeBasicInfo[] | ODataUserInfo | ApiRequestError> {
   const isId = typeof idOrOdata === "string" || typeof idOrOdata === "number";
   const endpoint = isId
     ? `InitiativeUser/GetByInitiative/${idOrOdata}`
@@ -40,7 +38,7 @@ export async function getUsers(
       ? idOrOdata
       : undefined;
 
-  const res = await monitoringAPI<InitiativeUser[] | ODataUserInfo>({
+  const res = await monitoringAPI<UserInInitiativeBasicInfo[] | ODataUserInfo>({
     type: "get",
     endpoint,
     options: { oData: oDataParams },

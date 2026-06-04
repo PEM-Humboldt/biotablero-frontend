@@ -25,7 +25,7 @@ import {
   userStateInInitiativeDictionary,
 } from "pages/monitoring/outlets/myProfile/initiativeUpdater/layout/uiText";
 import { type ButtonProps } from "@ui/shadCN/component/button";
-import type { InitiativeUser } from "pages/monitoring/types/odataResponse";
+import type { UserInInitiativeBasicInfo } from "pages/monitoring/types/user";
 import {
   INITIATIVE_LEADERS_MAX_AMOUNT,
   INITIATIVE_LEADERS_MIN_AMOUNT,
@@ -62,7 +62,7 @@ function getNewStateInInitiative(role: RoleInInitiative, action: RoleEvents) {
 }
 
 export function roleEventRestrictions(
-  usersByRole: Partial<Record<RoleInInitiative, InitiativeUser[]>>,
+  usersByRole: Partial<Record<RoleInInitiative, UserInInitiativeBasicInfo[]>>,
 ): Partial<
   Record<
     RoleInInitiative,

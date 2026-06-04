@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { useUserCTX } from "@hooks/UserContext";
 
 import { RoleInInitiative } from "pages/monitoring/types/catalog";
-import type { InitiativeUser } from "pages/monitoring/types/odataResponse";
+import type { UserInInitiativeBasicInfo } from "pages/monitoring/types/user";
 import {
   changeUserRoleInInitiative,
   removeUserFromInitiative,
@@ -28,16 +28,16 @@ export function UsersListForManagement({
   inRole,
   updater,
 }: {
-  users: InitiativeUser[];
+  users: UserInInitiativeBasicInfo[];
   inRole: RoleInInitiative;
   updater: () => Promise<void>;
 }) {
   const usersByRole = users.reduce<
-    Partial<Record<RoleInInitiative, InitiativeUser[]>>
+    Partial<Record<RoleInInitiative, UserInInitiativeBasicInfo[]>>
   >((all, user) => {
     const roleId = user.level.id;
     if (all[roleId] === undefined) {
-      all[roleId] = [] as InitiativeUser[];
+      all[roleId] = [] as UserInInitiativeBasicInfo[];
     }
     all[roleId].push(user);
 
@@ -100,9 +100,9 @@ function ActionsToUserByRole({
   usersByRole,
   updater,
 }: {
-  user: InitiativeUser;
+  user: UserInInitiativeBasicInfo;
   role: RoleInInitiative;
-  usersByRole: Partial<Record<RoleInInitiative, InitiativeUser[]>>;
+  usersByRole: Partial<Record<RoleInInitiative, UserInInitiativeBasicInfo[]>>;
   updater: () => Promise<void>;
 }) {
   const { user: admin } = useUserCTX();

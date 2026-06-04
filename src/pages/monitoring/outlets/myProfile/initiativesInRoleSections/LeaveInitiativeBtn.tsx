@@ -7,13 +7,13 @@ import { DestructiveConfirmationDialog } from "@ui/DestructiveConfirmationDialog
 import { leaveInitiative } from "pages/monitoring/api/services/initiatives";
 import { uiText } from "pages/monitoring/ui/joinInitiativeRequestButton/layout/uiText";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import type { UserInInitiative } from "pages/monitoring/types/odataResponse";
+import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
 import { useUserCTX } from "@hooks/UserContext";
 
 export function LeaveInitiativeBtn({
   initiative,
 }: {
-  initiative: UserInInitiative;
+  initiative: InitiativeCompleteInfo;
 }) {
   const { user } = useUserCTX();
   const [isLoading, setIsLoading] = useState(false);

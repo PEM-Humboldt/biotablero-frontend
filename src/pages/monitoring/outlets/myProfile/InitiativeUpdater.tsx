@@ -13,7 +13,7 @@ import { Combobox } from "@ui/ComboBox";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { getUsers } from "pages/monitoring/api/services/user";
 import { UsersListForManagement } from "pages/monitoring/outlets/myProfile/initiativeUpdater/UserListForManagement";
-import type { InitiativeUser } from "pages/monitoring/types/odataResponse";
+import type { UserInInitiativeBasicInfo } from "pages/monitoring/types/user";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 import { InitiativeInfoUpdater } from "pages/monitoring/outlets/myProfile/initiativeUpdater/InitiativeInfoUpdater";
 import { uiText } from "pages/monitoring/outlets/myProfile/initiativeUpdater/layout/uiText";
@@ -23,7 +23,9 @@ export function InitiativeUpdater() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState("");
-  const [initiativeUsers, setInitiativeUsers] = useState<InitiativeUser[]>([]);
+  const [initiativeUsers, setInitiativeUsers] = useState<
+    UserInInitiativeBasicInfo[]
+  >([]);
 
   const { userInitiativesAs } = useUserInMonitoringCTX();
   const initiativesAsLeader = userInitiativesAs[RoleInInitiative.LEADER];

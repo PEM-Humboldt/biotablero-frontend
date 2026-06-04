@@ -11,7 +11,7 @@ import {
 import { RoleInInitiative } from "pages/monitoring/types/catalog";
 import type {
   InitiativeContact,
-  InitiativeFullInfo,
+  InitiativeCompleteInfo,
   LocationObj,
 } from "pages/monitoring/types/initiative";
 import type { CardInfoGrouped } from "pages/monitoring/types/initiativeData";
@@ -38,7 +38,7 @@ export function InitiativeInfoUpdater({
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [initiativeInfo, setInitiativeInfo] =
-    useState<InitiativeFullInfo | null>(null);
+    useState<InitiativeCompleteInfo | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
   const [currentEdit, setCurrentEdit] = useState<
     keyof CardInfoGrouped | "none" | null
@@ -73,7 +73,7 @@ export function InitiativeInfoUpdater({
       users: res.users.filter(
         (user) => user.level.id === RoleInInitiative.LEADER,
       ),
-    } satisfies InitiativeFullInfo;
+    } satisfies InitiativeCompleteInfo;
 
     setInitiativeInfo(initiativeAdminInfo);
     setIsLoading(false);
@@ -117,7 +117,7 @@ export function InitiativeInfoUpdater({
       id: general.id,
       general,
       locations,
-      contacts,
+      contacts: contacts!,
       tags,
       users,
       images: { imageUrl, bannerUrl },

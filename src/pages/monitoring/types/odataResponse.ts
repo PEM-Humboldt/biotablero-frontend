@@ -1,8 +1,5 @@
 import type { HasId, ODataResponse } from "@appTypes/odata";
-import type {
-  JoinRequestStatus,
-  UserLevel,
-} from "pages/monitoring/types/catalog";
+import type { JoinRequestStatus } from "pages/monitoring/types/catalog";
 import type {
   ImageObjectTS,
   VideoObjectTS,
@@ -55,7 +52,7 @@ export type LocationCompleteInfo = {
 };
 
 // NOTE: Iniciativas
-export interface ODataInitiativeShortEntry extends HasId {
+export interface ODataInitiativeShort extends HasId {
   name: string;
   shortName: string;
   description: string;
@@ -88,30 +85,6 @@ interface ODataUser extends HasId {
   lastName: string;
   fullName: string;
 }
-
-export interface InitiativeUser extends HasId {
-  initiativeId: number;
-  userName: string;
-  level: UserLevel;
-  creationDate: string;
-  focusArea: string;
-}
-
-export type UserInInitiative = {
-  id: number;
-  name: string;
-  shortName: string;
-  description: string;
-  baseline: string;
-  objective: string;
-  creationDate: string;
-  coordinate: [number, number];
-  polygonArea: number;
-  enabled: boolean;
-  users: InitiativeUser[];
-  bannerUrl?: string;
-  imageUrl?: string;
-};
 
 export interface TerritoryStoryShort extends HasId {
   initiativeId: number;
@@ -196,7 +169,7 @@ export interface MonitoringResource extends HasId {
 }
 
 export type ODataLog = ODataResponse<ODataLogEntryShort>;
-export type ODataInitiative = ODataResponse<ODataInitiativeShortEntry>;
+export type ODataInitiative = ODataResponse<ODataInitiativeShort>;
 export type ODataUserRequest = ODataResponse<ODataInitiativeUserRequest>;
 export type ODataUserInfo = ODataResponse<ODataUser>;
 export type ODataTerritoryStory = ODataResponse<TerritoryStoryShort>;

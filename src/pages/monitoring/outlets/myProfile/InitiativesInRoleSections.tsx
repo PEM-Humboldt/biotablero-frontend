@@ -6,14 +6,14 @@ import { useUserCTX } from "@hooks/UserContext";
 import { Button } from "@ui/shadCN/component/button";
 import { cn } from "@ui/shadCN/lib/utils";
 
-import type { UserInInitiative } from "pages/monitoring/types/odataResponse";
+import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
 import { type RoleInInitiative } from "pages/monitoring/types/catalog";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 import { LeaveInitiativeBtn } from "pages/monitoring/outlets/myProfile/initiativesInRoleSections/LeaveInitiativeBtn";
 import { InitiativeFocusAreaForm } from "pages/monitoring/outlets/myProfile/initiativesInRoleSections/InitiativeFocusAreaForm";
 import { getRandomImageURL } from "pages/monitoring/outlets/initiatives/territoryStories/utils/getFeaturedImage";
 import { sectionsInfo } from "pages/monitoring/outlets/myProfile/layout/sectionsInfo";
-import { uiText } from "./layout/uiText";
+import { uiText } from "pages/monitoring/outlets/myProfile/layout/uiText";
 
 export function InitiativesInRoleSections() {
   const { userInitiativesAs } = useUserInMonitoringCTX();
@@ -73,7 +73,7 @@ function InitiativeFocusArea({
   editRoleAction,
   leaveInitiativeAction,
 }: {
-  initiative: UserInInitiative;
+  initiative: InitiativeCompleteInfo;
   showPicture: boolean;
   currentFocusAreaEdit: number | null;
   setCurrentFocusAreaEdit: Dispatch<SetStateAction<number | null>>;
