@@ -1,4 +1,5 @@
-import { JoinRequests } from "pages/monitoring/outlets/myProfile/JoinRequest";
+import { useMemo } from "react";
+
 import { InitiativeUpdater } from "pages/monitoring/outlets/myProfile/InitiativeUpdater";
 import { UserProfileCard } from "pages/monitoring/outlets/myProfile/UserProfileCard";
 import { UserStats } from "pages/monitoring/outlets/myProfile/UserStats";
@@ -6,7 +7,6 @@ import { InitiativesInRoleSections } from "pages/monitoring/outlets/myProfile/In
 import { uiText } from "pages/monitoring/outlets/myProfile/layout/uiText";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 import { RoleInInitiative } from "pages/monitoring/types/catalog";
-import { useMemo } from "react";
 
 export function MyProfile() {
   const { userInitiativesAs } = useUserInMonitoringCTX();
@@ -38,7 +38,6 @@ export function MyProfile() {
           {uiText.myAccountInfo.label && (
             <h4>{uiText.manageInitiative.label}</h4>
           )}
-          <JoinRequests />
           <InitiativeUpdater />
         </section>
       )}

@@ -10,7 +10,7 @@ type FilterJoinRequestsCallback = (
   status: JoinRequestStatus,
   sortBy: GetKeysWithStringValues<ODataInitiativeUserRequest>,
   newerFirst?: boolean,
-) => Promise<void>;
+) => void;
 
 type FilterJoinRequestSettings = {
   label: string;

@@ -92,13 +92,6 @@ export type UserJoinRequestData = {
   };
 };
 
-export type FilterJoinRequestsCallback = (
-  status: JoinRequestStatus,
-  sortBy: GetKeysWithStringValues<ODataInitiativeUserRequest>,
-  newerFirst?: boolean,
-  force?: boolean,
-) => Promise<void>;
-
 export type FilterJoinRequestSettings = {
   label: string;
   status: JoinRequestStatus;
