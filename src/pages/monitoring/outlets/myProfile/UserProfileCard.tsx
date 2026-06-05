@@ -15,7 +15,11 @@ export function UserProfileCard() {
 
   return !user ? null : (
     <div className="rounded-lg bg-background p-4 lg:p-8 flex gap-4 lg:gap-8 items-start">
-      <img src={user.picture} className="rounded-full flex-1" alt="" />
+      <img
+        src={user.picture}
+        className="rounded-full flex-1 object-cover aspect-square w-full max-w-[180px]"
+        alt=""
+      />
       <ul aria-label="Datos registrados" className="flex-2">
         <li
           className="text-3xl font-normal mb-4"
@@ -30,11 +34,11 @@ export function UserProfileCard() {
         </li>
         <li>
           <span className="font-normal">{uiText.profileCard.genderTitle} </span>
-          {user.genero}
+          {user.gender}
         </li>
         <li>
           <span className="font-normal">{uiText.profileCard.ethnic} </span>
-          {user.autorreconocimiento}
+          {user.selfIdentification}
         </li>
         <li>
           <span className="font-normal">
