@@ -36,11 +36,18 @@ export function Uim() {
             title="Mi perfil"
             aria-label="Ver mi perfil"
           >
-            <img
-              src={user.picture}
-              alt=""
-              className="size-5 md:size-6 aspect-square rounded-full object-cover"
-            />
+            {user.picture ? (
+              <img
+                src={user.picture}
+                alt=""
+                className="size-5 md:size-6 aspect-square rounded-full object-cover border-2 border-foreground bg-foreground hover:border-accent hover:bg-accent"
+              />
+            ) : (
+              <CircleUserRound
+                className="size-4 md:size-5"
+                aria-hidden="true"
+              />
+            )}
           </Button>
 
           <Button

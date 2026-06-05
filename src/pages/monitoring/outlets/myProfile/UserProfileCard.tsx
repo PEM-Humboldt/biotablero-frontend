@@ -1,7 +1,7 @@
 import { useUserCTX } from "@hooks/UserCTX";
 import { useNavigate } from "react-router";
 import { Button } from "@ui/shadCN/component/button";
-import { NotebookPen } from "lucide-react";
+import { CircleUserRound, NotebookPen } from "lucide-react";
 import { uiText } from "pages/monitoring/outlets/myProfile/layout/uiText";
 
 export function UserProfileCard() {
@@ -15,11 +15,15 @@ export function UserProfileCard() {
 
   return !user ? null : (
     <div className="rounded-lg bg-background p-4 lg:p-8 flex gap-4 lg:gap-8 items-start">
-      <img
-        src={user.picture}
-        className="rounded-full flex-1 object-cover aspect-square w-full max-w-[180px]"
-        alt=""
-      />
+      {user.picture ? (
+        <img
+          src={user.picture}
+          className="rounded-full flex-1 object-cover aspect-square w-full max-w-[180px]"
+          alt=""
+        />
+      ) : (
+        <CircleUserRound className="size-40 text-primary/50" strokeWidth={2} />
+      )}
       <ul aria-label="Datos registrados" className="flex-2">
         <li
           className="text-3xl font-normal mb-4"
