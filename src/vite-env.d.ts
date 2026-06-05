@@ -20,10 +20,6 @@ interface ImportMetaEnv {
   readonly VITE_APP_KEYCLOAK_REALM: string;
   readonly VITE_APP_KEYCLOAK_CLIENT_ID: string;
   readonly VITE_APP_UPDATE_TOKEN_TIME: string;
-
-  // FIX: borrar al terminar la transición
-  readonly VITE_AUTH_BACKEND_URL: string;
-  readonly VITE_KC_CLIENT: string;
 }
 
 interface Window {

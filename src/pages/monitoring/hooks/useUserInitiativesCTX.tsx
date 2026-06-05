@@ -9,7 +9,7 @@ import {
 } from "react";
 
 import { RoleInInitiative } from "pages/monitoring/types/catalog";
-import { useUserCTX } from "@hooks/UserContext";
+import { useUserCTX } from "@hooks/UserCTX";
 
 import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";

@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 
-import { useUserCTX } from "@hooks/UserContext";
+import { useUserCTX } from "@hooks/UserCTX";
 import defaultProfileImageUrl from "@assets/user_icon.svg?url";
 import { Button } from "@ui/shadCN/component/button";
 import { DoorClosed, CircleUserRound, DoorOpen, Bell } from "lucide-react";

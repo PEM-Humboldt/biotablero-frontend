@@ -9,7 +9,7 @@ import {
 import type Keycloak from "keycloak-js";
 
 import {
-  isUserProfile,
+  isUserKeycloak,
   type UserKeycloak,
   type UserProfile,
 } from "@appTypes/user";
@@ -32,25 +32,32 @@ function generateUserFromKeycloak(userKC: UserKeycloak): UserProfile {
     firstName: userKC.firstName,
     lastName: userKC.lastName,
     roles: userKC.roles,
-    autorreconocimiento: userKC.autorreconocimiento,
     picture: userKC.picture,
-    genero: userKC.genero,
-    organizacion: userKC.organizacion,
+    selfIdentification: userKC.autorreconocimiento,
+    gender: userKC.genero,
+    organization: userKC.organizacion,
   };
 }
+
+const refreshTokenTimeSeconds = Number(
+  window._env_?.VITE_APP_UPDATE_TOKEN_TIME ||
+    import.meta.env.VITE_APP_UPDATE_TOKEN_TIME,
+);
 
 export function UserCTX({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
 
   const startTokenRefreshInterval = useCallback((keycloak: Keycloak) => {
+    setErrors([]);
     const interval = setInterval(() => {
       if (keycloak && keycloak.authenticated) {
-        keycloak.updateToken(30).catch((err) => {
+        keycloak.updateToken(refreshTokenTimeSeconds || 30).catch((err) => {
+          setUser(null);
           console.error("Background token refresh failed:", err);
         });
       }
-    }, 30000);
+    }, refreshTokenTimeSeconds * 1000);
 
     return interval;
   }, []);
@@ -64,8 +71,9 @@ export function UserCTX({ children }: { children: ReactNode }) {
     const refreshInterval = startTokenRefreshInterval(keycloak);
 
     const res = await getUserInfo(keycloak.token ?? "");
-    if (!isUserProfile(res)) {
+    if (!isUserKeycloak(res)) {
       setUser(null);
+      console.error(res);
       return setErrors([res.message]);
     }
 
@@ -129,18 +137,6 @@ export function useUserCTX() {
   if (!context) {
     throw new Error("useUserCTX must be within the UserProviderCTX");
   }
-
-  // HACK: mientras se cuadran los usuarios de compensaciones en el
-  // keycloak, para habilitar el uso con el usuario de la GEB
-  const { user, updateUser } = context;
-  useEffect(() => {
-    if (user?.username === "geb") {
-      updateUser({
-        name: "Grupo Energía Bogotá",
-        company: { id: 1, name: "Grupo Energía Bogotá" },
-      });
-    }
-  }, [updateUser, user?.username]);
 
   return context;
 }

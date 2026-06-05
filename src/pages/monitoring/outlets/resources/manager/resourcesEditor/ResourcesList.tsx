@@ -2,7 +2,7 @@ import { type Dispatch, type SetStateAction } from "react";
 import { SquarePen, Trash } from "lucide-react";
 
 import { Button } from "@ui/shadCN/component/button";
-import { useUserCTX } from "@hooks/UserContext";
+import { useUserCTX } from "@hooks/UserCTX";
 import { DestructiveConfirmationDialog } from "@ui/DestructiveConfirmationDialog";
 
 import type {

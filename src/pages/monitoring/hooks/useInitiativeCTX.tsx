@@ -14,7 +14,7 @@ import type {
 } from "pages/monitoring/types/initiative";
 import { getInitiative } from "pages/monitoring/api/services/initiatives";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import { useUserCTX } from "@hooks/UserContext";
+import { useUserCTX } from "@hooks/UserCTX";
 import {
   initiativeRoleToState,
   JoinRequestStatus,

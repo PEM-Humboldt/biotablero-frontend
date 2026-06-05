@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Ban, CircleOff, MailsIcon } from "lucide-react";
 import { toast } from "sonner";
 
-import { useUserCTX } from "@hooks/UserContext";
+import { useUserCTX } from "@hooks/UserCTX";
 import { Button } from "@ui/shadCN/component/button";
 
 import { RoleInInitiative } from "pages/monitoring/types/catalog";
@@ -184,7 +184,7 @@ function ActionsToUserByRole({
   const buttonConditional = roleEventRestrictions(usersByRole);
 
   return (
-    <div className="space-x-2">
+    <div className="flex gap-2">
       {posibleActions.map((action) => {
         const {
           component: Comp,

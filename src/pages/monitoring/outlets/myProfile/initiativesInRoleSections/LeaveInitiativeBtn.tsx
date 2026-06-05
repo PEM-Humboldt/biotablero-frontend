@@ -8,7 +8,8 @@ import { leaveInitiative } from "pages/monitoring/api/services/initiatives";
 import { uiText } from "pages/monitoring/ui/joinInitiativeRequestButton/layout/uiText";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
-import { useUserCTX } from "@hooks/UserContext";
+import { useUserCTX } from "@hooks/UserCTX";
+import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 
 export function LeaveInitiativeBtn({
   initiative,
@@ -18,6 +19,7 @@ export function LeaveInitiativeBtn({
   const { user } = useUserCTX();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { reloadUserInMonitoringData } = useUserInMonitoringCTX();
 
   const userInInitiativeId = useMemo(
     () => initiative.users.find((u) => u.userName === user?.username)?.id,
@@ -49,6 +51,7 @@ export function LeaveInitiativeBtn({
       className: "px-6! gap-6! border-2! border-accent!",
       duration: uiText.leaveInitiative.toast.durationInSeconds * 1000,
     });
+    void reloadUserInMonitoringData();
     setIsLoading(false);
   };
 

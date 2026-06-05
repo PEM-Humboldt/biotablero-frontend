@@ -5,7 +5,7 @@ import { uiText } from "pages/monitoring/ui/joinInitiativeRequestButton/layout/u
 import { LeaveInitiativeBtnAlert } from "pages/monitoring/ui/joinInitiativeRequestButton/LeaveInitiativeBtnAlert";
 import { CancelJoinInitiativeRequestBtnAlert } from "pages/monitoring/ui/joinInitiativeRequestButton/CancelJoinInitiativeRequestBtnAlert";
 import { MakeJoinInitiativeRequestBtnDialog } from "pages/monitoring/ui/joinInitiativeRequestButton/MakeJoinInitiativeRequestBtnDialog";
-import { useUserCTX } from "@hooks/UserContext";
+import { useUserCTX } from "@hooks/UserCTX";
 
 export function JoinInitiativeRequestButton() {
   const { userStateInInitiative } = useInitiativeCTX();

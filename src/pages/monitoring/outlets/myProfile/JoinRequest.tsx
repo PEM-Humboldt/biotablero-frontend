@@ -32,6 +32,7 @@ export function JoinRequests({ initiativeId }: { initiativeId: number }) {
   const totalRequest = useRef<number>(0);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
+  const { reloadUserInMonitoringData } = useUserInMonitoringCTX();
   const { userInitiativesById } = useUserInMonitoringCTX();
   const [requestParams, setRequestParams] = useState<ODataParams>({
     top: JOIN_REQUESTS_PER_PAGE,
@@ -124,6 +125,7 @@ export function JoinRequests({ initiativeId }: { initiativeId: number }) {
       return;
     }
 
+    await reloadUserInMonitoringData();
     handleFilterChange(JoinRequestStatus.UNDER_REVIEW, "creationDate");
   };
 

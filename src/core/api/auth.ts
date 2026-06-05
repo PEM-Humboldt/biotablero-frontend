@@ -7,7 +7,7 @@ import type { UserKeycloak } from "@appTypes/user";
 let keycloak: Keycloak | undefined;
 
 const backUrl =
-  window._env_?.VITE_AUTH_BACKEND_URL || import.meta.env.VITE_AUTH_BACKEND_URL;
+  window._env_?.VITE_APP_KEYCLOAK_URL || import.meta.env.VITE_APP_KEYCLOAK_URL;
 const realmUrl =
   window._env_?.VITE_APP_KEYCLOAK_REALM ||
   import.meta.env.VITE_APP_KEYCLOAK_REALM;

@@ -1,4 +1,4 @@
-import { useUserCTX } from "@hooks/UserContext";
+import { useUserCTX } from "@hooks/UserCTX";
 import { useNavigate } from "react-router";
 import { Button } from "@ui/shadCN/component/button";
 import { NotebookPen } from "lucide-react";
@@ -40,7 +40,7 @@ export function UserProfileCard() {
           <span className="font-normal">
             {uiText.profileCard.organization}{" "}
           </span>
-          {user.organizacion}
+          {user.organization}
         </li>
         <li className="flex justify-end mt-6">
           <Button

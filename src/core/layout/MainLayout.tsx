@@ -10,7 +10,7 @@ import {
   type LayoutActions,
   type LayoutState,
 } from "core/layout/mainLayout/hooks/layoutReducer";
-import { UserCTX } from "@hooks/UserContext";
+import { UserCTX } from "@hooks/UserCTX";
 import { OnLoadingModal } from "@ui/OnLoadingModal";
 
 const layoutInitial: LayoutState = {

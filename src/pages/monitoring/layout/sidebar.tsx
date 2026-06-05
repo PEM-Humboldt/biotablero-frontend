@@ -1,6 +1,6 @@
 import { NavLink } from "react-router";
 
-import { useUserCTX } from "@hooks/UserContext";
+import { useUserCTX } from "@hooks/UserCTX";
 import {
   Sidebar,
   SidebarContent,
