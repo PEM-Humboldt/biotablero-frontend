@@ -16,36 +16,40 @@ export function Uim() {
   }, [user]);
 
   return (
-    <div className="flex ml-auto px-3">
+    <div className="flex items-center ml-auto px-3">
       {user ? (
         <>
           <Button
             onClick={() => console.log("Notificaciones")}
             variant="link"
-            className="h-9 w-9 md:h-12 md:w-12"
             title="Notificaciones"
+            size="icon-lg"
+            aria-label="Ver notificaciones"
           >
-            <span className="sr-only">Notificaciones</span>
             <Bell className="size-4 md:size-5" aria-hidden="true" />
           </Button>
 
           <Button
             onClick={() => void navigate("/Monitoreo/MiPerfil")}
             variant="link"
-            className="h-9 w-9 md:h-12 md:w-12"
+            size="icon-lg"
             title="Mi perfil"
+            aria-label="Ver mi perfil"
           >
-            <span className="sr-only">Mi perfil</span>
-            <CircleUserRound className="size-4 md:size-5" aria-hidden="true" />
+            <img
+              src={user.picture}
+              alt=""
+              className="size-5 md:size-6 aspect-square rounded-full object-cover"
+            />
           </Button>
 
           <Button
             onClick={() => void logout()}
             variant="link"
-            className="h-9 w-9 md:h-12 md:w-12"
+            size="icon-lg"
             title="Cerrar sesión"
+            aria-label="Cerrar sesión"
           >
-            <span className="sr-only">Cerrar sesión</span>
             <DoorOpen className="size-4 md:size-5" aria-hidden="true" />
           </Button>
         </>
@@ -54,10 +58,9 @@ export function Uim() {
           onClick={() => void login()}
           variant="link"
           className="h-9 w-9 md:h-12 md:w-12"
+          title="Iniciar sesión"
+          aria-label="Iniciar sesión"
         >
-          <span className="sr-only">
-            {user ? "Ver mi perfil" : "Iniciar sesión"}
-          </span>
           <DoorClosed className="size-6" />
         </Button>
       )}
