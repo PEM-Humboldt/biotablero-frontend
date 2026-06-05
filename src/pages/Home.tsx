@@ -14,7 +14,7 @@ export function Home() {
     layoutDispatch({
       type: LayoutUpdated.CHANGE_SECTION,
       sectionData: {
-        moduleName: "",
+        moduleInfo: { name: "", icon: null },
         logos: new Set(["nasa", "temple", "siac"]),
         className: "",
       },

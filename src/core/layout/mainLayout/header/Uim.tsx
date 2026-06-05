@@ -7,7 +7,7 @@ import { DoorClosed, CircleUserRound, DoorOpen, Bell } from "lucide-react";
 import { useNavigate } from "react-router";
 
 export function Uim() {
-  const { user, login, logout } = useUserCTX();
+  const { user, login, logout, updateUser } = useUserCTX();
   const imageURL = useRef<string | null>(null);
   const navigate = useNavigate();
 
@@ -30,11 +30,11 @@ export function Uim() {
           </Button>
 
           <Button
-            onClick={() => void navigate("/Monitoreo/MiPerfil")}
+            onClick={() => void updateUser()}
             variant="link"
             size="icon-lg"
-            title="Mi perfil"
-            aria-label="Ver mi perfil"
+            title="Editar mi usuario"
+            aria-label="Ir al editor de usuario"
           >
             {user.picture ? (
               <img

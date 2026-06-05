@@ -1,8 +1,12 @@
 import type { UserProfile } from "@appTypes/user";
 import type { Collaborators, Names } from "@appTypes/layout";
+import type { modulesIconsDictionary } from "core/layout/mainLayout/header/layout/modulesIconsDictionary";
 
 export interface LayoutState {
-  moduleName: string;
+  moduleInfo: {
+    name: string;
+    icon: keyof typeof modulesIconsDictionary | null;
+  };
   headerNames: Names;
   user: UserProfile | null;
   logos: Set<Collaborators>;
@@ -20,13 +24,16 @@ export enum LayoutUpdated {
 }
 
 export type LayoutActions =
-  | { type: LayoutUpdated.MODULE_NAME; newName: string }
+  | {
+      type: LayoutUpdated.MODULE_NAME;
+      newInfo: { name: string; icon: keyof typeof modulesIconsDictionary };
+    }
   | { type: LayoutUpdated.SECTION_LOGOS; newLogos: Set<Collaborators> }
   | { type: LayoutUpdated.HEADER_NAMES; newHeader: Partial<Names> }
   | { type: LayoutUpdated.CLASS_NAME; newClass: string }
   | {
       type: LayoutUpdated.CHANGE_SECTION;
-      sectionData: Pick<LayoutState, "moduleName" | "logos" | "className">;
+      sectionData: Pick<LayoutState, "moduleInfo" | "logos" | "className">;
     };
 
 export function layoutReducer(
@@ -35,7 +42,7 @@ export function layoutReducer(
 ): LayoutState {
   switch (action.type) {
     case LayoutUpdated.MODULE_NAME:
-      return { ...state, moduleName: action.newName };
+      return { ...state, moduleInfo: action.newInfo };
     case LayoutUpdated.SECTION_LOGOS:
       return { ...state, logos: action.newLogos };
     case LayoutUpdated.HEADER_NAMES:
@@ -48,7 +55,7 @@ export function layoutReducer(
     case LayoutUpdated.CHANGE_SECTION:
       return {
         ...state,
-        moduleName: action.sectionData.moduleName,
+        moduleInfo: action.sectionData.moduleInfo,
         logos: action.sectionData.logos,
         className: action.sectionData.className,
         headerNames: { title: "", subtitle: "" },

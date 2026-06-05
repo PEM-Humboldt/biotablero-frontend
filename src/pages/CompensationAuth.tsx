@@ -30,7 +30,7 @@ export function RenderCompensation() {
     layoutDispatch({
       type: LayoutUpdated.CHANGE_SECTION,
       sectionData: {
-        moduleName: "Compensación Ambiental",
+        moduleInfo: { name: "Compensación Ambiental", icon: "compensations" },
         logos: new Set(),
         className: "fullgrid",
       },
