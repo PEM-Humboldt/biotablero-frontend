@@ -1,8 +1,6 @@
 import type { Collaborators } from "@appTypes/layout";
-import {
-  collaboratorsData,
-  footerInfo,
-} from "core/layout/mainLayout/footer/footerData";
+import { collaboratorsIconsDictionary } from "core/layout/mainLayout/footer/layout/collaboratorsIconsDictionary";
+import { footerInfo } from "core/layout/mainLayout/footer/layout/footerInfo";
 import { Button } from "@ui/shadCN/component/button";
 import { cn } from "@ui/shadCN/lib/utils";
 
@@ -43,26 +41,28 @@ export function Footer({ logos, className }: FooterProps) {
       </div>
 
       <div className="text-right">
-        <div className="text-sm mb-2">
-          {footerInfo.uiTxt.collaboratorsTitle}
-        </div>
         {collaborators.length > 0 && (
-          <div className="flex flex-wrap gap-4 justify-end">
-            {collaborators.map((collaborator) => (
-              <a
-                href={collaboratorsData[collaborator].url}
-                target="_blank"
-                rel="noopener noreferrer"
-                key={collaborator}
-              >
-                <img
-                  src={collaboratorsData[collaborator].img}
-                  alt={collaborator}
-                  className="object-contain object-center w-14 h-8 md:w-18 md:h-12 "
-                />
-              </a>
-            ))}
-          </div>
+          <>
+            <div className="text-sm mb-2">
+              {footerInfo.uiTxt.collaboratorsTitle}
+            </div>
+            <div className="flex flex-wrap gap-4 justify-end">
+              {collaborators.map((collaborator) => (
+                <a
+                  href={collaboratorsIconsDictionary[collaborator].url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  key={collaborator}
+                >
+                  <img
+                    src={collaboratorsIconsDictionary[collaborator].img}
+                    alt={collaborator}
+                    className="object-contain object-center w-14 h-8 md:w-18 md:h-12 "
+                  />
+                </a>
+              ))}
+            </div>
+          </>
         )}
 
         <div className="text-right mt-2">
