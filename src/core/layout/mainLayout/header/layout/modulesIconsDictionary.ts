@@ -3,6 +3,7 @@ import searchIcon from "@assets/modules/ico/consulta-geografica.svg";
 import indicatorsIcon from "@assets/modules/ico/indicadores-biodiversidad.svg";
 import portfoliosIcon from "@assets/modules/ico/portafolio.svg";
 import compensationsIcon from "@assets/modules/ico/compensacion-ambiental.svg";
+import alertIcon from "@assets/modules/ico/alertas-tempranas-icono.svg";
 
 export const modulesIconsDictionary = {
   search: searchIcon,
@@ -10,4 +11,5 @@ export const modulesIconsDictionary = {
   indicators: indicatorsIcon,
   portfolios: portfoliosIcon,
   compensations: compensationsIcon,
+  alert: alertIcon,
 } as const;
