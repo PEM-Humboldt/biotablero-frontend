@@ -1,6 +1,6 @@
 import humboldt from "@assets/logos/humboldt.png";
 
-export const footerInfo = {
+export const uiText = {
   uiTxt: {
     links: {
       citation: "Citese",

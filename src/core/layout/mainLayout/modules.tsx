@@ -1,4 +1,4 @@
-import { modulesIconsDictionary } from "./header/layout/modulesIconsDictionary";
+import { modulesIcons } from "@assets/dictionaries/modulesIcons";
 
 interface Module {
   id: number;
@@ -18,7 +18,7 @@ const modules: Module[] = [
   {
     id: 1,
     title: "Consultas Geográficas",
-    image: modulesIconsDictionary["search"],
+    image: modulesIcons["search"],
     link: "/Consultas",
     authModule: false,
     imgSrc: "src/core/assets/geografico.png",
@@ -26,7 +26,7 @@ const modules: Module[] = [
   {
     id: 2,
     title: "Monitoreo Comunitario",
-    image: modulesIconsDictionary["monitoring"],
+    image: modulesIcons["monitoring"],
     link: "/Monitoreo",
     authModule: false,
     imgSrc: "src/core/assets/mcomunitario.png",
@@ -35,7 +35,7 @@ const modules: Module[] = [
   {
     id: 3,
     title: "Indicadores de Biodiversidad",
-    image: modulesIconsDictionary["indicators"],
+    image: modulesIcons["indicators"],
     link: "/Indicadores",
     authModule: false,
     imgSrc: "src/core/assets/indicadores.png",
@@ -43,7 +43,7 @@ const modules: Module[] = [
   {
     id: 4,
     title: "Portafolios",
-    image: modulesIconsDictionary["portfolios"],
+    image: modulesIcons["portfolios"],
     link: "/Portafolios",
     authModule: false,
     imgSrc: "src/core/assets/portafolios.png",
@@ -51,7 +51,7 @@ const modules: Module[] = [
   {
     id: 5,
     title: "Compensación Ambiental",
-    image: modulesIconsDictionary["compensations"],
+    image: modulesIcons["compensations"],
     link: (username: string) => `/${username.toUpperCase()}/Compensaciones`,
     authModule: true,
     imgSrc: "src/core/assets/compensaciones.png",
@@ -59,7 +59,7 @@ const modules: Module[] = [
   {
     id: 6,
     title: "Alertas Tempranas",
-    image: modulesIconsDictionary["alert"],
+    image: modulesIcons["alert"],
     link: "/Alertas",
     authModule: false,
     imgSrc: "src/core/assets/alertas.png",

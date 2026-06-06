@@ -4,12 +4,12 @@ import type { Names } from "@appTypes/layout";
 
 import { Menu } from "core/layout/mainLayout/header/Menu";
 import { Uim } from "core/layout/mainLayout/header/Uim";
-import { modulesIconsDictionary } from "core/layout/mainLayout/header/layout/modulesIconsDictionary";
+import { modulesIcons } from "@assets/dictionaries/modulesIcons";
 
 interface HeaderProps {
   activeModuleInfo: {
     name: string;
-    icon: keyof typeof modulesIconsDictionary | null;
+    icon: keyof typeof modulesIcons | null;
   };
   headerNames: Names;
   className?: string;
@@ -60,7 +60,7 @@ export function Header({
           </span>
           {activeModuleInfo.icon && (
             <img
-              src={modulesIconsDictionary[activeModuleInfo.icon]}
+              src={modulesIcons[activeModuleInfo.icon]}
               className="w-14 h-14 fill-accent brightness-0 opacity-70"
               alt=""
             />

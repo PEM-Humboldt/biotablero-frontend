@@ -4,12 +4,10 @@ import { useUserCTX } from "@hooks/UserCTX";
 import defaultProfileImageUrl from "@assets/user_icon.svg?url";
 import { Button } from "@ui/shadCN/component/button";
 import { DoorClosed, CircleUserRound, DoorOpen, Bell } from "lucide-react";
-import { useNavigate } from "react-router";
 
 export function Uim() {
   const { user, login, logout, updateUser } = useUserCTX();
   const imageURL = useRef<string | null>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     imageURL.current = user?.picture ?? defaultProfileImageUrl;

@@ -5,7 +5,7 @@ import geobon from "@assets/logos/geobon.png";
 import usaid from "@assets/logos/usaid.png";
 import umed from "@assets/logos/umed.png";
 
-export const collaboratorsIconsDictionary = {
+export const collaboratorsIcons = {
   nasa: { img: nasa, url: "https://www.nasa.gov/" },
   temple: { img: temple, url: "https://www.temple.edu/" },
   siac: { img: siac, url: "http://www.siac.gov.co/" },

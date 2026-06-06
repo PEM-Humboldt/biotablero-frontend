@@ -1,11 +1,11 @@
 import type { UserProfile } from "@appTypes/user";
 import type { Collaborators, Names } from "@appTypes/layout";
-import type { modulesIconsDictionary } from "core/layout/mainLayout/header/layout/modulesIconsDictionary";
+import type { modulesIcons } from "@assets/dictionaries/modulesIcons";
 
 export interface LayoutState {
   moduleInfo: {
     name: string;
-    icon: keyof typeof modulesIconsDictionary | null;
+    icon: keyof typeof modulesIcons | null;
   };
   headerNames: Names;
   user: UserProfile | null;
@@ -26,7 +26,7 @@ export enum LayoutUpdated {
 export type LayoutActions =
   | {
       type: LayoutUpdated.MODULE_NAME;
-      newInfo: { name: string; icon: keyof typeof modulesIconsDictionary };
+      newInfo: { name: string; icon: keyof typeof modulesIcons };
     }
   | { type: LayoutUpdated.SECTION_LOGOS; newLogos: Set<Collaborators> }
   | { type: LayoutUpdated.HEADER_NAMES; newHeader: Partial<Names> }

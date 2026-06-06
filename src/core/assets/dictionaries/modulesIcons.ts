@@ -5,7 +5,7 @@ import portfoliosIcon from "@assets/modules/ico/portafolio.svg";
 import compensationsIcon from "@assets/modules/ico/compensacion-ambiental.svg";
 import alertIcon from "@assets/modules/ico/alertas-tempranas-icono.svg";
 
-export const modulesIconsDictionary = {
+export const modulesIcons = {
   search: searchIcon,
   monitoring: monitorinIcon,
   indicators: indicatorsIcon,
