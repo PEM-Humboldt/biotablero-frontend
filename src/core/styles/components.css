@@ -334,9 +334,4 @@
       }
     }
   }
-
-  /* NOTE: iconos de los modulos */
-  .moduleIcon {
-    @apply block w-14 h-14 bg-contain float-right bg-no-repeat bg-center;
-  }
 }
