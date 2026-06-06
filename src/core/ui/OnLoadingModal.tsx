@@ -13,7 +13,6 @@ export function OnLoadingModal({
   return (
     <Modal
       open={open}
-      disableAutoFocus
       sx={{ position: "absolute" }}
       container={containerElement}
     >

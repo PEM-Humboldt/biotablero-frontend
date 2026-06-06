@@ -3,6 +3,7 @@ import { JoinInitiativeRequestButton } from "pages/monitoring/ui/JoinInitiativeR
 
 export function Profile() {
   const { userStateInInitiative, initiativeInfo } = useInitiativeCTX();
+
   return (
     <div>
       <JoinInitiativeRequestButton />

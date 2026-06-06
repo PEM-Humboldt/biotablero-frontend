@@ -1,5 +1,7 @@
 import { useMemo } from "react";
 
+import { PageTitleUpdater } from "@ui/PageTitleUpdater";
+
 import { InitiativeUpdater } from "pages/monitoring/outlets/myProfile/InitiativeUpdater";
 import { UserProfileCard } from "pages/monitoring/outlets/myProfile/UserProfileCard";
 import { UserStats } from "pages/monitoring/outlets/myProfile/UserStats";
@@ -20,6 +22,8 @@ export function MyProfile() {
 
   return (
     <main className="page-main [&>section]:w-full [&>section]:mb-4 lg:[&>section]:mb-8">
+      <PageTitleUpdater title="Mis Iniciativas" subtitle="" />
+
       <header>
         <h3>{uiText.title}</h3>
       </header>

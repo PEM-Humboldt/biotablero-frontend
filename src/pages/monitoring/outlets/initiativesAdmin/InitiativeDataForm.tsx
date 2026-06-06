@@ -38,6 +38,7 @@ import { fetchAndMakeLocationObj } from "pages/monitoring/ui/initiativesAdmin/ut
 import { uiText as componentText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 import { addTagToInitiative } from "pages/monitoring/api/services/tags";
+import { PageTitleUpdater } from "@ui/PageTitleUpdater";
 
 export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
   const [formID, setformID] = useState(0);
@@ -127,6 +128,11 @@ export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
 
   return (
     <div className="w-full rounded-xl bg-white overflow-hidden">
+      <PageTitleUpdater
+        title="Administrar iniciativas"
+        subtitle="Crear iniciativa"
+      />
+
       <h4 className="px-6 py-2 mb-0 text-base bg-primary text-primary-foreground">
         Nueva iniciativa
       </h4>
