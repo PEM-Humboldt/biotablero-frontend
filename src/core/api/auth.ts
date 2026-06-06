@@ -36,10 +36,15 @@ export async function getKeycloak() {
       "Biotablero",
   });
 
-  await keycloak.init({
-    checkLoginIframe: false,
-    onLoad: "check-sso",
-  });
+  try {
+    await keycloak.init({
+      checkLoginIframe: false,
+      onLoad: "check-sso",
+      silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`,
+    });
+  } catch (err) {
+    console.error("Auth server unavailable:", err);
+  }
 
   return keycloak;
 }
