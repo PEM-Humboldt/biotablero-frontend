@@ -1,31 +1,28 @@
-import React from "react";
+import { useContext, useEffect, useReducer, useRef } from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
 import { PointFilledLegend } from "@ui/CssLegends";
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
+import { Button } from "@ui/shadCN/component/button";
 import {
   SearchLegacyCTX,
   type LegacyContextValues,
 } from "pages/search/hooks/SearchContext";
-import { matchColor } from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
-import { formatNumber } from "@utils/format";
+import { matchColor } from "pages/search/utils/matchColor";
 import TextBoxes from "@ui/TextBoxes";
 
-import { currentPAConn, DPCKeys, DPC } from "pages/search/types/connectivity";
+import { DPC, DPCKeys } from "pages/search/types/connectivity";
 import { textsObject } from "pages/search/types/texts";
-import { SmallBars } from "@composites/charts/SmallBars";
+import {
+  SmallBars,
+  SmallBarsData,
+  type SmallBarTooltip,
+} from "@composites/charts/SmallBars";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
-import LargeStackedBar from "@composites/charts/LargeStackedBar";
 import { CurrentPAConnectivityController } from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivityController";
 import { ShapeLayer } from "pages/search/types/layers";
-
-const getLabel = {
-  unprot: "No protegida",
-  prot_conn: "Protegida conectada",
-  prot_unconn: "Protegida no conectada",
-};
 
 const legendDPCCategories = {
   muy_bajo: "Muy bajo",
@@ -35,275 +32,264 @@ const legendDPCCategories = {
   muy_alto: "Muy Alto",
 };
 
-interface currentPAConnExt extends currentPAConn {
-  label: string;
-}
-
 interface Props {}
 
-interface currentPAConnState {
+interface CurrentPAConnState {
   infoShown: Set<string>;
-  currentPAConnData: Array<currentPAConnExt>;
   dpcData: Array<DPC>;
-  prot: number;
+  showLowestDpc: boolean;
   messages: {
-    conn: MessageWrapperType;
     dpc: MessageWrapperType;
   };
+  graphData: {
+    transformedData: Array<SmallBarsData>;
+    keys: Array<string>;
+    tooltips: Array<SmallBarTooltip>;
+  };
   texts: {
-    paConnCurrent: textsObject;
     paConnDPC: textsObject;
   };
   layers: Array<ShapeLayer>;
 }
 
-class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
-  static contextType = SearchLegacyCTX;
-  mounted = false;
-  componentName = "currentPAConn";
-  CPACController;
+type DpcPayload = {
+  dpcData: Array<DPC>;
+  graphData: {
+    transformedData: Array<SmallBarsData>;
+    keys: Array<string>;
+    tooltips: Array<SmallBarTooltip>;
+  };
+};
 
-  constructor(props: Props) {
-    super(props);
-    this.CPACController = new CurrentPAConnectivityController();
-    this.mounted = false;
-    this.state = {
-      infoShown: new Set(["current"]),
-      currentPAConnData: [],
-      dpcData: [],
-      prot: 0,
-      messages: {
-        conn: "loading",
-        dpc: "loading",
-      },
-      texts: {
-        paConnCurrent: { info: "", cons: "", meto: "", quote: "" },
-        paConnDPC: { info: "", cons: "", meto: "", quote: "" },
-      },
-      layers: [],
-    };
+type Action =
+  | { type: "TOGGLE_INFO"; payload: string }
+  | { type: "SET_SHOW_LOWEST"; payload: boolean }
+  | { type: "DPC_SUCCEEDED"; payload: DpcPayload }
+  | { type: "DPC_FAILED" }
+  | { type: "SET_TEXTS"; payload: textsObject }
+  | { type: "SET_LAYERS"; payload: Array<ShapeLayer> };
+
+const initialState: CurrentPAConnState = {
+  infoShown: new Set(["dpc"]),
+  dpcData: [],
+  showLowestDpc: false,
+  messages: {
+    dpc: "loading",
+  },
+  graphData: {
+    transformedData: [],
+    keys: [],
+    tooltips: [],
+  },
+  texts: {
+    paConnDPC: { info: "", cons: "", meto: "", quote: "" },
+  },
+  layers: [],
+};
+
+function reducer(
+  state: CurrentPAConnState,
+  action: Action,
+): CurrentPAConnState {
+  switch (action.type) {
+    case "TOGGLE_INFO": {
+      const infoShown = new Set(state.infoShown);
+      if (infoShown.has(action.payload)) infoShown.delete(action.payload);
+      else infoShown.add(action.payload);
+      return { ...state, infoShown };
+    }
+    case "SET_SHOW_LOWEST":
+      return {
+        ...state,
+        showLowestDpc: action.payload,
+        messages: { ...state.messages, dpc: "loading" },
+      };
+    case "DPC_SUCCEEDED":
+      return {
+        ...state,
+        dpcData: action.payload.dpcData,
+        graphData: action.payload.graphData,
+        messages: { ...state.messages, dpc: null },
+      };
+    case "DPC_FAILED":
+      return {
+        ...state,
+        messages: { ...state.messages, dpc: "no-data" },
+      };
+    case "SET_TEXTS":
+      return { ...state, texts: { paConnDPC: action.payload } };
+    case "SET_LAYERS":
+      return { ...state, layers: action.payload };
+    default:
+      return state;
   }
+}
 
-  componentDidMount() {
-    this.mounted = true;
-    const {
-      areaType,
-      areaId,
-      setShapeLayers,
-      setLoadingLayer,
-      setLayerError,
-      setMapTitle,
-      setShowAreaLayer,
-    } = this.context as LegacyContextValues;
+function CurrentPAConnectivity(_: Props) {
+  const context = useContext(SearchLegacyCTX) as LegacyContextValues;
+  const {
+    areaType,
+    areaId,
+    setShapeLayers,
+    setLoadingLayer,
+    setLayerError,
+    setMapTitle,
+    setShowAreaLayer,
+  } = context;
 
-    const areaTypeId = areaType!.id;
-    const areaIdId = areaId!.id.toString();
+  const controllerRef = useRef(new CurrentPAConnectivityController());
+  const mountedRef = useRef(false);
+  const dpcRequestIdRef = useRef(0);
 
-    this.CPACController.setArea(areaTypeId, areaIdId);
+  const [state, dispatch] = useReducer(reducer, initialState);
 
-    BackendAPI.requestCurrentPAConnectivity(areaTypeId, areaIdId)
-      .then((res: Array<currentPAConn>) => {
-        if (this.mounted) {
-          const protConn = res.find((item) => item.key === "prot_conn");
-          const protUnconn = res.find((item) => item.key === "prot_unconn");
-          this.setState((prev) => ({
-            currentPAConnData: res.map((item) => ({
-              ...item,
-              label: getLabel[item.key],
-            })),
-            prot:
-              protConn && protUnconn
-                ? (protConn.percentage + protUnconn.percentage) * 100
-                : 0,
-            messages: {
-              ...prev.messages,
-              conn: null,
-            },
-          }));
-        }
+  const loadDpcData = (showLowestDpc: boolean) => {
+    dispatch({ type: "SET_SHOW_LOWEST", payload: showLowestDpc });
+
+    const requestId = ++dpcRequestIdRef.current;
+
+    controllerRef.current
+      .getDpcData(showLowestDpc)
+      .then((result) => {
+        if (!mountedRef.current || requestId !== dpcRequestIdRef.current)
+          return;
+        dispatch({ type: "DPC_SUCCEEDED", payload: result });
       })
       .catch(() => {
-        this.setState((prev) => ({
-          messages: {
-            ...prev.messages,
-            conn: "no-data",
-          },
-        }));
+        if (!mountedRef.current || requestId !== dpcRequestIdRef.current)
+          return;
+        dispatch({ type: "DPC_FAILED" });
       });
-
-    BackendAPI.requestDPC(areaTypeId, areaIdId, 5)
-      .then((res: Array<DPC>) => {
-        if (this.mounted) {
-          this.setState((prev) => ({
-            dpcData: res.reverse(),
-            messages: {
-              ...prev.messages,
-              dpc: null,
-            },
-          }));
-        }
-      })
-      .catch(() => {
-        this.setState((prev) => ({
-          messages: {
-            ...prev.messages,
-            dpc: "no-data",
-          },
-        }));
-      });
-
-    ["paConnCurrent", "paConnDPC"].forEach((item) => {
-      BackendAPI.requestSectionTexts(item)
-        .then((res) => {
-          if (this.mounted) {
-            this.setState((prevState) => ({
-              texts: { ...prevState.texts, [item]: res },
-            }));
-          }
-        })
-        .catch(() => {
-          this.setState((prevState) => ({
-            texts: {
-              ...prevState.texts,
-              [item]: { info: "", cons: "", meto: "", quote: "" },
-            },
-          }));
-        });
-    });
-
-    setLoadingLayer(true);
-
-    this.CPACController.getLayer()
-      .then((currentPAConn) => {
-        if (this.mounted) {
-          this.setState(
-            () => ({ layers: [currentPAConn] }),
-            () => setLoadingLayer(false),
-          );
-          setShowAreaLayer(true);
-          setShapeLayers(this.state.layers);
-          setMapTitle({ name: "Conectividad de áreas protegidas" });
-        }
-      })
-      .catch((error) => setLayerError(error));
-  }
-
-  componentWillUnmount() {
-    this.mounted = false;
-    this.CPACController.cancelActiveRequests();
-  }
-
-  toggleInfo = (value: string) => {
-    this.setState((prev) => {
-      const newState = prev;
-      if (prev.infoShown.has(value)) {
-        newState.infoShown.delete(value);
-        return newState;
-      }
-      newState.infoShown.add(value);
-      return newState;
-    });
   };
 
-  render() {
-    const { areaType, areaId } = this.context as LegacyContextValues;
-    const {
-      currentPAConnData,
-      dpcData,
-      prot,
-      infoShown,
-      messages: { conn, dpc: dpcMess },
-      texts,
-    } = this.state;
+  useEffect(() => {
+    if (!areaType || !areaId) {
+      return;
+    }
 
-    const areaTypeId = areaType!.id;
-    const areaIdId = areaId!.id.toString();
+    mountedRef.current = true;
+    const areaTypeId = areaType.id;
+    const areaIdId = areaId.id.toString();
 
-    const graphData = this.CPACController.getGraphData(dpcData);
+    controllerRef.current.setArea(areaTypeId, areaIdId);
+    dpcRequestIdRef.current += 1;
 
-    return (
-      <div className="graphcontainer pt6">
-        <h2>
-          <IconTooltip title="Interpretación">
-            <InfoIcon
-              className={`graphinfo${
-                infoShown.has("current") ? " activeBox" : ""
-              }`}
-              onClick={() => this.toggleInfo("current")}
-            />
-          </IconTooltip>
-        </h2>
-        {infoShown.has("current") && (
+    setLoadingLayer(true);
+    loadDpcData(false);
+
+    BackendAPI.requestSectionTexts("paConnDPC")
+      .then((res) => {
+        if (!mountedRef.current) return;
+        dispatch({ type: "SET_TEXTS", payload: res });
+      })
+      .catch(() => {
+        if (!mountedRef.current) return;
+        dispatch({
+          type: "SET_TEXTS",
+          payload: { info: "", cons: "", meto: "", quote: "" },
+        });
+      });
+
+    controllerRef.current
+      .getLayer()
+      .then((currentPAConnLayer) => {
+        if (!mountedRef.current) return;
+        dispatch({ type: "SET_LAYERS", payload: [currentPAConnLayer] });
+        setShowAreaLayer(true);
+        setShapeLayers([currentPAConnLayer]);
+        setMapTitle({ name: "Conectividad de áreas protegidas" });
+        setLoadingLayer(false);
+      })
+      .catch((error) => {
+        setLayerError(error);
+        setLoadingLayer(false);
+      });
+
+    return () => {
+      mountedRef.current = false;
+      controllerRef.current.cancelActiveRequests();
+    };
+  }, [
+    areaType,
+    areaId,
+    setLoadingLayer,
+    setLayerError,
+    setMapTitle,
+    setShapeLayers,
+    setShowAreaLayer,
+  ]);
+
+  const toggleInfo = (value: string) => {
+    dispatch({ type: "TOGGLE_INFO", payload: value });
+  };
+
+  const toggleDpcMode = () => {
+    loadDpcData(!state.showLowestDpc);
+  };
+
+  const highlightFeature = (selectedKey: string) => {
+    const highlightedLayers = state.layers.map((layer) => {
+      if (layer.id === "currentPAConn") {
+        layer.layerStyle = controllerRef.current.setLayerStyle(selectedKey);
+      }
+      return layer;
+    });
+    setShapeLayers(highlightedLayers);
+    dispatch({ type: "SET_LAYERS", payload: highlightedLayers });
+  };
+
+  const { dpcData, showLowestDpc, infoShown, messages, texts, graphData } =
+    state;
+  const areaTypeId = areaType!.id;
+  const areaIdId = areaId!.id.toString();
+
+  return (
+    <div className="graphcontainer pt6">
+      <div>
+        <h6>Aporte de las áreas protegidas a la conectividad</h6>
+        <div className="mb2 flex flex-wrap items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={toggleDpcMode}
+          >
+            {showLowestDpc ? "Áreas con mayor dPC" : "Áreas con menor dPC"}
+          </Button>
+          <span className="text-sm text-muted-foreground">
+            {showLowestDpc
+              ? "Áreas que menos aportan."
+              : "Áreas que más aportan."}
+          </span>
+        </div>
+        <IconTooltip title="Interpretación">
+          <InfoIcon
+            className={`downSpecial${infoShown.has("dpc") ? " activeBox" : ""}`}
+            onClick={() => toggleInfo("dpc")}
+          />
+        </IconTooltip>
+        {infoShown.has("dpc") && (
           <ShortInfo
-            description={`<p>${texts.paConnCurrent.info}</p>`}
+            description={`<p>${texts.paConnDPC.info}</p>`}
             className="graphinfo2"
             collapseButton={false}
           />
         )}
+        <h3 className="innerInfoH3">
+          Haz clic en un área protegida para visualizarla
+        </h3>
         <div>
-          <h6>Conectividad áreas protegidas</h6>
-          <div>
-            <LargeStackedBar
-              data={currentPAConnData}
-              message={conn}
-              labelX="Hectáreas"
-              labelY="Conectividad Áreas Protegidas"
-              units="ha"
-              colors={matchColor("currentPAConn")}
-              padding={0.25}
-            />
-            <TextBoxes
-              consText={texts.paConnCurrent.cons}
-              metoText={texts.paConnCurrent.meto}
-              quoteText={texts.paConnCurrent.quote}
-              downloadData={currentPAConnData}
-              downloadName={`conn_current_${areaTypeId}_${areaIdId}.csv`}
-              toggleInfo={() => this.toggleInfo("current")}
-              isInfoOpen={infoShown.has("current")}
-            />
-          </div>
-          {currentPAConnData.length > 0 && (
-            <div>
-              <h6 className="innerInfo">Porcentaje de área protegida</h6>
-              <h5
-                className="innerInfoH5"
-                style={{
-                  backgroundColor: matchColor("timelinePAConn")("prot"),
-                }}
-              >
-                {`${formatNumber(prot, 2)}%`}
-              </h5>
-            </div>
-          )}
-          <h6>Aporte de las áreas protegidas a la conectividad</h6>
-          <IconTooltip title="Interpretación">
-            <InfoIcon
-              className={`downSpecial${
-                infoShown.has("dpc") ? " activeBox" : ""
-              }`}
-              onClick={() => this.toggleInfo("dpc")}
-            />
-          </IconTooltip>
-          {infoShown.has("dpc") && (
-            <ShortInfo
-              description={`<p>${texts.paConnDPC.info}</p>`}
-              className="graphinfo2"
-              collapseButton={false}
-            />
-          )}
-          <h3 className="innerInfoH3">
-            Haz clic en un área protegida para visualizarla
-          </h3>
-          <div>
+          {dpcData.length > 0 && (
             <SmallBars
               data={graphData.transformedData}
               keys={graphData.keys}
               tooltips={graphData.tooltips}
-              loadStatus={dpcMess}
+              loadStatus={messages.dpc}
               colors={matchColor("dpc")}
               onClickHandler={(selected: string) => {
-                this.highlightFeature(selected);
+                highlightFeature(selected);
               }}
+              animate={false}
               margin={{
                 bottom: 50,
                 left: 40,
@@ -315,44 +301,27 @@ class CurrentPAConnectivity extends React.Component<Props, currentPAConnState> {
               }}
               enableLabel={true}
             />
-          </div>
-          <div className="dpcLegend">
-            {DPCKeys.map((cat) => (
-              <PointFilledLegend color={matchColor("dpc")(cat)} key={cat}>
-                {legendDPCCategories[cat]}
-              </PointFilledLegend>
-            ))}
-          </div>
-          <TextBoxes
-            consText={texts.paConnDPC.cons}
-            metoText={texts.paConnDPC.meto}
-            quoteText={texts.paConnDPC.quote}
-            downloadData={dpcData}
-            downloadName={`conn_dpc_${areaTypeId}_${areaIdId}.csv`}
-            isInfoOpen={infoShown.has("dpc")}
-            toggleInfo={() => this.toggleInfo("dpc")}
-          />
+          )}
         </div>
+        <div className="dpcLegend">
+          {DPCKeys.map((cat) => (
+            <PointFilledLegend color={matchColor("dpc")(cat)} key={cat}>
+              {legendDPCCategories[cat]}
+            </PointFilledLegend>
+          ))}
+        </div>
+        <TextBoxes
+          consText={texts.paConnDPC.cons}
+          metoText={texts.paConnDPC.meto}
+          quoteText={texts.paConnDPC.quote}
+          downloadData={dpcData}
+          downloadName={`conn_dpc_${areaTypeId}_${areaIdId}.csv`}
+          isInfoOpen={infoShown.has("dpc")}
+          toggleInfo={() => toggleInfo("dpc")}
+        />
       </div>
-    );
-  }
-
-  /**
-   * Highlight an specific feature of the Currenta PA layer
-   *
-   * @param {string} selectedKey Id of the feature
-   */
-  highlightFeature = (selectedKey: string) => {
-    const { setShapeLayers } = this.context as LegacyContextValues;
-    const { layers } = this.state;
-    const highlightedLayers = layers.map((layer) => {
-      if (layer.id === "currentPAConn") {
-        layer.layerStyle = this.CPACController.setLayerStyle(selectedKey);
-      }
-      return layer;
-    });
-    setShapeLayers(highlightedLayers);
-  };
+    </div>
+  );
 }
 
 export default CurrentPAConnectivity;
