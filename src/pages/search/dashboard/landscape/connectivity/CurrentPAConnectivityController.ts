@@ -2,6 +2,7 @@ import { SmallBarsData } from "@composites/charts/SmallBars";
 import { DPC } from "pages/search/types/connectivity";
 import { formatNumber } from "@utils/format";
 import { type SmallBarTooltip } from "@composites/charts/SmallBars";
+import SearchAPI from "pages/search/api/searchAPI";
 import BackendAPI from "pages/search/api/backendAPI";
 import {
   ShapeLayer,
@@ -11,10 +12,13 @@ import { matchColor } from "pages/search/utils/matchColor";
 import { ShapeAPIObject } from "pages/search/types/api";
 import { CancelTokenSource } from "axios";
 
+type DpcGraphData = ReturnType<CurrentPAConnectivityController["getGraphData"]>;
+
 export class CurrentPAConnectivityController {
   areaType: string | null = null;
   areaId: string | null = null;
   activeRequests: Map<string, CancelTokenSource> = new Map();
+  dpcRequestId = 0;
 
   constructor() {}
 
@@ -22,6 +26,67 @@ export class CurrentPAConnectivityController {
     this.areaType = areaType;
     this.areaId = areaId;
   }
+
+  /**
+   * Get the values of connectivity for the protected areas with higher dPC value in a given area.
+   *
+   * @param {boolean} showLowestDpc whether to sort ascending or descending
+   *
+   * @returns {Promise<{ dpcData: Array<DPC>; graphData: DpcGraphData }>}
+   */
+  getDpcData = async (
+    showLowestDpc: boolean,
+  ): Promise<{ dpcData: Array<DPC>; graphData: DpcGraphData }> => {
+    const areaId = Number(this.areaId ?? "");
+    const requestId = ++this.dpcRequestId;
+
+    const res = await SearchAPI.requestMetricsValues<"dpc">("dpc", areaId)
+      .request;
+    if (requestId !== this.dpcRequestId) {
+      throw new Error("request canceled");
+    }
+
+    const normalizedDpc = [...res]
+      .map((item: any) => ({
+        id: String(item.id ?? item.pa_id ?? ""),
+        name: String(item.name ?? item.pa_name ?? ""),
+        area: Number(item.area ?? 0),
+        value: Number(item.value ?? item.dpc ?? 0),
+      }))
+      .filter((item) => item.value > 0);
+
+    const sortedByValue = [...normalizedDpc].sort((a, b) => a.value - b.value);
+    const total = sortedByValue.length;
+    const rankById = new Map(
+      sortedByValue.map((item, index) => [item.id, index]),
+    );
+
+    const withCategory = normalizedDpc.map((item) => {
+      const rank = rankById.get(item.id) ?? 0;
+      const percentile = total > 0 ? ((rank + 1) / total) * 100 : 0;
+      let key: "muy_bajo" | "bajo" | "medio" | "alto" | "muy_alto" = "muy_bajo";
+
+      if (percentile <= 20) key = "muy_bajo";
+      else if (percentile <= 40) key = "bajo";
+      else if (percentile <= 60) key = "medio";
+      else if (percentile <= 80) key = "alto";
+      else key = "muy_alto";
+
+      return {
+        ...item,
+        key,
+      };
+    });
+
+    const dpcData = withCategory
+      .sort((a, b) => (showLowestDpc ? a.value - b.value : b.value - a.value))
+      .slice(0, 5) as DPC[];
+
+    return {
+      dpcData,
+      graphData: this.getGraphData(dpcData),
+    };
+  };
 
   /**
    * Transform data structure to be passed to component as a prop
@@ -47,11 +112,7 @@ export class CurrentPAConnectivityController {
       tooltips.push({
         group: pa.id,
         category: pa.key,
-        tooltipContent: [
-          pa.name,
-          `${formatNumber(pa.value, 2)}`,
-          `${formatNumber(pa.area, 2)} ha`,
-        ],
+        tooltipContent: [pa.name, `dPC: ${formatNumber(pa.value, 2)}`],
       });
 
       if (!categories.has(pa.key)) {
@@ -155,6 +216,7 @@ export class CurrentPAConnectivityController {
    * Send the cancel signal to all active requests and remove them from the map
    */
   cancelActiveRequests = () => {
+    this.dpcRequestId += 1;
     this.activeRequests.forEach((value, key) => {
       value.cancel();
       this.activeRequests.delete(key);
