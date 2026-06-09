@@ -12,7 +12,7 @@ export const uiText = {
 
     genderTitle: "Género",
     ethnic: "Autoreconocimiento étnico",
-    organization: "organización",
+    organization: "Organización",
 
     editButton: {
       title: "Editar mi información",
