@@ -3,7 +3,8 @@ import type { DashboardItem } from "pages/monitoring/types/catalog";
 
 export const userItems: DashboardItem[] = [
   {
-    description: "Gestión de iniciativas",
+    label: "Mi Perfil",
+    description: "Gestiona tu perfil y las iniciativas en las que participas",
     icon: UserRoundCheck,
     linkTo: "MiPerfil",
   },

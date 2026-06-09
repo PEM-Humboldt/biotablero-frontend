@@ -7,10 +7,11 @@ export enum RoleInInitiative {
   VIEWER,
 }
 
-export type DashboardItem = { description: string; icon: LucideIcon } & (
-  | { linkTo: string }
-  | { action: () => void }
-);
+export type DashboardItem = {
+  label: string;
+  description: string;
+  icon: LucideIcon;
+} & ({ linkTo: string } | { action: () => void });
 
 export type LocationList = {
   name: string;

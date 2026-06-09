@@ -3,17 +3,22 @@ import type { DashboardItem } from "pages/monitoring/types/catalog";
 
 export const adminItems: DashboardItem[] = [
   {
-    description: "Administrador de iniciativas",
+    label: "Iniciativas",
+    description: "Agrega y actualiza la información de las iniciativas",
     icon: UserRoundCog,
     linkTo: "Admin/Iniciativas",
   },
   {
-    description: "Administrador de etiquetas",
+    label: "Etiquetas",
+    description:
+      "Crea y administra las etiquetas que son usadas en las iniciativas",
     icon: Tags,
     linkTo: "Admin/Etiquetas",
   },
   {
-    description: "Registros de actividad",
+    label: "Logs",
+    description:
+      "Consulta y descarga los registros de actividad de la plataforma",
     icon: Logs,
     linkTo: "Admin/Registros",
   },
