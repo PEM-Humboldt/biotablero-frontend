@@ -22,7 +22,6 @@ import {
 } from "@composites/charts/SmallBars";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CurrentPAConnectivityController } from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivityController";
-import { ShapeLayer } from "pages/search/types/layers";
 
 const legendDPCCategories = {
   muy_bajo: "Muy bajo",
@@ -49,7 +48,6 @@ interface CurrentPAConnState {
   texts: {
     paConnDPC: textsObject;
   };
-  layers: Array<ShapeLayer>;
 }
 
 type DpcPayload = {
@@ -66,8 +64,7 @@ type Action =
   | { type: "SET_SHOW_LOWEST"; payload: boolean }
   | { type: "DPC_SUCCEEDED"; payload: DpcPayload }
   | { type: "DPC_FAILED" }
-  | { type: "SET_TEXTS"; payload: textsObject }
-  | { type: "SET_LAYERS"; payload: Array<ShapeLayer> };
+  | { type: "SET_TEXTS"; payload: textsObject };
 
 const initialState: CurrentPAConnState = {
   infoShown: new Set(["dpc"]),
@@ -84,7 +81,6 @@ const initialState: CurrentPAConnState = {
   texts: {
     paConnDPC: { info: "", cons: "", meto: "", quote: "" },
   },
-  layers: [],
 };
 
 function reducer(
@@ -118,8 +114,6 @@ function reducer(
       };
     case "SET_TEXTS":
       return { ...state, texts: { paConnDPC: action.payload } };
-    case "SET_LAYERS":
-      return { ...state, layers: action.payload };
     default:
       return state;
   }
@@ -127,15 +121,7 @@ function reducer(
 
 function CurrentPAConnectivity(_: Props) {
   const context = useContext(SearchLegacyCTX) as LegacyContextValues;
-  const {
-    areaType,
-    areaId,
-    setShapeLayers,
-    setLoadingLayer,
-    setLayerError,
-    setMapTitle,
-    setShowAreaLayer,
-  } = context;
+  const { areaType, areaId } = context;
 
   const controllerRef = useRef(new CurrentPAConnectivityController());
   const mountedRef = useRef(false);
@@ -174,7 +160,6 @@ function CurrentPAConnectivity(_: Props) {
     controllerRef.current.setArea(areaTypeId, areaIdId);
     dpcRequestIdRef.current += 1;
 
-    setLoadingLayer(true);
     loadDpcData(false);
 
     BackendAPI.requestSectionTexts("paConnDPC")
@@ -190,34 +175,11 @@ function CurrentPAConnectivity(_: Props) {
         });
       });
 
-    controllerRef.current
-      .getLayer()
-      .then((currentPAConnLayer) => {
-        if (!mountedRef.current) return;
-        dispatch({ type: "SET_LAYERS", payload: [currentPAConnLayer] });
-        setShowAreaLayer(true);
-        setShapeLayers([currentPAConnLayer]);
-        setMapTitle({ name: "Conectividad de áreas protegidas" });
-        setLoadingLayer(false);
-      })
-      .catch((error) => {
-        setLayerError(error);
-        setLoadingLayer(false);
-      });
-
     return () => {
       mountedRef.current = false;
       controllerRef.current.cancelActiveRequests();
     };
-  }, [
-    areaType,
-    areaId,
-    setLoadingLayer,
-    setLayerError,
-    setMapTitle,
-    setShapeLayers,
-    setShowAreaLayer,
-  ]);
+  }, [areaType, areaId]);
 
   const toggleInfo = (value: string) => {
     dispatch({ type: "TOGGLE_INFO", payload: value });
@@ -225,17 +187,6 @@ function CurrentPAConnectivity(_: Props) {
 
   const toggleDpcMode = () => {
     loadDpcData(!state.showLowestDpc);
-  };
-
-  const highlightFeature = (selectedKey: string) => {
-    const highlightedLayers = state.layers.map((layer) => {
-      if (layer.id === "currentPAConn") {
-        layer.layerStyle = controllerRef.current.setLayerStyle(selectedKey);
-      }
-      return layer;
-    });
-    setShapeLayers(highlightedLayers);
-    dispatch({ type: "SET_LAYERS", payload: highlightedLayers });
   };
 
   const { dpcData, showLowestDpc, infoShown, messages, texts, graphData } =
@@ -286,9 +237,7 @@ function CurrentPAConnectivity(_: Props) {
               tooltips={graphData.tooltips}
               loadStatus={messages.dpc}
               colors={matchColor("dpc")}
-              onClickHandler={(selected: string) => {
-                highlightFeature(selected);
-              }}
+              onClickHandler={() => {}}
               animate={false}
               margin={{
                 bottom: 50,

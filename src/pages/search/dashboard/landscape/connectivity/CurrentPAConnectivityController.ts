@@ -98,29 +98,31 @@ export class CurrentPAConnectivityController {
   getGraphData(rawData: Array<DPC>) {
     const tooltips: Array<SmallBarTooltip> = [];
     const categories: Set<string> = new Set();
-    const transformedData: Array<SmallBarsData> = rawData.map((pa) => {
-      const object = {
-        group: pa.id,
-        data: [
-          {
-            category: pa.key,
-            value: pa.value,
-          },
-        ],
-      };
+    const transformedData: Array<SmallBarsData> = [...rawData]
+      .reverse()
+      .map((pa) => {
+        const object = {
+          group: pa.id,
+          data: [
+            {
+              category: pa.key,
+              value: pa.value,
+            },
+          ],
+        };
 
-      tooltips.push({
-        group: pa.id,
-        category: pa.key,
-        tooltipContent: [pa.name, `dPC: ${formatNumber(pa.value, 2)}`],
+        tooltips.push({
+          group: pa.id,
+          category: pa.key,
+          tooltipContent: [pa.name, `dPC: ${formatNumber(pa.value, 2)}`],
+        });
+
+        if (!categories.has(pa.key)) {
+          categories.add(pa.key);
+        }
+
+        return object;
       });
-
-      if (!categories.has(pa.key)) {
-        categories.add(pa.key);
-      }
-
-      return object;
-    });
 
     return { transformedData, keys: Array.from(categories), tooltips };
   }
