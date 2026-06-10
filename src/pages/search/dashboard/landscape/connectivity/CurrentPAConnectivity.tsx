@@ -247,7 +247,6 @@ function CurrentPAConnectivity(_: Props) {
                 matchColor("coverage")(key) || colorPalettes.default[0]
               }
               onClickHandler={() => {}}
-              animate={false}
               margin={{
                 bottom: 50,
                 left: 40,
