@@ -11,7 +11,7 @@ export type DashboardItem = {
   label: string;
   description: string;
   icon: LucideIcon;
-} & ({ linkTo: string } | { action: () => void });
+} & ({ linkTo: string } | { action: () => void; isActive: boolean });
 
 export type LocationList = {
   name: string;

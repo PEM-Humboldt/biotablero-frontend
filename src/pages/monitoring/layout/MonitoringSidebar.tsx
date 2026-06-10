@@ -14,9 +14,10 @@ import {
 } from "@ui/shadCN/component/sidebar";
 
 import type { DashboardItem } from "pages/monitoring/types/catalog";
-import { generalItems } from "pages/monitoring/layout/sidebar/generalItems";
-import { userItems } from "pages/monitoring/layout/sidebar/userItems";
-import { adminItems } from "pages/monitoring/layout/sidebar/adminItems";
+import { userItems } from "pages/monitoring/layout/monitoringSidebar/userItems";
+import { adminItems } from "pages/monitoring/layout/monitoringSidebar/adminItems";
+import { useGeneralItems } from "pages/monitoring/layout/monitoringSidebar/generalItems";
+import { cn } from "@ui/shadCN/lib/utils";
 
 export function MonitoringSidebar() {
   const { user } = useUserCTX();
@@ -24,11 +25,13 @@ export function MonitoringSidebar() {
   const isAdmin = roles.includes("Admin");
   const isUser = roles.includes("User");
 
+  const generalItems = useGeneralItems();
+
   return (
     <Sidebar
       collapsible="none"
       style={{ "--sidebar-width": "6rem" } as React.CSSProperties}
-      className="relative"
+      className="relative isolate z-100"
     >
       <SidebarContent>
         <SidebarGroupButtons items={generalItems} />
@@ -77,6 +80,11 @@ function SidebarGroupButtons({
                   size="monitoring"
                   tooltip={item.description}
                   isActive={"linkTo" in item && item.linkTo === pathname}
+                  className={cn(
+                    "action" in item && item.isActive
+                      ? "cursor-pointer text-accent bg-accent/10 hover:bg-accent!"
+                      : "cursor-pointer",
+                  )}
                   onClick={"action" in item ? () => item.action() : undefined}
                 >
                   {"action" in item ? (
