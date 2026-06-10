@@ -5,7 +5,7 @@ import {
   NotepadText,
 } from "lucide-react";
 
-import { ColombiaNode } from "@ui/ColombiaIcon";
+import { ColombiaIconLucide } from "@ui/ColombiaIcon";
 
 import type { DashboardItem } from "pages/monitoring/types/catalog";
 
@@ -14,7 +14,7 @@ export const generalItems: DashboardItem[] = [
     label: "Iniciativas",
     description:
       "Busca y localiza todas las iniciativas de monitoreo que se están realizando",
-    icon: ColombiaNode,
+    icon: ColombiaIconLucide,
     linkTo: "/Monitoreo",
   },
   {
