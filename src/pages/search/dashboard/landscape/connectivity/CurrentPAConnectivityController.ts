@@ -18,7 +18,6 @@ export class CurrentPAConnectivityController {
   areaType: string | null = null;
   areaId: string | null = null;
   activeRequests: Map<string, CancelTokenSource> = new Map();
-  dpcRequestId = 0;
 
   constructor() {}
 
@@ -38,11 +37,19 @@ export class CurrentPAConnectivityController {
     showLowestDpc: boolean,
   ): Promise<{ dpcData: Array<DPC>; graphData: DpcGraphData }> => {
     const areaId = Number(this.areaId ?? "");
-    const requestId = ++this.dpcRequestId;
+    const requestKey = "dpc";
+    this.activeRequests.get(requestKey)?.cancel();
 
-    const res = await SearchAPI.requestMetricsValues<"dpc">("dpc", areaId)
-      .request;
-    if (requestId !== this.dpcRequestId) {
+    const { request, source } = SearchAPI.requestMetricsValues<"dpc">(
+      "dpc",
+      areaId,
+    );
+    this.activeRequests.set(requestKey, source);
+
+    const res = await request;
+    this.activeRequests.delete(requestKey);
+
+    if (typeof res === "string") {
       throw new Error("request canceled");
     }
 
@@ -221,7 +228,6 @@ export class CurrentPAConnectivityController {
    * Send the cancel signal to all active requests and remove them from the map
    */
   cancelActiveRequests = () => {
-    this.dpcRequestId += 1;
     this.activeRequests.forEach((value, key) => {
       value.cancel();
       this.activeRequests.delete(key);

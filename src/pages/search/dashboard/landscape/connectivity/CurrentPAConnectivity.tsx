@@ -125,26 +125,20 @@ function CurrentPAConnectivity(_: Props) {
   const { areaType, areaId } = context;
 
   const controllerRef = useRef(new CurrentPAConnectivityController());
-  const mountedRef = useRef(false);
-  const dpcRequestIdRef = useRef(0);
+  const controller = controllerRef.current;
 
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const loadDpcData = (showLowestDpc: boolean) => {
     dispatch({ type: "SET_SHOW_LOWEST", payload: showLowestDpc });
 
-    const requestId = ++dpcRequestIdRef.current;
-
-    controllerRef.current
+    controller
       .getDpcData(showLowestDpc)
       .then((result) => {
-        if (!mountedRef.current || requestId !== dpcRequestIdRef.current)
-          return;
         dispatch({ type: "DPC_SUCCEEDED", payload: result });
       })
-      .catch(() => {
-        if (!mountedRef.current || requestId !== dpcRequestIdRef.current)
-          return;
+      .catch((error) => {
+        if (error?.message === "request canceled") return;
         dispatch({ type: "DPC_FAILED" });
       });
   };
@@ -154,22 +148,18 @@ function CurrentPAConnectivity(_: Props) {
       return;
     }
 
-    mountedRef.current = true;
     const areaTypeId = areaType.id;
     const areaIdId = areaId.id.toString();
 
-    controllerRef.current.setArea(areaTypeId, areaIdId);
-    dpcRequestIdRef.current += 1;
+    controller.setArea(areaTypeId, areaIdId);
 
     loadDpcData(false);
 
     BackendAPI.requestSectionTexts("paConnDPC")
       .then((res) => {
-        if (!mountedRef.current) return;
         dispatch({ type: "SET_TEXTS", payload: res });
       })
       .catch(() => {
-        if (!mountedRef.current) return;
         dispatch({
           type: "SET_TEXTS",
           payload: { info: "", cons: "", meto: "", quote: "" },
@@ -177,7 +167,6 @@ function CurrentPAConnectivity(_: Props) {
       });
 
     return () => {
-      mountedRef.current = false;
       controllerRef.current.cancelActiveRequests();
     };
   }, [areaType, areaId]);
