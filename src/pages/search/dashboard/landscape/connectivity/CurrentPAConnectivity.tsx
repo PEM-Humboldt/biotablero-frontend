@@ -22,6 +22,7 @@ import {
 } from "@composites/charts/SmallBars";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CurrentPAConnectivityController } from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivityController";
+import colorPalettes from "pages/search/utils/colorPalettes";
 
 const legendDPCCategories = {
   muy_bajo: "Muy bajo",
@@ -198,27 +199,33 @@ function CurrentPAConnectivity(_: Props) {
     <div className="graphcontainer pt6">
       <div>
         <h6>Aporte de las áreas protegidas a la conectividad</h6>
-        <div className="mb2 flex flex-wrap items-center gap-2">
+        <IconTooltip title="Interpretación">
+          <span className="iconWrapper">
+            <InfoIcon
+              fontSize="medium"
+              className={`metrics-info-icon${infoShown.has("dpc") ? " activeBox" : ""}`}
+              onClick={() => toggleInfo("dpc")}
+            />
+          </span>
+        </IconTooltip>
+        <div className="mb2 ml-6">
           <Button
             type="button"
-            variant="outline"
+            variant="default"
             size="sm"
+            className="border border-amber-700/30 bg-amber-500 text-amber-950 shadow-sm transition-colors hover:bg-amber-400"
             onClick={toggleDpcMode}
           >
             {showLowestDpc ? "Áreas con mayor dPC" : "Áreas con menor dPC"}
           </Button>
+        </div>
+        <div className="mb2 ml-6">
           <span className="text-sm text-muted-foreground">
             {showLowestDpc
               ? "Áreas que menos aportan."
               : "Áreas que más aportan."}
           </span>
         </div>
-        <IconTooltip title="Interpretación">
-          <InfoIcon
-            className={`downSpecial${infoShown.has("dpc") ? " activeBox" : ""}`}
-            onClick={() => toggleInfo("dpc")}
-          />
-        </IconTooltip>
         {infoShown.has("dpc") && (
           <ShortInfo
             description={`<p>${texts.paConnDPC.info}</p>`}
@@ -236,7 +243,9 @@ function CurrentPAConnectivity(_: Props) {
               keys={graphData.keys}
               tooltips={graphData.tooltips}
               loadStatus={messages.dpc}
-              colors={matchColor("dpc")}
+              colors={(key: string) =>
+                matchColor("coverage")(key) || colorPalettes.default[0]
+              }
               onClickHandler={() => {}}
               animate={false}
               margin={{
