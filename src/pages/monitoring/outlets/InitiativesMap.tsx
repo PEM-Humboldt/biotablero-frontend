@@ -65,7 +65,7 @@ export function InitiativesMap() {
       return "";
     }
 
-    return initiative.initiativeName;
+    return initiative?.initiativeShortName ?? initiative.initiativeName;
   }, [initiativeId, initiatives]);
 
   return (

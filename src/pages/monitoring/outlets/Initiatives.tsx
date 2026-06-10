@@ -34,7 +34,7 @@ export function Initiatives() {
   return (
     <div className="flex flex-col w-full">
       <PageTitleUpdater
-        title={initiativeInfo?.name ?? ""}
+        title={initiativeInfo?.shortName || initiativeInfo?.name || ""}
         subtitle={
           [...initiativeTabs.values()].find((t) => t.slug === currentTab)
             ?.label ?? ""
