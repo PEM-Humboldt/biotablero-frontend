@@ -340,10 +340,20 @@ export async function makeJoinRequestToInitiative(
   return res;
 }
 
-export async function getInitiativeLocations(departmentId?: number) {
+/**
+ * Fetches all monitoring initiatives grouped by active locations.
+ *
+ * @param locationId - Optional identifier of the department to filter the initiatives.
+ * If omitted, it retrieves all initiatives across the entire country.
+ *
+ * * @returns A promise resolving to:
+ * - On success: A list of `InitiativeByLocation`.
+ * - On failure: An `ApiRequestError` object.
+ */
+export async function getInitiativeLocations(locationId?: number) {
   const res = await monitoringAPI<InitiativeByLocation[]>({
     type: "get",
-    endpoint: `Initiative/GetByLocation${departmentId ? `?locationId=${departmentId}` : ""}`,
+    endpoint: `Initiative/GetByLocation${locationId ? `?locationId=${locationId}` : ""}`,
   });
 
   return res;
