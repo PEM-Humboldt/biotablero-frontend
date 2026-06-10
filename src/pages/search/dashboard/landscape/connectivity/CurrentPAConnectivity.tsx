@@ -167,7 +167,7 @@ function CurrentPAConnectivity(_: Props) {
       });
 
     return () => {
-      controllerRef.current.cancelActiveRequests();
+      controller.cancelActiveRequests();
     };
   }, [areaType, areaId]);
 
@@ -233,9 +233,10 @@ function CurrentPAConnectivity(_: Props) {
               tooltips={graphData.tooltips}
               loadStatus={messages.dpc}
               colors={(key: string) =>
-                matchColor("coverage")(key) || colorPalettes.default[0]
+                matchColor("dpc")(key) || colorPalettes.default[0]
               }
               onClickHandler={() => {}}
+              animate={false}
               margin={{
                 bottom: 50,
                 left: 40,
