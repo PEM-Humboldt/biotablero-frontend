@@ -35,7 +35,7 @@ export const sectionsInfo: Partial<
     showInitiativePicture: true,
     actions: { editRole: true, leaveInitiative: false },
   },
-  [RoleInInitiative.USER]: {
+  [RoleInInitiative.COLLABORATOR]: {
     texts: {
       title: { sr: "Iniciativas en las que colaboro", label: "Colaborador" },
       counterText: (value: number) => `Colaboro en ${getAmount(value)}`,
@@ -43,7 +43,7 @@ export const sectionsInfo: Partial<
     showInitiativePicture: true,
     actions: { editRole: true, leaveInitiative: true },
   },
-  [RoleInInitiative.VIEWER]: {
+  [RoleInInitiative.READER]: {
     texts: {
       title: { sr: "Iniciativas que observo", label: "Observador" },
       counterText: (value: number) => `Observo ${getAmount(value)}`,

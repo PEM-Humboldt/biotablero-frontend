@@ -91,8 +91,10 @@ export function Glosary() {
       className="isolate z-10 border-l border-r border-grey p-1"
     >
       <SidebarHeader className="bg-input rounded-lg m-2 border border-primary/30">
-        <div className="flex justify-between items-baseline">
-          <h3 className="text-primary text-lg font-normal mb-0">Buscador</h3>
+        <div className="flex justify-between items-center pl-2">
+          <h3 className="text-primary text-lg font-normal mb-0">
+            Buscar en el glosario
+          </h3>
           <div>
             <Button
               size="icon"
@@ -135,6 +137,7 @@ export function Glosary() {
           <ButtonGroup className="flex w-full *:flex-1 *:h-auto *:text-sm *:whitespace-normal">
             {categories.map((category) => (
               <Button
+                key={`glosaryCategory_${category}`}
                 variant="outline"
                 className={cn(
                   filters.includes(category)

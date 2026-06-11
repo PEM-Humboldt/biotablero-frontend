@@ -83,7 +83,7 @@ export function roleEventRestrictions(
             .minLeaderAmount,
       },
     ],
-    [RoleInInitiative.USER]: [
+    [RoleInInitiative.COLLABORATOR]: [
       {
         action: RoleEvents.PROMOTE,
         condition:

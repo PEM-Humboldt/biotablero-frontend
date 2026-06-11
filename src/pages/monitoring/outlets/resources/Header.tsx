@@ -15,7 +15,7 @@ export function Header() {
   const userLinkedInitiatives = useMemo(
     () => [
       ...(userInitiativesAs[RoleInInitiative.LEADER] ?? []),
-      ...(userInitiativesAs[RoleInInitiative.USER] ?? []),
+      ...(userInitiativesAs[RoleInInitiative.COLLABORATOR] ?? []),
     ],
     [userInitiativesAs],
   );

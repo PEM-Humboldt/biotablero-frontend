@@ -25,7 +25,7 @@ export function MakeJoinInitiativeRequestBtnDialog() {
 
     const joinRequest = await makeJoinRequestToInitiative(
       initiativeInfo.id,
-      RoleInInitiative.USER,
+      RoleInInitiative.COLLABORATOR,
     );
 
     if (isMonitoringAPIError(joinRequest)) {
