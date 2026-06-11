@@ -98,3 +98,6 @@ export const RESOURCE_FILE_MAX_SIZE = 10; // size in megabytes;
 export const RESOURCES_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS: ODataParams = {
   orderby: "name asc",
 };
+
+// glosary
+export const GLOSARY_FILTER_IS_AND = false;

@@ -281,6 +281,20 @@
     @apply flex flex-wrap gap-2 [&>button]:flex-[1_0_210px] [&>div]:flex-[1_0_210px] [&>div]:last:flex-0 justify-end items-end;
   }
 
+  .scrollbar-custom {
+    &::-webkit-scrollbar {
+      @apply w-2 h-2;
+    }
+
+    &::-webkit-scrollbar-track {
+      @apply bg-primary/10;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      @apply bg-accent rounded-lg;
+    }
+  }
+
   /* NOTE: pantalla de loading */
   .loading-backdrop {
     position: absolute;
