@@ -102,6 +102,7 @@ export function Glosary() {
               title={uiText.search.resetBtn.title}
               aria-label={uiText.search.resetBtn.sr}
               variant="ghost"
+              disabled={!search && !filters.length}
               onClick={() => {
                 setSearch("");
                 setFilters([]);
