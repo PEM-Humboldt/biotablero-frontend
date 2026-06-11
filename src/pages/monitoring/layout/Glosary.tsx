@@ -7,7 +7,7 @@ import {
 import { Button } from "@ui/shadCN/component/button";
 import { useCallback, useMemo, useState } from "react";
 import { definitions } from "pages/monitoring/layout/glosary/definitions";
-import { CircleXIcon, RotateCcw, SearchIcon } from "lucide-react";
+import { CircleXIcon, HeartCrack, RotateCcw, SearchIcon } from "lucide-react";
 import { cn } from "@ui/shadCN/lib/utils";
 import {
   InputGroup,
@@ -17,6 +17,7 @@ import {
 import { fuzzySearch, hasFilters } from "pages/monitoring/utils/search";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import { GLOSARY_FILTER_IS_AND } from "@config/monitoring";
+import { uiText } from "pages/monitoring/layout/glosary/layout/uiText";
 
 export function Glosary() {
   const { setOpen } = useSidebar();
@@ -93,12 +94,13 @@ export function Glosary() {
       <SidebarHeader className="bg-input rounded-lg m-2 border border-primary/30">
         <div className="flex justify-between items-center pl-2">
           <h3 className="text-primary text-lg font-normal mb-0">
-            Buscar en el glosario
+            {uiText.search.title}
           </h3>
           <div>
             <Button
               size="icon"
-              title="reiniciar búsqueda"
+              title={uiText.search.resetBtn.title}
+              aria-label={uiText.search.resetBtn.sr}
               variant="ghost"
               onClick={() => {
                 setSearch("");
@@ -111,8 +113,8 @@ export function Glosary() {
               size="icon"
               variant="ghost"
               onClick={() => setOpen(false)}
-              aria-label="Cerrar el glosario"
-              title="Ocultar el glosario"
+              title={uiText.search.closeBtn.title}
+              aria-label={uiText.search.closeBtn.sr}
             >
               <CircleXIcon className="size-5" />
             </Button>
@@ -120,7 +122,7 @@ export function Glosary() {
         </div>
         <div className="space-y-2">
           <label htmlFor="inputSearch" className="sr-only">
-            Escribe el término que quieres consultar
+            {uiText.search.input.label}
           </label>
           <InputGroup>
             <InputGroupAddon align="inline-start">
@@ -130,7 +132,7 @@ export function Glosary() {
               id="inputSearch"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Buscar..."
+              placeholder={uiText.search.input.placeholder}
             />
           </InputGroup>
 
@@ -154,8 +156,21 @@ export function Glosary() {
       </SidebarHeader>
       <SidebarContent className="scrollbar-custom py-2 space-y-4">
         <h3 className="sr-only">
-          {search || filters.length ? "Términos encontrados" : "Glosario"}
+          {search || filters.length
+            ? uiText.results.title.results
+            : uiText.results.title.glosary}
         </h3>
+
+        {(search || filters.length) && renderDefinitions.length === 0 ? (
+          <div className="bg-accent/10 p-4 m-4 rounded-xl border border-accent text-xl text-center font-normal text-accent text-balance">
+            {uiText.results.noResults}
+            <HeartCrack
+              className="mx-auto size-10 my-4"
+              strokeWidth={1}
+              aria-hidden="true"
+            />
+          </div>
+        ) : null}
 
         {renderDefinitions.map((def) => (
           <div
