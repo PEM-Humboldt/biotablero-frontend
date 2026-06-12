@@ -27,6 +27,7 @@ import { ZoomControls } from "pages/monitoring/outlets/initiativesMap/mapFinder/
 import { MapLegend } from "pages/monitoring/outlets/initiativesMap/mapFinder/MapLegend";
 import { MAP_LAYERS } from "pages/monitoring/outlets/initiativesMap/layout/layers";
 import { getGeoJsonMap } from "pages/monitoring/api/services/location";
+import { getInitiativeLocations } from "pages/monitoring/api/services/initiatives";
 
 interface DeptProperties {
   geofence_name: string;
@@ -35,11 +36,7 @@ interface DeptProperties {
 
 type DeptFeature = Feature<Polygon | MultiPolygon, DeptProperties>;
 
-export function MapFinder({
-  initiatives,
-}: {
-  initiatives: InitiativeByLocation[];
-}) {
+export function MapFinder() {
   const { departmentId, initiativeId } = useParams();
   const navigate = useNavigate();
 
@@ -47,20 +44,29 @@ export function MapFinder({
   const [center, setCenter] = useState<L.LatLng | null>(null);
   const [bounds, setBounds] = useState<LatLngBoundsLiteral | null>(null);
   const [nation, setNation] = useState<FeatureCollection | null>(null);
+  const [initiatives, setInitiatives] = useState<InitiativeByLocation[]>([]);
   const [layer, setLayer] = useState<keyof typeof MAP_LAYERS>(0);
 
   useEffect(() => {
-    const fetchCountryMap = async () => {
-      const res = await getGeoJsonMap();
+    const fetchMapInfo = async () => {
+      const mapInfo = await getGeoJsonMap();
 
-      if (isMonitoringAPIError(res)) {
-        setErrors(res.data.map((err) => err.msg));
+      if (isMonitoringAPIError(mapInfo)) {
+        setErrors(mapInfo.data.map((err) => err.msg));
         return;
       }
-      setNation(res);
+      setNation(mapInfo);
+
+      const initiativesLocations = await getInitiativeLocations();
+
+      if (isMonitoringAPIError(initiativesLocations)) {
+        setInitiatives([]);
+        return;
+      }
+      setInitiatives(initiativesLocations);
     };
 
-    void fetchCountryMap();
+    void fetchMapInfo();
   }, []);
 
   useEffect(() => {
@@ -148,22 +154,32 @@ export function MapFinder({
     [processedData],
   );
 
-  const [min, max] = useMemo(
-    () =>
-      processedData.reduce(
-        (result, current) => {
-          if (current.count <= result[0]) {
-            result[0] = current.count;
-          }
-          if (current.count >= result[1]) {
-            result[1] = current.count;
-          }
-          return result;
-        },
-        [Infinity, 0],
-      ),
-    [processedData],
-  );
+  const [min, max] = useMemo(() => {
+    let [currentMin, currentMax] = processedData.reduce(
+      (result, current) => {
+        if (current.count <= result[0]) {
+          result[0] = current.count;
+        }
+        if (current.count >= result[1]) {
+          result[1] = current.count;
+        }
+        return result;
+      },
+      [Infinity, 0],
+    );
+
+    if (currentMin === Infinity) {
+      currentMin = 1;
+    }
+    if (currentMax === 0) {
+      currentMax = 2;
+    }
+    if (currentMin === currentMax) {
+      currentMax++;
+    }
+
+    return [currentMin, currentMax];
+  }, [processedData]);
 
   const getColor = useMemo(
     () => createGradientScale(min, max, INITIAVIVES_MAP_GRADIENT),
@@ -235,7 +251,7 @@ export function MapFinder({
       />
       <MarkerClusterGroup
         iconCreateFunction={clusterCustomIcon}
-        maxClusterRadius={50}
+        maxClusterRadius={100}
         spiderfyOnMaxZoom={true}
         showCoverageOnHover={true}
       >

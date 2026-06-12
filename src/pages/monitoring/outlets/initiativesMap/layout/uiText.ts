@@ -10,7 +10,7 @@ export const uiText = {
     labelSr:
       "Información para la lectura del mapa y selección de departamentos",
     description:
-      "Selecciona un departamento o iniciativa para ver sus cifras generales. Desde el panel lateral puedes ir a su perfil o indicadores.",
+      "Selecciona un **departamento** o **iniciativa** para ver sus cifras generales. Desde el panel lateral puedes ir a su perfil o indicadores.",
     deptSelection: {
       itemNotFound: "",
       trigger: "Selecciona un departamento",

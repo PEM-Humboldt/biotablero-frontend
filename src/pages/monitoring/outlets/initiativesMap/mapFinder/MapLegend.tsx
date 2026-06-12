@@ -17,6 +17,7 @@ import { INITIAVIVES_MAP_GRADIENT } from "@config/monitoring";
 import { InitiativeIcon } from "pages/monitoring/outlets/initiativesMap/mapFinder/InitiativeIcon";
 import { MAP_LAYERS } from "pages/monitoring/outlets/initiativesMap/layout/layers";
 import { uiText } from "pages/monitoring/outlets/initiativesMap/layout/uiText";
+import { parseSimpleMarkdown } from "@utils/textParser";
 
 export function MapLegend({
   lowInitiativePerDepartment,
@@ -68,8 +69,8 @@ export function MapLegend({
       role="group"
       aria-label={uiText.mapLegend.labelSr}
     >
-      <div className="text-sm/5">
-        {uiText.mapLegend.description}
+      <div className="text-sm/5 [&_p]:mb-0 [&_p]:text-pretty [&_p]:text-sm/5 [&_strong]:font-semibold">
+        {parseSimpleMarkdown(uiText.mapLegend.description)}
         {!initiativeId && (
           <Combobox
             items={departments}
@@ -91,7 +92,7 @@ export function MapLegend({
         </li>
         <li className="flex items-center gap-2">
           <div className="flex items-center justify-center w-7 h-7 rounded-full bg-primary font-bold text-[10px] text-background border-4 border-background/40">
-            12
+            N
           </div>
           <span>{uiText.mapLegend.legends.nearByInitiatives}</span>
         </li>

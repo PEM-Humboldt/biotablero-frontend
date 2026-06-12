@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router";
 import { useMap } from "react-leaflet";
 import L from "leaflet";
-import { Birdhouse, ZoomIn, ZoomOut } from "lucide-react";
+import { House, ZoomIn, ZoomOut } from "lucide-react";
 
 import { Button } from "@ui/shadCN/component/button";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
@@ -30,8 +30,8 @@ export function ZoomControls() {
         onClick={() => map.zoomIn()}
         className="pointer-events-auto"
         title={uiText.mapControls.zoomInBtn.title}
+        aria-label={uiText.mapControls.zoomInBtn.sr}
       >
-        <span className="sr-only">{uiText.mapControls.zoomInBtn.sr}</span>
         <ZoomIn className="size-6" strokeWidth={1.5} aria-hidden="true" />
       </Button>
 
@@ -48,9 +48,9 @@ export function ZoomControls() {
         }}
         className="pointer-events-auto"
         title={uiText.mapControls.homeBtn.title}
+        aria-label={uiText.mapControls.homeBtn.sr}
       >
-        <span className="sr-only">{uiText.mapControls.homeBtn.sr}</span>
-        <Birdhouse className="size-6" strokeWidth={1.5} aria-hidden="true" />
+        <House className="size-6" strokeWidth={1.5} aria-hidden="true" />
       </Button>
 
       <Button
@@ -59,8 +59,8 @@ export function ZoomControls() {
         onClick={() => map.zoomOut()}
         className="pointer-events-auto"
         title={uiText.mapControls.zoomOutBtn.title}
+        aria-label={uiText.mapControls.zoomOutBtn.sr}
       >
-        <span className="sr-only">{uiText.mapControls.zoomOutBtn.sr}</span>
         <ZoomOut className="size-6" strokeWidth={1.5} aria-hidden="true" />
       </Button>
     </ButtonGroup>
