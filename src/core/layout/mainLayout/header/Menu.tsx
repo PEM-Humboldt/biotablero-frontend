@@ -25,7 +25,7 @@ export function Menu() {
           <NavigationMenuTrigger>Módulos</NavigationMenuTrigger>
 
           <NavigationMenuContent className="p-3 md:p-6 border-l-6 border-l-accent">
-            <div className="text-xl font-light mb-4">
+            <div className="text-base font-light mb-4">
               Explora nuestros módulos
             </div>
 
