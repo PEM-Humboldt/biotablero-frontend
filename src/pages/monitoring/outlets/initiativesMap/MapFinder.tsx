@@ -25,7 +25,10 @@ import {
 } from "pages/monitoring/outlets/initiativesMap/mapFinder/MapMarker";
 import { ZoomControls } from "pages/monitoring/outlets/initiativesMap/mapFinder/ZoomControls";
 import { MapLegend } from "pages/monitoring/outlets/initiativesMap/mapFinder/MapLegend";
-import { MAP_LAYERS } from "pages/monitoring/outlets/initiativesMap/layout/layers";
+import {
+  type MAP_LAYERS,
+  MAP_TILES,
+} from "pages/monitoring/outlets/initiativesMap/layout/layers";
 import { getGeoJsonMap } from "pages/monitoring/api/services/location";
 import { getInitiativeLocations } from "pages/monitoring/api/services/initiatives";
 
@@ -45,7 +48,8 @@ export function MapFinder() {
   const [bounds, setBounds] = useState<LatLngBoundsLiteral | null>(null);
   const [nation, setNation] = useState<FeatureCollection | null>(null);
   const [initiatives, setInitiatives] = useState<InitiativeByLocation[]>([]);
-  const [layer, setLayer] = useState<keyof typeof MAP_LAYERS>(0);
+  const [tiles, setTiles] = useState<keyof typeof MAP_TILES>(0);
+  const [layer, setLayer] = useState<keyof typeof MAP_LAYERS | null>(null);
 
   useEffect(() => {
     const fetchMapInfo = async () => {
@@ -233,55 +237,64 @@ export function MapFinder() {
   return errors.length > 0 ? (
     <ErrorsList errorItems={errors} />
   ) : (
-    <MapContainer
-      bounds={bounds ?? COUNTRY_BOUNDS}
-      zoom={6}
-      maxZoom={10}
-      minZoom={6}
-      className="outline-none [&_.leaflet-interactive]:outline-none"
-      zoomControl={false}
-    >
-      <ZoomControls />
+    <>
+      <MapContainer
+        bounds={bounds ?? COUNTRY_BOUNDS}
+        zoom={6}
+        maxZoom={10}
+        minZoom={6}
+        className="outline-none [&_.leaflet-interactive]:outline-none"
+        zoomControl={false}
+      >
+        <ZoomControls />
+
+        <MarkerClusterGroup
+          iconCreateFunction={clusterCustomIcon}
+          maxClusterRadius={100}
+          spiderfyOnMaxZoom={true}
+          showCoverageOnHover={true}
+        >
+          {initiatives.map((initiative) => (
+            <MapMarker
+              key={`marker_${initiative.initiativeId}`}
+              initiative={initiative}
+            />
+          ))}
+        </MarkerClusterGroup>
+
+        <ChangeView bounds={bounds ?? COUNTRY_BOUNDS} center={center} />
+
+        <GeoJSON
+          key={`geojson-layer-${processedData.length}`}
+          data={
+            {
+              type: "FeatureCollection",
+              features: processedData.map((d) => d.feature),
+            } as FeatureCollection<Geometry, DeptProperties>
+          }
+          style={setDeptStyle}
+          onEachFeature={setFeatureBehavior}
+        />
+
+        <TileLayer
+          key={`tile-layer-${tiles}`}
+          attribution={MAP_TILES[tiles].attribution}
+          url={MAP_TILES[tiles].url}
+        />
+      </MapContainer>
+
+      {/* NOTE: Al tener el componente en paralelo con el mapa se tiene acceso
+		  a lo que se calculó con este, sin el problema de bubbling que hay con
+		  elementos complejos dentro del mapa */}
       <MapLegend
         lowInitiativePerDepartment={min}
         highInitiativePerDepartment={max}
         departments={departmentsWithInitiatives}
-        layer={layer}
-        setLayer={setLayer}
+        tiles={tiles}
+        setTiles={setTiles}
+        layers={layer}
+        setLayers={setLayer}
       />
-      <MarkerClusterGroup
-        iconCreateFunction={clusterCustomIcon}
-        maxClusterRadius={100}
-        spiderfyOnMaxZoom={true}
-        showCoverageOnHover={true}
-      >
-        {initiatives.map((initiative) => (
-          <MapMarker
-            key={`marker_${initiative.initiativeId}`}
-            initiative={initiative}
-          />
-        ))}
-      </MarkerClusterGroup>
-
-      <ChangeView bounds={bounds ?? COUNTRY_BOUNDS} center={center} />
-
-      <GeoJSON
-        key={`geojson-layer-${processedData.length}`}
-        data={
-          {
-            type: "FeatureCollection",
-            features: processedData.map((d) => d.feature),
-          } as FeatureCollection<Geometry, DeptProperties>
-        }
-        style={setDeptStyle}
-        onEachFeature={setFeatureBehavior}
-      />
-
-      <TileLayer
-        key={`tile-layer-${layer}`}
-        attribution={MAP_LAYERS[layer].attribution}
-        url={MAP_LAYERS[layer].url}
-      />
-    </MapContainer>
+    </>
   );
 }

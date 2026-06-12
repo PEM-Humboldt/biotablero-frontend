@@ -7,30 +7,40 @@ import {
 } from "react";
 import { useNavigate, useParams } from "react-router";
 
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@ui/shadCN/component/native-select";
 import { Combobox } from "@ui/ComboBox";
 import { INITIAVIVES_MAP_GRADIENT } from "@config/monitoring";
 
 import { InitiativeIcon } from "pages/monitoring/outlets/initiativesMap/mapFinder/InitiativeIcon";
-import { MAP_LAYERS } from "pages/monitoring/outlets/initiativesMap/layout/layers";
+import {
+  MAP_LAYERS,
+  MAP_TILES,
+} from "pages/monitoring/outlets/initiativesMap/layout/layers";
 import { uiText } from "pages/monitoring/outlets/initiativesMap/layout/uiText";
 import { parseSimpleMarkdown } from "@utils/textParser";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@ui/shadCN/component/popover";
+import { Button } from "@ui/shadCN/component/button";
+import { Check, ChevronDown, Layers } from "lucide-react";
 
 export function MapLegend({
   lowInitiativePerDepartment,
   highInitiativePerDepartment,
   departments,
-  layer,
-  setLayer,
+  tiles,
+  setTiles,
+  layers,
+  setLayers,
 }: {
   lowInitiativePerDepartment: number;
   highInitiativePerDepartment: number;
   departments: { value: string; label: string }[];
-  layer: keyof typeof MAP_LAYERS;
-  setLayer: Dispatch<SetStateAction<keyof typeof MAP_LAYERS>>;
+  tiles: keyof typeof MAP_TILES;
+  setTiles: Dispatch<SetStateAction<keyof typeof MAP_TILES>>;
+  layers: keyof typeof MAP_LAYERS | null;
+  setLayers: Dispatch<SetStateAction<keyof typeof MAP_LAYERS | null>>;
 }) {
   const navigate = useNavigate();
   const [department, setDepartment] = useState<string>("");
@@ -65,7 +75,7 @@ export function MapLegend({
 
   return (
     <div
-      className="leaflet-top leaflet-right mr-12 mt-2 bg-background p-4 rounded-lg max-w-[300px] space-y-4 text-sm"
+      className="absolute border border-primary/50 top-0 z-10 right-0 mt-2 mx-12 w-120 bg-background p-4 rounded-lg max-w-[300px] space-y-4 text-sm shadow-md"
       role="group"
       aria-label={uiText.mapLegend.labelSr}
     >
@@ -111,20 +121,88 @@ export function MapLegend({
       <label htmlFor="layerSelector" className="sr-only">
         {uiText.mapLegend.layerSelectorLabel}
       </label>
-      <NativeSelect
-        id="layerSelector"
-        className="pointer-events-auto mt-2"
-        value={layer}
-        onChange={(e) =>
-          setLayer(Number(e.target.value) as keyof typeof MAP_LAYERS)
-        }
-      >
-        {Object.entries(MAP_LAYERS).map(([key, value]) => (
-          <NativeSelectOption key={`mapLayer_${key}`} value={key}>
-            {value.label}
-          </NativeSelectOption>
-        ))}
-      </NativeSelect>
+
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            className="group w-full bg-cover bg-center justify-between outline outline-transparent hover:outline-2 outline-offset-2 hover:outline-primary bg-blend-luminosity"
+            style={{
+              backgroundImage: `url("${MAP_TILES[tiles].uiThumbs.selection}")`,
+            }}
+          >
+            <div className="flex gap-2 items-center">
+              <Layers /> Mapas y capas
+            </div>
+            <ChevronDown
+              className="relative top-px ml-2 size-5 transition duration-300 group-data-[state=open]:rotate-180"
+              aria-hidden="true"
+            />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent
+          align="end"
+          className="grid md:grid-cols-[repeat(2,max-content)] gap-4 w-auto p-2"
+        >
+          <div className="md:border-r md:border-r-grey-light md:pl-2 md:pr-4">
+            <span className="font-normal">Mapas</span>
+            <ul className="mt-2 space-y-2">
+              {Object.entries(MAP_TILES).map(([key, value]) => (
+                <li key={`mapTile_${key}`}>
+                  <Button
+                    onClick={() =>
+                      setTiles(Number(key) as keyof typeof MAP_TILES)
+                    }
+                    variant="link"
+                    disabled={tiles === Number(key)}
+                    className="w-40 p-0! justify-start"
+                  >
+                    <div className="flex gap-2 items-center  text-sm">
+                      <img
+                        src={value.uiThumbs.button}
+                        alt=""
+                        className="h-9 border border-primary/50 aspect-square rounded object-cover object-center"
+                      />
+                      {value.label}
+                    </div>
+                    {tiles === Number(key) && <Check />}
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <span className="font-normal">Capas</span>
+            <ul className="mt-2 space-y-2">
+              {Object.entries(MAP_LAYERS).map(([key, value]) => (
+                <li key={`mapLayer_${key}`}>
+                  <Button
+                    onClick={() =>
+                      setLayers((oldLayer) =>
+                        oldLayer === Number(key)
+                          ? null
+                          : (Number(key) as keyof typeof MAP_TILES),
+                      )
+                    }
+                    variant="link"
+                    className="w-50 p-0! justify-start"
+                  >
+                    <div className="flex gap-2 items-center  text-sm">
+                      <img
+                        src={value.buttonBkg}
+                        alt=""
+                        className="h-9 border border-primary/50 aspect-square rounded object-cover object-center"
+                      />
+                      {value.label}
+                    </div>
+                    {layers === Number(key) && <Check />}
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 }
