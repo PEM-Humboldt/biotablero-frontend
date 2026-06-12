@@ -12,6 +12,6 @@ export const uiText = {
 
   results: {
     title: { glosary: "Glosario", results: "Términos encontrados" },
-    noResults: "No se encontraron terminos en el glosario",
+    noResults: "No se encontraron términos en el glosario",
   },
 };

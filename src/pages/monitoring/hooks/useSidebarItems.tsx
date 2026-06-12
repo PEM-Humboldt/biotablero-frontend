@@ -48,7 +48,7 @@ export function useSidebarItems() {
         {
           label: "Indicadores",
           description:
-            "Busca y visualiza los indicadore de biodiversidad de todas las iniciativas",
+            "Busca y visualiza los indicadores de biodiversidad de todas las iniciativas",
           icon: ChartBar,
           linkTo: "/Monitoreo/Indicadores",
           role: RoleInMonitoring.NONE,

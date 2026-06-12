@@ -6,13 +6,13 @@ export const definitions: {
   {
     word: "Monitoreo",
     definition:
-      "Observaciones ordenadas y repetidas de aspectos de la biodiversidad en diferentes lugares a través del tiempo",
+      "Observaciones ordenadas y repetidas de aspectos de la biodiversidad en diferentes lugares a través del tiempo.",
     categories: ["Conceptos de monitoreo"],
   },
   {
     word: "Indicador",
     definition:
-      "Medidas que nos permiten evaluar el avance logrado hacia el cumplimiento de una meta o el estado y tendencias de la biodiversidad en un contexto específico",
+      "Medidas que nos permiten evaluar el avance logrado hacia el cumplimiento de una meta o el estado y tendencias de la biodiversidad en un contexto específico.",
     categories: ["Conceptos de monitoreo"],
   },
   {
@@ -80,7 +80,7 @@ export const definitions: {
   {
     word: "Ecosistema estratégico",
     definition:
-      "Un tipo de ambiente natural cuya conservación es especially importante tanto para la biodiversidad como para el bienestar de las personas. En Colombia, algunos están reconocidos por ley a nivel nacional, por ejemplo el bosque seco tropical y el páramo; mientras que otros, se consideran estratégicos por su valor a escala local, por ejemplo el bosque húmedo tropical y las sabanas naturales.",
+      "Un tipo de ambiente natural cuya conservación es especialmente importante tanto para la biodiversidad como para el bienestar de las personas. En Colombia, algunos están reconocidos por ley a nivel nacional, por ejemplo el bosque seco tropical y el páramo; mientras que otros, se consideran estratégicos por su valor a escala local, por ejemplo el bosque húmedo tropical y las sabanas naturales.",
     categories: ["Ecosistemas estratégicos"],
   },
   {
