@@ -17,6 +17,7 @@ import { createODataGetter } from "pages/monitoring/api/oDataGetter";
 import type { UserJoinRequestData } from "pages/monitoring/types/userJoinRequest";
 import type { JoinInitiativeDataForm } from "pages/monitoring/outlets/initiativeJoinInvitation/types/initiativeInvitationData";
 import type { RoleInInitiative } from "pages/monitoring/types/catalog";
+import { StatsResponseMap, StatsType } from "pages/monitoring/types/stats";
 
 /**
  * Retrieves all the info about the initiative that has the specified id.
@@ -345,6 +346,23 @@ export async function getInitiativeLocations(departmentId?: number) {
   const res = await monitoringAPI<InitiativeByLocation[]>({
     type: "get",
     endpoint: `Initiative/GetByLocation${departmentId ? `?locationId=${departmentId}` : ""}`,
+  });
+
+  return res;
+}
+
+export async function getInitiativesGeneralStats<T extends StatsType>(
+  type: T,
+  departmentId?: number,
+  initiativeId?: number,
+) {
+  const depParam = departmentId ? `departmentId=${departmentId}` : "";
+  const initiativeParam = initiativeId ? `initiativeId=${initiativeId}` : "";
+  const params = [depParam, initiativeParam].filter((p) => p !== "").join("&");
+
+  const res = await monitoringAPI<StatsResponseMap[T]>({
+    type: "get",
+    endpoint: `GeneralStats/${type}${params !== "" ? `?${params}` : ""}`,
   });
 
   return res;
