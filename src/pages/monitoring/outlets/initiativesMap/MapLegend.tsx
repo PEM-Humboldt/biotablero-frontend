@@ -26,17 +26,17 @@ import { Button } from "@ui/shadCN/component/button";
 import { Check, ChevronDown, Layers } from "lucide-react";
 
 export function MapLegend({
-  lowInitiativePerDepartment,
-  highInitiativePerDepartment,
-  departments,
+  leastInitiativesPerDepartment,
+  mostInitiativesPerDepartment,
+  activeDepartments,
   tiles,
   setTiles,
   layers,
   setLayers,
 }: {
-  lowInitiativePerDepartment: number;
-  highInitiativePerDepartment: number;
-  departments: { value: string; label: string }[];
+  leastInitiativesPerDepartment: number;
+  mostInitiativesPerDepartment: number;
+  activeDepartments: { value: string; label: string }[];
   tiles: keyof typeof MAP_TILES;
   setTiles: Dispatch<SetStateAction<keyof typeof MAP_TILES>>;
   layers: keyof typeof MAP_LAYERS | null;
@@ -83,7 +83,7 @@ export function MapLegend({
         {parseSimpleMarkdown(uiText.mapLegend.description)}
         {!initiativeId && (
           <Combobox
-            items={departments}
+            items={activeDepartments}
             value={department ?? ""}
             setValue={setDepartment}
             keys={{ forLabel: "label", forValue: "value" }}
@@ -111,8 +111,8 @@ export function MapLegend({
           <div className="border-l border-r border-foreground/40">
             <div className="h-6 w-full " style={gradientStyle} />
             <div className="flex justify-between px-1 text-foreground/80">
-              <span>{lowInitiativePerDepartment}</span>
-              <span>{highInitiativePerDepartment}</span>
+              <span>{leastInitiativesPerDepartment}</span>
+              <span>{mostInitiativesPerDepartment}</span>
             </div>
           </div>
         </li>
