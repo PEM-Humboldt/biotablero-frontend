@@ -36,7 +36,7 @@ export function ZoomControls() {
   return (
     <ButtonGroup
       orientation="vertical"
-      className="leaflet-top leaflet-right m-2"
+      className="leaflet-top leaflet-right m-4 *:border-primary/50"
       role="group"
       aria-label={uiText.mapControls.labelSr}
     >

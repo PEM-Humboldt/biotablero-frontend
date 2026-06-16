@@ -20,8 +20,7 @@ import { getGeoJsonMap } from "pages/monitoring/api/services/location";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { getInitiativeLocations } from "pages/monitoring/api/services/initiatives";
 import { MapFinder } from "pages/monitoring/outlets/initiativesMap/MapFinder";
-import { CurrentInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
-import { Browser } from "pages/monitoring/outlets/initiativesMap/Browser";
+import { DataSheetAndNavigation } from "pages/monitoring/outlets/initiativesMap/DataSheetAndNavigation";
 import { MapLegend } from "pages/monitoring/outlets/initiativesMap/MapLegend";
 
 export function InitiativesMap() {
@@ -128,30 +127,28 @@ export function InitiativesMap() {
   return errors.length > 0 ? (
     <ErrorsList errorItems={errors} />
   ) : (
-    <CurrentInitiativeCTX>
-      <div className="relative flex flex-col h-full w-full">
-        <Browser />
+    <div className="relative flex flex-col h-full w-full">
+      <DataSheetAndNavigation initiatives={initiatives} />
 
-        <MapFinder
-          tiles={tiles}
-          layer={layer}
-          nation={nation}
-          initiatives={initiatives}
-          activeFeatures={activeFeatures}
-          leastInitiativesPerDepartment={leastInitiativesPerDepartment}
-          mostInitiativesPerDepartment={mostInitiativesPerDepartment}
-        />
+      <MapFinder
+        tiles={tiles}
+        layer={layer}
+        nation={nation}
+        initiatives={initiatives}
+        activeFeatures={activeFeatures}
+        leastInitiativesPerDepartment={leastInitiativesPerDepartment}
+        mostInitiativesPerDepartment={mostInitiativesPerDepartment}
+      />
 
-        <MapLegend
-          leastInitiativesPerDepartment={leastInitiativesPerDepartment}
-          mostInitiativesPerDepartment={mostInitiativesPerDepartment}
-          activeDepartments={activeDepartmentsList}
-          tiles={tiles}
-          setTiles={setTiles}
-          layers={layer}
-          setLayers={setLayer}
-        />
-      </div>
-    </CurrentInitiativeCTX>
+      <MapLegend
+        leastInitiativesPerDepartment={leastInitiativesPerDepartment}
+        mostInitiativesPerDepartment={mostInitiativesPerDepartment}
+        activeDepartments={activeDepartmentsList}
+        tiles={tiles}
+        setTiles={setTiles}
+        layers={layer}
+        setLayers={setLayer}
+      />
+    </div>
   );
 }

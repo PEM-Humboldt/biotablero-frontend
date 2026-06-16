@@ -16,7 +16,7 @@ export function Monitoring() {
       type: LayoutUpdated.CHANGE_SECTION,
       sectionData: {
         moduleName: "Monitoreo Comunitario",
-        logos: new Set(["usaid", "geobon", "umed", "temple"]),
+        logos: new Set([]),
       },
     });
   }, [layoutDispatch]);

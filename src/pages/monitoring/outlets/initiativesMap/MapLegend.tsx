@@ -75,7 +75,7 @@ export function MapLegend({
 
   return (
     <div
-      className="absolute border border-primary/50 top-0 z-10 right-0 mt-2 mx-12 w-120 bg-background p-4 rounded-lg max-w-[300px] space-y-4 text-sm shadow-md"
+      className="absolute border border-primary/50 top-0 z-10 right-0 mt-4 mx-14 w-120 bg-background p-4 rounded-lg max-w-[300px] space-y-4 text-sm shadow-md"
       role="group"
       aria-label={uiText.mapLegend.labelSr}
     >
