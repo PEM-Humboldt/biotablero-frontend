@@ -8,6 +8,7 @@ import { ButtonGroup } from "@ui/shadCN/component/button-group";
 
 import { COLOMBIA_BOUNDS } from "pages/utils/settings";
 import { uiText } from "pages/monitoring/outlets/initiativesMap/layout/uiText";
+import { useEffect, useRef } from "react";
 
 export function ZoomControls() {
   const map = useMap();
@@ -16,6 +17,21 @@ export function ZoomControls() {
   const boundsObject = L.latLngBounds(COLOMBIA_BOUNDS);
   const targetZoom = map.getBoundsZoom(boundsObject);
   const zoomCenter = boundsObject.getCenter();
+  const zoomInBtnRef = useRef(null);
+  const homeBtnRef = useRef(null);
+  const zoomOutBtnRef = useRef(null);
+
+  useEffect(() => {
+    [zoomInBtnRef, homeBtnRef, zoomOutBtnRef].forEach((reference) => {
+      if (!reference.current) {
+        return;
+      }
+      const element = reference.current;
+
+      L.DomEvent.disableClickPropagation(element);
+      L.DomEvent.disableScrollPropagation(element);
+    });
+  }, []);
 
   return (
     <ButtonGroup
@@ -25,6 +41,7 @@ export function ZoomControls() {
       aria-label={uiText.mapControls.labelSr}
     >
       <Button
+        ref={zoomInBtnRef}
         variant="outline"
         size="icon-sm"
         onClick={() => map.zoomIn()}
@@ -36,6 +53,7 @@ export function ZoomControls() {
       </Button>
 
       <Button
+        ref={homeBtnRef}
         variant="outline"
         size="icon-sm"
         onClick={() => {
@@ -54,6 +72,7 @@ export function ZoomControls() {
       </Button>
 
       <Button
+        ref={zoomOutBtnRef}
         variant="outline"
         size="icon-sm"
         onClick={() => map.zoomOut()}
