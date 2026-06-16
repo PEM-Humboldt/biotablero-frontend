@@ -3,15 +3,17 @@ import { useNavigate } from "react-router";
 import { Button } from "@ui/shadCN/component/button";
 import { NotebookPen } from "lucide-react";
 import { uiText } from "pages/monitoring/outlets/myProfile/layout/uiText";
+import { useEffect } from "react";
 
 export function UserProfileCard() {
   const { user, updateUser } = useUserCTX();
   const navigate = useNavigate();
 
-  if (!user) {
-    void navigate("/Monitoreo");
-    return;
-  }
+  useEffect(() => {
+    if (!user) {
+      void navigate("/Monitoreo");
+    }
+  }, [user, navigate]);
 
   return !user ? null : (
     <div className="rounded-lg bg-background p-4 lg:p-8 flex gap-4 lg:gap-8 items-start">

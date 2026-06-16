@@ -107,7 +107,7 @@ function InitiativeFocusArea({
         "w-full flex rounded-lg overflow-hidden outline-2 -outline-offset-2 outline-transparent hover:outline-primary transition-[background-color,outline-color] duration-300 ease-in-out",
         initiative.id !== currentFocusAreaEdit
           ? "bg-background"
-          : "bg-input/50 outline-2 outline-primary -outline-offset-2",
+          : "bg-input/50 outline-primary",
       )}
       aria-label={`initiativeName_${initiative.name}`}
     >

@@ -49,7 +49,7 @@ export const uiText = {
     },
     cardDescriptionTitle: {
       role: "Mi perfil",
-      initiative: "Descripcion de la iniciativa",
+      initiative: "Descripción de la iniciativa",
     },
     addRoleButton: {
       title: "Crear perfil",
