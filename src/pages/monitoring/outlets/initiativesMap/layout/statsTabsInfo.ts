@@ -46,8 +46,6 @@ export const statsTabsInfo: Record<
       label: "Datos demográficos",
       icon: UsersRound,
     },
-    descriptionMD:
-      "Estas cifras muestran la composición de los colaboradores inscritos según su propia designación  ",
     component: DemographicStats,
   },
   Indicators: {
