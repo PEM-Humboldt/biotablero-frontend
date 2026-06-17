@@ -342,6 +342,16 @@ export async function makeJoinRequestToInitiative(
   return res;
 }
 
+/**
+ * Fetches all initiatives filtered by a specific location or returns all of them if none is provided.
+ *
+ * @param departmentId - Optional. The unique identifier of the department to filter the initiatives.
+ * If omitted, the function retrieves all available initiatives.
+ *
+ * @returns A `Promise` that resolves to:
+ * - On success: An array of `InitiativeByLocation` objects.
+ * - On failure: An `ApiRequestError` object.
+ */
 export async function getInitiativeLocations(departmentId?: number) {
   const res = await monitoringAPI<InitiativeByLocation[]>({
     type: "get",
@@ -351,7 +361,19 @@ export async function getInitiativeLocations(departmentId?: number) {
   return res;
 }
 
-export async function getInitiativesGeneralStats<T extends StatsType>(
+/**
+ * Retrieves specific metrics and statistics based on the requested category and optional filters.
+ *
+ * @template T - A generic type extending `StatsType` that determines the shape of the returned stats object.
+ * @param type - The category of statistics to fetch ("General", "Ecosystems", "Demographic", "Indicators").
+ * @param departmentId - Optional. The identifier of a specific department to filter the statistics.
+ * @param initiativeId - Optional. The identifier of a specific initiative to isolate its metrics.
+ *
+ * @returns A `Promise` that resolves to:
+ * - On success: The object corresponding to the provided `type` category.
+ * - On failure: An `ApiRequestError` object.
+ */
+export async function getStats<T extends StatsType>(
   type: T,
   departmentId?: number,
   initiativeId?: number,
