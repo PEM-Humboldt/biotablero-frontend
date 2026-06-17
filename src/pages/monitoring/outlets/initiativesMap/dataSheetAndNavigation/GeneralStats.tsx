@@ -1,5 +1,4 @@
 import { useStats } from "pages/monitoring/outlets/initiativesMap/hooks/useStats";
-import { LoadingDiv } from "@ui/LoadingDiv";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import {
   Binoculars,
@@ -9,14 +8,13 @@ import {
   VectorSquare,
 } from "lucide-react";
 import { useParams } from "react-router";
+import { Spinner } from "@ui/shadCN/component/spinner";
 
 export function GeneralStats() {
   const { initiativeId } = useParams();
   const { isLoading, errors, stats } = useStats("General");
 
-  return isLoading ? (
-    <LoadingDiv />
-  ) : (
+  return (
     <>
       <ErrorsList
         errorItems={errors}
@@ -25,44 +23,61 @@ export function GeneralStats() {
 
       {initiativeId === undefined && (
         <StatValue
+          isLoaging={isLoading}
           value={stats?.enabledInitiatives ?? 0}
           Icon={Binoculars}
           text="Iniciativas realizando monitoreo"
-          description="Estas son todas las iniciativas de monitoreo activas en este momento"
+          description="Iniciativas de monitoreo activas en el área seleccionada"
         />
       )}
 
       <StatValue
+        isLoaging={isLoading}
         value={stats?.peopleInvolved ?? 0}
         Icon={UsersRound}
-        text="Colaboradores registrados en las iniciativas"
-        description="Estas son todas las personas que participan activamente en las iniciativas"
+        text={
+          initiativeId
+            ? "Colaboradores registrados en la iniciativa"
+            : "Colaboradores registrados en las iniciativas"
+        }
+        description="Personas registradas como colaboradores"
       />
 
       <StatValue
+        isLoaging={isLoading}
         value={stats?.area ?? 0}
         Icon={VectorSquare}
-        text="Área bajo monitoreo comunitario"
+        text={
+          initiativeId
+            ? "Area cubierta por la iniciativa"
+            : "Area donde se realiza monitoreo comunitario"
+        }
         unit="ha"
       />
 
       <StatValue
+        isLoaging={isLoading}
         value={stats?.enabledInitiatives ?? 0}
         Icon={FileBadge}
-        text="Convenios apoyando las iniciativas"
-        description=""
+        text={
+          initiativeId
+            ? "Convenios que apoyan la iniciativa"
+            : "Convenios apoyando las iniciativas"
+        }
       />
     </>
   );
 }
 
 function StatValue({
+  isLoaging,
   value,
   unit,
   Icon,
   text,
   description,
 }: {
+  isLoaging: boolean;
   value: number;
   unit?: string;
   Icon: LucideIcon;
@@ -78,7 +93,10 @@ function StatValue({
       <Icon className="size-10 flex-1" strokeWidth={1} aria-hidden="true" />
       <div className="flex-5 border-l border-grey pl-4">
         <div className="font-normal">
-          <span className="text-4xl">{displayValue}</span>
+          <span className="text-4xl inline-flex gap-1 items-center">
+            {displayValue}
+            {isLoaging && <Spinner className="size-6 text-primary" />}
+          </span>
           {unit && <span className="text-xl">{unit}</span>}
         </div>
         <div className="font-light text-lg text-balance">{text}</div>
