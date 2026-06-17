@@ -8,7 +8,8 @@ import {
 } from "lucide-react";
 import type { StatsType } from "pages/monitoring/types/stats";
 import { GeneralStats } from "pages/monitoring/outlets/initiativesMap/dataSheetAndNavigation/GeneralStats";
-import { StrategicEcosystemsStats } from "../dataSheetAndNavigation/StrategicEcosystemsStats";
+import { StrategicEcosystemsStats } from "pages/monitoring/outlets/initiativesMap/dataSheetAndNavigation/StrategicEcosystemsStats";
+import { DemographicStats } from "pages/monitoring/outlets/initiativesMap/dataSheetAndNavigation/DemographicStats";
 
 export const tabsAvailable: StatsType[] = [
   "General",
@@ -47,6 +48,7 @@ export const statsTabsInfo: Record<
     },
     descriptionMD:
       "Estas cifras muestran la composición de los colaboradores inscritos según su propia designación  ",
+    component: DemographicStats,
   },
   Indicators: {
     tabBtn: {
