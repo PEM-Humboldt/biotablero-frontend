@@ -2,7 +2,7 @@ export type StatsType = "General" | "Ecosystems" | "Demographic" | "Indicators";
 
 export type BarsInfo = { key: string; value: number };
 
-export type GeneralStats = {
+export type GeneralStatsType = {
   enabledInitiatives: number;
   peopleInvolved: number;
   agreementsInvolved: number;
@@ -10,23 +10,23 @@ export type GeneralStats = {
 };
 
 // TODO: Preguntarle a César G. por la def de este tipo
-export type EcosystemsStats = {
+export type EcosystemsStatsType = {
   ecosystemsInvolved: { id: number; name: string }[];
 };
 
-export type DemographicStats = {
+export type DemographicStatsType = {
   gender: BarsInfo[];
   selfRecognition: BarsInfo[];
   organization: BarsInfo[];
 };
 
-export type IndicatorsStats = {
+export type IndicatorsStatsType = {
   indicatorsByScale: BarsInfo[];
 };
 
 export type StatsResponseMap = {
-  General: GeneralStats;
-  Ecosystems: EcosystemsStats;
-  Demographic: DemographicStats;
-  Indicators: IndicatorsStats;
+  General: GeneralStatsType;
+  Ecosystems: EcosystemsStatsType;
+  Demographic: DemographicStatsType;
+  Indicators: IndicatorsStatsType;
 };
