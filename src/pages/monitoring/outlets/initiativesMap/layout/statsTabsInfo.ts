@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import type { StatsType } from "pages/monitoring/types/stats";
 import { GeneralStats } from "pages/monitoring/outlets/initiativesMap/dataSheetAndNavigation/GeneralStats";
+import { StrategicEcosystemsStats } from "../dataSheetAndNavigation/StrategicEcosystemsStats";
 
 export const tabsAvailable: StatsType[] = [
   "General",
@@ -37,8 +38,7 @@ export const statsTabsInfo: Record<
       label: "Ecosistemas estratégicos",
       icon: Mountain,
     },
-    descriptionMD:
-      "Las ventanas de estudio del monitoreo comunitario a este nivel, abarcan los siguientes ecosistemas estratégicos:",
+    component: StrategicEcosystemsStats,
   },
   Demographic: {
     tabBtn: {
