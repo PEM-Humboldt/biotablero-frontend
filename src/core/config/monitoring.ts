@@ -2,9 +2,6 @@ import type { ImageMimeType } from "@appTypes/formats";
 import type { ODataParams } from "@appTypes/odata";
 import type { LatLngBoundsLiteral } from "leaflet";
 
-// Global
-export const LOGIN_URL = "/";
-
 // Logs
 export const LOG_RECORDS_PER_PAGE = 20; // registrys on the logs summary
 
@@ -29,6 +26,7 @@ export const INITIATIVE_LOCALITY_MAX_LENGTH = 300;
 export const INITIATIVE_LEADERS_MAX_AMOUNT = 3;
 export const INITIATIVE_LEADERS_MIN_AMOUNT = 1;
 export const INITIATIVE_DISPLAY_LEADERS_SEARCH = 5;
+export const INITIATIVE_USER_FOCUS_AREA_LENGTH = 200;
 
 export const INITIATIVE_CONTACTS_MAX_AMOUNT = 3;
 export const INITIATIVE_CONTACTS_MIN_AMOUNT = 1;

@@ -1,6 +1,6 @@
 import { NavLink } from "react-router";
 
-import { useUserCTX } from "@hooks/UserContext";
+import { useUserCTX } from "@hooks/UserCTX";
 import {
   Sidebar,
   SidebarContent,
@@ -21,9 +21,9 @@ import { adminItems } from "pages/monitoring/layout/sidebar/adminItems";
 
 export function MonitoringSidebar({ className }: { className: string }) {
   const { user } = useUserCTX();
-  const role = user ? user.roles[0] : null;
-  const isAdmin = role === "Admin";
-  const isUser = role === "User";
+  const roles = user ? user.roles : [];
+  const isAdmin = roles.includes("Admin");
+  const isUser = roles.includes("User");
 
   return (
     <Sidebar collapsible="icon" className={className}>

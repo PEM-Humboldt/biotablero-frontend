@@ -1,9 +1,13 @@
 import type { UserLevel } from "pages/monitoring/types/catalog";
 import type {
   LocationCompleteInfo,
-  ODataInitiativeShortEntry,
+  ODataInitiativeShort,
   TagInInitiative,
 } from "pages/monitoring/types/odataResponse";
+import type {
+  UserInInitiativeBasicInfo,
+  UserInInitiativeCompleteInfo,
+} from "pages/monitoring/types/user";
 
 export type GeneralInfo = {
   name: string;
@@ -59,22 +63,34 @@ export type UserSRC = WithID<
   UserData & { initiativeId: number; creationDate: string }
 >;
 
-export type InitiativeFullInfo = WithID<
-  GeneralInfo &
-    ImagesData &
-    InitiativeAditionalInfo & {
-      locations: LocationCompleteInfo[];
-      contacts: ContactSRC[];
-      users: UserSRC[];
-    }
->;
+export type InitiativeCompleteInfo = {
+  id: number;
+  name: string;
+  shortName: string;
+  description: string;
+  baseline: string;
+  objective: string;
+  creationDate: string;
+  coordinate: [number, number];
+  polygonArea: number;
+  enabled: boolean;
+  users: UserInInitiativeCompleteInfo[];
+  bannerUrl?: string;
+  imageUrl?: string;
+  locations: LocationCompleteInfo[];
+  contacts?: ContactSRC[];
+  tags: TagInInitiative[];
+};
 
-export type InitiativeDisplayInfo = Omit<InitiativeFullInfo, "locations"> & {
+export type InitiativeDisplayInfo = Omit<
+  InitiativeCompleteInfo,
+  "locations"
+> & {
   locations: LocationObj[];
 };
 
 export type InitiativeDisplayInfoShort = Omit<
-  ODataInitiativeShortEntry,
+  ODataInitiativeShort,
   "locations"
 > & {
   locations: LocationObj[];

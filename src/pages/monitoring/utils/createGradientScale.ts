@@ -49,7 +49,9 @@ export function createGradientScale(
       return "transparent";
     }
 
-    const t = Math.min(Math.max((count - min) / (max - min), 0), 1);
+    const ajustedCount = count === min && count === max ? 0 : count;
+
+    const t = Math.min(Math.max((ajustedCount - min) / (max - min), 0), 1);
 
     let upperIndex = sortedStops.findIndex((s) => s.position >= t);
 

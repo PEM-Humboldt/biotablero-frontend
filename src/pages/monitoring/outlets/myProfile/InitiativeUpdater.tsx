@@ -11,19 +11,22 @@ import {
 import { RoleInInitiative } from "pages/monitoring/types/catalog";
 import { Combobox } from "@ui/ComboBox";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import { getUsers } from "pages/monitoring/api/services/user";
-import { UsersListForManagement } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/UserListForManagement";
-import type { InitiativeUser } from "pages/monitoring/types/odataResponse";
+import { UsersListForManagement } from "pages/monitoring/outlets/myProfile/initiativeUpdater/UserListForManagement";
+import type { UserInInitiativeCompleteInfo } from "pages/monitoring/types/user";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
-import { InitiativeInfoUpdater } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/InitiativeInfoUpdater";
-import { uiText } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
+import { InitiativeInfoUpdater } from "pages/monitoring/outlets/myProfile/initiativeUpdater/InitiativeInfoUpdater";
+import { uiText } from "pages/monitoring/outlets/myProfile/initiativeUpdater/layout/uiText";
 import { InitiativeInvitationForm } from "pages/monitoring/outlets/initiativeJoinInvitation/InitiativeInvitationForm";
+import { getInitiative } from "pages/monitoring/api/services/initiatives";
+import { JoinRequests } from "pages/monitoring/outlets/myProfile/JoinRequest";
 
 export function InitiativeUpdater() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState("");
-  const [initiativeUsers, setInitiativeUsers] = useState<InitiativeUser[]>([]);
+  const [initiativeUsers, setInitiativeUsers] = useState<
+    UserInInitiativeCompleteInfo[]
+  >([]);
 
   const { userInitiativesAs } = useUserInMonitoringCTX();
   const initiativesAsLeader = userInitiativesAs[RoleInInitiative.LEADER];
@@ -36,9 +39,6 @@ export function InitiativeUpdater() {
     setSelectedId(String(initiativesAsLeader[0].id));
   }, [initiativesAsLeader, selectedId]);
 
-  // NOTE: Aunque en este momento la mayoría de info de usuarios se puede obtener
-  // de las iniciativas como líder, creo que a futuro van a distanciarse y la
-  // info más completa va a ser llamada del endpoint que se usó acá
   const getUsersDetail = useCallback(async () => {
     if (!selectedId) {
       return;
@@ -46,7 +46,7 @@ export function InitiativeUpdater() {
     setInitiativeUsers([]);
     setIsLoading(true);
 
-    const res = await getUsers(selectedId);
+    const res = await getInitiative(Number(selectedId));
     if (isMonitoringAPIError(res)) {
       setError(res.data[0].msg);
 
@@ -54,7 +54,7 @@ export function InitiativeUpdater() {
       return;
     }
 
-    setInitiativeUsers(res);
+    setInitiativeUsers(res.users);
     setIsLoading(false);
   }, [selectedId]);
 
@@ -108,6 +108,10 @@ export function InitiativeUpdater() {
                 {uiText.tabsLabels.initiativeManagement.label}
               </TabsTrigger>
 
+              <TabsTrigger value="joinRequests" className="tabs-trigger">
+                Solicitudes de ingreso
+              </TabsTrigger>
+
               <TabsTrigger value="invitation" className="tabs-trigger">
                 {uiText.tabsLabels.initiativeInvitation.label}
               </TabsTrigger>
@@ -131,6 +135,10 @@ export function InitiativeUpdater() {
 
             <TabsContent value="initiative" className="tabs-content">
               <InitiativeInfoUpdater initiativeId={currentInitiative.id} />
+            </TabsContent>
+
+            <TabsContent value="joinRequests" className="tabs-content">
+              <JoinRequests initiativeId={currentInitiative.id} />
             </TabsContent>
 
             <TabsContent value="invitation" className="tabs-content">

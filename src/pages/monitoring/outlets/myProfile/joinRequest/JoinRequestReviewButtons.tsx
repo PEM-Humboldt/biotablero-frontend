@@ -3,7 +3,7 @@ import { Ban, SquareCheckBig } from "lucide-react";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import { Button } from "@ui/shadCN/component/button";
 import type { ODataInitiativeUserRequest } from "pages/monitoring/types/odataResponse";
-import { uiText } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/uiText";
+import { uiText } from "pages/monitoring/outlets/myProfile/joinRequest/layout/uiText";
 
 export function JoinRequestReviewButtons({
   request,

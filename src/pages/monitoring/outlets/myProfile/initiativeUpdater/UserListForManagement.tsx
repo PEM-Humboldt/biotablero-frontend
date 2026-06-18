@@ -1,11 +1,15 @@
 import { useState } from "react";
-import { Ban, CircleOff } from "lucide-react";
+import { Ban, CircleOff, MailsIcon } from "lucide-react";
 import { toast } from "sonner";
 
-import { useUserCTX } from "@hooks/UserContext";
+import { useUserCTX } from "@hooks/UserCTX";
+import { Button } from "@ui/shadCN/component/button";
 
 import { RoleInInitiative } from "pages/monitoring/types/catalog";
-import type { InitiativeUser } from "pages/monitoring/types/odataResponse";
+import type {
+  UserInInitiativeBasicInfo,
+  UserInInitiativeCompleteInfo,
+} from "pages/monitoring/types/user";
 import {
   changeUserRoleInInitiative,
   removeUserFromInitiative,
@@ -19,8 +23,8 @@ import {
 import {
   roleEventInfo,
   roleEventRestrictions,
-} from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/roleEvents";
-import { uiText } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
+} from "pages/monitoring/outlets/myProfile/initiativeUpdater/layout/roleEvents";
+import { uiText } from "pages/monitoring/outlets/myProfile/initiativeUpdater/layout/uiText";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
 export function UsersListForManagement({
@@ -28,16 +32,16 @@ export function UsersListForManagement({
   inRole,
   updater,
 }: {
-  users: InitiativeUser[];
+  users: UserInInitiativeCompleteInfo[];
   inRole: RoleInInitiative;
   updater: () => Promise<void>;
 }) {
   const usersByRole = users.reduce<
-    Partial<Record<RoleInInitiative, InitiativeUser[]>>
+    Partial<Record<RoleInInitiative, UserInInitiativeCompleteInfo[]>>
   >((all, user) => {
     const roleId = user.level.id;
     if (all[roleId] === undefined) {
-      all[roleId] = [] as InitiativeUser[];
+      all[roleId] = [] as UserInInitiativeCompleteInfo[];
     }
     all[roleId].push(user);
 
@@ -55,7 +59,9 @@ export function UsersListForManagement({
       ) : (
         <ul className="w-full p-2 space-y-2">
           {usersInRole.map((user) => {
-            const formatedDate = new Date(user.creationDate).toLocaleString();
+            const formatedDate = new Date(
+              user.creationDate,
+            ).toLocaleDateString();
             return (
               <li
                 key={user.id}
@@ -63,11 +69,24 @@ export function UsersListForManagement({
               >
                 <div className="flex-1 flex gap-4 items-center">
                   <img
-                    src={`https://picsum.photos/seed/${Math.round(Math.random() * 100)}/50/50`}
+                    src={user.externalData.picture}
                     alt=""
                     className="w-12 h-12 rounded-full"
                   />
-                  <span>{user.userName}</span>
+                  <span>{user.externalData.fullName}</span>
+
+                  <Button variant="ghost" asChild>
+                    <a
+                      href={`mailto:${user.externalData.email}`}
+                      aria-label={
+                        uiText.tabsContent.usersManagement.actions.contactBtn.sr
+                      }
+                    >
+                      {uiText.tabsContent.usersManagement.actions.contactBtn
+                        .label ?? ""}
+                      <MailsIcon aria-hidden="true" />
+                    </a>
+                  </Button>
                 </div>
                 <time
                   title={uiText.tabsContent.usersManagement.joiningDate.title}
@@ -100,9 +119,9 @@ function ActionsToUserByRole({
   usersByRole,
   updater,
 }: {
-  user: InitiativeUser;
+  user: UserInInitiativeBasicInfo;
   role: RoleInInitiative;
-  usersByRole: Partial<Record<RoleInInitiative, InitiativeUser[]>>;
+  usersByRole: Partial<Record<RoleInInitiative, UserInInitiativeBasicInfo[]>>;
   updater: () => Promise<void>;
 }) {
   const { user: admin } = useUserCTX();
@@ -165,7 +184,7 @@ function ActionsToUserByRole({
   const buttonConditional = roleEventRestrictions(usersByRole);
 
   return (
-    <div className="space-x-2">
+    <div className="flex gap-2">
       {posibleActions.map((action) => {
         const {
           component: Comp,
@@ -192,7 +211,7 @@ function ActionsToUserByRole({
 
         return (
           <Comp
-            key={Math.random()}
+            key={`${user.id}_${Math.random()}`}
             texts={{ ...dialogTexts }}
             triggerBtnVariant={triggerBtnVariant}
             triggerBtnSize={triggerBtnSize}

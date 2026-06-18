@@ -23,14 +23,14 @@ import {
 import {
   roleDictionary,
   userStateInInitiativeDictionary,
-} from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
+} from "pages/monitoring/outlets/myProfile/initiativeUpdater/layout/uiText";
 import { type ButtonProps } from "@ui/shadCN/component/button";
-import type { InitiativeUser } from "pages/monitoring/types/odataResponse";
+import type { UserInInitiativeBasicInfo } from "pages/monitoring/types/user";
 import {
   INITIATIVE_LEADERS_MAX_AMOUNT,
   INITIATIVE_LEADERS_MIN_AMOUNT,
 } from "@config/monitoring";
-import { uiText } from "pages/monitoring/outlets/initiativesManagement/initiativeUpdater/layout/uiText";
+import { uiText } from "pages/monitoring/outlets/myProfile/initiativeUpdater/layout/uiText";
 
 type RoleEventInfo = {
   dialog: {
@@ -62,7 +62,7 @@ function getNewStateInInitiative(role: RoleInInitiative, action: RoleEvents) {
 }
 
 export function roleEventRestrictions(
-  usersByRole: Partial<Record<RoleInInitiative, InitiativeUser[]>>,
+  usersByRole: Partial<Record<RoleInInitiative, UserInInitiativeBasicInfo[]>>,
 ): Partial<
   Record<
     RoleInInitiative,
@@ -137,7 +137,7 @@ export const roleEventInfo: Record<
         className: "px-6! gap-6! border-2! border-primary!",
       },
       triggerBtnVariant: "default",
-      triggerBtnSize: "icon",
+      triggerBtnSize: "default",
       component: ConfirmationDialog,
     };
   },
@@ -177,7 +177,7 @@ export const roleEventInfo: Record<
         className: "px-6! gap-6! border-2! border-accent!",
       },
       triggerBtnVariant: "default",
-      triggerBtnSize: "icon",
+      triggerBtnSize: "default",
       component: ConfirmationDialog,
     };
   },
@@ -211,7 +211,7 @@ export const roleEventInfo: Record<
         className: "px-6! gap-6! border-2! border-accent!",
       },
       triggerBtnVariant: "outline_destructive",
-      triggerBtnSize: "icon",
+      triggerBtnSize: "default",
       component: DestructiveConfirmationDialog,
     };
   },

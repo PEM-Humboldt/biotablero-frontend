@@ -34,8 +34,8 @@ export const uiText = {
         resolved: "solicitud resuelta el",
       },
       cellTitle: {
-        pending: "solicita el ingreso a la iniciativa:",
-        resolved: "solicitó el ingreso a la iniciativa:",
+        pending: "solicita el ingreso a la iniciativa",
+        resolved: "solicitó el ingreso a la iniciativa",
       },
     },
     actionsResolved: {

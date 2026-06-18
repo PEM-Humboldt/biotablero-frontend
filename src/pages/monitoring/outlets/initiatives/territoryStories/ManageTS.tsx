@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { cn } from "@ui/shadCN/lib/utils";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
-import { useUserCTX } from "@hooks/UserContext";
+import { useUserCTX } from "@hooks/UserCTX";
 import { TablePager } from "@composites/TablePager";
 import { TERRITORY_STORIES_PER_PAGE } from "@config/monitoring";
 import { ErrorsList } from "@ui/LabelingWithErrors";

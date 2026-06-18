@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { UserRoundCheck, UserRoundX } from "lucide-react";
 
@@ -9,102 +9,93 @@ import { JOIN_REQUESTS_PER_PAGE } from "@config/monitoring";
 import type { GetKeysWithStringValues } from "@appTypes/utils";
 
 import type { ODataInitiativeUserRequest } from "pages/monitoring/types/odataResponse";
-import { useInitiativeJoinRequest } from "pages/monitoring/outlets/initiativesManagement/hooks/useInitiativeJoinRequest";
-import {
-  type FilterJoinRequestsCallback,
-  JoinRequestStatus,
-} from "pages/monitoring/types/userJoinRequest";
-import { filterJoinRequestButtonsConfig } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/joinRequestFilterButtons";
-import { JoinRequestFilterButtons } from "pages/monitoring/outlets/initiativesManagement/joinRequest/JoinRequestFilterButtons";
-import { joinRequestTableParams } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/joinRequestTableParams";
-import { JoinRequestReviewButtons } from "pages/monitoring/outlets/initiativesManagement/joinRequest/JoinRequestReviewButtons";
-import { uiText } from "pages/monitoring/outlets/initiativesManagement/joinRequest/layout/uiText";
+import { JoinRequestStatus } from "pages/monitoring/types/userJoinRequest";
+import { filterJoinRequestButtonsConfig } from "pages/monitoring/outlets/myProfile/joinRequest/layout/joinRequestFilterButtons";
+import { JoinRequestFilterButtons } from "pages/monitoring/outlets/myProfile/joinRequest/JoinRequestFilterButtons";
+import { joinRequestTableParams } from "pages/monitoring/outlets/myProfile/joinRequest/layout/joinRequestTableParams";
+import { JoinRequestReviewButtons } from "pages/monitoring/outlets/myProfile/joinRequest/JoinRequestReviewButtons";
+import { uiText } from "pages/monitoring/outlets/myProfile/joinRequest/layout/uiText";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import type { ODataParams } from "@appTypes/odata";
+import {
+  getInitiativeRequests,
+  updateJoinRequest,
+} from "pages/monitoring/api/services/initiatives";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
-import { RoleInInitiative } from "pages/monitoring/types/catalog";
 
-export function JoinRequests() {
-  const [currentStatus, setCurrentStatus] = useState<JoinRequestStatus | null>(
-    null,
+export function JoinRequests({ initiativeId }: { initiativeId: number }) {
+  const [currentStatus, setCurrentStatus] = useState<JoinRequestStatus>(
+    JoinRequestStatus.UNDER_REVIEW,
   );
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [requests, setRequests] = useState<ODataInitiativeUserRequest[]>([]);
-  const [totalRequest, setTotalRequest] = useState<number>(0);
-  const [loading, setLoading] = useState(false);
+  const totalRequest = useRef<number>(0);
+  const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
-  const { userInitiativesAs } = useUserInMonitoringCTX();
+  const { reloadUserInMonitoringData } = useUserInMonitoringCTX();
+  const { userInitiativesById } = useUserInMonitoringCTX();
+  const [requestParams, setRequestParams] = useState<ODataParams>({
+    top: JOIN_REQUESTS_PER_PAGE,
+    skip: 0,
+    orderby: "creationDate desc",
+    filter: `status/name eq '${JoinRequestStatus.UNDER_REVIEW}'`,
+  });
 
-  const userInitiatives = useMemo(
-    () => userInitiativesAs[RoleInInitiative.LEADER],
-    [userInitiativesAs],
+  const initiativeName = useMemo(
+    () =>
+      userInitiativesById[initiativeId]
+        ? userInitiativesById[initiativeId].name
+        : "",
+    [initiativeId, userInitiativesById],
   );
 
-  const initiativesIds = useMemo(
-    () => userInitiatives?.map((initiative) => initiative.id) ?? [],
-    [userInitiatives],
-  );
+  const getRequests = useCallback(async () => {
+    setErrors([]);
+    setIsLoading(true);
 
-  const { getRequestPage, resetPool, getTotalRequests, resolveJoinRequest } =
-    useInitiativeJoinRequest(initiativesIds);
+    const res = await getInitiativeRequests(initiativeId, requestParams);
+    setIsLoading(false);
 
-  const loadData = useCallback(
-    async (
-      status: JoinRequestStatus,
-      page: number,
-      sortBy: GetKeysWithStringValues<ODataInitiativeUserRequest>,
-      newerFirst: boolean,
-    ) => {
-      setLoading(true);
-      setRequests([]);
-      setTotalRequest(0);
+    if (isMonitoringAPIError(res)) {
+      setErrors(res.data.map((err) => err.msg));
+      return;
+    }
 
-      const requestsAmount = await getTotalRequests(status);
-      const data = await getRequestPage(
-        status,
-        page,
-        JOIN_REQUESTS_PER_PAGE,
-        sortBy,
-        newerFirst,
-      );
+    totalRequest.current = res["@odata.count"];
+    setRequests(res.value);
+  }, [initiativeId, requestParams]);
 
-      if (isMonitoringAPIError(requestsAmount) || isMonitoringAPIError(data)) {
-        setLoading(false);
-        setErrors([uiText.error.critical.user]);
-        return;
-      }
+  useEffect(() => {
+    void getRequests();
+  }, [getRequests]);
 
-      setRequests(data.requests);
-      setErrors(data.errors);
-      setTotalRequest(requestsAmount);
-      setLoading(false);
-    },
-    [getRequestPage, getTotalRequests],
-  );
-
-  const handleFilterChange: FilterJoinRequestsCallback = useCallback(
-    async (
+  const handleFilterChange = useCallback(
+    (
       status: JoinRequestStatus,
       sortBy: GetKeysWithStringValues<ODataInitiativeUserRequest>,
       newerFirst: boolean = true,
-      force: boolean = false,
     ) => {
-      if (!force && currentStatus === status) {
+      if (currentStatus === status) {
         return;
       }
 
-      resetPool();
+      setRequestParams((oldParams) => ({
+        ...oldParams,
+        skip: 0,
+        filter: `status/name eq '${status}'`,
+        orderby: `${sortBy} ${newerFirst ? "desc" : "asc"}`,
+      }));
+
       setCurrentPage(1);
       setCurrentStatus(status);
-      await loadData(status, 1, sortBy, newerFirst);
     },
-    [currentStatus, resetPool, loadData],
+    [currentStatus],
   );
 
-  const handlePageChange = async (newPage: number) => {
+  const handlePageChange = (newPage: number) => {
     if (!currentStatus) {
       return;
     }
-    setCurrentPage(newPage);
 
     const isNewerFirst = currentStatus !== JoinRequestStatus.UNDER_REVIEW;
     const sortField =
@@ -112,113 +103,81 @@ export function JoinRequests() {
         ? "creationDate"
         : "responseDate";
 
-    await loadData(currentStatus, newPage, sortField, isNewerFirst);
+    setRequestParams((oldParams) => ({
+      ...oldParams,
+      skip: (newPage - 1) * JOIN_REQUESTS_PER_PAGE,
+      orderby: `${sortField} ${isNewerFirst ? "desc" : "asc"}`,
+    }));
   };
-
-  useEffect(() => {
-    if (initiativesIds.length > 0 && !currentStatus) {
-      void handleFilterChange(
-        JoinRequestStatus.UNDER_REVIEW,
-        "creationDate",
-        false,
-      );
-    }
-  }, [initiativesIds, currentStatus, handleFilterChange]);
 
   const changeJoinRequestStatus = async (
     requestId: number,
     newStatus: "Approved" | "Rejected",
   ) => {
     setErrors([]);
-    setLoading(true);
 
-    const reqError = await resolveJoinRequest(requestId, newStatus);
+    setIsLoading(true);
+    const res = await updateJoinRequest(requestId, newStatus);
 
-    if (isMonitoringAPIError(reqError)) {
-      setErrors([
-        ...reqError.data.map((error) => error.msg),
-        uiText.error.critical.user,
-      ]);
-      setLoading(false);
+    setIsLoading(false);
+    if (isMonitoringAPIError(res)) {
+      setErrors(res.data.map((err) => err.msg));
       return;
     }
 
-    void handleFilterChange(
-      JoinRequestStatus.UNDER_REVIEW,
-      "creationDate",
-      false,
-      true,
-    );
+    await reloadUserInMonitoringData();
+    handleFilterChange(JoinRequestStatus.UNDER_REVIEW, "creationDate");
   };
 
-  const handleApproveJoinRequest = (request: ODataInitiativeUserRequest) => {
-    void changeJoinRequestStatus(request.id, "Approved");
+  const handleApproveJoinRequest = async (
+    request: ODataInitiativeUserRequest,
+  ) => {
+    await changeJoinRequestStatus(request.id, "Approved");
     toast(uiText.toast.aproved.title, {
       position: "bottom-right",
       description: uiText.toast.aproved.description(
         request.userName,
-        initiativesDictionary?.[request.initiativeId] ??
-          String(request.initiativeId),
+        initiativeName,
       ),
       icon: <UserRoundCheck className="size-8 text-primary" />,
       className: "px-6! gap-6! border-2! border-primary!",
     });
   };
 
-  const handleRejectJoinRequest = (request: ODataInitiativeUserRequest) => {
-    void changeJoinRequestStatus(request.id, "Rejected");
+  const handleRejectJoinRequest = async (
+    request: ODataInitiativeUserRequest,
+  ) => {
+    await changeJoinRequestStatus(request.id, "Rejected");
+
     toast(uiText.toast.rejected.title, {
       position: "bottom-right",
       description: uiText.toast.rejected.description(
         request.userName,
-        initiativesDictionary?.[request.initiativeId] ??
-          String(request.initiativeId),
+        initiativeName,
       ),
       icon: <UserRoundX className="size-8 text-accent" />,
       className: "px-6! gap-6! border-2! border-accent!",
     });
   };
 
-  const initiativesDictionary = useMemo(() => {
-    return userInitiatives?.reduce<{ [key: number]: string }>(
-      (all, initiative) => {
-        all[initiative.id] = initiative.name;
-        return all;
-      },
-      {},
-    );
-  }, [userInitiatives]);
-
   const tableStructure = useMemo(() => {
-    if (!initiativesDictionary) {
-      return new Map<
-        string,
-        {
-          value: keyof ODataInitiativeUserRequest;
-          callback?: (v: ODataInitiativeUserRequest) => string;
-        }
-      >();
-    }
-    return joinRequestTableParams(initiativesDictionary, currentStatus);
-  }, [initiativesDictionary, currentStatus]);
+    return joinRequestTableParams(currentStatus);
+  }, [currentStatus]);
 
   return (
-    <div className="bg-background w-full max-w-[600px] space-y-4 rounded-xl p-2 md:p-4 flex flex-col">
-      <div className="flex flex-wrap items-center justify-between bg-muted/50 p-4 rounded-lg">
-        <h4 className="m-0! text-primary">{uiText.module.title}</h4>
-        <JoinRequestFilterButtons
-          currentStatus={currentStatus}
-          menuSettings={filterJoinRequestButtonsConfig}
-          filteringCallback={handleFilterChange}
-        />
-      </div>
+    <div className="w-full space-y-4 p-2 md:p-4 flex flex-col">
+      <JoinRequestFilterButtons
+        currentStatus={currentStatus}
+        menuSettings={filterJoinRequestButtonsConfig}
+        filteringCallback={handleFilterChange}
+      />
 
       <ErrorsList
         className="bg-accent/20 p-4 rounded-lg flex flex-col gap-2"
         errorItems={errors}
       />
 
-      {loading && (
+      {isLoading && (
         <div
           className={cn(
             "bg-primary text-primary-foreground font-normal text-center text-2xl p-4 rounded-lg",
@@ -236,7 +195,7 @@ export function JoinRequests() {
             </div>
           ) : (
             <>
-              <table className="mb-2 table-fixed w-full bg-white [&_td,&_th]:px-2 [&_td,&_th]:py-0">
+              <table className="mb-2 table-fixed w-full [&_td,&_th]:px-2 [&_td,&_th]:py-0">
                 <thead className="sr-only bg-muted/30">
                   <tr className="text-primary text-left">
                     {[...tableStructure.keys()].map((col, i) => (
@@ -266,16 +225,16 @@ export function JoinRequests() {
                   </tr>
                 </thead>
 
-                <tbody className="[&_tr]:hover:bg-muted [&_td]:py-2!">
+                <tbody className="[&_tr]:hover:bg-background [&_td]:h-10!">
                   {requests.map((request) => (
                     <tr key={`${request.initiativeId}_${request.id}`}>
                       {[...tableStructure.values()].map((property, i) => {
                         return (
                           <td
                             key={`${property.value}_${i}`}
-                            className={
-                              i > 0 ? "hidden @lg:table-cell! text-center" : ""
-                            }
+                            className={cn(
+                              i > 0 ? "hidden @lg:table-cell! text-center" : "",
+                            )}
                           >
                             {property.callback
                               ? property.callback(request)
@@ -311,7 +270,7 @@ export function JoinRequests() {
 
               <TablePager
                 currentPage={currentPage}
-                recordsAvailable={totalRequest}
+                recordsAvailable={totalRequest.current}
                 onPageChange={(page: number) => void handlePageChange(page)}
                 recordsPerPage={JOIN_REQUESTS_PER_PAGE}
                 paginated={null}

@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
 import ReactGA from "react-ga4";
 import { App } from "App";
-import { StrictMode } from "react";
+import { getKeycloak } from "@api/auth";
 
 const viteEnvironment =
   window._env_?.VITE_ENVIRONMENT || import.meta.env.VITE_ENVIRONMENT;

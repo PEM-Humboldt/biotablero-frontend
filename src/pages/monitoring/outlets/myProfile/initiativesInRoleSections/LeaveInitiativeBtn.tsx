@@ -1,38 +1,40 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { DestructiveConfirmationDialog } from "@ui/DestructiveConfirmationDialog";
 
-import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
-import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
 import { leaveInitiative } from "pages/monitoring/api/services/initiatives";
 import { uiText } from "pages/monitoring/ui/joinInitiativeRequestButton/layout/uiText";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
+import { useUserCTX } from "@hooks/UserCTX";
+import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 
-export function LeaveInitiativeBtnAlert() {
+export function LeaveInitiativeBtn({
+  initiative,
+}: {
+  initiative: InitiativeCompleteInfo;
+}) {
+  const { user } = useUserCTX();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const {
-    userInInitiativeInfo,
-    initiativeInfo,
-    userStateInInitiative,
-    updateInitiative,
-  } = useInitiativeCTX();
+  const { reloadUserInMonitoringData } = useUserInMonitoringCTX();
 
-  const handleLeaveInitiative = async () => {
-    if (
-      !initiativeInfo ||
-      !userInInitiativeInfo ||
-      userStateInInitiative !== UserStateInInitiative.USER_PARTICIPANT
-    ) {
+  const userInInitiativeId = useMemo(
+    () => initiative.users.find((u) => u.userName === user?.username)?.id,
+    [initiative.users, user?.username],
+  );
+
+  const handelLeaveInitiative = async () => {
+    if (!userInInitiativeId) {
       return;
     }
 
     setIsLoading(true);
     setError(null);
 
-    const res = await leaveInitiative(userInInitiativeInfo.id);
+    const res = await leaveInitiative(userInInitiativeId);
 
     if (isMonitoringAPIError(res)) {
       setError(res.data[0].msg);
@@ -40,19 +42,16 @@ export function LeaveInitiativeBtnAlert() {
       return;
     }
 
-    await updateInitiative();
-
     toast(uiText.leaveInitiative.toast.title, {
       position: "bottom-right",
-      description: uiText.leaveInitiative.toast.description(
-        initiativeInfo?.name ?? "",
-      ),
+      description: uiText.leaveInitiative.toast.description(initiative.name),
       icon: (
         <uiText.leaveInitiative.toast.icon className="size-8 text-accent" />
       ),
       className: "px-6! gap-6! border-2! border-accent!",
       duration: uiText.leaveInitiative.toast.durationInSeconds * 1000,
     });
+    void reloadUserInMonitoringData();
     setIsLoading(false);
   };
 
@@ -63,15 +62,13 @@ export function LeaveInitiativeBtnAlert() {
         texts={{
           trigger: uiText.leaveInitiative.alert.trigger,
           dialog: {
-            title: uiText.leaveInitiative.alert.dialog.title(
-              initiativeInfo?.name ?? "",
-            ),
+            title: uiText.leaveInitiative.alert.dialog.title(initiative.name),
             description: uiText.leaveInitiative.alert.dialog.description,
           },
           actionBtns: uiText.leaveInitiative.alert.actionBtns,
         }}
         triggerBtnVariant="outline_destructive"
-        handler={() => void handleLeaveInitiative()}
+        handler={() => void handelLeaveInitiative()}
         isLoading={isLoading}
         isDisabled={error !== null}
       />

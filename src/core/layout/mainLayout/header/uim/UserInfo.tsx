@@ -1,4 +1,4 @@
-import { useUserCTX } from "@hooks/UserContext";
+import { useUserCTX } from "@hooks/UserCTX";
 
 export function UserCard({ logout }: { logout: () => void }) {
   const { user } = useUserCTX();

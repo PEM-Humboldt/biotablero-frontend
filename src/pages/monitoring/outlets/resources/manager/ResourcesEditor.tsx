@@ -3,7 +3,7 @@ import { NotebookPen, Trash } from "lucide-react";
 
 import { LoadingDiv } from "@ui/LoadingDiv";
 import { RESOURCES_MAX_ITEMS_EDIT_LIST } from "@config/monitoring";
-import { useUserCTX } from "@hooks/UserContext";
+import { useUserCTX } from "@hooks/UserCTX";
 import { TablePager } from "@composites/TablePager";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 
