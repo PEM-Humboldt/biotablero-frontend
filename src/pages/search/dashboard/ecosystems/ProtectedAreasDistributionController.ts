@@ -12,8 +12,6 @@ export class ProtectedAreasDistributionController {
   areaId: number = 0;
   activeRequests: Map<string, CancelTokenSource> = new Map();
 
-  constructor() {}
-
   /**
    * Set area values for the controller
    *  @param {string} areaType Value for the type of area selected
@@ -44,25 +42,40 @@ export class ProtectedAreasDistributionController {
     return request
       .then((response) => {
         const { id, ...rawValues } = response;
-        const items = Object.entries(rawValues)
-          .filter(([, value]) => value > 0)
-          .map(([key, area]) => ({
-            key,
-            label: key,
-            area,
-          }));
-
         const isNoProtected = (value: string) =>
           value
             .toLowerCase()
             .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .replace(/\s|_/g, "") === "noprotegida";
+            .replace(/[\u0300-\u036f\s_]/g, "") === "noprotegida";
 
-        const hasNoProtected = items.some((item) => isNoProtected(item.key));
-        const PATotalArea = items.reduce(
-          (acc, item) => (isNoProtected(item.key) ? acc : acc + item.area),
-          0,
+        const { items, hasNoProtected, PATotalArea } = Object.entries(
+          rawValues,
+        ).reduce(
+          (acc, [key, area]) => {
+            if (area <= 0) {
+              return acc;
+            }
+
+            acc.items.push({
+              key,
+              label: key,
+              area,
+              percentage: 0,
+            });
+
+            if (isNoProtected(key)) {
+              acc.hasNoProtected = true;
+            } else {
+              acc.PATotalArea += area;
+            }
+
+            return acc;
+          },
+          {
+            items: [] as SmallStackedBarData[],
+            hasNoProtected: false,
+            PATotalArea: 0,
+          },
         );
 
         if (!hasNoProtected) {
@@ -71,6 +84,7 @@ export class ProtectedAreasDistributionController {
             area: noProtectedArea,
             label: "No Protegida",
             key: "No Protegida",
+            percentage: 0,
           });
         }
 
