@@ -1,12 +1,14 @@
 import { useEffect } from "react";
 import { Outlet, useOutletContext } from "react-router";
 
+import { SidebarProvider } from "@ui/shadCN/component/sidebar";
+
 import type { UiManager } from "core/layout/MainLayout";
 import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 import { UserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
-import { SidebarProvider, SidebarTrigger } from "@ui/shadCN/component/sidebar";
-import { MonitoringSidebar } from "pages/monitoring/layout/sidebar";
+import { MonitoringSidebar } from "pages/monitoring/layout/MonitoringSidebar";
 import { CurrentInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
+import { Glosary } from "pages/monitoring/layout/Glosary";
 
 export function Monitoring() {
   const { layoutDispatch, layoutState } = useOutletContext<UiManager>();
@@ -25,10 +27,9 @@ export function Monitoring() {
     <UserInMonitoringCTX>
       <CurrentInitiativeCTX>
         <SidebarProvider defaultOpen={false}>
-          <div className="relative">
-            <MonitoringSidebar className="pt-14" />
-            <SidebarTrigger className="absolute -right-4 top-4 z-10" />
-          </div>
+          <MonitoringSidebar />
+          <Glosary />
+
           <Outlet context={{ layoutState, layoutDispatch }} />
         </SidebarProvider>
       </CurrentInitiativeCTX>

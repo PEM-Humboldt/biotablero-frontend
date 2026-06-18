@@ -2,9 +2,9 @@ import { RoleInInitiative } from "pages/monitoring/types/catalog";
 import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
 
 export const roleDictionary: Record<RoleInInitiative, string> = {
-  [RoleInInitiative.NONE]: "fuera de la iniciativa",
-  [RoleInInitiative.VIEWER]: "observador",
-  [RoleInInitiative.USER]: "Participante",
+  [RoleInInitiative.GUEST]: "fuera de la iniciativa",
+  [RoleInInitiative.READER]: "observador",
+  [RoleInInitiative.COLLABORATOR]: "Colaborador",
   [RoleInInitiative.LEADER]: "lider",
 };
 
