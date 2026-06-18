@@ -24,7 +24,7 @@ export const definitions: {
   {
     word: "Área de estudio",
     definition:
-      "Territorios específicos donde se lleva a cabo el monitoreo de biodiversidad y sobre los cuáles se quieren responder preguntas.",
+      "Territorios específicos donde se lleva a cabo el monitoreo de biodiversidad y sobre los cuales se quieren responder preguntas.",
     categories: ["Conceptos de monitoreo"],
   },
   {
