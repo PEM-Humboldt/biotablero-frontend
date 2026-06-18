@@ -9,7 +9,8 @@ import {
 import type { StatsType } from "pages/monitoring/types/stats";
 import { GeneralStats } from "pages/monitoring/outlets/initiativesMap/dataSheetAndNavigation/GeneralStats";
 import { StrategicEcosystemsStats } from "pages/monitoring/outlets/initiativesMap/dataSheetAndNavigation/StrategicEcosystemsStats";
-import { DemographicStats } from "pages/monitoring/outlets/initiativesMap/dataSheetAndNavigation/DemographicStats";
+import { DemographicsStats } from "pages/monitoring/outlets/initiativesMap/dataSheetAndNavigation/DemographicsStats";
+import { IndicatorsStats } from "pages/monitoring/outlets/initiativesMap/dataSheetAndNavigation/IndicatorsStats";
 
 export const tabsAvailable: StatsType[] = [
   "General",
@@ -23,7 +24,6 @@ export const statsTabsInfo: Record<
   {
     tabBtn: { title?: string; sr?: string; label?: string; icon: LucideIcon };
     titleSr?: string;
-    descriptionMD?: string;
     component: ComponentType;
   }
 > = {
@@ -46,14 +46,13 @@ export const statsTabsInfo: Record<
       label: "Datos demográficos",
       icon: UsersRound,
     },
-    component: DemographicStats,
+    component: DemographicsStats,
   },
   Indicators: {
     tabBtn: {
       label: "Indicadores por escala",
       icon: ChartBar,
     },
-    descriptionMD:
-      "Estas cifras muestran la distribución de los indicadores calculados según su nivel de [organización de la biodiversidad](https://conbio.onlinelibrary.wiley.com/doi/10.1111/j.1523-1739.1990.tb00309.x). ",
+    component: IndicatorsStats,
   },
 };

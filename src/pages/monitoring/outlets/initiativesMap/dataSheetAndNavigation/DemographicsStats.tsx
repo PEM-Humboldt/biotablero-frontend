@@ -1,30 +1,15 @@
-import { useStats } from "pages/monitoring/outlets/initiativesMap/hooks/useStats";
-import { ErrorsList } from "@ui/LabelingWithErrors";
 import { useState } from "react";
-import type { DemographicStatsType } from "pages/monitoring/types/stats";
+
+import { ErrorsList } from "@ui/LabelingWithErrors";
 import { Button } from "@ui/shadCN/component/button";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
+
+import { useStats } from "pages/monitoring/outlets/initiativesMap/hooks/useStats";
+import type { DemographicStatsType } from "pages/monitoring/types/stats";
 import { MonitorignOverviewBars } from "pages/monitoring/outlets/initiativesMap/ui/MonitoringOverviewBars";
+import { designationsDictionary } from "pages/monitoring/outlets/initiativesMap/layout/designationsDictionary";
 
-const designationsDictionary: Record<
-  keyof DemographicStatsType,
-  { short: string; long: string }
-> = {
-  gender: {
-    short: "Género",
-    long: "Identidad de género",
-  },
-  organization: {
-    short: "Organización",
-    long: "Organización social",
-  },
-  selfRecognition: {
-    short: "Autoreconocimiento",
-    long: "Autoreconocimiento étnico",
-  },
-};
-
-export function DemographicStats() {
+export function DemographicsStats() {
   const { errors, stats } = useStats("Demographic");
   const [designation, setDesignation] =
     useState<keyof DemographicStatsType>("gender");
