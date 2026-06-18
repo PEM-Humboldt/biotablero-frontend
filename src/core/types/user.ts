@@ -39,7 +39,6 @@ export function isUserKeycloak(info: unknown): info is UserKeycloak {
     "lastName" in info &&
     "roles" in info &&
     Array.isArray(info.roles) &&
-    "picture" in info &&
     "autorreconocimiento" in info &&
     "genero" in info &&
     "organizacion" in info &&

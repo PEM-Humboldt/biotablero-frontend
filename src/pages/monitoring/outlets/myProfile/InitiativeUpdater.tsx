@@ -7,9 +7,10 @@ import {
   TabsList,
   TabsTrigger,
 } from "@ui/shadCN/component/tabs";
+import { Combobox } from "@ui/ComboBox";
+import { PageTitleUpdater } from "@ui/PageTitleUpdater";
 
 import { RoleInInitiative } from "pages/monitoring/types/catalog";
-import { Combobox } from "@ui/ComboBox";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { UsersListForManagement } from "pages/monitoring/outlets/myProfile/initiativeUpdater/UserListForManagement";
 import type { UserInInitiativeCompleteInfo } from "pages/monitoring/types/user";
@@ -69,11 +70,17 @@ export function InitiativeUpdater() {
 
   return (
     <>
+      <PageTitleUpdater
+        title="Mis Iniciativas"
+        subtitle={currentInitiative?.name}
+      />
+
       {isLoading && (
         <div className="bg-primary text-primary-foreground font-normal text-center text-2xl p-4 rounded-lg">
           {uiText.loading}
         </div>
       )}
+
       {error && <ErrorsList errorItems={[error]} />}
 
       <div className="w-full p-4 bg-background rounded-xl">

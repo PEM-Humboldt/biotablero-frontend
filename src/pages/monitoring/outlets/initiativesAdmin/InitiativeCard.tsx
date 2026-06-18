@@ -9,6 +9,7 @@ import {
   INITIATIVE_LOCATIONS_MAX_AMOUNT,
   INITIATIVE_LOCATIONS_MIN_AMOUNT,
 } from "@config/monitoring";
+import { PageTitleUpdater } from "@ui/PageTitleUpdater";
 
 import {
   RoleInInitiative,
@@ -142,6 +143,10 @@ export function InitiativeCard({
         setCurrentEdit,
       }}
     >
+      <PageTitleUpdater
+        title="Administrar iniciativas"
+        subtitle={initiative.name}
+      />
       <article className="flex flex-col gap-2 p-4 mt-1 mb-2 rounded-lg">
         <div className="flex items-baseline gap-2 px-2 ">
           <h3 className="text-5xl font-normal flex-1 mb-0! text-primary">

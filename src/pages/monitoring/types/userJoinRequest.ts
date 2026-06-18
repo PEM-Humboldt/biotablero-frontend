@@ -31,24 +31,24 @@ export const initiativeRoleToState: Record<
   RoleInInitiative,
   UserStateInInitiative
 > = {
-  [RoleInInitiative.NONE]: UserStateInInitiative.USER_NONE,
+  [RoleInInitiative.GUEST]: UserStateInInitiative.USER_NONE,
   [RoleInInitiative.LEADER]: UserStateInInitiative.USER_LEADER,
-  [RoleInInitiative.USER]: UserStateInInitiative.USER_PARTICIPANT,
-  [RoleInInitiative.VIEWER]: UserStateInInitiative.USER_VIEWER,
+  [RoleInInitiative.COLLABORATOR]: UserStateInInitiative.USER_PARTICIPANT,
+  [RoleInInitiative.READER]: UserStateInInitiative.USER_VIEWER,
 };
 
 export const stateToInitiativeRole: Partial<
   Record<UserStateInInitiative, RoleInInitiative>
 > = {
-  [UserStateInInitiative.NO_INITIATIVE]: RoleInInitiative.NONE,
-  [UserStateInInitiative.IDLE]: RoleInInitiative.NONE,
-  [UserStateInInitiative.GUEST]: RoleInInitiative.NONE,
-  [UserStateInInitiative.ADMIN]: RoleInInitiative.NONE,
-  [UserStateInInitiative.USER_NONE]: RoleInInitiative.NONE,
+  [UserStateInInitiative.NO_INITIATIVE]: RoleInInitiative.GUEST,
+  [UserStateInInitiative.IDLE]: RoleInInitiative.GUEST,
+  [UserStateInInitiative.GUEST]: RoleInInitiative.GUEST,
+  [UserStateInInitiative.ADMIN]: RoleInInitiative.GUEST,
+  [UserStateInInitiative.USER_NONE]: RoleInInitiative.GUEST,
   [UserStateInInitiative.USER_LEADER]: RoleInInitiative.LEADER,
-  [UserStateInInitiative.USER_PARTICIPANT]: RoleInInitiative.USER,
-  [UserStateInInitiative.USER_VIEWER]: RoleInInitiative.VIEWER,
-  [UserStateInInitiative.USER_ASPIRING]: RoleInInitiative.NONE,
+  [UserStateInInitiative.USER_PARTICIPANT]: RoleInInitiative.COLLABORATOR,
+  [UserStateInInitiative.USER_VIEWER]: RoleInInitiative.READER,
+  [UserStateInInitiative.USER_ASPIRING]: RoleInInitiative.GUEST,
 };
 
 export const userPossibleRoleChanges: Record<

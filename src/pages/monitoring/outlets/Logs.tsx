@@ -22,6 +22,7 @@ import type {
   LogEntryShort,
 } from "pages/monitoring/types/odataResponse";
 import { tableContent } from "pages/monitoring/outlets/logs/layout/tableContent";
+import { PageTitleUpdater } from "@ui/PageTitleUpdater";
 
 function parseLogEntry(rawODataLog: ODataLogEntryShort): LogEntryShort {
   return {
@@ -137,6 +138,7 @@ export function Logs() {
 
   return (
     <main className="page-main">
+      <PageTitleUpdater title="Registros de actividad" />
       <header>
         <h3>{uiText.logsTitle}</h3>
         <div className="max-w-[500px] text-right text-base">

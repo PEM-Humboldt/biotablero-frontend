@@ -14,7 +14,7 @@ export function Portfolio() {
     layoutDispatch({
       type: LayoutUpdated.CHANGE_SECTION,
       sectionData: {
-        moduleName: "Portafolios",
+        moduleInfo: { name: "Portafolios", icon: "portfolios" },
         logos: new Set(),
       },
     });

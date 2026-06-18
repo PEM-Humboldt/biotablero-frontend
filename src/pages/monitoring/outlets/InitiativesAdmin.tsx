@@ -31,6 +31,7 @@ import { cn } from "@ui/shadCN/lib/utils";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 import type { ODataInitiativeShort } from "pages/monitoring/types/odataResponse";
+import { PageTitleUpdater } from "@ui/PageTitleUpdater";
 
 export function InitiativesAdmin() {
   const [initiatives, setInitiatives] = useState<Map<
@@ -125,6 +126,8 @@ export function InitiativesAdmin() {
 
   return (
     <main className="page-main">
+      <PageTitleUpdater title="Administrar iniciativas" subtitle="" />
+
       <header>
         <h3>{uiText.title}</h3>
         <Button onClick={() => setNewInitiative((v) => !v)}>

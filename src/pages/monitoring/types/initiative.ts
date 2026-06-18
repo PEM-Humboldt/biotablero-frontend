@@ -4,10 +4,7 @@ import type {
   ODataInitiativeShort,
   TagInInitiative,
 } from "pages/monitoring/types/odataResponse";
-import type {
-  UserInInitiativeBasicInfo,
-  UserInInitiativeCompleteInfo,
-} from "pages/monitoring/types/user";
+import type { UserInInitiativeCompleteInfo } from "pages/monitoring/types/user";
 
 export type GeneralInfo = {
   name: string;
@@ -28,6 +25,7 @@ export type InitiativeAditionalInfo = {
 export type InitiativeByLocation = {
   initiativeId: number;
   initiativeName: string;
+  initiativeShortName: string;
   mainLocationId: number;
   coordinate: [number, number];
 };

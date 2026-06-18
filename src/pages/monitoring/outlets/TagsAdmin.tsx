@@ -22,6 +22,7 @@ import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/t
 import { TagFormButton } from "pages/monitoring/outlets/tagsAdmin/TagFormBtn";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import type { TagCategory, TagDataForm } from "pages/monitoring/types/tagData";
+import { PageTitleUpdater } from "@ui/PageTitleUpdater";
 
 function parseEntry(rawODataTag: ODataTag): ODataTag {
   return {
@@ -113,6 +114,8 @@ export function TagsAdmin() {
 
   return (
     <main className="page-main">
+      <PageTitleUpdater title="Administrador de etiquetas" />
+
       <header>
         <h3>{uiText.title}</h3>
         <div className="max-w-[500px] text-right text-base">
