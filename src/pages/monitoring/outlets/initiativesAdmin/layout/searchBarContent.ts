@@ -1,12 +1,12 @@
 import { type SearchBarComponent } from "@appTypes/odata";
-import { type ODataInitiativeShortEntry } from "pages/monitoring/types/odataResponse";
+import { type ODataInitiativeShort } from "pages/monitoring/types/odataResponse";
 import {
   getColombianDepartments,
   getMunicipalitiesByDepartment,
 } from "pages/monitoring/utils/manageLocation";
 
 export async function searchBarItems(): Promise<
-  SearchBarComponent<ODataInitiativeShortEntry>[]
+  SearchBarComponent<ODataInitiativeShort>[]
 > {
   const departments = await getColombianDepartments();
 

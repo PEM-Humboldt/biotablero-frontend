@@ -71,11 +71,15 @@ export async function monitoringAPI<T>({
       if (data instanceof FormData) {
         payload = data;
         if (!payload.has("client_id")) {
-          payload.append("client_id", "bt-mc-client");
+          payload.append(
+            "client_id",
+            window._env_?.VITE_APP_KEYCLOAK_CLIENT_ID ||
+              import.meta.env.VITE_APP_KEYCLOAK_CLIENT_ID,
+          );
         }
       } else {
         payload = {
-          client_id: "bt-mc-client",
+          client_id: "bt-cm-client",
           ...data,
         };
       }

@@ -20,7 +20,7 @@ export function LeaveInitiativeBtnAlert() {
     updateInitiative,
   } = useInitiativeCTX();
 
-  const handelLeaveInitiative = async () => {
+  const handleLeaveInitiative = async () => {
     if (
       !initiativeInfo ||
       !userInInitiativeInfo ||
@@ -71,7 +71,7 @@ export function LeaveInitiativeBtnAlert() {
           actionBtns: uiText.leaveInitiative.alert.actionBtns,
         }}
         triggerBtnVariant="outline_destructive"
-        handler={() => void handelLeaveInitiative()}
+        handler={() => void handleLeaveInitiative()}
         isLoading={isLoading}
         isDisabled={error !== null}
       />

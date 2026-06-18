@@ -9,9 +9,9 @@ import {
 } from "react";
 
 import { RoleInInitiative } from "pages/monitoring/types/catalog";
-import { useUserCTX } from "@hooks/UserContext";
+import { useUserCTX } from "@hooks/UserCTX";
 
-import type { UserInInitiative } from "pages/monitoring/types/odataResponse";
+import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import {
   getUserJoinRequests,
@@ -21,8 +21,8 @@ import {
 import type { UserJoinRequestData } from "pages/monitoring/types/userJoinRequest";
 
 type MonitoringContextProps = {
-  userInitiativesAs: { [K in RoleInInitiative]?: UserInInitiative[] };
-  userInitiativesById: Record<number, UserInInitiative>;
+  userInitiativesAs: { [K in RoleInInitiative]?: InitiativeCompleteInfo[] };
+  userInitiativesById: Record<number, InitiativeCompleteInfo>;
   userRoleByInitiativeId: Record<number, RoleInInitiative>;
   reloadUserInMonitoringData: () => Promise<void>;
   joinRequestsByInitiativeId: Record<number, UserJoinRequestData>;
@@ -34,7 +34,7 @@ const UserMonitoringCTX = createContext<MonitoringContextProps | null>(null);
 
 export function UserInMonitoringCTX({ children }: { children: ReactNode }) {
   const { user } = useUserCTX();
-  const [initiatives, setInitiatives] = useState<UserInInitiative[]>([]);
+  const [initiatives, setInitiatives] = useState<InitiativeCompleteInfo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [joinRequests, setJoinRequests] = useState<
@@ -82,9 +82,9 @@ export function UserInMonitoringCTX({ children }: { children: ReactNode }) {
   }, [fetchInitiatives]);
 
   const arrangedInitiatives = useMemo(() => {
-    const byId: Record<number, UserInInitiative> = {};
+    const byId: Record<number, InitiativeCompleteInfo> = {};
     const rolesById: Record<number, RoleInInitiative> = {};
-    const byRole: { [k in RoleInInitiative]?: UserInInitiative[] } = {};
+    const byRole: { [k in RoleInInitiative]?: InitiativeCompleteInfo[] } = {};
 
     if (user?.username) {
       for (const initiative of initiatives) {

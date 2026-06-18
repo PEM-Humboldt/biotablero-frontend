@@ -22,6 +22,7 @@ import { getInitiativeLocations } from "pages/monitoring/api/services/initiative
 import { MapFinder } from "pages/monitoring/outlets/initiativesMap/MapFinder";
 import { DataSheetAndNavigation } from "pages/monitoring/outlets/initiativesMap/DataSheetAndNavigation";
 import { MapLegend } from "pages/monitoring/outlets/initiativesMap/MapLegend";
+import { useParams } from "react-router";
 
 export function InitiativesMap() {
   const [tiles, setTiles] = useState<keyof typeof MAP_TILES>(0);
@@ -30,6 +31,8 @@ export function InitiativesMap() {
 
   const [nation, setNation] = useState<FeatureCollection | null>(null);
   const [initiatives, setInitiatives] = useState<InitiativeByLocation[]>([]);
+
+  const { departmentId, initiativeId } = useParams();
 
   useEffect(() => {
     const fetchMapInfo = async () => {

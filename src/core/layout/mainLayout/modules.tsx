@@ -1,9 +1,4 @@
-import Search from "@assets/modules/ico/consulta-geografica.svg";
-import Indicators from "@assets/modules/ico/indicadores-biodiversidad.svg";
-import Portfolio from "@assets/modules/ico/portafolio.svg";
-import Monitoring from "@assets/modules/ico/monitoreo-comunitario.svg";
-import Compensations from "@assets/modules/ico/compensacion-ambiental.svg";
-import Alert from "@assets/alertas-tempranas-icono.svg";
+import { modulesIcons } from "@assets/dictionaries/modulesIcons";
 
 interface Module {
   id: number;
@@ -23,7 +18,7 @@ const modules: Module[] = [
   {
     id: 1,
     title: "Consultas Geográficas",
-    image: Search,
+    image: modulesIcons["search"],
     link: "/Consultas",
     authModule: false,
     imgSrc: "src/core/assets/geografico.png",
@@ -31,7 +26,7 @@ const modules: Module[] = [
   {
     id: 2,
     title: "Monitoreo Comunitario",
-    image: Monitoring,
+    image: modulesIcons["monitoring"],
     link: "/Monitoreo",
     authModule: false,
     imgSrc: "src/core/assets/mcomunitario.png",
@@ -40,7 +35,7 @@ const modules: Module[] = [
   {
     id: 3,
     title: "Indicadores de Biodiversidad",
-    image: Indicators,
+    image: modulesIcons["indicators"],
     link: "/Indicadores",
     authModule: false,
     imgSrc: "src/core/assets/indicadores.png",
@@ -48,7 +43,7 @@ const modules: Module[] = [
   {
     id: 4,
     title: "Portafolios",
-    image: Portfolio,
+    image: modulesIcons["portfolios"],
     link: "/Portafolios",
     authModule: false,
     imgSrc: "src/core/assets/portafolios.png",
@@ -56,7 +51,7 @@ const modules: Module[] = [
   {
     id: 5,
     title: "Compensación Ambiental",
-    image: Compensations,
+    image: modulesIcons["compensations"],
     link: (username: string) => `/${username.toUpperCase()}/Compensaciones`,
     authModule: true,
     imgSrc: "src/core/assets/compensaciones.png",
@@ -64,7 +59,7 @@ const modules: Module[] = [
   {
     id: 6,
     title: "Alertas Tempranas",
-    image: Alert,
+    image: modulesIcons["alert"],
     link: "/Alertas",
     authModule: false,
     imgSrc: "src/core/assets/alertas.png",

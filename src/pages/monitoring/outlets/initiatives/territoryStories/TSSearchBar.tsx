@@ -6,7 +6,7 @@ import { useState } from "react";
 import { cn } from "@ui/shadCN/lib/utils";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
-import { useUserCTX } from "@hooks/UserContext";
+import { useUserCTX } from "@hooks/UserCTX";
 import {
   uiElement,
   orderStateSecuence,

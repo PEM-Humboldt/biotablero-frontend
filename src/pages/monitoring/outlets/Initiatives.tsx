@@ -4,32 +4,18 @@ import {
   TabsTrigger,
   TabsContent,
 } from "@ui/shadCN/component/tabs";
-import type { UiManager } from "core/layout/MainLayout";
-import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
-import { useEffect } from "react";
-import { useNavigate, useOutletContext, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { initiativeTabs } from "pages/monitoring/outlets/initiatives/layout/tabs";
 import { InitiativeError } from "pages/monitoring/outlets/initiatives/InitiativeError";
+import { PageTitleUpdater } from "@ui/PageTitleUpdater";
 
 export function Initiatives() {
-  const { layoutDispatch } = useOutletContext<UiManager>();
   const { initiativeInfo } = useInitiativeCTX();
   const navigate = useNavigate();
   const params = useParams();
 
   const currentTab = params.tabSection || initiativeTabs.get("profile")?.slug;
-
-  useEffect(() => {
-    layoutDispatch({
-      type: LayoutUpdated.HEADER_NAMES,
-
-      newHeader: {
-        title: initiativeInfo?.name ?? "",
-        subtitle: "",
-      },
-    });
-  }, [layoutDispatch, initiativeInfo]);
 
   const handleOnChangeTab = async (tabSlug: string) => {
     await navigate(
@@ -47,6 +33,14 @@ export function Initiatives() {
 
   return (
     <div className="flex flex-col w-full">
+      <PageTitleUpdater
+        title={initiativeInfo?.shortName || initiativeInfo?.name || ""}
+        subtitle={
+          [...initiativeTabs.values()].find((t) => t.slug === currentTab)
+            ?.label ?? ""
+        }
+      />
+
       <Tabs value={currentTab} onValueChange={(e) => void handleOnChangeTab(e)}>
         <TabsList className="w-full h-auto flex *:flex-1 bg-accent p-0! m-0!">
           {[...initiativeTabs].map(([key, value]) => (

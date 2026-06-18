@@ -14,7 +14,7 @@ import { CircleXIcon, ListPlus } from "lucide-react";
 import type {
   InitiativeDisplayInfo,
   InitiativeDisplayInfoShort,
-  InitiativeFullInfo,
+  InitiativeCompleteInfo,
 } from "pages/monitoring/types/initiative";
 import { makeLocationObj } from "pages/monitoring/ui/initiativesAdmin/utils/builders";
 
@@ -30,7 +30,8 @@ import { InitiativeTag } from "pages/monitoring/outlets/initiativesAdmin/Initiat
 import { cn } from "@ui/shadCN/lib/utils";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
-import type { ODataInitiativeShortEntry } from "pages/monitoring/types/odataResponse";
+import type { ODataInitiativeShort } from "pages/monitoring/types/odataResponse";
+import { PageTitleUpdater } from "@ui/PageTitleUpdater";
 
 export function InitiativesAdmin() {
   const [initiatives, setInitiatives] = useState<Map<
@@ -47,7 +48,7 @@ export function InitiativesAdmin() {
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [searchBarComponents, setSearchBarComponents] = useState<
-    SearchBarComponent<ODataInitiativeShortEntry>[] | null
+    SearchBarComponent<ODataInitiativeShort>[] | null
   >([]);
   const initiativesFound = useRef(0);
 
@@ -105,7 +106,7 @@ export function InitiativesAdmin() {
     void loadInitiatives();
   }, [loadInitiatives]);
 
-  const initiativeUpdater = useCallback((value: InitiativeFullInfo) => {
+  const initiativeUpdater = useCallback((value: InitiativeCompleteInfo) => {
     const updatedValue = {
       ...value,
       locations: value.locations.map(makeLocationObj),
@@ -125,6 +126,8 @@ export function InitiativesAdmin() {
 
   return (
     <main className="page-main">
+      <PageTitleUpdater title="Administrar iniciativas" subtitle="" />
+
       <header>
         <h3>{uiText.title}</h3>
         <Button onClick={() => setNewInitiative((v) => !v)}>

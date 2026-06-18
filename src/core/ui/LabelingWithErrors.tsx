@@ -105,9 +105,9 @@ export function ErrorsList({
       role={role}
       aria-live="polite"
     >
-      {[...new Set(errorItems)].map((errorTxt) => (
+      {[...new Set(errorItems)].map((errorTxt, i) => (
         <li
-          key={errorTxt}
+          key={`${errorTxt}_${i}`}
           className="inline-flex items-baseline text-accent gap-1 text-base"
         >
           <TriangleAlert

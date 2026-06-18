@@ -1,13 +1,12 @@
 import { type ODataParams } from "@appTypes/odata";
+import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
 import type {
   ODataInitiative,
   ODataUserRequest,
-  UserInInitiative,
 } from "pages/monitoring/types/odataResponse";
 import type {
   InitiativeByLocation,
   InitiativeContact,
-  InitiativeFullInfo,
   LocationDataBasic,
   UserData,
 } from "pages/monitoring/types/initiative";
@@ -29,7 +28,7 @@ import { StatsResponseMap, StatsType } from "pages/monitoring/types/stats";
  * - On failure: A `ApiRequestError` object.
  */
 export async function getInitiative(id: number) {
-  const res = await monitoringAPI<InitiativeFullInfo>({
+  const res = await monitoringAPI<InitiativeCompleteInfo>({
     type: "get",
     endpoint: `Initiative/${id}`,
   });
@@ -56,7 +55,7 @@ export const getInitiatives = createODataGetter<ODataInitiative>("Initiative");
  * - On failure: A `ApiRequestError` object.
  */
 export async function getUserInitiativesInfo() {
-  const res = await monitoringAPI<UserInInitiative[]>({
+  const res = await monitoringAPI<InitiativeCompleteInfo[]>({
     type: "get",
     endpoint: "Auth/InitiativesData",
   });
@@ -101,7 +100,7 @@ export async function createInitiative(payload: {
   contacts: InitiativeContact[];
   users: UserData[];
 }) {
-  const res = await monitoringAPI<InitiativeFullInfo>({
+  const res = await monitoringAPI<InitiativeCompleteInfo>({
     type: "post",
     endpoint: "Initiative",
     options: {
@@ -133,7 +132,7 @@ export async function changeInitiativeStatus(
   const endpoint = isEnabled ? "Disable" : "Enable";
   const method = isEnabled ? "delete" : "post";
 
-  const res = await monitoringAPI<InitiativeFullInfo>({
+  const res = await monitoringAPI<InitiativeCompleteInfo>({
     type: method,
     endpoint: `Initiative/${endpoint}/${initiativeId}`,
   });
@@ -345,17 +344,17 @@ export async function makeJoinRequestToInitiative(
 /**
  * Fetches all initiatives filtered by a specific location or returns all of them if none is provided.
  *
- * @param departmentId - Optional. The unique identifier of the department to filter the initiatives.
+ * @param locationId - Optional. The unique identifier of the location to filter the initiatives.
  * If omitted, the function retrieves all available initiatives.
  *
  * @returns A `Promise` that resolves to:
  * - On success: An array of `InitiativeByLocation` objects.
  * - On failure: An `ApiRequestError` object.
  */
-export async function getInitiativeLocations(departmentId?: number) {
+export async function getInitiativeLocations(locationId?: number) {
   const res = await monitoringAPI<InitiativeByLocation[]>({
     type: "get",
-    endpoint: `Initiative/GetByLocation${departmentId ? `?locationId=${departmentId}` : ""}`,
+    endpoint: `Initiative/GetByLocation${locationId ? `?locationId=${locationId}` : ""}`,
   });
 
   return res;
