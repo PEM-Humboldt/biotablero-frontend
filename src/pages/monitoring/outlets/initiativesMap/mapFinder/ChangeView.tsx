@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
-import L, { type LatLng, type LatLngBoundsLiteral } from "leaflet";
+import { type LatLng, type LatLngBoundsLiteral } from "leaflet";
 import { useMap } from "react-leaflet";
+
+import { getTargetBounds } from "pages/monitoring/outlets/initiativesMap/utils/mapPositioning";
 
 export function ChangeView({
   bounds,
@@ -13,9 +15,7 @@ export function ChangeView({
   const lastStateRef = useRef("");
 
   useEffect(() => {
-    const boundsObject = L.latLngBounds(bounds);
-    const targetZoom = map.getBoundsZoom(boundsObject);
-    const zoomCenter = center || boundsObject.getCenter();
+    const { zoomCenter, targetZoom } = getTargetBounds(map, bounds, center);
 
     const currentStateKey = `${zoomCenter.toString()}-${targetZoom}`;
 

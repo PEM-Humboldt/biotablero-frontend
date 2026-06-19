@@ -153,7 +153,6 @@ export function MapFinder({
   return (
     <MapContainer
       bounds={bounds ?? COUNTRY_BOUNDS}
-      zoom={6}
       maxZoom={10}
       minZoom={6}
       className="outline-none [&_.leaflet-interactive]:outline-none"
