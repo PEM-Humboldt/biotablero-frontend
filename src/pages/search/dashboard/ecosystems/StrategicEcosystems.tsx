@@ -21,6 +21,7 @@ import { matchColor } from "pages/search/utils/matchColor";
 import colorPalettes from "pages/search/utils/colorPalettes";
 
 import { StrategicEcosystemsDistribution } from "pages/search/dashboard/ecosystems/StrategicEcosystemsDistribution";
+import { ProtectedAreasDistribution } from "pages/search/dashboard/ecosystems/ProtectedAreasDistribution";
 
 type State = {
   SEAreas: SEData[];
@@ -209,7 +210,10 @@ export function StrategicEcosystems({
                 )}
 
                 {hasArea && activeSE === SEValues.type && (
-                  <StrategicEcosystemsDistribution SEType={SEValues.type} />
+                  <>
+                    <StrategicEcosystemsDistribution SEType={SEValues.type} />
+                    <ProtectedAreasDistribution SEType={SEValues.type} />
+                  </>
                 )}
               </div>
             );

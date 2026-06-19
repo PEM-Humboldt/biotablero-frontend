@@ -36,6 +36,10 @@ export type MetricTypesMap = {
     "Natural" | "Secundaria" | "Transformada"
   >;
   protectedAreas: MetricDataStructure<"id", string>;
+  protectedAreas_paramo: MetricDataStructure<"id", string>;
+  protectedAreas_tropicalDryForest: MetricDataStructure<"id", string>;
+  protectedAreas_wetland: MetricDataStructure<"id", string>;
+  dpc: Array<MetricDataStructure<"id" | "name" | "key", "area" | "value">>;
 };
 
 export type MetricsTypes = keyof MetricTypesMap;
