@@ -16,7 +16,7 @@ import { createODataGetter } from "pages/monitoring/api/oDataGetter";
 import type { UserJoinRequestData } from "pages/monitoring/types/userJoinRequest";
 import type { JoinInitiativeDataForm } from "pages/monitoring/outlets/initiativeJoinInvitation/types/initiativeInvitationData";
 import type { RoleInInitiative } from "pages/monitoring/types/catalog";
-import { StatsResponseMap, StatsType } from "pages/monitoring/types/stats";
+import type { StatsResponseMap, StatsType } from "pages/monitoring/types/stats";
 
 /**
  * Retrieves all the info about the initiative that has the specified id.
