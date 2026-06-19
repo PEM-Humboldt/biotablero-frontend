@@ -1,42 +1,3 @@
-import type { UserType } from "@appTypes/user";
-import {
-  deleteTokensFromLS,
-  getTokensFromLS,
-  parseUserFromJwt,
-  setTokensInLS,
-} from "@utils/JWTstorage";
-import { isResponseRequestError, refreshAccessToken } from "@api/auth";
-import { redirect } from "react-router";
-
-/**
- * Gets the current user from stored tokens.
- * Refreshes the access token if needed and updates storage.
- *
- * @returns The authenticated user or `null` if unavailable/invalid.
- */
-export async function getCredentials(): Promise<UserType | null> {
-  const { refreshToken: oldRefreshToken } = getTokensFromLS();
-  if (!oldRefreshToken) {
-    return null;
-  }
-
-  const res = await refreshAccessToken(oldRefreshToken);
-  if (isResponseRequestError(res)) {
-    deleteTokensFromLS();
-
-    // TODO: redirige al home mientras se crea la página de login
-    // del servicio de autenticación
-    redirect("/");
-    window.location.reload();
-    return null;
-  }
-
-  const { access_token, refresh_token } = res;
-  setTokensInLS(access_token, refresh_token);
-  const updatedUser = parseUserFromJwt(access_token);
-  return updatedUser;
-}
-
 /**
  * Compares if an object matches the shape and values of a partial object.
  *
@@ -56,7 +17,25 @@ export function partialComparison<T extends Record<string, unknown>>(
     const required = has[key];
     const userHas = thisObject[key];
 
-    if (required && typeof required === "object") {
+    if (required === undefined) {
+      return false;
+    }
+
+    if (Array.isArray(required) && Array.isArray(userHas)) {
+      for (let i = 0; i < required.length; i++) {
+        if (!userHas.includes(required[i])) {
+          return false;
+        }
+      }
+      continue;
+    }
+
+    if (
+      required &&
+      typeof required === "object" &&
+      userHas &&
+      typeof userHas === "object"
+    ) {
       const result = partialComparison(
         userHas as Record<string, unknown>,
         required as Record<string, unknown>,
@@ -64,15 +43,6 @@ export function partialComparison<T extends Record<string, unknown>>(
 
       if (!result) {
         return false;
-      }
-      continue;
-    }
-
-    if (Array.isArray(required) && Array.isArray(userHas)) {
-      for (let i = 0; i < required.length; i++) {
-        if (required[i] !== userHas[i]) {
-          return false;
-        }
       }
       continue;
     }

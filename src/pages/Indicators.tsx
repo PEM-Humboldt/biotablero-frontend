@@ -17,7 +17,7 @@ export function Indicators() {
     layoutDispatch({
       type: LayoutUpdated.CHANGE_SECTION,
       sectionData: {
-        moduleName: "Indicadores",
+        moduleInfo: { name: "Indicadores", icon: "indicators" },
         logos: new Set(),
       },
     });

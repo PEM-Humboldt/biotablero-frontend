@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { useUserCTX } from "@hooks/UserContext";
+import { useUserCTX } from "@hooks/UserCTX";
 import { useFeatureFlag } from "@hooks/useFeatureFlag";
 
 import {

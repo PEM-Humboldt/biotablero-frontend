@@ -32,7 +32,7 @@ export function Search() {
     layoutDispatch({
       type: LayoutUpdated.CHANGE_SECTION,
       sectionData: {
-        moduleName: "Consultas Geográficas",
+        moduleInfo: { name: "Consultas Geográficas", icon: "search" },
         logos: new Set(),
         className: "fullgrid",
       },

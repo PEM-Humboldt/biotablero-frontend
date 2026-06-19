@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useLocation, useNavigate, useOutletContext } from "react-router";
 import { Compensation } from "pages/Compensation";
 import type { Names } from "@appTypes/layout";
-import { useUserCTX } from "@hooks/UserContext";
+import { useUserCTX } from "@hooks/UserCTX";
 
 // HACK: Este componente de redireccionamiento es temporal, existe mientras
 // se actualiza el módulo de compensaciones a un componente de función
@@ -30,7 +30,7 @@ export function RenderCompensation() {
     layoutDispatch({
       type: LayoutUpdated.CHANGE_SECTION,
       sectionData: {
-        moduleName: "Compensación Ambiental",
+        moduleInfo: { name: "Compensación Ambiental", icon: "compensations" },
         logos: new Set(),
         className: "fullgrid",
       },

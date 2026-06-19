@@ -1,8 +1,6 @@
 import type { Collaborators } from "@appTypes/layout";
-import {
-  collaboratorsData,
-  footerInfo,
-} from "core/layout/mainLayout/footer/footerData";
+import { collaboratorsIcons } from "@assets/dictionaries/collaboratorsIcons";
+import { uiText } from "core/layout/mainLayout/footer/layout/uiText";
 import { Button } from "@ui/shadCN/component/button";
 import { cn } from "@ui/shadCN/lib/utils";
 
@@ -13,7 +11,7 @@ interface FooterProps {
 
 export function Footer({ logos, className }: FooterProps) {
   const handleCitationClick = () => {
-    void navigator.clipboard.writeText(footerInfo.citationClipboard);
+    void navigator.clipboard.writeText(uiText.citationClipboard);
   };
 
   const collaborators = logos ? [...logos] : [];
@@ -27,58 +25,60 @@ export function Footer({ logos, className }: FooterProps) {
     >
       <div>
         {collaborators.length > 0 && (
-          <a href={footerInfo.IAVH.url}>
+          <a href={uiText.IAVH.url}>
             <img
-              src={footerInfo.IAVH.img}
-              alt={footerInfo.IAVH.linkAlt}
+              src={uiText.IAVH.img}
+              alt={uiText.IAVH.linkAlt}
               className="w-12 h-12 md:w-18 md:h-18"
             />
           </a>
         )}
         <div className="text-sm mt-1">
-          {footerInfo.IAVH.tag}
+          {uiText.IAVH.tag}
           <br />
-          <b>{footerInfo.IAVH.name}</b>
+          <b>{uiText.IAVH.name}</b>
         </div>
       </div>
 
       <div className="text-right">
-        <div className="text-sm mb-2">
-          {footerInfo.uiTxt.collaboratorsTitle}
-        </div>
         {collaborators.length > 0 && (
-          <div className="flex flex-wrap gap-4 justify-end">
-            {collaborators.map((collaborator) => (
-              <a
-                href={collaboratorsData[collaborator].url}
-                target="_blank"
-                rel="noopener noreferrer"
-                key={collaborator}
-              >
-                <img
-                  src={collaboratorsData[collaborator].img}
-                  alt={collaborator}
-                  className="object-contain object-center w-14 h-8 md:w-18 md:h-12 "
-                />
-              </a>
-            ))}
-          </div>
+          <>
+            <div className="text-sm mb-2">
+              {uiText.uiTxt.collaboratorsTitle}
+            </div>
+            <div className="flex flex-wrap gap-4 justify-end">
+              {collaborators.map((collaborator) => (
+                <a
+                  href={collaboratorsIcons[collaborator].url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  key={collaborator}
+                >
+                  <img
+                    src={collaboratorsIcons[collaborator].img}
+                    alt={collaborator}
+                    className="object-contain object-center w-14 h-8 md:w-18 md:h-12 "
+                  />
+                </a>
+              ))}
+            </div>
+          </>
         )}
 
         <div className="text-right mt-2">
           <Button
-            title={footerInfo.citationTooltip}
+            title={uiText.citationTooltip}
             variant="link"
             className="text-accent text-sm"
             onClick={handleCitationClick}
           >
-            {footerInfo.uiTxt.links.citation}
+            {uiText.uiTxt.links.citation}
           </Button>
           <a
-            href={`mailto:${footerInfo.IAVH.contact}`}
+            href={`mailto:${uiText.IAVH.contact}`}
             className="underline-offset-4 text-sm hover:underline hover:text-accent text-accent font-normal"
           >
-            {footerInfo.uiTxt.links.contact}
+            {uiText.uiTxt.links.contact}
           </a>
         </div>
       </div>

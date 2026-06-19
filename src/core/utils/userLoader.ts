@@ -1,15 +1,16 @@
-import type { UserType } from "@appTypes/user";
+import { getKeycloak, getUserInfo } from "@api/auth";
+import { isUserKeycloak, type UserProfile } from "@appTypes/user";
 import type { CheckNLoadReturn } from "@appTypes/userLoader";
-import { getCredentials, partialComparison } from "@utils/getCredentials";
+import { partialComparison } from "@utils/getCredentials";
 import { redirect } from "react-router";
 
 type Path = `/${string}`;
 
 type CheckNLoadProps<ReturnType, CriticalReturnType> = {
-  requirements: Partial<UserType>;
+  requirements: Partial<UserProfile>;
   redirectPath?: Path;
-  fetchCriticalData?: (user: UserType) => Promise<CriticalReturnType>;
-  fetchData?: (user: UserType) => Promise<ReturnType>;
+  fetchCriticalData?: (user: UserProfile) => Promise<CriticalReturnType>;
+  fetchData?: (user: UserProfile) => Promise<ReturnType>;
   onFetchFailure?: () => void;
 };
 
@@ -44,8 +45,15 @@ export async function checkNLoad<T, U>({
   fetchData,
   onFetchFailure,
 }: CheckNLoadProps<T, U>): CheckNLoadReturn<T, U> {
-  const user = await getCredentials();
-  if (!user) {
+  const { token } = await getKeycloak();
+  if (!token) {
+    redirectTo(redirectPath);
+    return null;
+  }
+
+  const user = await getUserInfo(token);
+
+  if (!isUserKeycloak(user)) {
     redirectTo(redirectPath);
     return null;
   }

@@ -8,6 +8,7 @@ import type { ODataParams, SearchBarComponent } from "@appTypes/odata";
 import { TablePager } from "@composites/TablePager";
 import { RESOURCES_PER_PAGE } from "@config/monitoring";
 import { cn } from "@ui/shadCN/lib/utils";
+import { PageTitleUpdater } from "@ui/PageTitleUpdater";
 
 import { Header } from "pages/monitoring/outlets/resources/Header";
 import type {
@@ -159,6 +160,11 @@ export function Resources() {
   return (
     <div className="flex flex-col w-full bg-grey-form">
       <Header />
+
+      <PageTitleUpdater
+        title="Recursos para monitoreo"
+        subtitle={resourceTypes[currentTab - 1]?.name}
+      />
 
       <ErrorsList
         errorItems={errors}

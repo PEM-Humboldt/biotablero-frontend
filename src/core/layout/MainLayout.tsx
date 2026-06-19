@@ -10,11 +10,11 @@ import {
   type LayoutActions,
   type LayoutState,
 } from "core/layout/mainLayout/hooks/layoutReducer";
-import { UserCTX } from "@hooks/UserContext";
+import { UserCTX } from "@hooks/UserCTX";
 import { OnLoadingModal } from "@ui/OnLoadingModal";
 
 const layoutInitial: LayoutState = {
-  moduleName: "home",
+  moduleInfo: { name: "home", icon: null },
   logos: new Set(),
   headerNames: {
     title: "",
@@ -41,7 +41,7 @@ export function MainLayout() {
     <UserCTX>
       <div className="grid grid-rows-[auto_1fr_auto] min-h-screen">
         <Header
-          activeModule={layoutState.moduleName}
+          activeModuleInfo={layoutState.moduleInfo}
           headerNames={layoutState.headerNames}
           className="z-10"
         />

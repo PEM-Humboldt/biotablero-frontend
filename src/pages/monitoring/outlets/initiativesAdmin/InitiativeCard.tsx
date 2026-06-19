@@ -9,6 +9,7 @@ import {
   INITIATIVE_LOCATIONS_MAX_AMOUNT,
   INITIATIVE_LOCATIONS_MIN_AMOUNT,
 } from "@config/monitoring";
+import { PageTitleUpdater } from "@ui/PageTitleUpdater";
 
 import {
   RoleInInitiative,
@@ -18,7 +19,7 @@ import type {
   InitiativeContact,
   InitiativeDisplayInfo,
   InitiativeDisplayInfoShort,
-  InitiativeFullInfo,
+  InitiativeCompleteInfo,
   LocationObj,
 } from "pages/monitoring/types/initiative";
 import type { CardInfoGrouped } from "pages/monitoring/types/initiativeData";
@@ -42,10 +43,10 @@ export function InitiativeCard({
   updater,
 }: {
   initiative: InitiativeDisplayInfoShort | InitiativeDisplayInfo;
-  updater: (value: InitiativeFullInfo) => void;
+  updater: (value: InitiativeCompleteInfo) => void;
 }) {
   const [isLoading, setIsLoading] = useState(true);
-  const [cardInfo, setCardInfo] = useState<InitiativeFullInfo | null>(null);
+  const [cardInfo, setCardInfo] = useState<InitiativeCompleteInfo | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
   const [currentEdit, setCurrentEdit] = useState<
     keyof CardInfoGrouped | "none" | null
@@ -110,7 +111,7 @@ export function InitiativeCard({
       id: general.id,
       general,
       locations,
-      contacts,
+      contacts: contacts!,
       tags,
 
       users: users.filter((user) => user.level.id === RoleInInitiative.LEADER),
@@ -142,6 +143,10 @@ export function InitiativeCard({
         setCurrentEdit,
       }}
     >
+      <PageTitleUpdater
+        title="Administrar iniciativas"
+        subtitle={initiative.name}
+      />
       <article className="flex flex-col gap-2 p-4 mt-1 mb-2 rounded-lg">
         <div className="flex items-baseline gap-2 px-2 ">
           <h3 className="text-5xl font-normal flex-1 mb-0! text-primary">

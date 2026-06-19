@@ -1,14 +1,13 @@
 import { isODataParams, type ODataParams } from "@appTypes/odata";
-import type {
-  InitiativeUser,
-  ODataUserInfo,
-} from "pages/monitoring/types/odataResponse";
+import type { UserInInitiativeBasicInfo } from "pages/monitoring/types/user";
+import type { ODataUserInfo } from "pages/monitoring/types/odataResponse";
 import type {
   RoleInInitiative,
   UserLevel,
 } from "pages/monitoring/types/catalog";
 import { monitoringAPI } from "pages/monitoring/api/core";
 import type { ApiRequestError } from "@appTypes/api";
+import type { UserStats } from "pages/monitoring/types/user";
 
 /**
  * Retrieves users from the Monitoring API.
@@ -26,10 +25,10 @@ export async function getUsers(
 ): Promise<ODataUserInfo | ApiRequestError>;
 export async function getUsers(
   byInitiativeId: number | string,
-): Promise<InitiativeUser[] | ApiRequestError>;
+): Promise<UserInInitiativeBasicInfo[] | ApiRequestError>;
 export async function getUsers(
   idOrOdata?: ODataParams | number | string,
-): Promise<InitiativeUser[] | ODataUserInfo | ApiRequestError> {
+): Promise<UserInInitiativeBasicInfo[] | ODataUserInfo | ApiRequestError> {
   const isId = typeof idOrOdata === "string" || typeof idOrOdata === "number";
   const endpoint = isId
     ? `InitiativeUser/GetByInitiative/${idOrOdata}`
@@ -39,7 +38,7 @@ export async function getUsers(
       ? idOrOdata
       : undefined;
 
-  const res = await monitoringAPI<InitiativeUser[] | ODataUserInfo>({
+  const res = await monitoringAPI<UserInInitiativeBasicInfo[] | ODataUserInfo>({
     type: "get",
     endpoint,
     options: { oData: oDataParams },
@@ -112,6 +111,41 @@ export async function removeUserFromInitiative(userIdInInitiative: number) {
   const res = await monitoringAPI({
     type: "delete",
     endpoint: `InitiativeUser/${userIdInInitiative}`,
+  });
+
+  return res;
+}
+
+/*
+ * Retrieves user stats
+ */
+export async function getUserStats() {
+  const res = await monitoringAPI<UserStats>({
+    type: "get",
+    endpoint: "Auth/MyProfile",
+  });
+
+  return res;
+}
+
+/**
+ * Updates the User focus area in the specified initiative.
+ *
+ * @param initiativeId - The unique identifier of the initiative
+ * @param focusArea - The new value for the focus area
+ *
+ * @returns A `Promise` resolving to:
+ * - On success: void.
+ * - On failure: A `ApiRequestError` object.
+ */
+export async function updateUserFocusAreaInInitiative(
+  initiativeId: number,
+  focusArea: string,
+) {
+  const res = await monitoringAPI({
+    type: "put",
+    endpoint: `Auth/MyFocusArea/${initiativeId}`,
+    options: { data: { focusArea: focusArea } },
   });
 
   return res;

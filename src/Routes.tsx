@@ -1,5 +1,8 @@
 import { createBrowserRouter } from "react-router";
 
+import { getKeycloak } from "@api/auth";
+import { checkNLoad } from "@utils/userLoader";
+
 import { MainLayout } from "core/layout/MainLayout";
 import { Home } from "pages/Home";
 import { Indicators } from "pages/Indicators";
@@ -7,17 +10,26 @@ import { Portfolio } from "pages/Portfolio";
 import { InitiativesMap } from "pages/monitoring/outlets/InitiativesMap";
 import { Initiatives } from "pages/monitoring/outlets/Initiatives";
 
-import { checkNLoad } from "@utils/userLoader";
 import { Logs } from "pages/monitoring/outlets/Logs";
 import { InitiativesAdmin } from "pages/monitoring/outlets/InitiativesAdmin";
-import { InitiativesManagement } from "pages/monitoring/outlets/InitiativesManagement";
+import { MyProfile } from "pages/monitoring/outlets/MyProfile";
 import { TagsAdmin } from "pages/monitoring/outlets/TagsAdmin";
 import { Resources as MonitoringResources } from "pages/monitoring/outlets/Resources";
+import { Indicators as MonitoringIndicators } from "pages/monitoring/outlets/Indicators";
 import { Manager as ResourcesManager } from "pages/monitoring/outlets/resources/Manager";
+import { Help } from "pages/monitoring/outlets/Help";
 
 export const routes = createBrowserRouter([
   {
     path: "/",
+    loader: async () => {
+      try {
+        await getKeycloak();
+      } catch (err) {
+        console.error("Error handling authentication:", err);
+      }
+    },
+    HydrateFallback: () => <div>Cargando aplicación...</div>,
     Component: MainLayout,
     children: [
       {
@@ -51,6 +63,10 @@ export const routes = createBrowserRouter([
             Component: Initiatives,
           },
           {
+            path: "Indicadores/:indicatorId?",
+            Component: MonitoringIndicators,
+          },
+          {
             path: "Recursos",
             children: [
               {
@@ -66,8 +82,12 @@ export const routes = createBrowserRouter([
             ],
           },
           {
-            path: "gestionarIniciativas",
-            Component: InitiativesManagement,
+            path: "Ayudas",
+            Component: Help,
+          },
+          {
+            path: "MiPerfil",
+            Component: MyProfile,
             loader: () =>
               checkNLoad({
                 requirements: { roles: ["User"] },

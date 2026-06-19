@@ -1,16 +1,27 @@
 import { type LucideIcon } from "lucide-react";
 
 export enum RoleInInitiative {
-  NONE = 0,
+  GUEST = 0,
   LEADER,
-  USER,
-  VIEWER,
+  COLLABORATOR,
+  READER,
 }
 
-export type DashboardItem = { description: string; icon: LucideIcon } & (
-  | { linkTo: string }
-  | { action: () => void }
-);
+// NOTE: se usa como valor del enum el nombre que se le da
+// al tipo de usuario en el keycloak
+export enum RoleInMonitoring {
+  NONE = "",
+  USER = "User",
+  ADMIN = "Admin",
+}
+
+export type SidebarItem = {
+  label: string;
+  description: string;
+  icon: LucideIcon;
+  role: RoleInInitiative | RoleInMonitoring;
+  group: number;
+} & ({ linkTo: string } | { action: () => void; isActive: boolean });
 
 export type LocationList = {
   name: string;
