@@ -109,7 +109,7 @@ class Landscape extends React.Component<Props, State> {
           openTab: childMap.forest,
         },
       },
-      /*{
+      {
         label: {
           id: "connectivity",
           name: "Conectividad de Áreas Protegidas",
@@ -119,7 +119,7 @@ class Landscape extends React.Component<Props, State> {
           handleAccordionChange: this.handleAccordionChange,
           openTab: childMap.connectivity,
         },
-      },*/
+      },
     ];
 
     let selected: Array<string> = [];

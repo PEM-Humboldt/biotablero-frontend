@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ResponsiveBar } from "@nivo/bar";
 import { type AxisTickProps } from "@nivo/axes";
 
@@ -52,6 +52,7 @@ interface SmallBarsProps {
   axisX?: AxisX;
   gridXValues?: number;
   alternateAxisY?: AlternateAxisY;
+  animate?: boolean;
 }
 
 export interface SmallBarsDataDetails {
@@ -82,6 +83,7 @@ export function SmallBarsElement({
   margin = { top: 20, right: 15, bottom: 0, left: 90 },
   axisY = { enabled: false, legend: "" },
   axisX = { enabled: false, legend: "", format: ".2f", tickValues: undefined },
+  animate = true,
 }: SmallBarsProps) {
   const [selectedIndexValue, setSelectedIndexValue] =
     useState<SmallBarsState>(SIVInput);
@@ -99,10 +101,16 @@ export function SmallBarsElement({
     return transformedData;
   };
 
+  const transformedData = useMemo(() => transformData(data), [data]);
+
+  useEffect(() => {
+    setSelectedIndexValue(SIVInput);
+  }, [SIVInput, data, keys]);
+
   return (
     <div style={{ height }}>
       <ResponsiveBar
-        data={transformData(data)}
+        data={transformedData}
         keys={keys}
         indexBy="group"
         layout="horizontal"
@@ -165,7 +173,7 @@ export function SmallBarsElement({
           }
           return colors(String(id));
         }}
-        animate
+        animate={animate}
         theme={{
           axis: {
             legend: { text: { fontSize: "14" } },

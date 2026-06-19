@@ -16,7 +16,7 @@ const PAConnectivity: React.FC<componentProps> = (props) => {
       },
       component: CurrentPAConnectivity,
     },
-    {
+    /*{
       label: {
         id: "timelinePAConn",
         name: "Histórico",
@@ -31,7 +31,7 @@ const PAConnectivity: React.FC<componentProps> = (props) => {
         collapsed: openTab !== "currentSEPAConn",
       },
       component: CurrentSEPAConnectivity,
-    },
+    },*/
   ];
   return (
     <div style={{ width: "100%" }}>
