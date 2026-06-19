@@ -1,7 +1,6 @@
 import { BarItem as OrigBar } from "@nivo/bar";
 import { createElement, useCallback, useMemo, MouseEvent } from "react";
 
-import { useTheme } from "@nivo/core";
 import { useTooltip } from "@nivo/tooltip";
 import { animated, to } from "@react-spring/web";
 
@@ -42,7 +41,6 @@ const BarItem: typeof OrigBar = ({
   ariaLabelledBy,
   ariaDescribedBy,
 }) => {
-  const theme = useTheme();
   const { showTooltipFromEvent, showTooltipAt, hideTooltip } = useTooltip();
 
   const renderTooltip = useMemo(
@@ -114,7 +112,6 @@ const BarItem: typeof OrigBar = ({
           dominantBaseline="central"
           fillOpacity={labelOpacity}
           style={{
-            ...theme.labels.text,
             pointerEvents: "none",
             fill: labelColor,
           }}
