@@ -1,5 +1,5 @@
 import { SmallBarsData } from "@composites/charts/SmallBars";
-import { DPC } from "pages/search/types/connectivity";
+import { DPC, DPCKeys } from "pages/search/types/connectivity";
 import { formatNumber } from "@utils/format";
 import { type SmallBarTooltip } from "@composites/charts/SmallBars";
 import SearchAPI from "pages/search/api/searchAPI";
@@ -71,7 +71,7 @@ export class CurrentPAConnectivityController {
     const withCategory = normalizedDpc.map((item) => {
       const rank = rankById.get(item.id) ?? 0;
       const percentile = total > 0 ? ((rank + 1) / total) * 100 : 0;
-      let key: "muy_bajo" | "bajo" | "medio" | "alto" | "muy_alto" = "muy_bajo";
+      let key: (typeof DPCKeys)[number] = "muy_bajo";
 
       if (percentile <= 20) key = "muy_bajo";
       else if (percentile <= 40) key = "bajo";

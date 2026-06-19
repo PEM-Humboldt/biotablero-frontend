@@ -5,10 +5,8 @@ import { PointFilledLegend } from "@ui/CssLegends";
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
 import { Button } from "@ui/shadCN/component/button";
-import {
-  SearchLegacyCTX,
-  type LegacyContextValues,
-} from "pages/search/hooks/SearchContext";
+import { useSearchLegacyCTX } from "pages/search/hooks/SearchContext";
+
 import BackendAPI from "pages/search/api/backendAPI";
 import { matchColor } from "pages/search/utils/matchColor";
 import TextBoxes from "@ui/TextBoxes";
@@ -121,8 +119,7 @@ function reducer(
 }
 
 function CurrentPAConnectivity(_: Props) {
-  const context = useContext(SearchLegacyCTX) as LegacyContextValues;
-  const { areaType, areaId } = context;
+  const { areaType, areaId } = useSearchLegacyCTX();
 
   const controllerRef = useRef(new CurrentPAConnectivityController());
   const controller = controllerRef.current;
@@ -200,9 +197,8 @@ function CurrentPAConnectivity(_: Props) {
         <div className="mb2 ml-6">
           <Button
             type="button"
-            variant="default"
+            variant="outline"
             size="sm"
-            className="border border-amber-700/30 bg-amber-500 text-amber-950 shadow-sm transition-colors hover:bg-amber-400"
             onClick={toggleDpcMode}
           >
             {showLowestDpc ? "Áreas con mayor dPC" : "Áreas con menor dPC"}
