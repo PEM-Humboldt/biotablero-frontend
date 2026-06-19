@@ -4,7 +4,7 @@ import { cn } from "@ui/shadCN/lib/utils";
 
 import type { MonitoringResourceShort } from "pages/monitoring/types/odataResponse";
 import { ExternalLink, FileDown, type LucideIcon } from "lucide-react";
-import { ResourceTagsRender } from "pages/monitoring/outlets/resources/ui/ResourceTagsRender";
+import { TagsRender } from "pages/monitoring/ui/TagsRender";
 import { LikeResourceButton } from "pages/monitoring/outlets/resources/ui/LikeResourseButton";
 import { uiText } from "pages/monitoring/outlets/resources/layout/uiText";
 
@@ -60,12 +60,12 @@ export function ResourceCard({
 
         <div className="space-y-2">
           <span className="sr-only">{uiText.tagsTitle.all}</span>
-          <ResourceTagsRender
+          <TagsRender
             tags={tags[3]}
             srTitle={uiText.tagsTitle.BiologicalGroup}
             className="[&_li]:bg-blue-200 [&_li]:text-blue-800 font-normal"
           />
-          <ResourceTagsRender
+          <TagsRender
             tags={tags[4]}
             srTitle={uiText.tagsTitle.ecosystem}
             className="[&_li]:bg-green-100 [&_li]:text-green-800 font-normal"
