@@ -20,6 +20,7 @@ import { ErrorsList } from "@ui/LabelingWithErrors";
 import { TagsRender } from "pages/monitoring/ui/TagsRender";
 import type { IndicatorMetadata } from "pages/monitoring/types/indicators";
 import { getIndicatorsByInitiative } from "pages/monitoring/api/services/indicators";
+import { DataSheetSmallCard } from "./dataSheetAndNavigation/DataSheetSmallCard";
 
 export function DataSheetAndNavigation({
   initiatives,
@@ -218,138 +219,54 @@ function CardsAttachment() {
               {initiativeId ? "Indicadores" : "Iniciativas"}
             </h4>
 
-            <div className="bg-grey-light rounded-b-lg p-2 space-y-2 border border-primary/50">
-              {!initiativeId && initiatives.length > 0
-                ? initiatives.map((initiative) => (
-                    <RenderInitiativeCard initiative={initiative} />
-                  ))
-                : "No se encontraron iniciativas"}
+            <div className="bg-grey-light rounded-b-lg p-3 space-y-3 border border-primary/50 max-h-[500px] h-auto overflow-y-auto scrollbar-custom">
+              {!initiativeId &&
+                initiatives.length > 0 &&
+                initiatives.map((initiative) => (
+                  <DataSheetSmallCard
+                    key={`initiativesSmallCard_${initiative.initiativeName}`}
+                    title={initiative.initiativeName}
+                    tags={(initiative.tags ?? []).map((t) => t.tag)}
+                    bottonLeftInfo={
+                      initiative.creationDate
+                        ? new Date(initiative.creationDate)
+                        : new Date()
+                    }
+                    link={{
+                      href: `/Monitoreo/Departamento/${departmentId}/${initiative.initiativeId}`,
+                      label: "Ver",
+                      icon: PlusCircle,
+                      title: "Ver más información",
+                    }}
+                  />
+                ))}
 
-              {initiativeId && indicators.length > 0
-                ? indicators.map((indicator) => (
-                    <RenderIndicatorCard indicator={indicator} />
-                  ))
-                : "No se encontraron indicadores"}
+              {initiativeId &&
+                indicators.length > 0 &&
+                indicators.map((indicator) => (
+                  <DataSheetSmallCard
+                    key={`indicatorsSmallCard_${indicator.id}`}
+                    title={indicator.type.name}
+                    tags={indicator.tags.map((t) => t.tag)}
+                    bottonLeftInfo={`Version: ${indicator.versions[0].version}`}
+                    link={{
+                      href: `/Monitoreo/Indicadores/${indicator.id}`,
+                      label: "Ir",
+                      icon: ChevronRight,
+                      title: "Ir al indicador",
+                    }}
+                  />
+                ))}
+
+              {initiatives.length === 0 && indicators.length === 0 && (
+                <div className="bg-primary/10 border border-primary rounded-lg text-xl font-normal text-center text-primary p-4">
+                  No hay informacion disponible
+                </div>
+              )}
             </div>
           </section>
         </>
       )}
-    </div>
-  );
-}
-
-function RenderInitiativeCard({
-  initiative,
-}: {
-  initiative: InitiativeByLocation;
-}) {
-  const { departmentId } = useParams();
-
-  const date = initiative?.creationDate
-    ? new Date(initiative.creationDate)
-    : new Date();
-
-  const tags = (initiative.tags || []).reduce<Record<number, string[]>>(
-    (all, tag) => {
-      if (!all[tag.tag.category.id]) {
-        all[tag.tag.category.id] = [];
-      }
-      if (tag.tag?.name) {
-        all[tag.tag.category.id].push(tag.tag.name);
-      }
-      return all;
-    },
-    {},
-  );
-
-  return (
-    <div
-      key={`elementCard_${initiative.initiativeId}`}
-      className="bg-background p-2 rounded-lg outline outline-transparent hover:outline-primary transition-colors duration-300"
-    >
-      <h5 className="text-lg mb-0 px-2">{initiative.initiativeName}</h5>
-
-      <div className="flex gap-2">
-        <TagsRender
-          tags={tags[1]}
-          srTitle="Etiquetas 1"
-          className="[&_li]:bg-blue-200 [&_li]:text-blue-800 font-normal"
-        />
-        <TagsRender
-          tags={tags[2]}
-          srTitle="Etiquetas 2"
-          className="[&_li]:bg-green-100 [&_li]:text-green-800 font-normal"
-        />
-      </div>
-
-      <hr className="border-t border-grey-light mt-2" />
-
-      <div className="px-2 flex justify-between items-center">
-        <time
-          dateTime={date.toISOString().split("T")[0]}
-          title={`Monitorea desde ${date.toLocaleDateString()}`}
-          className="text-sm m-0"
-        >
-          {date.toLocaleDateString()}
-        </time>
-
-        <Button variant="ghost-clean" size="sm" className="px-0! mx-0" asChild>
-          <Link
-            to={`/Monitoreo/Departamento/${departmentId}/${initiative.initiativeId}`}
-          >
-            Ver más <PlusCircle className="size-5" />
-          </Link>
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-function RenderIndicatorCard({ indicator }: { indicator: IndicatorMetadata }) {
-  const tags = (indicator.tags || []).reduce<Record<number, string[]>>(
-    (all, tag) => {
-      if (!all[tag.tag.category.id]) {
-        all[tag.tag.category.id] = [];
-      }
-      if (tag.tag?.name) {
-        all[tag.tag.category.id].push(tag.tag.name);
-      }
-      return all;
-    },
-    {},
-  );
-
-  return (
-    <div
-      key={`elementCard_${indicator.initiativeId}`}
-      className="bg-background p-2 rounded-lg outline outline-transparent hover:outline-primary transition-colors duration-300"
-    >
-      <h5 className="text-lg mb-0 px-2">{indicator.type.name}</h5>
-
-      <div className="flex gap-2">
-        <TagsRender
-          tags={tags[3]}
-          srTitle="Etiquetas 3"
-          className="[&_li]:bg-blue-200 [&_li]:text-blue-800 font-normal"
-        />
-        <TagsRender
-          tags={tags[4]}
-          srTitle="Etiquetas 4"
-          className="[&_li]:bg-green-100 [&_li]:text-green-800 font-normal"
-        />
-      </div>
-
-      <hr className="border-t border-grey-light mt-2" />
-
-      <div className="px-2 flex justify-between items-center">
-        <span>Version: {indicator.versions[0].version}</span>
-
-        <Button variant="ghost-clean" size="sm" className="px-0! mx-0" asChild>
-          <Link to={`/Monitoreo/Indicadores/${indicator.id}`}>
-            Ir al indicador <ChevronRight className="size-5" />
-          </Link>
-        </Button>
-      </div>
     </div>
   );
 }

@@ -67,6 +67,14 @@ export const INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD = [
   "#e84a5f",
 ];
 
+export const TAG_COLORS = [
+  { bg: "[&_li]:bg-blue-200", fg: "[&_li]:text-blue-800" },
+  { bg: "[&_li]:bg-green-100", fg: "[&_li]:text-green-800" },
+  { bg: "[&_li]:bg-[#e5a85c]/20", fg: "[&_li]:text-[#f25e50]" },
+  { bg: "[&_li]:bg-accent/10", fg: "[&_li]:text-foreground" },
+  { bg: "[&_li]:bg-grey-light", fg: "[&_li]:text-grey-dark" },
+];
+
 export const INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP: Record<string, string> =
   {
     [INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[0]]: "#ffffff",
