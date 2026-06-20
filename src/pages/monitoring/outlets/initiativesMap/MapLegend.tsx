@@ -22,8 +22,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@ui/shadCN/component/popover";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@ui/shadCN/component/collapsible";
 import { Button } from "@ui/shadCN/component/button";
-import { Check, ChevronDown, Layers } from "lucide-react";
+import { Check, ChevronDown, Expand, Layers, Minimize2 } from "lucide-react";
+import { cn } from "@ui/shadCN/lib/utils";
 
 export function MapLegend({
   leastInitiativesPerDepartment,
@@ -45,6 +51,7 @@ export function MapLegend({
   const navigate = useNavigate();
   const [department, setDepartment] = useState<string>("");
   const { departmentId, initiativeId } = useParams();
+  const [expanded, setExpanded] = useState(true);
 
   useEffect(() => {
     setDepartment(departmentId ?? "");
@@ -74,135 +81,165 @@ export function MapLegend({
   }, []);
 
   return (
-    <div
-      className="absolute border border-primary/50 top-0 z-10 right-0 mt-4 mx-14 w-120 bg-background p-4 rounded-lg max-w-[300px] space-y-4 text-sm shadow-md"
-      role="group"
-      aria-label={uiText.mapLegend.labelSr}
-    >
-      <div className="text-sm/5 [&_p]:mb-0 [&_p]:text-pretty [&_p]:text-sm/5 [&_strong]:font-semibold">
-        {parseSimpleMarkdown(uiText.mapLegend.description)}
-        {!initiativeId && (
-          <Combobox
-            items={activeDepartments}
-            value={department ?? ""}
-            setValue={setDepartment}
-            keys={{ forLabel: "label", forValue: "value" }}
-            uiText={uiText.mapLegend.deptSelection}
-            className="pointer-events-auto mt-2"
-          />
-        )}
-      </div>
-
-      <hr className="border-muted" />
-
-      <ul className="flex flex-col gap-2">
-        <li className="flex items-center gap-3 pl-0.5">
-          <InitiativeIcon className="w-6" />
-          <span>{uiText.mapLegend.legends.initiative}</span>
-        </li>
-        <li className="flex items-center gap-2">
-          <div className="flex items-center justify-center w-7 h-7 rounded-full bg-primary font-bold text-[10px] text-background border-4 border-background/40">
-            N
-          </div>
-          <span>{uiText.mapLegend.legends.nearByInitiatives}</span>
-        </li>
-        <li className="flex flex-col">
-          <span>{uiText.mapLegend.legends.initiativesPerDepartment}</span>
-          <div className="border-l border-r border-foreground/40">
-            <div className="h-6 w-full " style={gradientStyle} />
-            <div className="flex justify-between px-1 text-foreground/80">
-              <span>{leastInitiativesPerDepartment}</span>
-              <span>{mostInitiativesPerDepartment}</span>
-            </div>
-          </div>
-        </li>
-      </ul>
-
-      <label htmlFor="layerSelector" className="sr-only">
-        {uiText.mapLegend.layerSelectorLabel}
-      </label>
-
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            className="group w-full bg-cover bg-center justify-between outline outline-transparent hover:outline-2 outline-offset-2 hover:outline-primary bg-blend-luminosity"
-            style={{
-              backgroundImage: `url("${MAP_TILES[tiles].uiThumbs.selection}")`,
-            }}
-          >
-            <div className="flex gap-2 items-center">
-              <Layers /> Mapas y capas
-            </div>
-            <ChevronDown
-              className="relative top-px ml-2 size-5 transition duration-300 group-data-[state=open]:rotate-180"
-              aria-hidden="true"
-            />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent
-          align="end"
-          className="grid md:grid-cols-[repeat(2,max-content)] gap-4 w-auto p-2"
+    <Collapsible open={expanded} onOpenChange={setExpanded}>
+      <div
+        className="absolute border border-primary/50 top-0 z-10 right-0 mt-4 mx-14 w-120 bg-background  max-w-[300px] rounded-lg shadow-md"
+        role="group"
+        aria-label={uiText.mapLegend.labelSr}
+      >
+        <div
+          className={cn(
+            "flex gap-2 justify-between items-center bg-primary transition-all duration-300 text-primary-foreground px-2 rounded-t-lg",
+            expanded ? "" : "rounded-b-lg",
+          )}
         >
-          <div className="md:border-r md:border-r-grey-light md:pl-2 md:pr-4">
-            <span className="font-normal">Mapas</span>
-            <ul className="mt-2 space-y-2">
-              {Object.entries(MAP_TILES).map(([key, value]) => (
-                <li key={`mapTile_${key}`}>
-                  <Button
-                    onClick={() =>
-                      setTiles(Number(key) as keyof typeof MAP_TILES)
-                    }
-                    variant="link"
-                    disabled={tiles === Number(key)}
-                    className="w-40 p-0! justify-start"
-                  >
-                    <div className="flex gap-2 items-center  text-sm">
-                      <img
-                        src={value.uiThumbs.button}
-                        alt=""
-                        className="h-9 border border-primary/50 aspect-square rounded object-cover object-center"
-                      />
-                      {value.label}
-                    </div>
-                    {tiles === Number(key) && <Check />}
-                  </Button>
-                </li>
-              ))}
-            </ul>
+          <h4 className="flex gap-2 items-center text-lg m-0">
+            Informacion del mapa
+          </h4>
+
+          <CollapsibleTrigger asChild>
+            <Button
+              className="p-0 text-primary-foreground"
+              variant="link"
+              title={expanded ? "Contraer" : "expandir"}
+            >
+              {expanded ? <Minimize2 /> : <Expand />}
+            </Button>
+          </CollapsibleTrigger>
+        </div>
+
+        <CollapsibleContent
+          className={cn(
+            "p-4 space-y-4 text-sm",
+            "data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up overflow-hidden",
+          )}
+        >
+          <div className="text-sm/5 [&_p]:mb-0 [&_p]:text-pretty [&_p]:text-sm/5 [&_strong]:font-semibold">
+            {parseSimpleMarkdown(uiText.mapLegend.description)}
+            {!initiativeId && (
+              <Combobox
+                items={activeDepartments}
+                value={department ?? ""}
+                setValue={setDepartment}
+                keys={{ forLabel: "label", forValue: "value" }}
+                uiText={uiText.mapLegend.deptSelection}
+                className="pointer-events-auto mt-2"
+              />
+            )}
           </div>
 
-          <div>
-            <span className="font-normal">Capas</span>
-            <ul className="mt-2 space-y-2">
-              {Object.entries(MAP_LAYERS).map(([key, value]) => (
-                <li key={`mapLayer_${key}`}>
-                  <Button
-                    onClick={() =>
-                      setLayers((oldLayer) =>
-                        oldLayer === Number(key)
-                          ? null
-                          : (Number(key) as keyof typeof MAP_TILES),
-                      )
-                    }
-                    variant="link"
-                    className="w-50 p-0! justify-start"
-                  >
-                    <div className="flex gap-2 items-center  text-sm">
-                      <img
-                        src={value.buttonBkg}
-                        alt=""
-                        className="h-9 border border-primary/50 aspect-square rounded object-cover object-center"
-                      />
-                      {value.label}
-                    </div>
-                    {layers === Number(key) && <Check />}
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </PopoverContent>
-      </Popover>
-    </div>
+          <hr className="border-muted" />
+
+          <ul className="flex flex-col gap-2">
+            <li className="flex items-center gap-3 pl-0.5">
+              <InitiativeIcon className="w-6" />
+              <span>{uiText.mapLegend.legends.initiative}</span>
+            </li>
+            <li className="flex items-center gap-2">
+              <div className="flex items-center justify-center w-7 h-7 rounded-full bg-primary font-bold text-[10px] text-background border-4 border-background/40">
+                N
+              </div>
+              <span>{uiText.mapLegend.legends.nearByInitiatives}</span>
+            </li>
+            <li className="flex flex-col">
+              <span>{uiText.mapLegend.legends.initiativesPerDepartment}</span>
+              <div className="border-l border-r border-foreground/40">
+                <div className="h-6 w-full " style={gradientStyle} />
+                <div className="flex justify-between px-1 text-foreground/80">
+                  <span>{leastInitiativesPerDepartment}</span>
+                  <span>{mostInitiativesPerDepartment}</span>
+                </div>
+              </div>
+            </li>
+          </ul>
+
+          <label htmlFor="layerSelector" className="sr-only">
+            {uiText.mapLegend.layerSelectorLabel}
+          </label>
+
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                className="group w-full bg-cover bg-center justify-between outline outline-transparent hover:outline-2 outline-offset-2 hover:outline-primary bg-blend-luminosity"
+                style={{
+                  backgroundImage: `url("${MAP_TILES[tiles].uiThumbs.selection}")`,
+                }}
+              >
+                <div className="flex gap-2 items-center">
+                  <Layers /> Mapas y capas
+                </div>
+                <ChevronDown
+                  className="relative top-px ml-2 size-5 transition duration-300 group-data-[state=open]:rotate-180"
+                  aria-hidden="true"
+                />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              align="end"
+              className="grid md:grid-cols-[repeat(2,max-content)] gap-4 w-auto p-2"
+            >
+              <div className="md:border-r md:border-r-grey-light md:pl-2 md:pr-4">
+                <span className="font-normal">Mapas</span>
+                <ul className="mt-2 space-y-2">
+                  {Object.entries(MAP_TILES).map(([key, value]) => (
+                    <li key={`mapTile_${key}`}>
+                      <Button
+                        onClick={() =>
+                          setTiles(Number(key) as keyof typeof MAP_TILES)
+                        }
+                        variant="link"
+                        disabled={tiles === Number(key)}
+                        className="w-40 p-0! justify-start"
+                      >
+                        <div className="flex gap-2 items-center  text-sm">
+                          <img
+                            src={value.uiThumbs.button}
+                            alt=""
+                            className="h-9 border border-primary/50 aspect-square rounded object-cover object-center"
+                          />
+                          {value.label}
+                        </div>
+                        {tiles === Number(key) && <Check />}
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <span className="font-normal">Capas</span>
+                <ul className="mt-2 space-y-2">
+                  {Object.entries(MAP_LAYERS).map(([key, value]) => (
+                    <li key={`mapLayer_${key}`}>
+                      <Button
+                        onClick={() =>
+                          setLayers((oldLayer) =>
+                            oldLayer === Number(key)
+                              ? null
+                              : (Number(key) as keyof typeof MAP_TILES),
+                          )
+                        }
+                        variant="link"
+                        className="w-50 p-0! justify-start"
+                      >
+                        <div className="flex gap-2 items-center  text-sm">
+                          <img
+                            src={value.buttonBkg}
+                            alt=""
+                            className="h-9 border border-primary/50 aspect-square rounded object-cover object-center"
+                          />
+                          {value.label}
+                        </div>
+                        {layers === Number(key) && <Check />}
+                      </Button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </CollapsibleContent>
+      </div>
+    </Collapsible>
   );
 }
