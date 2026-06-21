@@ -11,17 +11,17 @@ import { inputLengthCount, inputWarnColor } from "@utils/ui";
 
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { ErrorsList, LabelAndErrors } from "@ui/LabelingWithErrors";
-import { invitationValidations } from "pages/monitoring/outlets/initiativeJoinInvitation/utils/formClientValidations";
+import { invitationValidations } from "pages/monitoring/outlets/myProfile/initiativeJoinInvitation/utils/formClientValidations";
 import { StrValidator } from "@utils/strValidator";
 import { INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH } from "@config/monitoring";
-import { makeInitialInfo } from "pages/monitoring/outlets/initiativeJoinInvitation/utils/formObjectUpdate";
+import { makeInitialInfo } from "pages/monitoring/outlets/myProfile/initiativeJoinInvitation/utils/formObjectUpdate";
 import type {
   JoinInitiativeDataForm,
   JoinInitiativeGuest,
   JoinInitiativeDataFormErr,
-} from "pages/monitoring/outlets/initiativeJoinInvitation/types/initiativeInvitationData";
+} from "pages/monitoring/outlets/myProfile/initiativeJoinInvitation/types/initiativeInvitationData";
 import { validateFormClient } from "pages/monitoring/ui/initiativesAdmin/utils/validateFormClient";
-import { uiText } from "pages/monitoring/outlets/initiativeJoinInvitation/layout/uiText";
+import { uiText } from "pages/monitoring/outlets/myProfile/initiativeJoinInvitation/layout/uiText";
 import { sendJoinInitiativeInvitation } from "pages/monitoring/api/services/initiatives";
 
 export function InitiativeInvitationForm({

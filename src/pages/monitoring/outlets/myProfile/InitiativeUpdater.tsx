@@ -17,7 +17,7 @@ import type { UserInInitiativeCompleteInfo } from "pages/monitoring/types/user";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 import { InitiativeInfoUpdater } from "pages/monitoring/outlets/myProfile/initiativeUpdater/InitiativeInfoUpdater";
 import { uiText } from "pages/monitoring/outlets/myProfile/initiativeUpdater/layout/uiText";
-import { InitiativeInvitationForm } from "pages/monitoring/outlets/initiativeJoinInvitation/InitiativeInvitationForm";
+import { InitiativeInvitationForm } from "pages/monitoring/outlets/myProfile/InitiativeInvitationForm";
 import { getInitiative } from "pages/monitoring/api/services/initiatives";
 import { JoinRequests } from "pages/monitoring/outlets/myProfile/JoinRequest";
 

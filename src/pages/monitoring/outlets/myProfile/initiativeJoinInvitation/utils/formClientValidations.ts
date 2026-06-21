@@ -1,6 +1,6 @@
 import type { FormClientValidation } from "pages/monitoring/types/formValidation";
-import type { JoinInitiativeDataForm } from "pages/monitoring/outlets/initiativeJoinInvitation/types/initiativeInvitationData";
-import { uiText } from "pages/monitoring/outlets/initiativeJoinInvitation/layout/uiText";
+import type { JoinInitiativeDataForm } from "pages/monitoring/outlets/myProfile/initiativeJoinInvitation/types/initiativeInvitationData";
+import { uiText } from "pages/monitoring/outlets/myProfile/initiativeJoinInvitation/layout/uiText";
 import { StrValidator } from "@utils/strValidator";
 
 export const invitationValidations: FormClientValidation<JoinInitiativeDataForm>[] =
