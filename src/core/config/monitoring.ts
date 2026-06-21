@@ -47,7 +47,19 @@ export const INITIATIVES_IMG_ALLOWED_FORMATS: ImageMimeType[] = [
 export const INITIATIVES_IMG_MAX_FILE_SIZE = 2;
 
 // Initiatives browser
-export const INITIAVIVES_MAP_GRADIENT = [
+export const INITIATIVES_MAP_PADDING_LG = {
+  south: 50,
+  north: 50,
+  east: 150,
+  west: 300,
+};
+export const INITIATIVES_MAP_PADDING_SM = {
+  south: 100,
+  north: 0,
+  east: 20,
+  west: 20,
+};
+export const INITIATIVES_MAP_GRADIENT = [
   { color: "#FDEBC4", position: 0 },
   { color: "#F1A49E", position: 0.5 },
   { color: "#B079A8", position: 1 },
@@ -65,14 +77,6 @@ export const INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD = [
   "#f2784f",
   "#f25e50",
   "#e84a5f",
-];
-
-export const TAG_COLORS = [
-  { bg: "[&_li]:bg-blue-200", fg: "[&_li]:text-blue-800" },
-  { bg: "[&_li]:bg-green-100", fg: "[&_li]:text-green-800" },
-  { bg: "[&_li]:bg-[#e5a85c]/20", fg: "[&_li]:text-[#f25e50]" },
-  { bg: "[&_li]:bg-accent/10", fg: "[&_li]:text-foreground" },
-  { bg: "[&_li]:bg-grey-light", fg: "[&_li]:text-grey-dark" },
 ];
 
 export const INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP: Record<string, string> =
@@ -123,6 +127,15 @@ export const TERRITORY_STORY_IMG_MAX_HEIGHT = 900; // size in pixels
 export const TERRITORY_STORY_IMG_MIN_WIDTH = 300; // size in pixels
 export const TERRITORY_STORY_IMG_MIN_HEIGHT = 300; // size in pixels
 export const TERRITORY_STORY_YT_VID_MAX_AMOUNT = 6;
+
+// Tags
+export const TAG_COLORS = [
+  { bg: "[&_li]:bg-blue-200", fg: "[&_li]:text-blue-800" },
+  { bg: "[&_li]:bg-green-100", fg: "[&_li]:text-green-800" },
+  { bg: "[&_li]:bg-[#e5a85c]/20", fg: "[&_li]:text-[#f25e50]" },
+  { bg: "[&_li]:bg-grey-light", fg: "[&_li]:text-grey-dark" },
+  { bg: "[&_li]:bg-accent/10", fg: "[&_li]:text-foreground" },
+];
 
 // Tag admin
 export const TAG_NAME_MAX_LENGTH = 40;

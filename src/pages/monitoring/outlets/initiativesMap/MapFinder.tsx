@@ -10,7 +10,7 @@ import type {
   Geometry,
 } from "geojson";
 
-import { INITIAVIVES_MAP_GRADIENT, COUNTRY_BOUNDS } from "@config/monitoring";
+import { INITIATIVES_MAP_GRADIENT, COUNTRY_BOUNDS } from "@config/monitoring";
 
 import { createGradientScale } from "pages/monitoring/utils/createGradientScale";
 import { type InitiativeByLocation } from "pages/monitoring/types/initiative";
@@ -101,7 +101,7 @@ export function MapFinder({
       createGradientScale(
         leastInitiativesPerDepartment,
         mostInitiativesPerDepartment,
-        INITIAVIVES_MAP_GRADIENT,
+        INITIATIVES_MAP_GRADIENT,
       ),
     [leastInitiativesPerDepartment, mostInitiativesPerDepartment],
   );
@@ -154,7 +154,7 @@ export function MapFinder({
     <MapContainer
       bounds={bounds ?? COUNTRY_BOUNDS}
       maxZoom={10}
-      minZoom={6}
+      minZoom={5}
       className="outline-none [&_.leaflet-interactive]:outline-none"
       zoomControl={false}
     >

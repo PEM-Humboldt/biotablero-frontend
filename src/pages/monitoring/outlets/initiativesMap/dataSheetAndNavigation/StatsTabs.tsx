@@ -4,7 +4,6 @@ import { Tabs, TabsList } from "@ui/shadCN/component/tabs";
 
 import { TabsContent, TabsTrigger } from "@radix-ui/react-tabs";
 import type { StatsType } from "pages/monitoring/types/stats";
-import { parseSimpleMarkdown } from "@utils/textParser";
 import { cn } from "@ui/shadCN/lib/utils";
 import {
   tabsAvailable,
@@ -19,7 +18,7 @@ export function StatsTabs() {
       onValueChange={(t) => setCurrentTab(t as StatsType)}
       value={currentTab}
     >
-      <TabsList className="my-4 gap-2 p-0 hover:outline-primary/80 transition-colors duration-300 outline-offset-8 rounded-lg bg-transparent">
+      <TabsList className="gap-1 my-2 mx-1 hover:outline-primary/80 transition-colors duration-300 outline-offset-0 rounded-lg bg-transparent">
         {tabsAvailable.map((tab) => {
           const btnInfo = statsTabsInfo[tab].tabBtn;
           const Icon = btnInfo.icon;
@@ -49,11 +48,13 @@ export function StatsTabs() {
       </TabsList>
 
       {tabsAvailable.map((tab) => {
-        const description = statsTabsInfo[tab].descriptionMD;
         const Stats = statsTabsInfo[tab].component;
         return (
-          <TabsContent key={`statsContent${tab}`} value={tab}>
-            {description && parseSimpleMarkdown(description)}
+          <TabsContent
+            key={`statsContent${tab}`}
+            value={tab}
+            className="max-h-80 lg:max-h-none overflow-y-auto scrollbar-custom"
+          >
             {Stats && <Stats />}
           </TabsContent>
         );

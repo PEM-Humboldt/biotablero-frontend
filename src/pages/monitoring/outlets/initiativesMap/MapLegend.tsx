@@ -8,7 +8,7 @@ import {
 import { useNavigate, useParams } from "react-router";
 
 import { Combobox } from "@ui/ComboBox";
-import { INITIAVIVES_MAP_GRADIENT } from "@config/monitoring";
+import { INITIATIVES_MAP_GRADIENT } from "@config/monitoring";
 
 import { InitiativeIcon } from "pages/monitoring/outlets/initiativesMap/mapFinder/InitiativeIcon";
 import {
@@ -51,7 +51,12 @@ export function MapLegend({
   const navigate = useNavigate();
   const [department, setDepartment] = useState<string>("");
   const { departmentId, initiativeId } = useParams();
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth >= 1024;
+    }
+    return true;
+  });
 
   useEffect(() => {
     setDepartment(departmentId ?? "");
@@ -66,14 +71,14 @@ export function MapLegend({
   }, [department, initiativeId, navigate]);
 
   const gradientStyle = useMemo(() => {
-    if (INITIAVIVES_MAP_GRADIENT.length === 0) {
+    if (INITIATIVES_MAP_GRADIENT.length === 0) {
       return { backgroundColor: "transparent" };
     }
-    if (INITIAVIVES_MAP_GRADIENT.length === 1) {
-      return { backgroundColor: INITIAVIVES_MAP_GRADIENT[0].color };
+    if (INITIATIVES_MAP_GRADIENT.length === 1) {
+      return { backgroundColor: INITIATIVES_MAP_GRADIENT[0].color };
     }
 
-    const colors = INITIAVIVES_MAP_GRADIENT.map(
+    const colors = INITIATIVES_MAP_GRADIENT.map(
       (g) => `${g.color} ${g.position * 100}%`,
     ).join(", ");
 
@@ -83,7 +88,7 @@ export function MapLegend({
   return (
     <Collapsible open={expanded} onOpenChange={setExpanded}>
       <div
-        className="absolute border border-primary/50 top-0 z-10 right-0 mt-4 mx-14 w-120 bg-background  max-w-[300px] rounded-lg shadow-md"
+        className="absolute border border-primary/50 z-10 bottom-1 right-1 lg:top-4 lg:right-14 bg-background w-70 rounded-lg shadow-md h-fit"
         role="group"
         aria-label={uiText.mapLegend.labelSr}
       >

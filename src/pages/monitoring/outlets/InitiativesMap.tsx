@@ -22,6 +22,7 @@ import { getInitiativeLocations } from "pages/monitoring/api/services/initiative
 import { MapFinder } from "pages/monitoring/outlets/initiativesMap/MapFinder";
 import { DataSheetAndNavigation } from "pages/monitoring/outlets/initiativesMap/DataSheetAndNavigation";
 import { MapLegend } from "pages/monitoring/outlets/initiativesMap/MapLegend";
+import { CardsAttachment } from "./initiativesMap/CardsAttachment";
 
 export function InitiativesMap() {
   const [tiles, setTiles] = useState<keyof typeof MAP_TILES>(0);
@@ -130,6 +131,8 @@ export function InitiativesMap() {
   ) : (
     <div className="relative flex flex-col h-full w-full">
       <DataSheetAndNavigation initiatives={initiatives} />
+
+      <CardsAttachment />
 
       <MapFinder
         tiles={tiles}

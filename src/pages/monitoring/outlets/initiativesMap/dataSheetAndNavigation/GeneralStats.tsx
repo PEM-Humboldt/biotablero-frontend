@@ -89,17 +89,23 @@ function StatValue({
   }).format(value);
 
   return (
-    <div title={description} className="flex gap-1 py-4 items-center">
-      <Icon className="size-10 flex-1" strokeWidth={1} aria-hidden="true" />
-      <div className="flex-5 border-l border-grey pl-4">
+    <div title={description} className="flex gap-1 py-2 lg:py-4 items-center">
+      <Icon
+        className="size-8 lg:size-10 flex-1"
+        strokeWidth={1}
+        aria-hidden="true"
+      />
+      <div className="flex-5 border-l border-grey pl-2 lg:pl-4">
         <div className="font-normal">
-          <span className="text-4xl inline-flex gap-1 items-center">
+          <span className="text-2xl inline-flex gap-1 items-center">
             {displayValue}
             {isLoaging && <Spinner className="size-6 text-primary" />}
           </span>
           {unit && <span className="text-xl">{unit}</span>}
         </div>
-        <div className="font-light text-lg text-balance">{text}</div>
+        <div className="font-light text-base lg:text-lg text-balance">
+          {text}
+        </div>
       </div>
     </div>
   );
