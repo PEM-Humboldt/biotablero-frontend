@@ -1,5 +1,5 @@
 import type { FormClientValidation } from "pages/monitoring/types/formValidation";
-import type { JoinInitiativeDataForm } from "pages/monitoring/outlets/myProfile/initiativeJoinInvitation/types/initiativeInvitationData";
+import type { JoinInitiativeDataForm } from "pages/monitoring/types/userJoinRequest";
 import { uiText } from "pages/monitoring/outlets/myProfile/initiativeJoinInvitation/layout/uiText";
 import { StrValidator } from "@utils/strValidator";
 

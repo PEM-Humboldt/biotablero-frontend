@@ -1,5 +1,6 @@
 export const uiText = {
   title: "Invitar personas a iniciativa",
+  sendedInvitationsTitle: "Invitaciones a la iniciativa enviadas",
   loading: "Cargando...",
   save: "Guardar",
   success: "¡Invitación enviada con éxito!",

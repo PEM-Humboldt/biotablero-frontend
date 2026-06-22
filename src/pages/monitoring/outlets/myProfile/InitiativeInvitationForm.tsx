@@ -19,10 +19,11 @@ import type {
   JoinInitiativeDataForm,
   JoinInitiativeGuest,
   JoinInitiativeDataFormErr,
-} from "pages/monitoring/outlets/myProfile/initiativeJoinInvitation/types/initiativeInvitationData";
+} from "pages/monitoring/types/userJoinRequest";
 import { validateFormClient } from "pages/monitoring/ui/initiativesAdmin/utils/validateFormClient";
 import { uiText } from "pages/monitoring/outlets/myProfile/initiativeJoinInvitation/layout/uiText";
 import { sendJoinInitiativeInvitation } from "pages/monitoring/api/services/initiatives";
+import { SendedInvitations } from "pages/monitoring/outlets/myProfile/initiativeJoinInvitation/SendedInvitations";
 
 export function InitiativeInvitationForm({
   initiativeId,
@@ -243,6 +244,13 @@ export function InitiativeInvitationForm({
           </Button>
         </div>
       </form>
+
+      <hr className="m-2 mt-4 border-primary/20" />
+
+      <h4 className="text-primary m-0! mb-2 text-lg font-semibold">
+        {uiText.sendedInvitationsTitle}
+      </h4>
+      <SendedInvitations initiativeId={initiativeId} />
     </div>
   );
 }
