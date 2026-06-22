@@ -25,6 +25,7 @@ import { getInitiativeLocations } from "pages/monitoring/api/services/initiative
 import type { IndicatorMetadata } from "pages/monitoring/types/indicators";
 import { getIndicatorsByInitiative } from "pages/monitoring/api/services/indicators";
 import { DataSheetSmallCard } from "pages/monitoring/outlets/initiativesMap/dataSheetAndNavigation/DataSheetSmallCard";
+import { uiText } from "pages/monitoring/outlets/initiativesMap/layout/uiText";
 
 export function CardsAttachment() {
   const { departmentId, initiativeId } = useParams();
@@ -115,7 +116,7 @@ export function CardsAttachment() {
                         strokeWidth={1.5}
                         aria-hidden="true"
                       />
-                      Indicadores
+                      {uiText.cardsAttachment.indicators.title}
                     </>
                   ) : (
                     <>
@@ -124,7 +125,7 @@ export function CardsAttachment() {
                         strokeWidth={1.5}
                         aria-hidden="true"
                       />
-                      Iniciativas
+                      {uiText.cardsAttachment.initiatives.title}
                     </>
                   )}
                 </h4>
@@ -133,9 +134,28 @@ export function CardsAttachment() {
                   <Button
                     className="p-0 text-primary-foreground"
                     variant="link"
-                    title={expanded ? "Contraer" : "expandir"}
+                    title={
+                      expanded
+                        ? uiText.windowsUiText.expandedBtn.title
+                        : uiText.windowsUiText.shinkedBtn.title
+                    }
+                    aria-label={
+                      expanded
+                        ? uiText.windowsUiText.expandedBtn.sr
+                        : uiText.windowsUiText.shinkedBtn.sr
+                    }
                   >
-                    {expanded ? <Minimize2 /> : <Expand />}
+                    {expanded ? (
+                      <>
+                        {uiText.windowsUiText.expandedBtn.label}
+                        <Minimize2 />
+                      </>
+                    ) : (
+                      <>
+                        {uiText.windowsUiText.shinkedBtn.label}
+                        <Expand />
+                      </>
+                    )}
                   </Button>
                 </CollapsibleTrigger>
               </div>
@@ -156,9 +176,11 @@ export function CardsAttachment() {
                         }
                         link={{
                           href: `/Monitoreo/Departamento/${departmentId}/${initiative.initiativeId}`,
-                          label: "Ver",
                           icon: PlusCircle,
-                          title: "Ver más información",
+                          label:
+                            uiText.cardsAttachment.initiatives.gotoBtn.label,
+                          title:
+                            uiText.cardsAttachment.initiatives.gotoBtn.title,
                         }}
                       />
                     ))}
@@ -172,9 +194,11 @@ export function CardsAttachment() {
                         bottonLeftInfo={`Version: ${indicator.versions[0].version}`}
                         link={{
                           href: `/Monitoreo/Indicadores/${indicator.id}`,
-                          label: "Ir",
                           icon: ChevronRight,
-                          title: "Ir al indicador",
+                          label:
+                            uiText.cardsAttachment.indicators.gotoBtn.label,
+                          title:
+                            uiText.cardsAttachment.indicators.gotoBtn.title,
                         }}
                       />
                     ))}
@@ -183,7 +207,7 @@ export function CardsAttachment() {
                     initiatives.length === 0) ||
                     (initiativeId && indicators.length === 0 && (
                       <div className="bg-background border border-primary rounded-lg text-lg font-normal text-center text-primary p-4">
-                        No hay informacion disponible
+                        {uiText.cardsAttachment.noItems}
                       </div>
                     ))}
                 </div>

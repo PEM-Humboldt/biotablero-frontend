@@ -99,16 +99,35 @@ export function MapLegend({
           )}
         >
           <h4 className="flex gap-2 items-center text-lg m-0">
-            Informacion del mapa
+            {uiText.mapLegend.title}
           </h4>
 
           <CollapsibleTrigger asChild>
             <Button
               className="p-0 text-primary-foreground"
               variant="link"
-              title={expanded ? "Contraer" : "expandir"}
+              title={
+                expanded
+                  ? uiText.windowsUiText.expandedBtn.title
+                  : uiText.windowsUiText.shinkedBtn.title
+              }
+              aria-label={
+                expanded
+                  ? uiText.windowsUiText.expandedBtn.sr
+                  : uiText.windowsUiText.shinkedBtn.sr
+              }
             >
-              {expanded ? <Minimize2 /> : <Expand />}
+              {expanded ? (
+                <>
+                  {uiText.windowsUiText.expandedBtn.label}
+                  <Minimize2 />
+                </>
+              ) : (
+                <>
+                  {uiText.windowsUiText.shinkedBtn.label}
+                  <Expand />
+                </>
+              )}
             </Button>
           </CollapsibleTrigger>
         </div>
@@ -159,7 +178,7 @@ export function MapLegend({
           </ul>
 
           <label htmlFor="layerSelector" className="sr-only">
-            {uiText.mapLegend.layerSelectorLabel}
+            {uiText.mapLegend.layerSelector.label}
           </label>
 
           <Popover>
@@ -171,7 +190,7 @@ export function MapLegend({
                 }}
               >
                 <div className="flex gap-2 items-center">
-                  <Layers /> Mapas y capas
+                  <Layers /> {uiText.mapLegend.layerSelector.title}
                 </div>
                 <ChevronDown
                   className="relative top-px ml-2 size-5 transition duration-300 group-data-[state=open]:rotate-180"
@@ -184,7 +203,9 @@ export function MapLegend({
               className="grid md:grid-cols-[repeat(2,max-content)] gap-4 w-auto p-2"
             >
               <div className="md:border-r md:border-r-grey-light md:pl-2 md:pr-4">
-                <span className="font-normal">Mapas</span>
+                <span className="font-normal">
+                  {uiText.mapLegend.layerSelector.mapsTitle}
+                </span>
                 <ul className="mt-2 space-y-2">
                   {Object.entries(MAP_TILES).map(([key, value]) => (
                     <li key={`mapTile_${key}`}>
@@ -212,7 +233,9 @@ export function MapLegend({
               </div>
 
               <div>
-                <span className="font-normal">Capas</span>
+                <span className="font-normal">
+                  {uiText.mapLegend.layerSelector.layersTitle}
+                </span>
                 <ul className="mt-2 space-y-2">
                   {Object.entries(MAP_LAYERS).map(([key, value]) => (
                     <li key={`mapLayer_${key}`}>

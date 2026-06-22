@@ -1,5 +1,4 @@
-import { useStats } from "pages/monitoring/outlets/initiativesMap/hooks/useStats";
-import { ErrorsList } from "@ui/LabelingWithErrors";
+import { useParams } from "react-router";
 import {
   Binoculars,
   FileBadge,
@@ -7,8 +6,12 @@ import {
   UsersRound,
   VectorSquare,
 } from "lucide-react";
-import { useParams } from "react-router";
+
+import { ErrorsList } from "@ui/LabelingWithErrors";
 import { Spinner } from "@ui/shadCN/component/spinner";
+
+import { useStats } from "pages/monitoring/outlets/initiativesMap/hooks/useStats";
+import { uiText } from "pages/monitoring/outlets/initiativesMap/layout/uiText";
 
 export function GeneralStats() {
   const { initiativeId } = useParams();
@@ -24,46 +27,43 @@ export function GeneralStats() {
       {initiativeId === undefined && (
         <StatValue
           isLoaging={isLoading}
-          value={stats?.enabledInitiatives ?? 0}
           Icon={Binoculars}
-          text="Iniciativas realizando monitoreo"
-          description="Iniciativas de monitoreo activas en el área seleccionada"
+          value={stats?.enabledInitiatives ?? 0}
+          unit={uiText.stats.general.initiativesCount.dataUnit}
+          text={uiText.stats.general.initiativesCount.text}
+          description={uiText.stats.general.initiativesCount.description}
         />
       )}
 
       <StatValue
         isLoaging={isLoading}
-        value={stats?.peopleInvolved ?? 0}
         Icon={UsersRound}
-        text={
-          initiativeId
-            ? "Colaboradores registrados en la iniciativa"
-            : "Colaboradores registrados en las iniciativas"
-        }
-        description="Personas registradas como colaboradores"
+        value={stats?.peopleInvolved ?? 0}
+        unit={uiText.stats.general.collaboratorsCount.dataUnit}
+        text={uiText.stats.general.collaboratorsCount.text(
+          Boolean(initiativeId),
+        )}
+        description={uiText.stats.general.collaboratorsCount.description}
       />
 
       <StatValue
         isLoaging={isLoading}
-        value={stats?.area ?? 0}
         Icon={VectorSquare}
-        text={
-          initiativeId
-            ? "Area cubierta por la iniciativa"
-            : "Area donde se realiza monitoreo comunitario"
-        }
-        unit="ha"
+        value={stats?.area ?? 0}
+        unit={uiText.stats.general.monitoringArea.dataUnit}
+        text={uiText.stats.general.monitoringArea.text(Boolean(initiativeId))}
+        description={uiText.stats.general.monitoringArea.description}
       />
 
       <StatValue
         isLoaging={isLoading}
-        value={stats?.enabledInitiatives ?? 0}
         Icon={FileBadge}
-        text={
-          initiativeId
-            ? "Convenios que apoyan la iniciativa"
-            : "Convenios apoyando las iniciativas"
-        }
+        value={stats?.enabledInitiatives ?? 0}
+        unit={uiText.stats.general.initiativeSupport.dataUnit}
+        text={uiText.stats.general.initiativeSupport.text(
+          Boolean(initiativeId),
+        )}
+        description={uiText.stats.general.initiativeSupport.description}
       />
     </>
   );

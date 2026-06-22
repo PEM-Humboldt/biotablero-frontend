@@ -18,6 +18,7 @@ import { getLocationsList } from "pages/monitoring/api/services/location";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import type { InitiativeByLocation } from "pages/monitoring/types/initiative";
 import { StatsTabs } from "pages/monitoring/outlets/initiativesMap/dataSheetAndNavigation/StatsTabs";
+import { uiText } from "pages/monitoring/outlets/initiativesMap/layout/uiText";
 
 export function DataSheetAndNavigation({
   initiatives,
@@ -56,10 +57,10 @@ export function DataSheetAndNavigation({
 
   const { statsScope, title } = useMemo(() => {
     if (currentInitiative) {
-      const scope = currentInitiative.initiativeName;
+      const scopeName = currentInitiative.initiativeName;
       return {
-        statsScope: scope,
-        title: `Cifras generales de la iniciativa ${scope}`,
+        statsScope: scopeName,
+        title: uiText.dataSheet.scope.initiativeDescription(scopeName),
       };
     }
 
@@ -67,13 +68,13 @@ export function DataSheetAndNavigation({
       const scope = locations[Number(departmentId)] ?? "";
       return {
         statsScope: scope,
-        title: `Cifras generales de ${scope}`,
+        title: uiText.dataSheet.scope.departmentDescription(scope),
       };
     }
 
     return {
-      statsScope: "Colombia",
-      title: "Cifras generales",
+      statsScope: uiText.dataSheet.scope.nationScope,
+      title: uiText.dataSheet.scope.nationDescription,
     };
   }, [departmentId, currentInitiative, locations]);
 
@@ -85,7 +86,7 @@ export function DataSheetAndNavigation({
             className="uppercase text-primary-foreground mb-0"
             aria-label={title}
           >
-            Cifras generales
+            {uiText.dataSheet.title}
           </h4>
           <div className="space-x-2">
             {(departmentId || initiativeId) && (
@@ -100,11 +101,13 @@ export function DataSheetAndNavigation({
                 }
                 variant="link"
                 size="icon"
-                title={
-                  initiativeId ? "Volver al departamento" : "Volver al país"
-                }
+                title={uiText.dataSheet.goBackBtn.title(Boolean(initiativeId))}
+                aria-label={uiText.dataSheet.goBackBtn.sr(
+                  Boolean(initiativeId),
+                )}
               >
                 <CircleChevronLeft className="size-6" />
+                {uiText.dataSheet.goBackBtn.label}
               </Button>
             )}
 
@@ -113,12 +116,27 @@ export function DataSheetAndNavigation({
                 className="p-0 text-primary-foreground"
                 variant="link"
                 size="icon"
-                title={expanded ? "Contraer" : "expandir"}
+                title={
+                  expanded
+                    ? uiText.windowsUiText.expandedBtn.title
+                    : uiText.windowsUiText.shinkedBtn.title
+                }
+                aria-label={
+                  expanded
+                    ? uiText.windowsUiText.expandedBtn.sr
+                    : uiText.windowsUiText.shinkedBtn.sr
+                }
               >
                 {expanded ? (
-                  <Minimize2 className="size-6" />
+                  <>
+                    {uiText.windowsUiText.expandedBtn.label}
+                    <Minimize2 className="size-6" />
+                  </>
                 ) : (
-                  <Expand className="size-6" />
+                  <>
+                    {uiText.windowsUiText.shinkedBtn.label}
+                    <Expand className="size-6" />
+                  </>
                 )}
               </Button>
             </CollapsibleTrigger>
@@ -142,8 +160,10 @@ export function DataSheetAndNavigation({
                 size="sm"
                 variant="outline"
                 className="mt-1"
+                title={uiText.dataSheet.goToInitiativeBtn.title}
+                aria-label={uiText.dataSheet.goToInitiativeBtn.sr}
               >
-                Ir a la iniciativa
+                {uiText.dataSheet.goToInitiativeBtn.label}
                 <ChevronRight />
               </Button>
             )}

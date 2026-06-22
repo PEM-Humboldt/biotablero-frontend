@@ -1,14 +1,17 @@
 import { useMemo } from "react";
-import { useStats } from "../hooks/useStats";
+
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@ui/shadCN/component/accordion";
-import { definitions } from "pages/monitoring/layout/glosary/definitions";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { LoadingDiv } from "@ui/LoadingDiv";
+
+import { useStats } from "pages/monitoring/outlets/initiativesMap/hooks/useStats";
+import { definitions } from "pages/monitoring/layout/glosary/definitions";
+import { uiText } from "pages/monitoring/outlets/initiativesMap/layout/uiText";
 
 export function StrategicEcosystemsStats() {
   const { isLoading, errors, stats } = useStats("Ecosystems");
@@ -45,10 +48,7 @@ export function StrategicEcosystemsStats() {
 
       {hasEcosystemsAssociated ? (
         <>
-          <p className="p-2">
-            Las ventanas de estudio del monitoreo comunitario a este nivel,
-            abarcan los siguientes ecosistemas estratégicos:
-          </p>
+          <p className="p-2">{uiText.stats.ecosystems.preText}</p>
 
           <Accordion
             type="single"
@@ -75,7 +75,7 @@ export function StrategicEcosystemsStats() {
         </>
       ) : (
         <div className="bg-primary/10 p-4 rounded-lg">
-          No hay ecosistemas estratégicos asociados
+          {uiText.stats.ecosystems.noItems}
         </div>
       )}
     </div>

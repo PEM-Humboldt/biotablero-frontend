@@ -3,6 +3,7 @@ import { parseSimpleMarkdown } from "@utils/textParser";
 
 import { useStats } from "pages/monitoring/outlets/initiativesMap/hooks/useStats";
 import { MonitorignOverviewBars } from "pages/monitoring/outlets/initiativesMap/ui/MonitoringOverviewBars";
+import { uiText } from "pages/monitoring/outlets/initiativesMap/layout/uiText";
 
 export function IndicatorsStats() {
   const { errors, stats } = useStats("Indicators");
@@ -21,9 +22,7 @@ export function IndicatorsStats() {
       />
 
       <div className="text-balance p-2 [&_p]:mb-0 [&_a]:underline [&_a]:text-primary [&_a]:hover:text-accent">
-        {parseSimpleMarkdown(
-          "Estas cifras muestran la distribución de los indicadores calculados según su nivel de [organización de la biodiversidad](https://conbio.onlinelibrary.wiley.com/doi/10.1111/j.1523-1739.1990.tb00309.x).",
-        )}
+        {parseSimpleMarkdown(uiText.stats.indicators.preTextMd)}
       </div>
 
       {stats.indicatorsByScale.length > 0 ? (
@@ -36,13 +35,12 @@ export function IndicatorsStats() {
           />
 
           <div className="text-right text-xl p-4">
-            Total de indicadores:{" "}
-            <span className="font-normal">{totalIndicators}</span>
+            {uiText.stats.indicators.indicatorsAmount(totalIndicators)}
           </div>
         </>
       ) : (
         <div className="bg-primary/10 p-4 rounded-lg">
-          No hay indicadores asociados
+          {uiText.stats.indicators.noItems}
         </div>
       )}
     </>

@@ -1,10 +1,14 @@
 import { useState } from "react";
 
-import { Tabs, TabsList } from "@ui/shadCN/component/tabs";
-
-import { TabsContent, TabsTrigger } from "@radix-ui/react-tabs";
-import type { StatsType } from "pages/monitoring/types/stats";
+import {
+  Tabs,
+  TabsList,
+  TabsContent,
+  TabsTrigger,
+} from "@ui/shadCN/component/tabs";
 import { cn } from "@ui/shadCN/lib/utils";
+
+import type { StatsType } from "pages/monitoring/types/stats";
 import {
   tabsAvailable,
   statsTabsInfo,
@@ -18,7 +22,7 @@ export function StatsTabs() {
       onValueChange={(t) => setCurrentTab(t as StatsType)}
       value={currentTab}
     >
-      <TabsList className="gap-1 my-2 mx-1 hover:outline-primary/80 transition-colors duration-300 outline-offset-0 rounded-lg bg-transparent">
+      <TabsList className="flex-nowrap gap-1 my-2 mx-1 bg-transparent rounded-lg ">
         {tabsAvailable.map((tab) => {
           const btnInfo = statsTabsInfo[tab].tabBtn;
           const Icon = btnInfo.icon;
@@ -27,9 +31,9 @@ export function StatsTabs() {
             <TabsTrigger key={`statsTrigger_${tab}`} value={tab} asChild>
               <button
                 className={cn(
-                  "flex flex-col flex-1 text-balance gap-1 p-2 items-center rounded-lg text-sm/4 font-normal transition-color duration-300",
+                  "flex flex-col gap-1 flex-1 items-center px-0! rounded-lg text-sm/4 font-normal transition-color duration-300 whitespace-normal",
                   currentTab === tab
-                    ? "bg-accent text-accent-foreground shadow-2xl"
+                    ? "bg-accent! text-accent-foreground! shadow-2xl"
                     : "hover:text-primary-foreground hover:bg-primary hover:cursor-pointer [&_svg]:text-accent hover:[&_svg]:text-primary-foreground",
                 )}
                 title={btnInfo.title}
@@ -40,7 +44,9 @@ export function StatsTabs() {
                   strokeWidth={1.5}
                   aria-hidden="true"
                 />
-                {btnInfo.label}
+                <span className="text-center wrap-break-word text-balance">
+                  {btnInfo.label}
+                </span>
               </button>
             </TabsTrigger>
           );

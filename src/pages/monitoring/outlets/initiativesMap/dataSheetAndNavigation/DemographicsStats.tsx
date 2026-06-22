@@ -8,6 +8,7 @@ import { useStats } from "pages/monitoring/outlets/initiativesMap/hooks/useStats
 import type { DemographicStatsType } from "pages/monitoring/types/stats";
 import { MonitorignOverviewBars } from "pages/monitoring/outlets/initiativesMap/ui/MonitoringOverviewBars";
 import { designationsDictionary } from "pages/monitoring/outlets/initiativesMap/layout/designationsDictionary";
+import { uiText } from "pages/monitoring/outlets/initiativesMap/layout/uiText";
 
 export function DemographicsStats() {
   const { errors, stats } = useStats("Demographic");
@@ -45,8 +46,7 @@ export function DemographicsStats() {
       />
 
       <p className="text-sm text-balance text-right mb-0 mt-4">
-        Estas cifras muestran la composición de los colaboradores inscritos
-        según su propia designación.
+        {uiText.stats.demographic.postText}
       </p>
     </>
   );
