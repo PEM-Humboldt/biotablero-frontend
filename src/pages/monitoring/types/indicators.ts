@@ -8,7 +8,7 @@ export type indicatorDescription = { id: number; name: string };
 
 export interface IndicatorMetadata {
   id: number;
-  initiativeId: 1;
+  initiativeId: number;
   type: indicatorDescription;
   locations: LocationCompleteInfo[];
   versions: IndicatorVersion[];

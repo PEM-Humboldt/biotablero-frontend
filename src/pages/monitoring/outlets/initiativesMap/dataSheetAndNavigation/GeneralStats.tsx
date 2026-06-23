@@ -58,7 +58,7 @@ export function GeneralStats() {
       <StatValue
         isLoaging={isLoading}
         Icon={FileBadge}
-        value={stats?.enabledInitiatives ?? 0}
+        value={stats?.agreementsInvolved ?? 0}
         unit={uiText.stats.general.initiativeSupport.dataUnit}
         text={uiText.stats.general.initiativeSupport.text(
           Boolean(initiativeId),

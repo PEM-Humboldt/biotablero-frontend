@@ -244,7 +244,7 @@ export function MapLegend({
                           setLayers((oldLayer) =>
                             oldLayer === Number(key)
                               ? null
-                              : (Number(key) as keyof typeof MAP_TILES),
+                              : (Number(key) as keyof typeof MAP_LAYERS),
                           )
                         }
                         variant="link"
