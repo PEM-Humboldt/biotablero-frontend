@@ -16,6 +16,7 @@ import { createODataGetter } from "pages/monitoring/api/oDataGetter";
 import type { UserJoinRequestData } from "pages/monitoring/types/userJoinRequest";
 import type { JoinInitiativeDataForm } from "pages/monitoring/outlets/initiativeJoinInvitation/types/initiativeInvitationData";
 import type { RoleInInitiative } from "pages/monitoring/types/catalog";
+import type { StatsResponseMap, StatsType } from "pages/monitoring/types/stats";
 
 /**
  * Retrieves all the info about the initiative that has the specified id.
@@ -341,19 +342,48 @@ export async function makeJoinRequestToInitiative(
 }
 
 /**
- * Fetches all monitoring initiatives grouped by active locations.
+ * Fetches all initiatives filtered by a specific location or returns all of them if none is provided.
  *
- * @param locationId - Optional identifier of the department to filter the initiatives.
- * If omitted, it retrieves all initiatives across the entire country.
+ * @param locationId - Optional. The unique identifier of the location to filter the initiatives.
+ * If omitted, the function retrieves all available initiatives.
  *
- * * @returns A promise resolving to:
- * - On success: A list of `InitiativeByLocation`.
+ * @returns A `Promise` that resolves to:
+ * - On success: An array of `InitiativeByLocation` objects.
  * - On failure: An `ApiRequestError` object.
  */
 export async function getInitiativeLocations(locationId?: number) {
   const res = await monitoringAPI<InitiativeByLocation[]>({
     type: "get",
     endpoint: `Initiative/GetByLocation${locationId ? `?locationId=${locationId}` : ""}`,
+  });
+
+  return res;
+}
+
+/**
+ * Retrieves specific metrics and statistics based on the requested category and optional filters.
+ *
+ * @template T - A generic type extending `StatsType` that determines the shape of the returned stats object.
+ * @param type - The category of statistics to fetch ("General", "Ecosystems", "Demographic", "Indicators").
+ * @param departmentId - Optional. The identifier of a specific department to filter the statistics.
+ * @param initiativeId - Optional. The identifier of a specific initiative to isolate its metrics.
+ *
+ * @returns A `Promise` that resolves to:
+ * - On success: The object corresponding to the provided `type` category.
+ * - On failure: An `ApiRequestError` object.
+ */
+export async function getStats<T extends StatsType>(
+  type: T,
+  departmentId?: number,
+  initiativeId?: number,
+) {
+  const depParam = departmentId ? `departmentId=${departmentId}` : "";
+  const initiativeParam = initiativeId ? `initiativeId=${initiativeId}` : "";
+  const params = [depParam, initiativeParam].filter((p) => p !== "").join("&");
+
+  const res = await monitoringAPI<StatsResponseMap[T]>({
+    type: "get",
+    endpoint: `GeneralStats/${type}${params !== "" ? `?${params}` : ""}`,
   });
 
   return res;

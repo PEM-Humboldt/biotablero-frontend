@@ -1,9 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { PageTitleUpdater } from "@ui/PageTitleUpdater";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@ui/shadCN/component/accordion";
 import type { ODataParams, SearchBarComponent } from "@appTypes/odata";
 import { ODataSearchBar } from "@composites/ODataSearchBar";
 import { INITIATIVES_PER_PAGE } from "@config/monitoring";
 import { Button } from "@ui/shadCN/component/button";
+import { cn } from "@ui/shadCN/lib/utils";
+import { ErrorsList } from "@ui/LabelingWithErrors";
 
 import { searchBarItems } from "pages/monitoring/outlets/initiativesAdmin/layout/searchBarContent";
 import { getInitiatives } from "pages/monitoring/api/services/initiatives";
@@ -17,21 +26,10 @@ import type {
   InitiativeCompleteInfo,
 } from "pages/monitoring/types/initiative";
 import { makeLocationObj } from "pages/monitoring/ui/initiativesAdmin/utils/builders";
-
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@ui/shadCN/component/accordion";
-
 import { InitiativeCard } from "pages/monitoring/outlets/initiativesAdmin/InitiativeCard";
 import { InitiativeTag } from "pages/monitoring/outlets/initiativesAdmin/InitiativeTag";
-import { cn } from "@ui/shadCN/lib/utils";
-import { ErrorsList } from "@ui/LabelingWithErrors";
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 import type { ODataInitiativeShort } from "pages/monitoring/types/odataResponse";
-import { PageTitleUpdater } from "@ui/PageTitleUpdater";
 
 export function InitiativesAdmin() {
   const [initiatives, setInitiatives] = useState<Map<
@@ -49,7 +47,7 @@ export function InitiativesAdmin() {
   const [isLoading, setIsLoading] = useState(false);
   const [searchBarComponents, setSearchBarComponents] = useState<
     SearchBarComponent<ODataInitiativeShort>[] | null
-  >([]);
+  >(null);
   const initiativesFound = useRef(0);
 
   const isNewFilter =

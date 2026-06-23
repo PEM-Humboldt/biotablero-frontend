@@ -28,6 +28,8 @@ export type InitiativeByLocation = {
   initiativeShortName: string;
   mainLocationId: number;
   coordinate: [number, number];
+  tags?: TagInInitiative[];
+  creationDate?: string;
 };
 
 export type ImagesData = {

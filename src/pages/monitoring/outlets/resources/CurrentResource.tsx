@@ -15,7 +15,7 @@ import type {
   MonitoringResource,
   ResourceAttachment,
 } from "pages/monitoring/types/odataResponse";
-import { ResourceTagsRender } from "pages/monitoring/outlets/resources/ui/ResourceTagsRender";
+import { TagsRender } from "pages/monitoring/ui/TagsRender";
 import { LikeResourceButton } from "pages/monitoring/outlets/resources/ui/LikeResourseButton";
 import { uiText } from "pages/monitoring/outlets/resources/layout/uiText";
 
@@ -92,12 +92,12 @@ export function CurrentResource({
         </div>
 
         <div className="flex gap-2 pt-2 pb-6">
-          <ResourceTagsRender
+          <TagsRender
             tags={tags[3]}
             srTitle={uiText.tagsTitle.BiologicalGroup}
             className="[&_li]:bg-blue-200 [&_li]:text-blue-800 font-normal"
           />
-          <ResourceTagsRender
+          <TagsRender
             tags={tags[4]}
             srTitle={uiText.tagsTitle.ecosystem}
             className="[&_li]:bg-green-100 [&_li]:text-green-800 font-normal"

@@ -1,80 +1,158 @@
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router";
+import type {
+  Feature,
+  FeatureCollection,
+  GeoJsonProperties,
+  Geometry,
+  MultiPolygon,
+  Polygon,
+} from "geojson";
 
-import { MapFinder } from "pages/monitoring/outlets/initiativesMap/MapFinder";
-import { CurrentInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
-import { Browser } from "pages/monitoring/outlets/initiativesMap/Browser";
+import { ErrorsList } from "@ui/LabelingWithErrors";
+
+import type {
+  MAP_LAYERS,
+  MAP_TILES,
+} from "pages/monitoring/outlets/initiativesMap/layout/layers";
+import type { DeptProperties } from "pages/monitoring/outlets/initiativesMap/types/mapFeatures";
+import { type InitiativeByLocation } from "pages/monitoring/types/initiative";
+import { getGeoJsonMap } from "pages/monitoring/api/services/location";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { getInitiativeLocations } from "pages/monitoring/api/services/initiatives";
-import type { InitiativeByLocation } from "pages/monitoring/types/initiative";
-import { getLocationsList } from "pages/monitoring/api/services/location";
-import { PageTitleUpdater } from "@ui/PageTitleUpdater";
+import { MapFinder } from "pages/monitoring/outlets/initiativesMap/MapFinder";
+import { DataSheetAndNavigation } from "pages/monitoring/outlets/initiativesMap/DataSheetAndNavigation";
+import { MapLegend } from "pages/monitoring/outlets/initiativesMap/MapLegend";
+import { CardsAttachment } from "pages/monitoring/outlets/initiativesMap/CardsAttachment";
 
 export function InitiativesMap() {
-  const [locations, setLocations] = useState<Record<number, string>>({});
+  const [tiles, setTiles] = useState<keyof typeof MAP_TILES>(0);
+  const [layer, setLayer] = useState<keyof typeof MAP_LAYERS | null>(null);
+  const [errors, setErrors] = useState<string[]>([]);
+
+  const [nation, setNation] = useState<FeatureCollection | null>(null);
   const [initiatives, setInitiatives] = useState<InitiativeByLocation[]>([]);
 
-  const { departmentId, initiativeId } = useParams();
-
   useEffect(() => {
-    const fetchLocations = async () => {
-      const locationList = await getLocationsList();
-      if (isMonitoringAPIError(locationList)) {
-        return {};
+    const fetchMapInfo = async () => {
+      const mapInfo = await getGeoJsonMap();
+
+      if (isMonitoringAPIError(mapInfo)) {
+        setErrors(mapInfo.data.map((err) => err.msg));
+        return;
       }
-      setLocations(
-        locationList.reduce<Record<number, string>>((all, current) => {
-          all[current.id] = current.name;
-          return all;
-        }, {}),
-      );
-    };
+      setNation(mapInfo);
 
-    const fetchInitiativeLocations = async () => {
-      const res = await getInitiativeLocations();
+      const initiativesLocations = await getInitiativeLocations();
 
-      if (isMonitoringAPIError(res)) {
+      if (isMonitoringAPIError(initiativesLocations)) {
+        setErrors(initiativesLocations.data.map((err) => err.msg));
         setInitiatives([]);
         return;
       }
-      setInitiatives(res);
+      setInitiatives(initiativesLocations);
     };
 
-    void fetchLocations();
-    void fetchInitiativeLocations();
+    void fetchMapInfo();
   }, []);
 
-  const title = useMemo(
-    () =>
-      departmentId && locations[Number(departmentId)] !== undefined
-        ? locations[Number(departmentId)]
-        : "Colombia",
-    [departmentId, locations],
-  );
-
-  const subtitle = useMemo(() => {
-    if (!initiativeId) {
-      return "";
+  const activeFeatures = useMemo<
+    { feature: Feature<Geometry, GeoJsonProperties>; count: number }[]
+  >(() => {
+    if (!initiatives.length || !nation || !nation?.features) {
+      return [];
     }
 
-    const initiative = initiatives.find(
-      (i) => i.initiativeId === Number(initiativeId),
+    const groupedInitiatives = initiatives.reduce<Record<number, number>>(
+      (all, current) => {
+        if (!all[current.mainLocationId]) {
+          all[current.mainLocationId] = 0;
+        }
+        all[current.mainLocationId] += 1;
+        return all;
+      },
+      {},
     );
 
-    if (!initiative) {
-      return "";
+    const results = [];
+
+    for (const feature of nation.features as Feature<
+      Polygon | MultiPolygon
+    >[]) {
+      if (groupedInitiatives[feature.properties?.gid as number] > 0) {
+        results.push({
+          feature,
+          count: groupedInitiatives[feature.properties?.gid as number],
+        });
+      }
     }
 
-    return initiative?.initiativeShortName ?? initiative.initiativeName;
-  }, [initiativeId, initiatives]);
+    return results;
+  }, [initiatives, nation]);
 
-  return (
-    <CurrentInitiativeCTX>
-      <PageTitleUpdater title={title} subtitle={subtitle} />
-      <div className="relative flex flex-col h-full w-full">
-        <Browser locationsById={locations} />
-        <MapFinder initiatives={initiatives} />
-      </div>
-    </CurrentInitiativeCTX>
+  const [leastInitiativesPerDepartment, mostInitiativesPerDepartment] =
+    useMemo(() => {
+      let [currentMin, currentMax] = activeFeatures.reduce(
+        (result, current) => {
+          if (current.count <= result[0]) {
+            result[0] = current.count;
+          }
+          if (current.count >= result[1]) {
+            result[1] = current.count;
+          }
+          return result;
+        },
+        [Infinity, 0],
+      );
+
+      if (currentMin === Infinity) {
+        currentMin = 1;
+      }
+      if (currentMax === 0) {
+        currentMax = 2;
+      }
+      if (currentMin === currentMax) {
+        currentMax++;
+      }
+
+      return [currentMin, currentMax];
+    }, [activeFeatures]);
+
+  const activeDepartmentsList = useMemo(
+    () =>
+      activeFeatures.map(({ feature }) => {
+        const f = feature.properties as DeptProperties;
+        return { value: String(f.gid), label: f.geofence_name };
+      }),
+    [activeFeatures],
+  );
+
+  return errors.length > 0 ? (
+    <ErrorsList errorItems={errors} />
+  ) : (
+    <div className="relative flex flex-col h-full w-full">
+      <DataSheetAndNavigation initiatives={initiatives} />
+
+      <CardsAttachment />
+
+      <MapFinder
+        tiles={tiles}
+        layer={layer}
+        nation={nation}
+        initiatives={initiatives}
+        activeFeatures={activeFeatures}
+        leastInitiativesPerDepartment={leastInitiativesPerDepartment}
+        mostInitiativesPerDepartment={mostInitiativesPerDepartment}
+      />
+
+      <MapLegend
+        leastInitiativesPerDepartment={leastInitiativesPerDepartment}
+        mostInitiativesPerDepartment={mostInitiativesPerDepartment}
+        activeDepartments={activeDepartmentsList}
+        tiles={tiles}
+        setTiles={setTiles}
+        layers={layer}
+        setLayers={setLayer}
+      />
+    </div>
   );
 }
