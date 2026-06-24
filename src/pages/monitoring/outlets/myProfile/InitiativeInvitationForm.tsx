@@ -11,18 +11,19 @@ import { inputLengthCount, inputWarnColor } from "@utils/ui";
 
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { ErrorsList, LabelAndErrors } from "@ui/LabelingWithErrors";
-import { invitationValidations } from "pages/monitoring/outlets/initiativeJoinInvitation/utils/formClientValidations";
+import { invitationValidations } from "pages/monitoring/outlets/myProfile/initiativeJoinInvitation/utils/formClientValidations";
 import { StrValidator } from "@utils/strValidator";
 import { INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH } from "@config/monitoring";
-import { makeInitialInfo } from "pages/monitoring/outlets/initiativeJoinInvitation/utils/formObjectUpdate";
+import { makeInitialInfo } from "pages/monitoring/outlets/myProfile/initiativeJoinInvitation/utils/formObjectUpdate";
 import type {
   JoinInitiativeDataForm,
   JoinInitiativeGuest,
   JoinInitiativeDataFormErr,
-} from "pages/monitoring/outlets/initiativeJoinInvitation/types/initiativeInvitationData";
+} from "pages/monitoring/types/userJoinRequest";
 import { validateFormClient } from "pages/monitoring/ui/initiativesAdmin/utils/validateFormClient";
-import { uiText } from "pages/monitoring/outlets/initiativeJoinInvitation/layout/uiText";
+import { uiText } from "pages/monitoring/outlets/myProfile/initiativeJoinInvitation/layout/uiText";
 import { sendJoinInitiativeInvitation } from "pages/monitoring/api/services/initiatives";
+import { SendedInvitations } from "pages/monitoring/outlets/myProfile/initiativeJoinInvitation/SendedInvitations";
 
 export function InitiativeInvitationForm({
   initiativeId,
@@ -33,6 +34,7 @@ export function InitiativeInvitationForm({
   const [isLoading, setIsLoading] = useState(false);
   const [guestEmails, setGuestEmails] = useState<string>("");
   const [customMessage, setCustomMessage] = useState<string>("");
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [formData, setFormData] = useState<JoinInitiativeDataForm>(
     makeInitialInfo(initiativeId),
   );
@@ -152,6 +154,7 @@ export function InitiativeInvitationForm({
     }
 
     handleFormReset();
+    setRefreshTrigger((old) => old + 1);
     setMessage({ text: uiText.success, error: false });
     setIsLoading(false);
   };
@@ -243,6 +246,16 @@ export function InitiativeInvitationForm({
           </Button>
         </div>
       </form>
+
+      <hr className="m-2 mt-4 border-primary/20" />
+
+      <h4 className="text-primary m-0! mb-2 text-lg font-semibold">
+        {uiText.sendedInvitationsTitle}
+      </h4>
+      <SendedInvitations
+        initiativeId={initiativeId}
+        refreshTrigger={refreshTrigger}
+      />
     </div>
   );
 }

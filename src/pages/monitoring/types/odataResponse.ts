@@ -4,6 +4,7 @@ import type {
   ImageObjectTS,
   VideoObjectTS,
 } from "pages/monitoring/types/territoryStory";
+import type { SendedJoinInitiativeInvitation } from "pages/monitoring/types/userJoinRequest";
 import type { IndicatorMetadata } from "pages/monitoring/types/indicators";
 
 // NOTE: Logs
@@ -184,3 +185,5 @@ export type ODataTerritoryStory = ODataResponse<TerritoryStoryShort>;
 export type ODataTagInfo = ODataResponse<ODataTag>;
 export type ODataResourceType = ODataResponse<ResourceType>;
 export type ODataMonitoringResources = ODataResponse<MonitoringResourceShort>;
+export type ODataSendedInvitations =
+  ODataResponse<SendedJoinInitiativeInvitation>;

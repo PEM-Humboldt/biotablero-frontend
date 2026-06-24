@@ -109,6 +109,7 @@ export const JOIN_REQUESTS_PER_PAGE = 10;
 
 // Initiative Join Invitations
 export const INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH = 200;
+export const INITIATIVE_INVITATIONS_SEND_PER_PAGE = 5;
 
 // territoryStory
 export const TERRITORY_STORIES_PER_PAGE = 20;

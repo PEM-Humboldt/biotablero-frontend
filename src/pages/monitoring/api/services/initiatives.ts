@@ -2,6 +2,7 @@ import { type ODataParams } from "@appTypes/odata";
 import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
 import type {
   ODataInitiative,
+  ODataSendedInvitations,
   ODataUserRequest,
 } from "pages/monitoring/types/odataResponse";
 import type {
@@ -14,7 +15,7 @@ import type {
 import { monitoringAPI } from "pages/monitoring/api/core";
 import { createODataGetter } from "pages/monitoring/api/oDataGetter";
 import type { UserJoinRequestData } from "pages/monitoring/types/userJoinRequest";
-import type { JoinInitiativeDataForm } from "pages/monitoring/outlets/initiativeJoinInvitation/types/initiativeInvitationData";
+import type { JoinInitiativeDataForm } from "pages/monitoring/types/userJoinRequest";
 import type { RoleInInitiative } from "pages/monitoring/types/catalog";
 import type { StatsResponseMap, StatsType } from "pages/monitoring/types/stats";
 
@@ -281,6 +282,19 @@ export async function sendJoinInitiativeInvitation(
   return res;
 }
 
+export async function getSendedJoinInitiativeInvitations(
+  initiativeId: number,
+  oData: ODataParams,
+) {
+  const res = await monitoringAPI<ODataSendedInvitations>({
+    type: "get",
+    endpoint: `JoinInvitation`,
+    options: { data: { initiativeId }, oData },
+  });
+
+  return res;
+}
+
 /**
  * Removes the current user from an initiative they are already a member of.
  *
@@ -291,7 +305,6 @@ export async function sendJoinInitiativeInvitation(
  * - On failure: A `ApiRequestError` object.
  */
 export async function leaveInitiative(userIdInInitiative: number) {
-  // NOTE: Actualizar el endpoint cuando esté listo
   const res = await monitoringAPI({
     type: "delete",
     endpoint: `InitiativeUser/${userIdInInitiative}`,

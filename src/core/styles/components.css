@@ -28,6 +28,44 @@
     }
   }
 
+  /* NOTE: para la tabla de invitaciones */
+  .table-invitations {
+    @apply border border-primary/30 rounded-lg mb-2 overflow-hidden;
+
+    & > table {
+      @apply table-fixed w-full bg-white;
+
+      & thead {
+        @apply bg-muted/30 [&_th]:py-1 border-b border-b-primary/30 text-left text-primary [&_th]:font-normal [&_th]:text-base;
+      }
+
+      & tr {
+        @apply hover:bg-muted;
+      }
+
+      & td,
+      & th {
+        @apply px-3 py-1;
+
+        /* NOTE: Col id */
+        &:first-child {
+          @apply w-[10%];
+        }
+
+        /* NOTE: Cols fecha y usuario */
+        &:nth-child(2),
+        &:nth-child(3) {
+          @apply w-[20%];
+        }
+
+        /* NOTE: Col acción */
+        &:last-child {
+          @apply w-[50%];
+        }
+      }
+    }
+  }
+
   /* NOTE: Para la tabla de logs */
   .table-logs {
     @apply border border-primary/30 rounded-lg mb-2 overflow-hidden;

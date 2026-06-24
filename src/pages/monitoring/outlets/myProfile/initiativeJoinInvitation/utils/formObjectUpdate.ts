@@ -1,4 +1,4 @@
-import type { JoinInitiativeDataForm } from "pages/monitoring/outlets/initiativeJoinInvitation/types/initiativeInvitationData";
+import type { JoinInitiativeDataForm } from "pages/monitoring/types/userJoinRequest";
 
 export function makeInitialInfo(initiativeId: number): JoinInitiativeDataForm {
   return {

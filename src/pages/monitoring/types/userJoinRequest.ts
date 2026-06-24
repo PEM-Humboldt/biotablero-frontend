@@ -98,3 +98,36 @@ export type FilterJoinRequestSettings = {
   sortBy: GetKeysWithStringValues<ODataInitiativeUserRequest>;
   newerFirst: boolean;
 };
+
+// Invitaciones
+export type JoinInitiativeGuest = {
+  email: string;
+};
+
+export type JoinInitiativeDataForm = {
+  initiativeId: number;
+  message?: string;
+  guests: JoinInitiativeGuest[];
+};
+
+export type JoinInitiativeDataFormErr = {
+  root: string[];
+  initiativeId: string[];
+  message: string[];
+  guests: string[];
+};
+
+export type GuestInvited = {
+  id: number;
+  joinInvitationId: string;
+  email: string;
+};
+
+export type SendedJoinInitiativeInvitation = {
+  id: number;
+  initiativeId: number;
+  creator: string;
+  message: string;
+  creationDate: string;
+  guests: GuestInvited[];
+};
