@@ -47,10 +47,61 @@ export const INITIATIVES_IMG_ALLOWED_FORMATS: ImageMimeType[] = [
 export const INITIATIVES_IMG_MAX_FILE_SIZE = 2;
 
 // Initiatives browser
-export const INITIAVIVES_MAP_GRADIENT = [
+export const INITIATIVES_MAP_PADDING_LG = {
+  south: 50,
+  north: 50,
+  east: 150,
+  west: 300,
+};
+export const INITIATIVES_MAP_PADDING_SM = {
+  south: 100,
+  north: 0,
+  east: 20,
+  west: 20,
+};
+export const INITIATIVES_MAP_GRADIENT = [
   { color: "#FDEBC4", position: 0 },
   { color: "#F1A49E", position: 0.5 },
   { color: "#B079A8", position: 1 },
+];
+export const INITIATIVES_MAP_STATS_BAR_HEIGHT = 20;
+export const INITIATIVES_MAP_STATS_GRAPH_Y_MARGINS = 70;
+export const INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD = [
+  "#3d4469",
+  "#315d90",
+  "#3975a7",
+  "#428ebd",
+  "#4ca8d3",
+  "#e5a85c",
+  "#ed9054",
+  "#f2784f",
+  "#f25e50",
+  "#e84a5f",
+];
+
+export const INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP: Record<string, string> =
+  {
+    [INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[0]]: "#ffffff",
+    [INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[1]]: "#ffffff",
+    [INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[2]]: "#ffffff",
+    [INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[3]]: "#ffffff",
+    [INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[4]]: "#111111",
+    [INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[5]]: "#111111",
+    [INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[6]]: "#111111",
+    [INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[7]]: "#111111",
+    [INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[8]]: "#111111",
+    [INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[9]]: "#ffffff",
+  };
+
+export const INITIATIVES_MAP_STATS_GRAPH_COLORS = [
+  INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[9],
+  INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[0],
+  INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[5],
+  INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[2],
+  INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[7],
+  INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[4],
+  INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[1],
+  INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[8],
 ];
 
 // initiative admin
@@ -77,6 +128,15 @@ export const TERRITORY_STORY_IMG_MAX_HEIGHT = 900; // size in pixels
 export const TERRITORY_STORY_IMG_MIN_WIDTH = 300; // size in pixels
 export const TERRITORY_STORY_IMG_MIN_HEIGHT = 300; // size in pixels
 export const TERRITORY_STORY_YT_VID_MAX_AMOUNT = 6;
+
+// Tags
+export const TAG_COLORS = [
+  { bg: "[&_li]:bg-blue-200", fg: "[&_li]:text-blue-800" },
+  { bg: "[&_li]:bg-green-100", fg: "[&_li]:text-green-800" },
+  { bg: "[&_li]:bg-[#e5a85c]/20", fg: "[&_li]:text-[#f25e50]" },
+  { bg: "[&_li]:bg-grey-light", fg: "[&_li]:text-grey-dark" },
+  { bg: "[&_li]:bg-accent/10", fg: "[&_li]:text-foreground" },
+];
 
 // Tag admin
 export const TAG_NAME_MAX_LENGTH = 40;

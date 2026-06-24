@@ -5,6 +5,7 @@ import type {
   VideoObjectTS,
 } from "pages/monitoring/types/territoryStory";
 import type { SendedJoinInitiativeInvitation } from "pages/monitoring/types/userJoinRequest";
+import type { IndicatorMetadata } from "pages/monitoring/types/indicators";
 
 // NOTE: Logs
 export interface ODataLogEntryShort extends HasId {
@@ -67,7 +68,6 @@ export interface ODataInitiativeShort extends HasId {
 }
 
 // NOTE: solicitudes
-
 export interface ODataInitiativeUserRequest extends HasId {
   userName: string;
   reviewerUserName: string;
@@ -105,7 +105,6 @@ export interface TerritoryStoryShort extends HasId {
 
 // NOTE: Etiquetas
 interface TagCategory extends HasId {
-  id: number;
   name: string;
 }
 
@@ -114,6 +113,11 @@ export interface ODataTag extends HasId {
   url?: string;
   category: TagCategory;
   categoryName: string;
+}
+
+export interface TagInIndicator {
+  indicatorTagId: number;
+  tag: Omit<ODataTag, "categoryName">;
 }
 
 export interface TagInInitiative {
@@ -168,6 +172,10 @@ export interface MonitoringResource extends HasId {
   links: ResourceAttachment[];
   tags: ResourceTag[];
 }
+
+// Indicadores
+// NOTE: Alias temporal
+export type ODataIndicator = ODataResponse<IndicatorMetadata>;
 
 export type ODataLog = ODataResponse<ODataLogEntryShort>;
 export type ODataInitiative = ODataResponse<ODataInitiativeShort>;

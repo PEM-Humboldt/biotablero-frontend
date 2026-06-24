@@ -40,6 +40,7 @@ export function Initiatives() {
             ?.label ?? ""
         }
       />
+
       <Tabs value={currentTab} onValueChange={(e) => void handleOnChangeTab(e)}>
         <TabsList className="w-full h-auto flex *:flex-1 bg-accent p-0! m-0!">
           {[...initiativeTabs].map(([key, value]) => (

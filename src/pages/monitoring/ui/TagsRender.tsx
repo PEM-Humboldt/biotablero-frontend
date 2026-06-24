@@ -1,6 +1,6 @@
 import { cn } from "@ui/shadCN/lib/utils";
 
-export function ResourceTagsRender({
+export function TagsRender({
   tags,
   srTitle,
   className,
@@ -15,7 +15,6 @@ export function ResourceTagsRender({
 
   return (
     <section aria-label={srTitle} title={srTitle}>
-      <h5 className="sr-only">{srTitle}</h5>
       <ul className={cn("flex flex-wrap gap-2", className)}>
         {tags.map((tag) => (
           <li key={`${srTitle}_${tag}`} className="rounded text-sm px-2 py-0.5">

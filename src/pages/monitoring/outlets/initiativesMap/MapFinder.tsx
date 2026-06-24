@@ -8,14 +8,10 @@ import type {
   FeatureCollection,
   GeoJsonProperties,
   Geometry,
-  MultiPolygon,
-  Polygon,
 } from "geojson";
 
-import { ErrorsList } from "@ui/LabelingWithErrors";
-import { INITIAVIVES_MAP_GRADIENT, COUNTRY_BOUNDS } from "@config/monitoring";
+import { INITIATIVES_MAP_GRADIENT, COUNTRY_BOUNDS } from "@config/monitoring";
 
-import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { createGradientScale } from "pages/monitoring/utils/createGradientScale";
 import { type InitiativeByLocation } from "pages/monitoring/types/initiative";
 import { ChangeView } from "pages/monitoring/outlets/initiativesMap/mapFinder/ChangeView";
@@ -24,44 +20,39 @@ import {
   MapMarker,
 } from "pages/monitoring/outlets/initiativesMap/mapFinder/MapMarker";
 import { ZoomControls } from "pages/monitoring/outlets/initiativesMap/mapFinder/ZoomControls";
-import { MapLegend } from "pages/monitoring/outlets/initiativesMap/mapFinder/MapLegend";
-import { MAP_LAYERS } from "pages/monitoring/outlets/initiativesMap/layout/layers";
-import { getGeoJsonMap } from "pages/monitoring/api/services/location";
-
-interface DeptProperties {
-  geofence_name: string;
-  gid: number;
-}
-
-type DeptFeature = Feature<Polygon | MultiPolygon, DeptProperties>;
+import {
+  type MAP_LAYERS,
+  MAP_TILES,
+} from "pages/monitoring/outlets/initiativesMap/layout/layers";
+import type {
+  DeptFeature,
+  DeptProperties,
+} from "pages/monitoring/outlets/initiativesMap/types/mapFeatures";
 
 export function MapFinder({
+  tiles,
+  layer,
+  nation,
   initiatives,
+  activeFeatures,
+  leastInitiativesPerDepartment,
+  mostInitiativesPerDepartment,
 }: {
+  tiles: keyof typeof MAP_TILES;
+  layer: keyof typeof MAP_LAYERS | null;
+  nation: FeatureCollection | null;
   initiatives: InitiativeByLocation[];
+  activeFeatures: {
+    feature: Feature<Geometry, GeoJsonProperties>;
+    count: number;
+  }[];
+  leastInitiativesPerDepartment: number;
+  mostInitiativesPerDepartment: number;
 }) {
   const { departmentId, initiativeId } = useParams();
   const navigate = useNavigate();
-
-  const [errors, setErrors] = useState<string[]>([]);
   const [center, setCenter] = useState<L.LatLng | null>(null);
   const [bounds, setBounds] = useState<LatLngBoundsLiteral | null>(null);
-  const [nation, setNation] = useState<FeatureCollection | null>(null);
-  const [layer, setLayer] = useState<keyof typeof MAP_LAYERS>(0);
-
-  useEffect(() => {
-    const fetchCountryMap = async () => {
-      const res = await getGeoJsonMap();
-
-      if (isMonitoringAPIError(res)) {
-        setErrors(res.data.map((err) => err.msg));
-        return;
-      }
-      setNation(res);
-    };
-
-    void fetchCountryMap();
-  }, []);
 
   useEffect(() => {
     if (!nation || !nation.features) {
@@ -105,74 +96,19 @@ export function MapFinder({
     }
   }, [departmentId, nation, initiativeId, initiatives]);
 
-  const processedData = useMemo<
-    { feature: Feature<Geometry, GeoJsonProperties>; count: number }[]
-  >(() => {
-    if (!initiatives.length || !nation || !nation?.features) {
-      return [];
-    }
-
-    const groupedInitiatives = initiatives.reduce<Record<number, number>>(
-      (all, current) => {
-        if (!all[current.mainLocationId]) {
-          all[current.mainLocationId] = 0;
-        }
-        all[current.mainLocationId] += 1;
-        return all;
-      },
-      {},
-    );
-
-    const results = [];
-
-    for (const feature of nation.features as Feature<
-      Polygon | MultiPolygon
-    >[]) {
-      if (groupedInitiatives[feature.properties?.gid as number] > 0) {
-        results.push({
-          feature,
-          count: groupedInitiatives[feature.properties?.gid as number],
-        });
-      }
-    }
-
-    return results;
-  }, [initiatives, nation]);
-
-  const departmentsWithInitiatives = useMemo(
-    () =>
-      processedData.map(({ feature }) => {
-        const f = feature.properties as DeptProperties;
-        return { value: String(f.gid), label: f.geofence_name };
-      }),
-    [processedData],
-  );
-
-  const [min, max] = useMemo(
-    () =>
-      processedData.reduce(
-        (result, current) => {
-          if (current.count <= result[0]) {
-            result[0] = current.count;
-          }
-          if (current.count >= result[1]) {
-            result[1] = current.count;
-          }
-          return result;
-        },
-        [Infinity, 0],
-      ),
-    [processedData],
-  );
-
   const getColor = useMemo(
-    () => createGradientScale(min, max, INITIAVIVES_MAP_GRADIENT),
-    [min, max],
+    () =>
+      createGradientScale(
+        leastInitiativesPerDepartment,
+        mostInitiativesPerDepartment,
+        INITIATIVES_MAP_GRADIENT,
+      ),
+    [leastInitiativesPerDepartment, mostInitiativesPerDepartment],
   );
 
   const setDeptStyle = (feature?: Feature) => {
     const f = feature as DeptFeature;
-    const dataItem = processedData.find(
+    const dataItem = activeFeatures.find(
       (d) =>
         d.feature.properties?.geofence_name === f.properties?.geofence_name,
     );
@@ -192,7 +128,7 @@ export function MapFinder({
   const setFeatureBehavior = (feature: Feature, layer: L.Layer) => {
     const f = feature as DeptFeature;
 
-    const dataItem = processedData.find(
+    const dataItem = activeFeatures.find(
       (d) =>
         d.feature.properties?.geofence_name === f.properties?.geofence_name,
     );
@@ -214,28 +150,19 @@ export function MapFinder({
     });
   };
 
-  return errors.length > 0 ? (
-    <ErrorsList errorItems={errors} />
-  ) : (
+  return (
     <MapContainer
       bounds={bounds ?? COUNTRY_BOUNDS}
-      zoom={6}
       maxZoom={10}
-      minZoom={6}
+      minZoom={5}
       className="outline-none [&_.leaflet-interactive]:outline-none"
       zoomControl={false}
     >
       <ZoomControls />
-      <MapLegend
-        lowInitiativePerDepartment={min}
-        highInitiativePerDepartment={max}
-        departments={departmentsWithInitiatives}
-        layer={layer}
-        setLayer={setLayer}
-      />
+
       <MarkerClusterGroup
         iconCreateFunction={clusterCustomIcon}
-        maxClusterRadius={50}
+        maxClusterRadius={100}
         spiderfyOnMaxZoom={true}
         showCoverageOnHover={true}
       >
@@ -250,11 +177,11 @@ export function MapFinder({
       <ChangeView bounds={bounds ?? COUNTRY_BOUNDS} center={center} />
 
       <GeoJSON
-        key={`geojson-layer-${processedData.length}`}
+        key={`geojson-layer-${activeFeatures.length}`}
         data={
           {
             type: "FeatureCollection",
-            features: processedData.map((d) => d.feature),
+            features: activeFeatures.map((d) => d.feature),
           } as FeatureCollection<Geometry, DeptProperties>
         }
         style={setDeptStyle}
@@ -262,9 +189,9 @@ export function MapFinder({
       />
 
       <TileLayer
-        key={`tile-layer-${layer}`}
-        attribution={MAP_LAYERS[layer].attribution}
-        url={MAP_LAYERS[layer].url}
+        key={`tile-layer-${tiles}`}
+        attribution={MAP_TILES[tiles].attribution}
+        url={MAP_TILES[tiles].url}
       />
     </MapContainer>
   );
