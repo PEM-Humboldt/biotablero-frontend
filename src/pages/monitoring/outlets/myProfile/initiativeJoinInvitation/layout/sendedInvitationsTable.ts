@@ -32,7 +32,7 @@ export const sendedInvitationsTableStructure: ODataColumn<SendedJoinInitiativeIn
       },
     },
     {
-      name: "Mensaje",
+      name: "Mensaje personalizado",
       source: "message",
       type: "text",
       sortBy: true,

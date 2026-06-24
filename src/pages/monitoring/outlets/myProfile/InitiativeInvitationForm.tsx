@@ -34,6 +34,7 @@ export function InitiativeInvitationForm({
   const [isLoading, setIsLoading] = useState(false);
   const [guestEmails, setGuestEmails] = useState<string>("");
   const [customMessage, setCustomMessage] = useState<string>("");
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [formData, setFormData] = useState<JoinInitiativeDataForm>(
     makeInitialInfo(initiativeId),
   );
@@ -153,6 +154,7 @@ export function InitiativeInvitationForm({
     }
 
     handleFormReset();
+    setRefreshTrigger((old) => old + 1);
     setMessage({ text: uiText.success, error: false });
     setIsLoading(false);
   };
@@ -250,7 +252,10 @@ export function InitiativeInvitationForm({
       <h4 className="text-primary m-0! mb-2 text-lg font-semibold">
         {uiText.sendedInvitationsTitle}
       </h4>
-      <SendedInvitations initiativeId={initiativeId} />
+      <SendedInvitations
+        initiativeId={initiativeId}
+        refreshTrigger={refreshTrigger}
+      />
     </div>
   );
 }

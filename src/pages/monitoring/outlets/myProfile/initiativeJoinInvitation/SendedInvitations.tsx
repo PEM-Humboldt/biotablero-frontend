@@ -11,7 +11,13 @@ import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import type { SendedJoinInitiativeInvitation } from "pages/monitoring/types/userJoinRequest";
 import { sendedInvitationsTableStructure } from "pages/monitoring/outlets/myProfile/initiativeJoinInvitation/layout/sendedInvitationsTable";
 
-export function SendedInvitations({ initiativeId }: { initiativeId: number }) {
+export function SendedInvitations({
+  initiativeId,
+  refreshTrigger,
+}: {
+  initiativeId: number;
+  refreshTrigger: number;
+}) {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [sendedInvitations, setSendedInvitations] = useState<
@@ -42,7 +48,7 @@ export function SendedInvitations({ initiativeId }: { initiativeId: number }) {
     };
 
     void fetchJoinInvitations();
-  }, [initiativeId, currentPage]);
+  }, [initiativeId, currentPage, refreshTrigger]);
 
   return isLoading ? (
     <LoadingDiv />
