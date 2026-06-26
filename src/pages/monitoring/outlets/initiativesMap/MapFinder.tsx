@@ -82,7 +82,7 @@ export function MapFinder({
 
     if (initiativeId && initiatives.length > 0) {
       const selectedInitiative = initiatives.find(
-        (i) => String(i.initiativeId) === initiativeId,
+        (i) => String(i.id) === initiativeId,
       );
 
       if (selectedInitiative) {
@@ -167,10 +167,7 @@ export function MapFinder({
         showCoverageOnHover={true}
       >
         {initiatives.map((initiative) => (
-          <MapMarker
-            key={`marker_${initiative.initiativeId}`}
-            initiative={initiative}
-          />
+          <MapMarker key={`marker_${initiative.id}`} initiative={initiative} />
         ))}
       </MarkerClusterGroup>
 

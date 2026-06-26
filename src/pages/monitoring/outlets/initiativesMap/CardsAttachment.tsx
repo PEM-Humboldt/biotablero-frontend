@@ -166,8 +166,8 @@ export function CardsAttachment() {
                     initiatives.length > 0 &&
                     initiatives.map((initiative) => (
                       <DataSheetSmallCard
-                        key={`initiativesSmallCard_${initiative.initiativeName}`}
-                        title={initiative.initiativeName}
+                        key={`initiativesSmallCard_${initiative.name}`}
+                        title={initiative.name}
                         tags={(initiative.tags ?? []).map((t) => t.tag)}
                         bottonLeftInfo={
                           initiative.creationDate
@@ -175,7 +175,7 @@ export function CardsAttachment() {
                             : new Date()
                         }
                         link={{
-                          href: `/Monitoreo/Departamento/${departmentId}/${initiative.initiativeId}`,
+                          href: `/Monitoreo/Departamento/${departmentId}/${initiative.id}`,
                           icon: PlusCircle,
                           label:
                             uiText.cardsAttachment.initiatives.gotoBtn.label,

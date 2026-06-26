@@ -50,7 +50,7 @@ export function DataSheetAndNavigation({
 
   const currentInitiative = useMemo(() => {
     const foundInitiative = initiatives.find(
-      (i) => i.initiativeId === Number(initiativeId),
+      (i) => i.id === Number(initiativeId),
     );
 
     return foundInitiative ?? null;
@@ -58,7 +58,7 @@ export function DataSheetAndNavigation({
 
   const { statsScope, title } = useMemo(() => {
     if (currentInitiative) {
-      const scopeName = currentInitiative.initiativeName;
+      const scopeName = currentInitiative.name;
       return {
         statsScope: scopeName,
         title: uiText.dataSheet.scope.initiativeDescription(scopeName),
