@@ -10,7 +10,7 @@ import { ImgValidator } from "@utils/imgValidator";
 import { inputLengthCount, inputWarnColor } from "@utils/ui";
 import { StrValidator } from "@utils/strValidator";
 import {
-  INITIATIVES_IMG_ALLOWED_FORMATS,
+  MONITORING_IMG_ALLOWED_FORMATS,
   TERRITORY_STORY_IMG_DESCRIPTION_MAX_LENGTH,
   TERRITORY_STORY_IMG_MAX_FILE_SIZE,
   TERRITORY_STORY_IMG_MAX_HEIGHT,
@@ -91,7 +91,7 @@ export function ImagesInput({
     const imageToValidate = new ImgValidator(fileInput, setIsLoading);
     const [file, errors] = (
       await imageToValidate
-        .isFormat(INITIATIVES_IMG_ALLOWED_FORMATS)
+        .isFormat(MONITORING_IMG_ALLOWED_FORMATS)
         .maxSize(TERRITORY_STORY_IMG_MAX_FILE_SIZE)
         .validateDimensions({
           minWidth: TERRITORY_STORY_IMG_MIN_WIDTH,

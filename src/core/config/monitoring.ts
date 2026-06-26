@@ -2,6 +2,8 @@ import type { ImageMimeType } from "@appTypes/formats";
 import type { ODataParams } from "@appTypes/odata";
 import type { LatLngBoundsLiteral } from "leaflet";
 
+export const LOCALE = "es-ES";
+
 // Logs
 export const LOG_RECORDS_PER_PAGE = 20; // registrys on the logs summary
 
@@ -18,6 +20,16 @@ export const INITIAVIVE_SHORTNAME_MAX_LENGTH = 120;
 export const INITIAVIVE_DESCRIPTION_MAX_LENGTH = 300;
 export const INITIAVIVE_OBJECTIVE_MAX_LENGTH = 1000;
 export const INITIAVIVE_INFLUENCE_MAX_LENGTH = 1000;
+
+export const INITIATIVE_IMG_BANNER_WIDTH_MAX = 1600;
+export const INITIATIVE_IMG_BANNER_WIDTH_MIN = 200;
+export const INITIATIVE_IMG_BANNER_HEIGHT_MAX = 1600;
+export const INITIATIVE_IMG_BANNER_HEIGHT_MIN = 200;
+
+export const INITIATIVE_IMG_GENERAL_WIDTH_MAX = 1600;
+export const INITIATIVE_IMG_GENERAL_WIDTH_MIN = 200;
+export const INITIATIVE_IMG_GENERAL_HEIGHT_MAX = 1600;
+export const INITIATIVE_IMG_GENERAL_HEIGHT_MIN = 200;
 
 export const INITIATIVE_LOCATIONS_MAX_AMOUNT = 0; // 0 for infinity
 export const INITIATIVE_LOCATIONS_MIN_AMOUNT = 1;
@@ -39,7 +51,7 @@ export const INITIATIVE_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS: ODataParams = {
   orderby: "name asc",
 };
 
-export const INITIATIVES_IMG_ALLOWED_FORMATS: ImageMimeType[] = [
+export const MONITORING_IMG_ALLOWED_FORMATS: ImageMimeType[] = [
   "image/jpeg",
   "image/png",
   "image/webp",
