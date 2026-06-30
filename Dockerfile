@@ -16,7 +16,11 @@ RUN pnpm build
 # Release stage
 FROM node:18.15-slim as release
 
+WORKDIR /app
 COPY --from=build /app/build ./build
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN sed -i 's/\r$//' /docker-entrypoint.sh && chmod +x /docker-entrypoint.sh
 RUN npm install -g serve@~13.0.0
 EXPOSE 5000
+ENTRYPOINT [ "/docker-entrypoint.sh" ]
 CMD [ "serve", "-p", "5000", "-s", "build" ]

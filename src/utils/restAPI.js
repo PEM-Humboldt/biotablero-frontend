@@ -1,4 +1,5 @@
 import axios, { CancelToken } from 'axios';
+import { getEnv } from './getEnv';
 
 class RestAPI {
   /**
@@ -656,10 +657,10 @@ class RestAPI {
     const config = {
       ...options,
       headers: {
-        Authorization: `apiKey ${process.env.REACT_APP_BACKEND_KEY}`,
+        Authorization: `apiKey ${getEnv('REACT_APP_BACKEND_KEY')}`,
       },
     };
-    return axios.get(`${process.env.REACT_APP_BACKEND_URL}/${endpoint}`, config)
+    return axios.get(`${getEnv('REACT_APP_BACKEND_URL')}/${endpoint}`, config)
       .then((res) => {
         if (completeRes) {
           return res;
@@ -686,10 +687,10 @@ class RestAPI {
   static makePostRequest(endpoint, requestBody) {
     const config = {
       headers: {
-        Authorization: `apiKey ${process.env.REACT_APP_BACKEND_KEY}`,
+        Authorization: `apiKey ${getEnv('REACT_APP_BACKEND_KEY')}`,
       },
     };
-    return axios.post(`${process.env.REACT_APP_BACKEND_URL}/${endpoint}`, requestBody, config)
+    return axios.post(`${getEnv('REACT_APP_BACKEND_URL')}/${endpoint}`, requestBody, config)
       .then((res) => res.data)
       .catch((error) => {
         let message = 'Bad POST response. Try later';

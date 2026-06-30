@@ -16,6 +16,7 @@ import "cbm-dashboard/dist/bundle.css";
 import "indicators/dist/bundle.css";
 
 import isFlagEnabled from "utils/isFlagEnabled";
+import { getEnv } from "utils/getEnv";
 
 import { LogosConfig, Names } from "types/layoutTypes";
 
@@ -129,7 +130,7 @@ const App: React.FunctionComponent = () => {
     );
   };
 
-  const yandexMetrikaId = Number(process.env.REACT_APP_YM_ID);
+  const yandexMetrikaId = Number(getEnv("REACT_APP_YM_ID"));
 
   return (
     <AppContext.Provider value={{ user }}>

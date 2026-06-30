@@ -5,6 +5,7 @@ Dockerfile
 .gitignore
 *.md
 .git
+.env
 
 .yarn/*
 !.yarn/releases

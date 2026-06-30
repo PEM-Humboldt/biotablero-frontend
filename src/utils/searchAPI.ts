@@ -1,4 +1,5 @@
 import axios, { CancelTokenSource } from "axios";
+import { getEnv } from "utils/getEnv";
 import { SCIHF, ForestLP } from "pages/search/types/forest";
 import { cfData } from "pages/search/types/compensationFactor";
 import {
@@ -578,11 +579,11 @@ class SearchAPI {
     const config = {
       ...options,
       headers: {
-        Authorization: `apiKey ${process.env.REACT_APP_BACKEND_KEY}`,
+        Authorization: `apiKey ${getEnv("REACT_APP_BACKEND_KEY")}`,
       },
     };
     return axios
-      .get(`${process.env.REACT_APP_BACKEND_URL}/${endpoint}`, config)
+      .get(`${getEnv("REACT_APP_BACKEND_URL")}/${endpoint}`, config)
       .then((res) => {
         if (completeRes) {
           return res;

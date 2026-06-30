@@ -1,6 +1,7 @@
 import axios, { CancelTokenSource } from "axios";
 import { toMultipolygonWKT } from "utils/transformations";
 import { Polygon } from "pages/search/types/drawer";
+import { getEnv } from "utils/getEnv";
 
 class biabAPI {
   /**
@@ -81,7 +82,7 @@ class biabAPI {
       ...options,
     };
     return axios
-      .get(`${process.env.REACT_APP_BACKEND_BIAB_URL}/${endpoint}`, config)
+      .get(`${getEnv("REACT_APP_BACKEND_BIAB_URL")}/${endpoint}`, config)
       .then((res) => {
         if (completeRes) {
           return res;
@@ -114,7 +115,7 @@ class biabAPI {
     };
     return axios
       .post(
-        `${process.env.REACT_APP_BACKEND_BIAB_URL}/${endpoint}`,
+        `${getEnv("REACT_APP_BACKEND_BIAB_URL")}/${endpoint}`,
         requestBody,
         config
       )

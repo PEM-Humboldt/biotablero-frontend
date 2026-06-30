@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getEnv } from './getEnv';
 
 class GeoServerAPI {
   /**
@@ -65,7 +66,7 @@ class GeoServerAPI {
    * Request the base layer 'Regiones_geb'
    */
   static getRequestURL() {
-    return `${process.env.REACT_APP_GEOSERVER_URL}`;
+    return `${getEnv('REACT_APP_GEOSERVER_URL')}`;
   }
 
   /**
