@@ -27,7 +27,7 @@ export type InitiativeByLocation = {
   name: string;
   mainLocationId: number;
   coordinate: [number, number];
-  locations?: LocationCompleteInfo[];
+  locations: LocationCompleteInfo[];
   creationDate?: string;
 };
 

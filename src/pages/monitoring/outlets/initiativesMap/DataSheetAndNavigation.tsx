@@ -94,7 +94,7 @@ export function DataSheetAndNavigation({
           >
             {uiText.dataSheet.title}
           </h4>
-          <div className="space-x-2">
+          <div>
             {(departmentId || initiativeId) && (
               <Button
                 className="p-0 text-primary-foreground"
@@ -165,7 +165,7 @@ export function DataSheetAndNavigation({
                 }
                 size="sm"
                 variant="outline"
-                className="mt-1"
+                className="mt-1 ml-2"
                 title={uiText.dataSheet.goToInitiativeBtn.title}
                 aria-label={uiText.dataSheet.goToInitiativeBtn.sr}
               >
