@@ -66,10 +66,10 @@ export const INITIATIVES_MAP_PADDING_LG = {
   west: 300,
 };
 export const INITIATIVES_MAP_PADDING_SM = {
-  south: 100,
-  north: 0,
-  east: 20,
-  west: 20,
+  south: 50,
+  north: 50,
+  east: 0,
+  west: 50,
 };
 export const INITIATIVES_MAP_GRADIENT = [
   { color: "#FDEBC4", position: 0 },
@@ -151,7 +151,7 @@ export const TAG_COLORS = [
 ];
 
 // Tag admin
-export const TAG_NAME_MAX_LENGTH = 40;
+export const TAG_NAME_MAX_LENGTH = 100;
 export const TAG_URL_MAX_LENGTH = 150;
 export const TAG_RECORDS_PER_PAGE = 20;
 

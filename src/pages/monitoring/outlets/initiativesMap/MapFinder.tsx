@@ -152,7 +152,7 @@ export function MapFinder({
 
   return (
     <MapContainer
-      bounds={bounds ?? COUNTRY_BOUNDS}
+      bounds={COUNTRY_BOUNDS}
       maxZoom={10}
       minZoom={5}
       className="outline-none [&_.leaflet-interactive]:outline-none"
@@ -162,7 +162,7 @@ export function MapFinder({
 
       <MarkerClusterGroup
         iconCreateFunction={clusterCustomIcon}
-        maxClusterRadius={100}
+        maxClusterRadius={25}
         spiderfyOnMaxZoom={true}
         showCoverageOnHover={true}
       >
