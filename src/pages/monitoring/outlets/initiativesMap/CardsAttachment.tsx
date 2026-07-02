@@ -164,26 +164,44 @@ export function CardsAttachment() {
                 <div className="bg-grey-light rounded-b-lg p-3 space-y-3 border border-primary/50 h-auto max-h-60 lg:max-h-160 overflow-y-auto scrollbar-custom">
                   {!initiativeId &&
                     initiatives.length > 0 &&
-                    initiatives.map((initiative) => (
-                      <DataSheetSmallCard
-                        key={`initiativesSmallCard_${initiative.name}`}
-                        title={initiative.name}
-                        tags={(initiative.tags ?? []).map((t) => t.tag)}
-                        bottonLeftInfo={
-                          initiative.creationDate
-                            ? new Date(initiative.creationDate)
-                            : new Date()
-                        }
-                        link={{
-                          href: `/Monitoreo/Departamento/${departmentId}/${initiative.id}`,
-                          icon: PlusCircle,
-                          label:
-                            uiText.cardsAttachment.initiatives.gotoBtn.label,
-                          title:
-                            uiText.cardsAttachment.initiatives.gotoBtn.title,
-                        }}
-                      />
-                    ))}
+                    initiatives.map((initiative) => {
+                      const initiativeLocations =
+                        initiative?.locations !== undefined
+                          ? initiative.locations
+                              .map((l) => {
+                                const municipality =
+                                  l.location.name !== null
+                                    ? l.location.name
+                                    : "";
+                                const locallity = l.locality
+                                  ? `, ${l.locality}`
+                                  : "";
+
+                                return `${municipality}${locallity}`;
+                              })
+                              .join(" / ")
+                          : "";
+                      return (
+                        <DataSheetSmallCard
+                          key={`initiativesSmallCard_${initiative.name}`}
+                          title={initiative.name}
+                          location={initiativeLocations}
+                          bottonLeftInfo={
+                            initiative.creationDate
+                              ? new Date(initiative.creationDate)
+                              : new Date()
+                          }
+                          link={{
+                            href: `/Monitoreo/Departamento/${departmentId}/${initiative.id}`,
+                            icon: PlusCircle,
+                            label:
+                              uiText.cardsAttachment.initiatives.gotoBtn.label,
+                            title:
+                              uiText.cardsAttachment.initiatives.gotoBtn.title,
+                          }}
+                        />
+                      );
+                    })}
                   {initiativeId &&
                     indicators.length > 0 &&
                     indicators.map((indicator) => (
