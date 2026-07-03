@@ -24,7 +24,18 @@ export type InitiativeMonitoringEvent = {
   value: number;
 };
 
-// TODO: Preguntarle a César G. por la def de este tipo
+export type InitiativeRelated = {
+  id: number;
+  name: string;
+  shortName: string;
+  description: string;
+  creationDate: string;
+  coordinate: [number, number];
+  polygonArea: number;
+  mainLocationId: number;
+  enabled: boolean;
+};
+
 export type EcosystemsStatsType = {
   ecosystemsInvolved: { id: number; name: string }[];
 };

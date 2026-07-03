@@ -9,6 +9,7 @@ import backgroundImage from "pages/home/assets/biotablero-slider.webp";
 import {
   Binoculars,
   GoalIcon,
+  Handshake,
   LinkIcon,
   type LucideIcon,
   MailIcon,
@@ -16,6 +17,7 @@ import {
   SquareUser,
 } from "lucide-react";
 import { TagsRender } from "pages/monitoring/ui/TagsRender";
+import { RelatedInitiatives } from "pages/monitoring/outlets/initiatives/profile/RelatedInitiatives";
 
 export function Profile() {
   const { initiativeInfo } = useInitiativeCTX();
@@ -59,7 +61,7 @@ export function Profile() {
               ? { backgroundImage: `url('${initiativeInfo?.bannerUrl}')` }
               : {}),
             backgroundSize: "cover",
-            backgroundPosition: "center",
+            backgroundPosition: "left center",
           }}
         >
           <div className="absolute top-2 md:top-6 right-2 md:right-6">
@@ -68,7 +70,7 @@ export function Profile() {
         </div>
 
         <main className="w-full space-y-4 lg:space-y-8">
-          <div className="flex gap-2 max-w-[1200px] mx-auto pt-4 md:pt-8 px-4 md:px-8">
+          <div className="flex gap-2 max-w-[1200px] mx-auto mt-4 py-4 md:py-8 px-4 md:px-8">
             <Binoculars
               className="size-[34px] text-accent min-w-10"
               strokeWidth={1.5}
@@ -101,9 +103,14 @@ export function Profile() {
               <Stats />
             </header>
 
-            <div className="flex-1 space-y-4 px-2 [&_h4]:m-0 self-end">
+            <div className="flex-1 space-y-4 px-2 lg:px-4 [&_h4]:m-0 self-end">
               {initiativeInfo.contacts?.map((contact) => (
-                <Button variant="outline" className="p-0" asChild>
+                <Button
+                  key={`contactInfo_${contact.email}`}
+                  variant="outline"
+                  className="p-0"
+                  asChild
+                >
                   <a href={`mailto:${contact.email}`}>
                     <MailIcon />
                     Escríbenos
@@ -121,9 +128,10 @@ export function Profile() {
                 <h4>Convenios vinculados</h4>
                 {politicalContextTags.map((t) => (
                   <a
+                    key={`politicalContextTag_${t.tag.id}`}
                     href={t.tag.url}
                     target="_blank"
-                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-sm whitespace-nowrap"
+                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-sm whitespace-nowrap hover:text-accent hover:underline"
                   >
                     <LinkIcon className="size-3 text-accent" />
                     {t.tag.name}
@@ -158,6 +166,17 @@ export function Profile() {
             text={initiativeInfo.objective}
             Icon={GoalIcon}
           />
+
+          <div className="flex gap-2 max-w-[1200px] mx-auto px-4 pb-4 md:px-8 md:pb-8">
+            <Handshake
+              className="size-[34px] -translate-y-1 text-accent min-w-10"
+              strokeWidth={1.5}
+            />
+            <div className="pb-2 lg:pb-4">
+              <h4 className="text-3xl font-bold">Iniciativas Relacionadas</h4>
+              <RelatedInitiatives />
+            </div>
+          </div>
         </main>
       </div>
       <div className="bg-accent h-full min-h-[300px] w-full min-w-[250px] md:max-w-[500px]">
@@ -187,10 +206,12 @@ function TextBlock({
         className="size-[34px] -translate-y-1 text-accent min-w-10"
         strokeWidth={1.5}
       />
-      <div>
+      <div className="pb-2 lg:pb-4 border-b border-grey-light">
         <h4 className="text-3xl font-bold">{title}</h4>
-        {parragraphs.map((par) => (
-          <p className="max-w-[75ch]">{par}</p>
+        {parragraphs.map((par, i) => (
+          <p key={`title_${i}`} className="max-w-[75ch]">
+            {par}
+          </p>
         ))}
       </div>
     </div>

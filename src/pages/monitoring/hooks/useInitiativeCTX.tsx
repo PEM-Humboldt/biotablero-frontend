@@ -61,8 +61,8 @@ export function CurrentInitiativeCTX({
 
     const initiativeInfo = await getInitiative(initiativeId);
 
+    setIsLoading(false);
     if (isMonitoringAPIError(initiativeInfo)) {
-      setIsLoading(false);
       return initiativeInfo.data[0].msg;
     }
 

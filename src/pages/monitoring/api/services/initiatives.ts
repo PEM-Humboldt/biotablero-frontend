@@ -19,6 +19,7 @@ import type { JoinInitiativeDataForm } from "pages/monitoring/types/userJoinRequ
 import type { RoleInInitiative } from "pages/monitoring/types/catalog";
 import type {
   InitiativeMonitoringEvent,
+  InitiativeRelated,
   InitiativeStats,
   StatsResponseMap,
   StatsType,
@@ -407,6 +408,15 @@ export async function getOverviewStats<T extends StatsType>(
   return res;
 }
 
+/**
+ * Retrieves specific metrics and statistics for a single initiative.
+ *
+ * @param initiativeId - The identifier of the specific initiative to isolate its metrics.
+ *
+ * @returns A `Promise` that resolves to:
+ * - On success: An `InitiativeStats` object containing the data.
+ * - On failure: An `ApiRequestError` object.
+ */
 export async function getInitiativeStats(initiativeId: number) {
   const res = await monitoringAPI<InitiativeStats>({
     type: "get",
@@ -416,6 +426,16 @@ export async function getInitiativeStats(initiativeId: number) {
   return res;
 }
 
+/**
+ * Retrieves the tracking events of a specific initiative, with an option to filter by year.
+ *
+ * @param initiativeId - The identifier of the initiative whose events are being requested.
+ * @param year - Optional. The specific calendar year to filter the event history.
+ *
+ * @returns A `Promise` that resolves to:
+ * - On success: An array of `InitiativeMonitoringEvent` objects.
+ * - On failure: An `ApiRequestError` object.
+ */
 export async function getInitiativeMonitoringEvents(
   initiativeId: number,
   year?: number,
@@ -424,6 +444,22 @@ export async function getInitiativeMonitoringEvents(
   const res = await monitoringAPI<InitiativeMonitoringEvent[]>({
     type: "get",
     endpoint: `InitiativeStats/GetMonitoringEvents/${initiativeId}${fetchFromYear}`,
+  });
+
+  return res;
+}
+
+/**
+ * Retrieves a list of initiatives that are related or linked within the ecosystem.
+ *
+ * @returns A `Promise` that resolves to:
+ * - On success: An array of `InitiativeRelated` objects.
+ * - On failure: An `ApiRequestError` object.
+ */
+export async function getRelatedInitiatives() {
+  const res = await monitoringAPI<InitiativeRelated[]>({
+    type: "get",
+    endpoint: "Initiative/Related",
   });
 
   return res;
