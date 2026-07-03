@@ -4,6 +4,15 @@ import { Stats } from "pages/monitoring/outlets/initiatives/profile/Stats";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { JoinInitiativeRequestButton } from "pages/monitoring/ui/JoinInitiativeRequestButton";
 
+import backgroundImage from "pages/home/assets/biotablero-slider.webp";
+import {
+  Binoculars,
+  GoalIcon,
+  type LucideIcon,
+  MapPinned,
+  SquareUser,
+} from "lucide-react";
+
 export function Profile() {
   const { initiativeInfo } = useInitiativeCTX();
 
@@ -20,15 +29,13 @@ export function Profile() {
 
   const initiativeLocations = initiativeInfo.locations
     .map((l) => {
-      const municipality =
-        l.location.name !== null ? `, ${l.location.name}` : "";
-      const locality = l.locality !== null ? ` - ${l.locality}` : "";
-      const department =
-        l.location?.parent !== undefined ? l.location.parent.name : "";
+      const municipality = l.location.name ? `, ${l.location.name}` : "";
+      const locality = l.locality ? ` - ${l.locality}` : "";
+      const department = l.location?.parent ? l.location.parent.name : "";
 
       return `${department}${municipality}${locality}`;
     })
-    .join(" / ");
+    .join(" | ");
 
   return (
     <div className="flex flex-col h-full md:flex-row-reverse">
@@ -48,124 +55,100 @@ export function Profile() {
           </div>
         </div>
 
-        <main className="w-full max-w-[800px] mx-auto p-4 md:p-8">
-          <header>
-            <h3 className="flex flex-col text-5xl uppercase">
-              {initiativeInfo.name}
-              <abbr
-                title={`Nombre corto de ${initiativeInfo.name}`}
-                className="text-lg normal-case font-normal no-underline"
-              >
+        <main className="w-full space-y-4 lg:space-y-8">
+          <div className="flex gap-2 max-w-[1200px] mx-auto p-4 md:p-8">
+            <Binoculars
+              className="size-12 text-accent min-w-10"
+              strokeWidth={1.5}
+            />
+
+            <header>
+              <h3 className="flex flex-col text-5xl uppercase m-0">
                 {initiativeInfo.shortName}
-              </abbr>
-            </h3>
+                <div className="text-lg normal-case font-normal no-underline">
+                  {initiativeInfo.name}
+                </div>
+              </h3>
 
-            <div title="Personas que hacen parte de la iniciativa">
-              {initiativeInfo.users
-                .map((u) => u.externalData.fullName)
-                .join(", ")}
-            </div>
+              <div className="flex flex-col text-grey-dark">
+                <div title="Participantes">
+                  {initiativeInfo.users
+                    .map((u) => u.externalData.fullName)
+                    .join(", ")}
+                </div>
+                <div>
+                  <time title="Fecha de registro" dateTime={datetime}>
+                    Desde {renderDate}
+                  </time>{" "}
+                  <address title="Ubicación" className="not-italic inline">
+                    // {initiativeLocations}
+                  </address>
+                </div>
+              </div>
 
-            <div>
-              <time
-                title="Fecha de registro de la iniciativa"
-                dateTime={datetime}
-              >
-                Desde {renderDate}
-              </time>{" "}
-              /{" "}
-              <address
-                title="Ubicación de la iniciativa"
-                className="not-italic inline"
-              >
-                {initiativeLocations}
-              </address>
-            </div>
+              <Stats />
+            </header>
+          </div>
 
-            <Stats />
-          </header>
-          {Object.entries(initiativeInfo ?? {}).map(([k, v]) => (
-            <div key={k}>
-              <span>{k}: </span>
-              <span className="font-bold">
-                {typeof v === "object" ? JSON.stringify(v, null, 2) : String(v)}
-              </span>
-            </div>
-          ))}
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam a
-            fringilla sem. Duis lobortis ante vitae arcu faucibus suscipit. In
-            sollicitudin felis hendrerit facilisis mattis. Proin elementum
-            molestie purus, non aliquam urna elementum at. Duis lobortis porta
-            ornare. Vivamus vitae odio in urna aliquet porta vitae non massa.
-            Curabitur dui dolor, mattis mollis odio ac, pharetra convallis
-            ligula. Ut tellus sem, porttitor eu nisi vitae, mollis aliquam
-            risus. Pellentesque et venenatis sem. Vestibulum faucibus tincidunt
-            massa a feugiat. Sed gravida tristique vestibulum. Maecenas feugiat
-            velit sit amet magna scelerisque rhoncus. Nulla tortor quam,
-            fringilla vitae iaculis eget, consequat eu lectus. Nunc purus lorem,
-            mollis a fermentum id, vehicula ac sapien. Ut sed nunc tellus.{" "}
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam a
-            fringilla sem. Duis lobortis ante vitae arcu faucibus suscipit. In
-            sollicitudin felis hendrerit facilisis mattis. Proin elementum
-            molestie purus, non aliquam urna elementum at. Duis lobortis porta
-            ornare. Vivamus vitae odio in urna aliquet porta vitae non massa.
-            Curabitur dui dolor, mattis mollis odio ac, pharetra convallis
-            ligula. Ut tellus sem, porttitor eu nisi vitae, mollis aliquam
-            risus. Pellentesque et venenatis sem. Vestibulum faucibus tincidunt
-            massa a feugiat. Sed gravida tristique vestibulum. Maecenas feugiat
-            velit sit amet magna scelerisque rhoncus. Nulla tortor quam,
-            fringilla vitae iaculis eget, consequat eu lectus. Nunc purus lorem,
-            mollis a fermentum id, vehicula ac sapien. Ut sed nunc tellus.{" "}
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam a
-            fringilla sem. Duis lobortis ante vitae arcu faucibus suscipit. In
-            sollicitudin felis hendrerit facilisis mattis. Proin elementum
-            molestie purus, non aliquam urna elementum at. Duis lobortis porta
-            ornare. Vivamus vitae odio in urna aliquet porta vitae non massa.
-            Curabitur dui dolor, mattis mollis odio ac, pharetra convallis
-            ligula. Ut tellus sem, porttitor eu nisi vitae, mollis aliquam
-            risus. Pellentesque et venenatis sem. Vestibulum faucibus tincidunt
-            massa a feugiat. Sed gravida tristique vestibulum. Maecenas feugiat
-            velit sit amet magna scelerisque rhoncus. Nulla tortor quam,
-            fringilla vitae iaculis eget, consequat eu lectus. Nunc purus lorem,
-            mollis a fermentum id, vehicula ac sapien. Ut sed nunc tellus.{" "}
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam a
-            fringilla sem. Duis lobortis ante vitae arcu faucibus suscipit. In
-            sollicitudin felis hendrerit facilisis mattis. Proin elementum
-            molestie purus, non aliquam urna elementum at. Duis lobortis porta
-            ornare. Vivamus vitae odio in urna aliquet porta vitae non massa.
-            Curabitur dui dolor, mattis mollis odio ac, pharetra convallis
-            ligula. Ut tellus sem, porttitor eu nisi vitae, mollis aliquam
-            risus. Pellentesque et venenatis sem. Vestibulum faucibus tincidunt
-            massa a feugiat. Sed gravida tristique vestibulum. Maecenas feugiat
-            velit sit amet magna scelerisque rhoncus. Nulla tortor quam,
-            fringilla vitae iaculis eget, consequat eu lectus. Nunc purus lorem,
-            mollis a fermentum id, vehicula ac sapien. Ut sed nunc tellus.{" "}
-          </p>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam a
-            fringilla sem. Duis lobortis ante vitae arcu faucibus suscipit. In
-            sollicitudin felis hendrerit facilisis mattis. Proin elementum
-            molestie purus, non aliquam urna elementum at. Duis lobortis porta
-            ornare. Vivamus vitae odio in urna aliquet porta vitae non massa.
-            Curabitur dui dolor, mattis mollis odio ac, pharetra convallis
-            ligula. Ut tellus sem, porttitor eu nisi vitae, mollis aliquam
-            risus. Pellentesque et venenatis sem. Vestibulum faucibus tincidunt
-            massa a feugiat. Sed gravida tristique vestibulum. Maecenas feugiat
-            velit sit amet magna scelerisque rhoncus. Nulla tortor quam,
-            fringilla vitae iaculis eget, consequat eu lectus. Nunc purus lorem,
-            mollis a fermentum id, vehicula ac sapien. Ut sed nunc tellus.{" "}
-          </p>
+          <div
+            className="relative w-full h-[120px] md:h-[260px] bg-primary bg-cover bg-center"
+            style={{ backgroundImage: `url('${backgroundImage}')` }}
+          >
+            <div className="absolute inset-0 bg-primary mix-blend-color" />
+            graph
+          </div>
+
+          <TextBlock
+            title="¿Quiénes somos?"
+            text={initiativeInfo.description}
+            Icon={SquareUser}
+          />
+
+          <TextBlock
+            title="¿Dónde estamos?"
+            text={initiativeInfo.baseline}
+            Icon={MapPinned}
+          />
+
+          <TextBlock
+            title="¿Cuál es nuestro objetivo?"
+            text={initiativeInfo.objective}
+            Icon={GoalIcon}
+          />
         </main>
       </div>
       <div className="bg-accent h-full min-h-[300px] w-full min-w-[250px] md:max-w-[500px]">
         mapa
+      </div>
+    </div>
+  );
+}
+
+function TextBlock({
+  title,
+  text,
+  Icon,
+}: {
+  title: string;
+  text?: string;
+  Icon: LucideIcon;
+}) {
+  if (!text) {
+    return null;
+  }
+
+  const parragraphs = text.split("\n");
+  return (
+    <div className="flex gap-2 max-w-[1200px] mx-auto px-4 md:px-8">
+      <Icon
+        className="size-[34px] -translate-y-1 text-accent min-w-10"
+        strokeWidth={1.5}
+      />
+      <div>
+        <h4 className="text-3xl font-bold">{title}</h4>
+        {parragraphs.map((par) => (
+          <p className="max-w-[75ch]">{par}</p>
+        ))}
       </div>
     </div>
   );
