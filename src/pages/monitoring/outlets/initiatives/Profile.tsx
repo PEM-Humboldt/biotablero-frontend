@@ -3,15 +3,19 @@ import { LOCALE } from "@config/monitoring";
 import { Stats } from "pages/monitoring/outlets/initiatives/profile/Stats";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { JoinInitiativeRequestButton } from "pages/monitoring/ui/JoinInitiativeRequestButton";
+import { Button } from "@ui/shadCN/component/button";
 
 import backgroundImage from "pages/home/assets/biotablero-slider.webp";
 import {
   Binoculars,
   GoalIcon,
+  LinkIcon,
   type LucideIcon,
+  MailIcon,
   MapPinned,
   SquareUser,
 } from "lucide-react";
+import { TagsRender } from "pages/monitoring/ui/TagsRender";
 
 export function Profile() {
   const { initiativeInfo } = useInitiativeCTX();
@@ -37,6 +41,14 @@ export function Profile() {
     })
     .join(" | ");
 
+  const ecosystems = initiativeInfo.tags
+    .filter((t) => t.tag.category.name === "Ecosystem")
+    .map((t) => t.tag.name);
+
+  const politicalContextTags = initiativeInfo.tags.filter(
+    (t) => t.tag.category.name === "PoliticalContext",
+  );
+
   return (
     <div className="flex flex-col h-full md:flex-row-reverse">
       <div className="w-full">
@@ -56,13 +68,13 @@ export function Profile() {
         </div>
 
         <main className="w-full space-y-4 lg:space-y-8">
-          <div className="flex gap-2 max-w-[1200px] mx-auto p-4 md:p-8">
+          <div className="flex gap-2 max-w-[1200px] mx-auto pt-4 md:pt-8 px-4 md:px-8">
             <Binoculars
-              className="size-12 text-accent min-w-10"
+              className="size-[34px] text-accent min-w-10"
               strokeWidth={1.5}
             />
 
-            <header>
+            <header className="flex-3">
               <h3 className="flex flex-col text-5xl uppercase m-0">
                 {initiativeInfo.shortName}
                 <div className="text-lg normal-case font-normal no-underline">
@@ -70,7 +82,7 @@ export function Profile() {
                 </div>
               </h3>
 
-              <div className="flex flex-col text-grey-dark">
+              <div className="flex flex-col mb-4 text-grey-dark">
                 <div title="Participantes">
                   {initiativeInfo.users
                     .map((u) => u.externalData.fullName)
@@ -88,6 +100,37 @@ export function Profile() {
 
               <Stats />
             </header>
+
+            <div className="flex-1 space-y-4 px-2 [&_h4]:m-0 self-end">
+              {initiativeInfo.contacts?.map((contact) => (
+                <Button variant="outline" className="p-0" asChild>
+                  <a href={`mailto:${contact.email}`}>
+                    <MailIcon />
+                    Escríbenos
+                  </a>
+                </Button>
+              ))}
+              <div>
+                <h4>Ecosistemas estratégicos</h4>
+                <TagsRender
+                  tags={ecosystems}
+                  className="[&_li]:bg-green-100 [&_li]:text-green-800 font-normal"
+                />
+              </div>
+              <div>
+                <h4>Convenios vinculados</h4>
+                {politicalContextTags.map((t) => (
+                  <a
+                    href={t.tag.url}
+                    target="_blank"
+                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-sm whitespace-nowrap"
+                  >
+                    <LinkIcon className="size-3 text-accent" />
+                    {t.tag.name}
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
 
           <div
