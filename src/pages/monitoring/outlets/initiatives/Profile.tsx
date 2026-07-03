@@ -1,15 +1,16 @@
 import { LOCALE } from "@config/monitoring";
-import { Spinner } from "@ui/shadCN/component/spinner";
-import { FileBadge, LucideIcon, UsersRound, VectorSquare } from "lucide-react";
+
+import { Stats } from "pages/monitoring/outlets/initiatives/profile/Stats";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { JoinInitiativeRequestButton } from "pages/monitoring/ui/JoinInitiativeRequestButton";
 
 export function Profile() {
-  const { initiativeInfo, initiativeStats, isLoading } = useInitiativeCTX();
+  const { initiativeInfo } = useInitiativeCTX();
 
   if (!initiativeInfo) {
     return null;
   }
+
   const creationDateObj = new Date(initiativeInfo.creationDate);
   const datetime = `${creationDateObj.getFullYear()}-${String(creationDateObj.getMonth() + 1)}`;
   const renderDate = creationDateObj.toLocaleDateString(LOCALE, {
@@ -29,7 +30,6 @@ export function Profile() {
     })
     .join(" / ");
 
-  console.log(initiativeStats);
   return (
     <div className="flex flex-col h-full md:flex-row-reverse">
       <div className="w-full">
@@ -82,32 +82,7 @@ export function Profile() {
               </address>
             </div>
 
-            <div className="flex gap-2 *:flex-1">
-              <StatValue
-                isLoaging={isLoading}
-                Icon={UsersRound}
-                value={initiativeStats?.peopleInvolved ?? 0}
-                unit={undefined}
-                text={"carajo"}
-                description=""
-              />
-              <StatValue
-                isLoaging={isLoading}
-                Icon={VectorSquare}
-                value={initiativeStats?.area ?? 0}
-                unit="ha"
-                text={"carlasldaldkajo"}
-                description=""
-              />
-              <StatValue
-                isLoaging={isLoading}
-                Icon={FileBadge}
-                value={initiativeStats?.agreementsInvolved ?? 0}
-                unit={undefined}
-                text={"carajo"}
-                description=""
-              />
-            </div>
+            <Stats />
           </header>
           {Object.entries(initiativeInfo ?? {}).map(([k, v]) => (
             <div key={k}>
@@ -191,48 +166,6 @@ export function Profile() {
       </div>
       <div className="bg-accent h-full min-h-[300px] w-full min-w-[250px] md:max-w-[500px]">
         mapa
-      </div>
-    </div>
-  );
-}
-
-function StatValue({
-  isLoaging,
-  value,
-  unit,
-  Icon,
-  text,
-  description,
-}: {
-  isLoaging: boolean;
-  value: number;
-  unit?: string;
-  Icon: LucideIcon;
-  text: string;
-  description?: string;
-}) {
-  const displayValue = new Intl.NumberFormat("es-CO", {
-    maximumFractionDigits: 2,
-  }).format(value);
-
-  return (
-    <div title={description} className="flex gap-1 py-2 lg:py-4 items-center">
-      <Icon
-        className="size-8 lg:size-10 flex-1"
-        strokeWidth={1}
-        aria-hidden="true"
-      />
-      <div className="flex-5 border-l border-grey pl-2 lg:pl-4">
-        <div className="font-normal">
-          <span className="text-2xl inline-flex gap-1 items-center">
-            {displayValue}
-            {isLoaging && <Spinner className="size-6 text-primary" />}
-          </span>
-          {unit && <span className="text-xl">{unit}</span>}
-        </div>
-        <div className="font-light text-base lg:text-lg text-balance">
-          {text}
-        </div>
       </div>
     </div>
   );

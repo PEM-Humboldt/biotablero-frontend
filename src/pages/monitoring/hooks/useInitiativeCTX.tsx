@@ -12,10 +12,7 @@ import type {
   InitiativeCompleteInfo,
   UserSRC,
 } from "pages/monitoring/types/initiative";
-import {
-  getInitiative,
-  getStats,
-} from "pages/monitoring/api/services/initiatives";
+import { getInitiative } from "pages/monitoring/api/services/initiatives";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { useUserCTX } from "@hooks/UserCTX";
 import {
@@ -25,12 +22,10 @@ import {
 } from "pages/monitoring/types/userJoinRequest";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 import { useParams } from "react-router";
-import type { GeneralStatsType } from "pages/monitoring/types/stats";
 
 type CurrentInitiativeCTXProps = {
   initiativeId: number | null;
   initiativeInfo: InitiativeCompleteInfo | null;
-  initiativeStats: GeneralStatsType | null;
   userInInitiativeInfo: UserSRC | null;
   setInitiative: (initiativeId?: number) => Promise<null | string>;
   updateInitiative: () => Promise<void>;
@@ -51,8 +46,6 @@ export function CurrentInitiativeCTX({
   const [initiative, setInitiative] = useState<InitiativeCompleteInfo | null>(
     null,
   );
-  const [initiativeStats, setInitiativeStats] =
-    useState<GeneralStatsType | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useUserCTX();
   const { joinRequestsByInitiativeId } = useUserInMonitoringCTX();
@@ -61,7 +54,6 @@ export function CurrentInitiativeCTX({
   const fetchInitiative = useCallback(async (initiativeId?: number) => {
     if (initiativeId === undefined) {
       setInitiative(null);
-      setInitiativeStats(null);
       return null;
     }
 
@@ -76,18 +68,6 @@ export function CurrentInitiativeCTX({
 
     setInitiative(initiativeInfo);
 
-    const initiativeStatsInfo = await getStats(
-      "General",
-      undefined,
-      initiativeId,
-    );
-
-    setIsLoading(false);
-    if (isMonitoringAPIError(initiativeStatsInfo)) {
-      return initiativeStatsInfo.data[0].msg;
-    }
-
-    setInitiativeStats(initiativeStatsInfo);
     return null;
   }, []);
 
@@ -131,7 +111,6 @@ export function CurrentInitiativeCTX({
       value={{
         initiativeId: initiative?.id ?? null,
         initiativeInfo: initiative,
-        initiativeStats,
         userInInitiativeInfo:
           initiative?.users.find((u) => u.userName === user?.username) ?? null,
         setInitiative: fetchInitiative,

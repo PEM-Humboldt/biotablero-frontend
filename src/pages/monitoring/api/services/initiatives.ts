@@ -17,7 +17,12 @@ import { createODataGetter } from "pages/monitoring/api/oDataGetter";
 import type { UserJoinRequestData } from "pages/monitoring/types/userJoinRequest";
 import type { JoinInitiativeDataForm } from "pages/monitoring/types/userJoinRequest";
 import type { RoleInInitiative } from "pages/monitoring/types/catalog";
-import type { StatsResponseMap, StatsType } from "pages/monitoring/types/stats";
+import type {
+  InitiativeMonitoringEvent,
+  InitiativeStats,
+  StatsResponseMap,
+  StatsType,
+} from "pages/monitoring/types/stats";
 
 /**
  * Retrieves all the info about the initiative that has the specified id.
@@ -385,7 +390,7 @@ export async function getInitiativeLocations(locationId?: number) {
  * - On success: The object corresponding to the provided `type` category.
  * - On failure: An `ApiRequestError` object.
  */
-export async function getStats<T extends StatsType>(
+export async function getOverviewStats<T extends StatsType>(
   type: T,
   departmentId?: number,
   initiativeId?: number,
@@ -397,6 +402,28 @@ export async function getStats<T extends StatsType>(
   const res = await monitoringAPI<StatsResponseMap[T]>({
     type: "get",
     endpoint: `GeneralStats/${type}${params !== "" ? `?${params}` : ""}`,
+  });
+
+  return res;
+}
+
+export async function getInitiativeStats(initiativeId: number) {
+  const res = await monitoringAPI<InitiativeStats>({
+    type: "get",
+    endpoint: `InitiativeStats/${initiativeId}`,
+  });
+
+  return res;
+}
+
+export async function getInitiativeMonitoringEvents(
+  initiativeId: number,
+  year?: number,
+) {
+  const fetchFromYear = year ? `?year=${year}` : "";
+  const res = await monitoringAPI<InitiativeMonitoringEvent[]>({
+    type: "get",
+    endpoint: `InitiativeStats/GetMonitoringEvents/${initiativeId}${fetchFromYear}`,
   });
 
   return res;
