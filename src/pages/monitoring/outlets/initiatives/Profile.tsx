@@ -117,27 +117,35 @@ export function Profile() {
                   </a>
                 </Button>
               ))}
-              <div>
-                <h4>Ecosistemas estratégicos</h4>
-                <TagsRender
-                  tags={ecosystems}
-                  className="[&_li]:bg-green-100 [&_li]:text-green-800 font-normal"
-                />
-              </div>
-              <div>
-                <h4>Convenios vinculados</h4>
-                {politicalContextTags.map((t) => (
-                  <a
-                    key={`politicalContextTag_${t.tag.id}`}
-                    href={t.tag.url}
-                    target="_blank"
-                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-sm whitespace-nowrap hover:text-accent hover:underline"
-                  >
-                    <LinkIcon className="size-3 text-accent" />
-                    {t.tag.name}
-                  </a>
-                ))}
-              </div>
+
+              {ecosystems.length > 0 && (
+                <div>
+                  <h4>Ecosistemas estratégicos</h4>
+                  <TagsRender
+                    tags={ecosystems}
+                    className="[&_li]:bg-green-100 [&_li]:text-green-800 font-normal"
+                  />
+                </div>
+              )}
+              {politicalContextTags.length > 0 && (
+                <div>
+                  <h4>Convenios vinculados</h4>
+                  <ul>
+                    {politicalContextTags.map((t) => (
+                      <li key={`politicalContextTag_${t.tag.id}`}>
+                        <a
+                          href={t.tag.url}
+                          target="_blank"
+                          className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-sm whitespace-nowrap hover:text-accent hover:underline"
+                        >
+                          <LinkIcon className="size-3 text-accent" />
+                          {t.tag.name}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
 

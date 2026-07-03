@@ -47,7 +47,10 @@ export function RelatedInitiatives() {
               : initiative.description;
 
           return (
-            <li className="flex flex-col justify-between shadow-2xl rounded-lg p-2 lg:p-4 **:m-0 outline outline-transparent hover:outline-primary transition-colors duration-300">
+            <li
+              key={`relatedInitiative_${initiative.id}`}
+              className="flex flex-col justify-between shadow-2xl rounded-lg p-2 lg:p-4 **:m-0 outline outline-transparent hover:outline-primary transition-colors duration-300"
+            >
               <div>
                 <h5>
                   {initiative?.shortName ? (
