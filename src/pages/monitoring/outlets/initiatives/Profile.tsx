@@ -1,11 +1,3 @@
-import { LOCALE } from "@config/monitoring";
-
-import { Stats } from "pages/monitoring/outlets/initiatives/profile/Stats";
-import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
-import { JoinInitiativeRequestButton } from "pages/monitoring/ui/JoinInitiativeRequestButton";
-import { Button } from "@ui/shadCN/component/button";
-
-import backgroundImage from "pages/home/assets/biotablero-slider.webp";
 import {
   Binoculars,
   GoalIcon,
@@ -16,8 +8,17 @@ import {
   MapPinned,
   SquareUser,
 } from "lucide-react";
+import { LOCALE } from "@config/monitoring";
+
+import { Button } from "@ui/shadCN/component/button";
+
+import { Stats } from "pages/monitoring/outlets/initiatives/profile/Stats";
+import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
+import { JoinInitiativeRequestButton } from "pages/monitoring/ui/JoinInitiativeRequestButton";
+import backgroundImage from "pages/home/assets/biotablero-slider.webp";
 import { TagsRender } from "pages/monitoring/ui/TagsRender";
 import { RelatedInitiatives } from "pages/monitoring/outlets/initiatives/profile/RelatedInitiatives";
+import { MonitoringEventsGraph } from "pages/monitoring/outlets/initiatives/profile/MonitoringEventsGraph";
 
 export function Profile() {
   const { initiativeInfo } = useInitiativeCTX();
@@ -150,11 +151,12 @@ export function Profile() {
           </div>
 
           <div
-            className="relative w-full h-[120px] md:h-[260px] bg-primary bg-cover bg-center"
+            className="relative w-full py-10 bg-primary bg-cover bg-center flex items-center justify-center"
             style={{ backgroundImage: `url('${backgroundImage}')` }}
           >
             <div className="absolute inset-0 bg-primary mix-blend-color" />
-            graph
+
+            <MonitoringEventsGraph />
           </div>
 
           <TextBlock
