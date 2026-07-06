@@ -31,7 +31,6 @@ export function MapMarker({
 
   return (
     <Marker
-      key={initiative.id}
       icon={markerIcon}
       position={initiative.coordinate}
       eventHandlers={{
