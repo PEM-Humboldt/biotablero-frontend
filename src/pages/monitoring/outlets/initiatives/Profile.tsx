@@ -19,11 +19,7 @@ import backgroundImage from "pages/home/assets/biotablero-slider.webp";
 import { TagsRender } from "pages/monitoring/ui/TagsRender";
 import { RelatedInitiatives } from "pages/monitoring/outlets/initiatives/profile/RelatedInitiatives";
 import { MonitoringEventsGraph } from "pages/monitoring/outlets/initiatives/profile/MonitoringEventsGraph";
-import { MapContainer, Marker, Tooltip, TileLayer } from "react-leaflet";
-import L from "leaflet";
-import { MAP_TILES } from "pages/monitoring/outlets/initiativesMap/layout/layers";
-import { InitiativeIcon } from "pages/monitoring/outlets/initiativesMap/mapFinder/InitiativeIcon";
-import { renderToString } from "react-dom/server";
+import { InitiativeMap } from "pages/monitoring/outlets/initiatives/profile/InitiativeMap";
 
 export function Profile() {
   const { initiativeInfo } = useInitiativeCTX();
@@ -61,7 +57,7 @@ export function Profile() {
     <div className="flex flex-col h-full lg:flex-row-reverse">
       <div className="w-full lg:flex-3">
         <div
-          className="relative w-full h-[120px] md:h-[260px] bg-primary"
+          className="relative h-[120px] md:h-[260px] bg-primary"
           style={{
             ...(initiativeInfo?.bannerUrl
               ? { backgroundImage: `url('${initiativeInfo?.bannerUrl}')` }
@@ -195,40 +191,7 @@ export function Profile() {
         </main>
       </div>
 
-      <div className="lg:flex-1 w-full md:w-[400px] lg:w-[500px] md:shrink-0 md:sticky md:top-0 md:h-screen bg-accent z-10">
-        <div className="relative flex-col w-full h-[300px] md:h-full flex">
-          <MapContainer
-            center={initiativeInfo.coordinate}
-            zoom={10}
-            scrollWheelZoom={false}
-            zoomControl={false}
-          >
-            <TileLayer
-              attribution={MAP_TILES[0].attribution}
-              url={MAP_TILES[0].url}
-            />
-            <Marker
-              icon={L.divIcon({
-                html: renderToString(<InitiativeIcon />),
-                iconSize: [28, 28],
-                iconAnchor: [14, 14],
-                className: "bg-transparent border-none",
-              })}
-              position={initiativeInfo.coordinate}
-            >
-              <Tooltip
-                direction="top"
-                offset={[0, -14]}
-                opacity={1}
-                permanent={false}
-                className="bg-background! text-primary! px-4! py-2! rounded-lg! shadow-none!"
-              >
-                {initiativeInfo.name}
-              </Tooltip>
-            </Marker>
-          </MapContainer>
-        </div>
-      </div>
+      <InitiativeMap />
     </div>
   );
 }
