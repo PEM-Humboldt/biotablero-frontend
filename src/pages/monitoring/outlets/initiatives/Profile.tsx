@@ -58,8 +58,8 @@ export function Profile() {
   );
 
   return (
-    <div className="flex flex-col h-full md:flex-row-reverse">
-      <div className="w-full">
+    <div className="flex flex-col h-full lg:flex-row-reverse">
+      <div className="w-full lg:flex-3">
         <div
           className="relative w-full h-[120px] md:h-[260px] bg-primary"
           style={{
@@ -82,7 +82,7 @@ export function Profile() {
               strokeWidth={1.5}
             />
 
-            <header className="flex-3">
+            <header className="flex-3 flex-wrap">
               <h3 className="flex flex-col text-5xl uppercase m-0">
                 {initiativeInfo.shortName}
                 <div className="text-lg normal-case font-normal no-underline">
@@ -194,7 +194,8 @@ export function Profile() {
           </div>
         </main>
       </div>
-      <div className="w-full md:w-[400px] lg:w-[500px] md:shrink-0 md:sticky md:top-0 md:h-screen bg-accent z-10">
+
+      <div className="lg:flex-1 w-full md:w-[400px] lg:w-[500px] md:shrink-0 md:sticky md:top-0 md:h-screen bg-accent z-10">
         <div className="relative flex-col w-full h-[300px] md:h-full flex">
           <MapContainer
             center={initiativeInfo.coordinate}

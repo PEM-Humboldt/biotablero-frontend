@@ -60,7 +60,7 @@ export function Stats() {
       className="bg-accent/10 border border-accent rounded-lg p-4"
     />
   ) : (
-    <div className="flex gap-2 lg:gap-4 *:flex-1">
+    <div className="flex flex-wrap gap-2 lg:gap-4 *:flex-1">
       <StatValue
         isLoaging={isLoading}
         Icon={VectorSquare}

@@ -55,7 +55,7 @@ export function Header({
           className="flex gap-4 px-6 items-center bg-grey-light h-full"
           aria-hidden="true"
         >
-          <span className="text-base text-grey-dark md:text-lg font-normal">
+          <span className="hidden lg:inline! text-base text-grey-dark md:text-lg font-normal">
             {activeModuleInfo.name}
           </span>
           {activeModuleInfo.icon && (
