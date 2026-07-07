@@ -6,23 +6,17 @@ import { ErrorsList } from "@ui/LabelingWithErrors";
 import { ConfirmationDialog } from "@ui/ConfirmationDialog";
 import { Button } from "@ui/shadCN/component/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@ui/shadCN/component/dropdown-menu";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@ui/shadCN/component/popover";
 
 import { RoleInInitiative } from "pages/monitoring/types/catalog";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { makeJoinRequestToInitiative } from "pages/monitoring/api/services/initiatives";
-import { uiText } from "pages/monitoring/ui/joinInitiativeRequestButton/layout/uiText";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@ui/shadCN/component/popover";
+import { uiText } from "pages/monitoring/ui/joinInitiativeRequestButton/layout/uiText";
 
 export function MakeJoinInitiativeRequestBtnDialog() {
   const [isLoading, setIsLoading] = useState(false);
@@ -66,6 +60,17 @@ export function MakeJoinInitiativeRequestBtnDialog() {
     setIsLoading(false);
   };
 
+  const btnVariants = [
+    {
+      role: RoleInInitiative.COLLABORATOR,
+      config: uiText.makeJoinRequestToInitiative.asCollaborator,
+    },
+    {
+      role: RoleInInitiative.READER,
+      config: uiText.makeJoinRequestToInitiative.asReader,
+    },
+  ];
+
   return (
     <>
       {error && <ErrorsList errorItems={[error]} />}
@@ -73,52 +78,31 @@ export function MakeJoinInitiativeRequestBtnDialog() {
       <Popover>
         <PopoverTrigger asChild>
           <Button>
-            <UserRoundPlus /> Unete a la iniciativa
+            <UserRoundPlus />
+            {uiText.makeJoinRequestToInitiative.popoverTrigger}
           </Button>
         </PopoverTrigger>
 
-        <PopoverContent align="end" className="p-2 flex flex-col w-fit">
-          <ConfirmationDialog
-            texts={{
-              trigger:
-                uiText.makeJoinRequestToInitiative.asCollaborator.trigger,
-              dialog: {
-                title:
-                  uiText.makeJoinRequestToInitiative.asCollaborator.dialog.title(
-                    initiativeInfo?.name ?? "",
-                  ),
-                description:
-                  uiText.makeJoinRequestToInitiative.asCollaborator.dialog
-                    .description,
-              },
-              actionBtns:
-                uiText.makeJoinRequestToInitiative.asCollaborator.actionBtns,
-            }}
-            triggerBtnVariant="ghost"
-            handler={() =>
-              void handleJoinInitiative(RoleInInitiative.COLLABORATOR)
-            }
-            isLoading={isLoading}
-          />
-
-          <ConfirmationDialog
-            texts={{
-              trigger: uiText.makeJoinRequestToInitiative.asReader.trigger,
-              dialog: {
-                title: uiText.makeJoinRequestToInitiative.asReader.dialog.title(
-                  initiativeInfo?.name ?? "",
-                ),
-                description:
-                  uiText.makeJoinRequestToInitiative.asReader.dialog
-                    .description,
-              },
-              actionBtns:
-                uiText.makeJoinRequestToInitiative.asReader.actionBtns,
-            }}
-            triggerBtnVariant="ghost"
-            handler={() => void handleJoinInitiative(RoleInInitiative.READER)}
-            isLoading={isLoading}
-          />
+        <PopoverContent
+          align="end"
+          className="p-2 flex flex-col w-fit border border-primary"
+        >
+          {btnVariants.map(({ role, config }) => (
+            <ConfirmationDialog
+              key={`joinDialog_${role}`}
+              texts={{
+                trigger: config.trigger,
+                dialog: {
+                  title: config.dialog.title(initiativeInfo?.name ?? ""),
+                  description: config.dialog.description,
+                },
+                actionBtns: config.actionBtns,
+              }}
+              triggerBtnVariant="ghost"
+              handler={() => void handleJoinInitiative(role)}
+              isLoading={isLoading}
+            />
+          ))}
         </PopoverContent>
       </Popover>
     </>

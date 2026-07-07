@@ -1,5 +1,6 @@
 import {
   Eye,
+  HeartHandshake,
   LogOut,
   Merge,
   TicketCheck,
@@ -16,6 +17,7 @@ export const uiText = {
   },
 
   makeJoinRequestToInitiative: {
+    popoverTrigger: "Unete a la iniciativa",
     asReader: {
       trigger: {
         label: "Como lector",
@@ -41,7 +43,7 @@ export const uiText = {
         label: "Como colaborador",
         title: undefined,
         sr: undefined,
-        icon: TicketCheck,
+        icon: HeartHandshake,
       },
       dialog: {
         title: (initiativeName: string) =>
