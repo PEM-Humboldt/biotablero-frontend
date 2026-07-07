@@ -32,21 +32,9 @@ export function isUserKeycloak(info: unknown): info is UserKeycloak {
   return (
     typeof info === "object" &&
     info !== null &&
-    "sub" in info &&
     "username" in info &&
     "email" in info &&
-    "firstName" in info &&
-    "lastName" in info &&
     "roles" in info &&
-    Array.isArray(info.roles) &&
-    "autorreconocimiento" in info &&
-    "genero" in info &&
-    "organizacion" in info &&
-    "email_verified" in info &&
-    typeof info.email_verified === "boolean" &&
-    "preferred_username" in info &&
-    "given_name" in info &&
-    "name" in info &&
-    "family_name" in info
+    Array.isArray(info.roles)
   );
 }

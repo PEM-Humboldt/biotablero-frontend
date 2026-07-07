@@ -30,7 +30,7 @@ export function BasicInfo() {
     .join(uiText.profile.basicInfo.locationSeparator);
 
   const initiativeUsers = initiativeInfo.users
-    .map((u) => u.externalData.fullName)
+    .map((u) => u.externalData?.fullName || u.externalData?.username)
     .join(uiText.profile.basicInfo.usersSeparator);
 
   return (
