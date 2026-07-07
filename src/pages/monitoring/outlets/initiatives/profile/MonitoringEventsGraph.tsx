@@ -177,7 +177,7 @@ export function MonitoringEventsGraph() {
               indexBy="groupName"
               keys={["value"]}
               groupMode="grouped"
-              margin={{ top: 10, right: 10, bottom: 20, left: 30 }}
+              margin={{ top: 10, right: 10, bottom: 30, left: 30 }}
               padding={0.1}
               colors={INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[1]}
               labelSkipWidth={12}
