@@ -74,8 +74,8 @@ export function InitiativeMap() {
     }
   }
   return (
-    <div className="lg:flex-1 w-full md:w-[400px] lg:w-[500px] md:shrink-0 md:sticky md:top-0 md:h-screen z-10">
-      <div className="relative flex-col w-full h-[300px] md:h-full flex">
+    <div className="lg:flex-1 w-full h-[300px] lg:shrink-0 md:sticky md:top-0 lg:h-screen z-10">
+      <div className="relative flex-col w-full h-[300px] lg:h-full flex">
         {isLoading && (
           <LoadingDiv className="absolute z-10 m-2 p-4 bg-muted/90 w-[150px]" />
         )}

@@ -1,4 +1,4 @@
-import { Binoculars, Handshake } from "lucide-react";
+import { Binoculars } from "lucide-react";
 import { Stats } from "pages/monitoring/outlets/initiatives/profile/Stats";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { RelatedInitiatives } from "pages/monitoring/outlets/initiatives/profile/RelatedInitiatives";

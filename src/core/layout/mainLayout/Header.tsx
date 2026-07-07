@@ -42,7 +42,7 @@ export function Header({
         <Menu />
 
         {renderCompositeTitle && (
-          <h2 className="text-xl! font-light! border-l border-l-grey-light px-4! m-0! truncate">
+          <h2 className="hidden lg:block! lg:text-xl! font-light! border-l border-l-grey-light px-4! m-0! truncate">
             {title} {subtitle !== "" ? `/ ${subtitle}` : ""}
           </h2>
         )}
