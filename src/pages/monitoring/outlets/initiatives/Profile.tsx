@@ -1,25 +1,13 @@
-import {
-  Binoculars,
-  GoalIcon,
-  Handshake,
-  LinkIcon,
-  type LucideIcon,
-  MailIcon,
-  MapPinned,
-  SquareUser,
-} from "lucide-react";
-import { LOCALE } from "@config/monitoring";
-
-import { Button } from "@ui/shadCN/component/button";
-
+import { Binoculars, Handshake } from "lucide-react";
 import { Stats } from "pages/monitoring/outlets/initiatives/profile/Stats";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
-import { JoinInitiativeRequestButton } from "pages/monitoring/ui/JoinInitiativeRequestButton";
-import backgroundImage from "pages/home/assets/biotablero-slider.webp";
-import { TagsRender } from "pages/monitoring/ui/TagsRender";
 import { RelatedInitiatives } from "pages/monitoring/outlets/initiatives/profile/RelatedInitiatives";
 import { MonitoringEventsGraph } from "pages/monitoring/outlets/initiatives/profile/MonitoringEventsGraph";
 import { InitiativeMap } from "pages/monitoring/outlets/initiatives/profile/InitiativeMap";
+import { Banner } from "pages/monitoring/outlets/initiatives/profile/Banner";
+import { TagsAndContact } from "pages/monitoring/outlets/initiatives/profile/TasgsAndContact";
+import { BasicInfo } from "pages/monitoring/outlets/initiatives/profile/BasicInfo";
+import { profileTexts } from "pages/monitoring/outlets/initiatives/layout/profileTexts";
 
 export function Profile() {
   const { initiativeInfo } = useInitiativeCTX();
@@ -28,202 +16,63 @@ export function Profile() {
     return null;
   }
 
-  const creationDateObj = new Date(initiativeInfo.creationDate);
-  const datetime = `${creationDateObj.getFullYear()}-${String(creationDateObj.getMonth() + 1)}`;
-  const renderDate = creationDateObj.toLocaleDateString(LOCALE, {
-    month: "long",
-    year: "numeric",
-  });
-
-  const initiativeLocations = initiativeInfo.locations
-    .map((l) => {
-      const municipality = l.location.name ? `, ${l.location.name}` : "";
-      const locality = l.locality ? ` - ${l.locality}` : "";
-      const department = l.location?.parent ? l.location.parent.name : "";
-
-      return `${department}${municipality}${locality}`;
-    })
-    .join(" | ");
-
-  const ecosystems = initiativeInfo.tags
-    .filter((t) => t.tag.category.name === "Ecosystem")
-    .map((t) => t.tag.name);
-
-  const politicalContextTags = initiativeInfo.tags.filter(
-    (t) => t.tag.category.name === "PoliticalContext",
-  );
-
   return (
     <div className="flex flex-col h-full lg:flex-row-reverse">
       <div className="w-full lg:flex-3">
-        <div
-          className="relative h-[120px] md:h-[260px] bg-primary"
-          style={{
-            ...(initiativeInfo?.bannerUrl
-              ? { backgroundImage: `url('${initiativeInfo?.bannerUrl}')` }
-              : {}),
-            backgroundSize: "cover",
-            backgroundPosition: "left center",
-          }}
-        >
-          <div className="absolute top-2 md:top-6 right-2 md:right-6">
-            <JoinInitiativeRequestButton />
-          </div>
-        </div>
+        <Banner />
 
         <main className="w-full space-y-4 lg:space-y-8">
-          <div className="flex gap-2 max-w-[1200px] mx-auto mt-4 py-4 md:py-8 px-4 md:px-8">
+          <header className="flex gap-2 max-w-[1200px] mx-auto mt-4 py-4 md:py-8 px-4 md:px-8">
             <Binoculars
               className="size-[34px] text-accent min-w-10"
               strokeWidth={1.5}
             />
 
-            <header className="flex-3 flex-wrap">
-              <h3 className="flex flex-col text-5xl uppercase m-0">
-                {initiativeInfo.shortName}
-                <div className="text-lg normal-case font-normal no-underline">
-                  {initiativeInfo.name}
-                </div>
-              </h3>
+            <div className="flex-3 flex-wrap">
+              <BasicInfo />
+              <Stats />
+            </div>
 
-              <div className="flex flex-col mb-4 text-grey-dark">
-                <div title="Participantes">
-                  {initiativeInfo.users
-                    .map((u) => u.externalData.fullName)
-                    .join(", ")}
-                </div>
-                <div>
-                  <time title="Fecha de registro" dateTime={datetime}>
-                    Desde {renderDate}
-                  </time>{" "}
-                  <address title="Ubicación" className="not-italic inline">
-                    // {initiativeLocations}
-                  </address>
+            <TagsAndContact />
+          </header>
+
+          <MonitoringEventsGraph />
+
+          {profileTexts.map((textInfo) => {
+            if (!textInfo.valueKey || !initiativeInfo[textInfo.valueKey]) {
+              return null;
+            }
+
+            const parragraphs = initiativeInfo[textInfo.valueKey].split("\n");
+            return (
+              <div
+                key={`textInfo_${textInfo.valueKey}`}
+                className="flex gap-2 max-w-[1200px] mx-auto px-4 md:px-8"
+              >
+                <textInfo.Icon
+                  className="size-[34px] -translate-y-1 text-accent min-w-10"
+                  strokeWidth={1.5}
+                />
+                <div className="pb-2 lg:pb-4 border-b border-grey-light">
+                  <h4 className="text-3xl font-bold">{textInfo.title}</h4>
+                  {parragraphs.map((par, i) => (
+                    <p
+                      key={`textInfo_${textInfo.valueKey}_${i}`}
+                      className="max-w-[75ch]"
+                    >
+                      {par}
+                    </p>
+                  ))}
                 </div>
               </div>
+            );
+          })}
 
-              <Stats />
-            </header>
-
-            <div className="flex-1 space-y-4 px-2 lg:px-4 [&_h4]:m-0 self-end">
-              {initiativeInfo.contacts?.map((contact) => (
-                <Button
-                  key={`contactInfo_${contact.email}`}
-                  variant="outline"
-                  className="p-0"
-                  asChild
-                >
-                  <a href={`mailto:${contact.email}`}>
-                    <MailIcon />
-                    Escríbenos
-                  </a>
-                </Button>
-              ))}
-
-              {ecosystems.length > 0 && (
-                <div>
-                  <h4>Ecosistemas estratégicos</h4>
-                  <TagsRender
-                    tags={ecosystems}
-                    className="[&_li]:bg-green-100 [&_li]:text-green-800 font-normal"
-                  />
-                </div>
-              )}
-              {politicalContextTags.length > 0 && (
-                <div>
-                  <h4>Convenios vinculados</h4>
-                  <ul>
-                    {politicalContextTags.map((t) => (
-                      <li key={`politicalContextTag_${t.tag.id}`}>
-                        <a
-                          href={t.tag.url}
-                          target="_blank"
-                          className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-sm whitespace-nowrap hover:text-accent hover:underline"
-                        >
-                          <LinkIcon className="size-3 text-accent" />
-                          {t.tag.name}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div
-            className="relative w-full py-10 bg-primary bg-cover bg-center flex items-center justify-center"
-            style={{ backgroundImage: `url('${backgroundImage}')` }}
-          >
-            <div className="absolute inset-0 bg-primary mix-blend-color" />
-
-            <MonitoringEventsGraph />
-          </div>
-
-          <TextBlock
-            title="¿Quiénes somos?"
-            text={initiativeInfo.description}
-            Icon={SquareUser}
-          />
-
-          <TextBlock
-            title="¿Dónde estamos?"
-            text={initiativeInfo.baseline}
-            Icon={MapPinned}
-          />
-
-          <TextBlock
-            title="¿Cuál es nuestro objetivo?"
-            text={initiativeInfo.objective}
-            Icon={GoalIcon}
-          />
-
-          <div className="flex gap-2 max-w-[1200px] mx-auto px-4 pb-4 md:px-8 md:pb-8">
-            <Handshake
-              className="size-[34px] -translate-y-1 text-accent min-w-10"
-              strokeWidth={1.5}
-            />
-            <div className="pb-2 lg:pb-4">
-              <h4 className="text-3xl font-bold">Iniciativas Relacionadas</h4>
-              <RelatedInitiatives />
-            </div>
-          </div>
+          <RelatedInitiatives />
         </main>
       </div>
 
       <InitiativeMap />
-    </div>
-  );
-}
-
-function TextBlock({
-  title,
-  text,
-  Icon,
-}: {
-  title: string;
-  text?: string;
-  Icon: LucideIcon;
-}) {
-  if (!text) {
-    return null;
-  }
-
-  const parragraphs = text.split("\n");
-  return (
-    <div className="flex gap-2 max-w-[1200px] mx-auto px-4 md:px-8">
-      <Icon
-        className="size-[34px] -translate-y-1 text-accent min-w-10"
-        strokeWidth={1.5}
-      />
-      <div className="pb-2 lg:pb-4 border-b border-grey-light">
-        <h4 className="text-3xl font-bold">{title}</h4>
-        {parragraphs.map((par, i) => (
-          <p key={`title_${i}`} className="max-w-[75ch]">
-            {par}
-          </p>
-        ))}
-      </div>
     </div>
   );
 }

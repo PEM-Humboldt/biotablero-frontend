@@ -24,6 +24,7 @@ import type {
   StatsResponseMap,
   StatsType,
 } from "pages/monitoring/types/stats";
+import type { Geometry } from "geojson";
 
 /**
  * Retrieves all the info about the initiative that has the specified id.
@@ -460,6 +461,22 @@ export async function getRelatedInitiatives() {
   const res = await monitoringAPI<InitiativeRelated[]>({
     type: "get",
     endpoint: "Initiative/Related",
+  });
+
+  return res;
+}
+
+/**
+ * Fetches the GeoJSON geometry polygon of a specific initiative.
+ *
+ * @returns A `Promise` that resolves to:
+ * - On success: the initiative's Geometry data.
+ * - On failure: An `ApiRequestError` object.
+ */
+export async function getInitiativePolygon(initiativeId: number) {
+  const res = await monitoringAPI<Geometry>({
+    type: "get",
+    endpoint: `Initiative/Polygon/${initiativeId}`,
   });
 
   return res;

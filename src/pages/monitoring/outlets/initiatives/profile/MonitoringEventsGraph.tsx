@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import backgroundImage from "pages/home/assets/biotablero-slider.webp";
 
 import {
   Select,
@@ -16,41 +17,13 @@ import type { InitiativeMonitoringEvent } from "pages/monitoring/types/stats";
 import {
   INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD,
   INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP,
+  INITIATIVE_MONITORING_EVENTS_HORIZONTAL_TICS,
 } from "@config/monitoring";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { Spinner } from "@ui/shadCN/component/spinner";
+import { getLocaleMonthString } from "pages/monitoring/utils/formatters";
 
-const MONTHS_TRANSLATION_SHORT: Record<string, string> = {
-  january: "Ene",
-  february: "Feb",
-  march: "Mar",
-  april: "Abr",
-  may: "May",
-  june: "Jun",
-  july: "Jul",
-  august: "Ago",
-  september: "Sep",
-  october: "Oct",
-  november: "Nov",
-  december: "Dic",
-};
-
-const MONTHS_TRANSLATED_LONG: Record<string, string> = {
-  Ene: "Enero",
-  Feb: "Febrero",
-  Mar: "Marzo",
-  Abr: "Abril",
-  May: "Mayo",
-  Jun: "Junio",
-  Jul: "Julio",
-  Ago: "Agosto",
-  Sep: "Septiembre",
-  Oct: "Octubre",
-  Nov: "Noviembre",
-  Dic: "Diciembre",
-};
-
-const MONITORING_EVENTS_HORIZONTAL_TICS = 5;
+import { uiText } from "pages/monitoring/outlets/initiatives/layout/uiText";
 
 export function MonitoringEventsGraph() {
   const { initiativeId } = useInitiativeCTX();
@@ -121,13 +94,10 @@ export function MonitoringEventsGraph() {
   }, [fetchMonitoringEvents, currentYearIndex, years]);
 
   const formattedData = useMemo(() => {
-    return monitoringEventsData.map((item) => {
-      const lowerName = item.groupName.toLowerCase();
-      return {
-        ...item,
-        groupName: MONTHS_TRANSLATION_SHORT[lowerName] || item.groupName,
-      };
-    });
+    return monitoringEventsData.map((item) => ({
+      ...item,
+      groupName: getLocaleMonthString(item.groupName, true),
+    }));
   }, [monitoringEventsData]);
 
   const computedMaxValue = useMemo(() => {
@@ -136,106 +106,124 @@ export function MonitoringEventsGraph() {
     }
     const maxEventValue = Math.max(...formattedData.map((d) => d.value));
 
-    return maxEventValue < MONITORING_EVENTS_HORIZONTAL_TICS
-      ? MONITORING_EVENTS_HORIZONTAL_TICS
+    return maxEventValue < INITIATIVE_MONITORING_EVENTS_HORIZONTAL_TICS
+      ? INITIATIVE_MONITORING_EVENTS_HORIZONTAL_TICS
       : maxEventValue + 1;
   }, [formattedData]);
 
-  return years.length === 0 ? (
-    <div className="p-2 w-2/3 text-3xl bg-primary rounded-lg text-primary-foreground text-center">
-      La iniciativa todavía no tiene eventos de monitoreo registrados
-    </div>
-  ) : (
-    <section className="z-10 w-1/2 min-w-[300px] p-4 rounded-lg bg-background">
-      <ErrorsList
-        errorItems={errors}
-        className="bg-accent/10 p-2 border rounded-lg border-accent m-2 mb-4"
-      />
-      <header className="flex gap-2 justify-between items-center">
-        <div className="flex gap-2 items-center">
-          <h4 className="m-0">
-            Eventos de monitoreo {years[currentYearIndex]}
-          </h4>
-          {isLoading && <Spinner aria-label="cargando" />}
+  return (
+    <div
+      className="relative w-full py-10 bg-primary bg-cover bg-center flex items-center justify-center"
+      style={{ backgroundImage: `url('${backgroundImage}')` }}
+    >
+      <div className="absolute inset-0 bg-primary mix-blend-color" />
+
+      {years.length === 0 ? (
+        <div className="p-2 w-2/3 text-3xl bg-primary rounded-lg text-primary-foreground text-center">
+          {uiText.profile.monitoringEventsGraph.noEvents}
         </div>
+      ) : (
+        <section className="z-10 w-1/2 min-w-[300px] p-4 rounded-lg bg-background">
+          <ErrorsList
+            errorItems={errors}
+            className="bg-accent/10 p-2 border rounded-lg border-accent m-2 mb-4"
+          />
+          <div className="flex gap-2 justify-between items-center">
+            <div className="flex gap-2 items-center">
+              <h4 className="m-0">
+                {uiText.profile.monitoringEventsGraph.title(
+                  years[currentYearIndex],
+                )}
+              </h4>
+              {isLoading && <Spinner />}
+            </div>
 
-        {years.length > 1 && (
-          <Select
-            value={String(currentYearIndex)}
-            onValueChange={(value) => setCurrentYearIndex(Number(value))}
-            disabled={years.length === 0}
-            aria-label="Selecciona el año"
-          >
-            <SelectTrigger className="w-fit gap-2">
-              <SelectValue placeholder="Selecciona un año" />
-            </SelectTrigger>
-
-            <SelectContent>
-              {years.map((year, i) => (
-                <SelectItem
-                  key={`monitoringEventYear_${year}`}
-                  value={String(i)}
+            {years.length > 1 && (
+              <Select
+                value={String(currentYearIndex)}
+                onValueChange={(value) => setCurrentYearIndex(Number(value))}
+                disabled={years.length === 0}
+                aria-label={uiText.profile.monitoringEventsGraph.selectYear.sr}
+              >
+                <SelectTrigger
+                  className="w-fit gap-2"
+                  title={uiText.profile.monitoringEventsGraph.selectYear.title}
                 >
-                  {year}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        )}
-      </header>
+                  <SelectValue
+                    placeholder={
+                      uiText.profile.monitoringEventsGraph.selectYear
+                        .placeholder
+                    }
+                  />
+                </SelectTrigger>
 
-      <div className="h-[200px]">
-        <ResponsiveBar
-          data={formattedData}
-          indexBy="groupName"
-          keys={["value"]}
-          groupMode="grouped"
-          margin={{ top: 10, right: 10, bottom: 20, left: 30 }}
-          padding={0.1}
-          colors={INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[1]}
-          labelSkipWidth={12}
-          labelSkipHeight={12}
-          labelPosition="start"
-          labelOffset={12}
-          labelTextColor={
-            INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP[
-              INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[1]
-            ]
-          }
-          valueScale={{
-            type: "linear",
-            max: computedMaxValue,
-          }}
-          gridYValues={MONITORING_EVENTS_HORIZONTAL_TICS}
-          axisLeft={{
-            tickSize: 10,
-            tickPadding: 5,
-            tickRotation: 0,
-            tickValues: MONITORING_EVENTS_HORIZONTAL_TICS,
-            format: (value: string) => (Number.isInteger(value) ? value : ""),
-          }}
-          axisBottom={{
-            tickSize: 5,
-            tickPadding: 5,
-            tickRotation: 0,
-          }}
-          tooltip={BarsTooltip}
-        />
-      </div>
-    </section>
+                <SelectContent>
+                  {years.map((year, i) => (
+                    <SelectItem
+                      key={`monitoringEventYear_${year}`}
+                      value={String(i)}
+                    >
+                      {year}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          </div>
+
+          <div className="h-[200px]">
+            <ResponsiveBar
+              data={formattedData}
+              indexBy="groupName"
+              keys={["value"]}
+              groupMode="grouped"
+              margin={{ top: 10, right: 10, bottom: 20, left: 30 }}
+              padding={0.1}
+              colors={INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[1]}
+              labelSkipWidth={12}
+              labelSkipHeight={12}
+              labelPosition="start"
+              labelOffset={12}
+              labelTextColor={
+                INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP[
+                  INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[1]
+                ]
+              }
+              valueScale={{
+                type: "linear",
+                max: computedMaxValue,
+              }}
+              gridYValues={INITIATIVE_MONITORING_EVENTS_HORIZONTAL_TICS}
+              axisLeft={{
+                tickSize: 10,
+                tickPadding: 5,
+                tickRotation: 0,
+                tickValues: INITIATIVE_MONITORING_EVENTS_HORIZONTAL_TICS,
+                format: (value: string) =>
+                  Number.isInteger(value) ? value : "",
+              }}
+              axisBottom={{
+                tickSize: 5,
+                tickPadding: 5,
+                tickRotation: 0,
+              }}
+              tooltip={BarsTooltip}
+            />
+          </div>
+        </section>
+      )}
+    </div>
   );
 }
 
 function BarsTooltip({
-  id: _id,
   value,
-  indexValue,
   color,
+  data,
 }: {
-  id: string | number;
   value: number;
-  indexValue: string | number;
   color: string;
+  data: { groupName: string; groupNumber: number; value: number };
 }) {
   return (
     <div
@@ -247,7 +235,10 @@ function BarsTooltip({
           className="w-3 h-3 rounded-full"
           style={{ backgroundColor: color }}
         />
-        <span>Monitoreos en {MONTHS_TRANSLATED_LONG[indexValue]}: </span>
+        <span>
+          Monitoreos en {getLocaleMonthString(data.groupNumber, false, true)}
+          :{" "}
+        </span>
         <span className="font-normal">{value}</span>
       </div>
     </div>
