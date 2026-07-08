@@ -39,8 +39,8 @@ export function MapFinder({
   leastInitiativesPerDepartment,
   mostInitiativesPerDepartment,
 }: {
-  tiles: keyof typeof MAP_TILES;
-  layer: keyof typeof MAP_LAYERS | null;
+  tiles: number;
+  layer: number | null;
   nation: FeatureCollection | null;
   initiatives: InitiativeByLocation[];
   activeFeatures: {
@@ -152,7 +152,12 @@ export function MapFinder({
     });
   };
 
-  const mapAttribution = `${MAP_TILES[tiles].attribution}${layer !== null && MAP_LAYERS[layer]?.attribution ? ` || ${MAP_LAYERS[layer].attribution}` : ""}`;
+  const layerAttribution =
+    layer !== null && MAP_LAYERS[layer].attribution
+      ? ` || ${MAP_LAYERS[layer].attribution}`
+      : "";
+  const tilesAttribution = MAP_TILES[tiles].attribution;
+  const mapAttribution = `${tilesAttribution}${layerAttribution}`;
 
   return (
     <MapContainer
