@@ -16,7 +16,9 @@ export function TagsAndContact() {
 
   const politicalContextTags =
     initiativeInfo?.tags.filter(
-      (t) => t.tag.category.name === "PoliticalContext",
+      (t) =>
+        t.tag.category.name === "PoliticalContext" ||
+        t.tag.category.name === "SocialContext",
     ) ?? [];
 
   return !initiativeInfo ? null : (
@@ -53,14 +55,20 @@ export function TagsAndContact() {
           <ul>
             {politicalContextTags.map((t) => (
               <li key={`politicalContextTag_${t.tag.id}`}>
-                <a
-                  href={t.tag.url}
-                  target="_blank"
-                  className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-sm whitespace-nowrap hover:text-accent hover:underline"
-                >
-                  <LinkIcon className="size-3 text-accent" />
-                  {t.tag.name}
-                </a>
+                {t.tag?.url ? (
+                  <a
+                    href={t.tag.url}
+                    target="_blank"
+                    className="inline-flex items-center gap-1 px-1.5 py-0.5 text-sm whitespace-nowrap hover:text-accent hover:underline"
+                  >
+                    <LinkIcon className="size-3 text-accent" />
+                    {t.tag.name}
+                  </a>
+                ) : (
+                  <span className="px-1.5 py-0.5 text-sm whitespace-nowrap">
+                    {t.tag.name}
+                  </span>
+                )}
               </li>
             ))}
           </ul>
