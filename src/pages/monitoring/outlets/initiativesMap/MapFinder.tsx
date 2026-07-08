@@ -152,6 +152,8 @@ export function MapFinder({
     });
   };
 
+  const mapAttribution = `${MAP_TILES[tiles].attribution}${layer !== null && MAP_LAYERS[layer]?.attribution ? ` || ${MAP_LAYERS[layer].attribution}` : ""}`;
+
   return (
     <MapContainer
       bounds={bounds ?? COUNTRY_BOUNDS}
@@ -192,7 +194,7 @@ export function MapFinder({
 
       <TileLayer
         key={`tile-layer-${tiles}`}
-        attribution={MAP_TILES[tiles].attribution}
+        attribution={mapAttribution}
         url={MAP_TILES[tiles].url}
       />
 

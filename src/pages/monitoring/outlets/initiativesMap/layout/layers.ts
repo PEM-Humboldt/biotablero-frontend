@@ -49,6 +49,7 @@ export const MAP_LAYERS = {
   2: {
     label: "Humedales",
     url: "https://geoservicios.humboldt.org.co/geoserver/wms",
+    attribution: "",
     layers:
       "Proyecto_fondo_adaptacion:Humedales_Continentales_Insulares_2015_Vector",
     buttonBkg: waterResourcesBtn,
