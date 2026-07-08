@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import L, { type LatLngBoundsLiteral } from "leaflet";
-import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
+import { MapContainer, TileLayer, GeoJSON, WMSTileLayer } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import type {
   Feature,
@@ -21,13 +21,14 @@ import {
 } from "pages/monitoring/outlets/initiativesMap/mapFinder/MapMarker";
 import { ZoomControls } from "pages/monitoring/outlets/initiativesMap/mapFinder/ZoomControls";
 import {
-  type MAP_LAYERS,
+  MAP_LAYERS,
   MAP_TILES,
 } from "pages/monitoring/outlets/initiativesMap/layout/layers";
 import type {
   DeptFeature,
   DeptProperties,
 } from "pages/monitoring/outlets/initiativesMap/types/mapFeatures";
+import { Spinner } from "@ui/shadCN/component/spinner";
 
 export function MapFinder({
   tiles,
@@ -53,6 +54,7 @@ export function MapFinder({
   const navigate = useNavigate();
   const [center, setCenter] = useState<L.LatLng | null>(null);
   const [bounds, setBounds] = useState<LatLngBoundsLiteral | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!nation || !nation.features) {
@@ -193,6 +195,39 @@ export function MapFinder({
         attribution={MAP_TILES[tiles].attribution}
         url={MAP_TILES[tiles].url}
       />
+
+      {layer !== null && (
+        <WMSTileLayer
+          key={`${MAP_LAYERS[layer].url}-${MAP_LAYERS[layer].layers}`}
+          url={MAP_LAYERS[layer].url}
+          layers={MAP_LAYERS[layer].layers}
+          format="image/png"
+          transparent={true}
+          version="1.1.0"
+          zIndex={10}
+          eventHandlers={{
+            loading: () => {
+              setIsLoading(true);
+            },
+            load: () => {
+              setIsLoading(false);
+            },
+            tileerror: () => {
+              setIsLoading(false);
+              console.error("Error loading layer");
+            },
+          }}
+        />
+      )}
+
+      {isLoading && (
+        <div className="absolute inset-0 z-1000 bg-primary/50 backdrop-blur-[5px] flex flex-col items-center justify-center gap-2">
+          <Spinner className="size-10 text-primary-foreground" />
+          <span className="text-primary-foreground text-2xl font-normal">
+            Cargando capa geográfica...
+          </span>
+        </div>
+      )}
     </MapContainer>
   );
 }

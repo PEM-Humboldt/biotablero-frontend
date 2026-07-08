@@ -33,27 +33,31 @@ export const MAP_TILES = {
 
 export const MAP_LAYERS = {
   0: {
-    label: "Deforestación",
+    label: "Páramos",
     attribution: "",
-    url: "",
+    url: "https://geoservicios.humboldt.org.co/geoserver/wms",
+    layers: "Proyecto_fondo_adaptacion:Limites24Paramos_25K_2016",
     buttonBkg: deforestationBtn,
   },
   1: {
-    label: "Bosques",
+    label: "Cobertura boscosa",
     attribution: "",
-    url: "",
+    url: "https://geoservicios.humboldt.org.co/geoserver/ideam/wms",
+    layers: "ideam:bnb_2024_v8",
     buttonBkg: forestBtn,
   },
   2: {
-    label: "Fuentes hídricas",
-    attribution: "",
-    url: "",
+    label: "Humedales",
+    url: "https://geoservicios.humboldt.org.co/geoserver/wms",
+    layers:
+      "Proyecto_fondo_adaptacion:Humedales_Continentales_Insulares_2015_Vector",
     buttonBkg: waterResourcesBtn,
   },
   3: {
-    label: "Vías",
+    label: "Áreas protegidas",
     attribution: "",
-    url: "",
+    url: "https://mapas.parquesnacionales.gov.co/services/pnn/wms",
+    layers: "pnn:runap",
     buttonBkg: roadsBtn,
   },
 };
