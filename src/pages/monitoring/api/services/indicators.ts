@@ -52,3 +52,21 @@ export async function getIndicatorData(indicatorId: number) {
 
   return res;
 }
+
+/**
+ * Retrieves all the metadata from the specified indicator.
+ *
+ * @param indicatorId - The number of the indicator in DB
+ *
+ * @returns A `Promise` resolving to:
+ * - On success: An `IndicatorData` object
+ * - On failure: A `ApiRequestError` object.
+ */
+export async function getIndicatorMetadata(indicatorId: number) {
+  const res = await monitoringAPI<IndicatorMetadata>({
+    type: "get",
+    endpoint: `Indicator/${indicatorId}`,
+  });
+
+  return res;
+}

@@ -2,20 +2,25 @@ import {
   createContext,
   useState,
   type ReactNode,
-  useMemo,
   useEffect,
+  useContext,
+  useRef,
 } from "react";
+import { useNavigate, useParams } from "react-router";
+
+import type { ODataParams } from "@appTypes/odata";
+
 import type {
   IndicatorData,
   IndicatorMetadata,
 } from "pages/monitoring/types/indicators";
-import type { ODataParams } from "@appTypes/odata";
-import { useParams } from "react-router";
 import {
   getIndicatorData,
+  getIndicatorMetadata,
   getIndicators,
 } from "pages/monitoring/api/services/indicators";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import { INDICATORS_PER_PAGE } from "@config/monitoring";
 
 type IndicatorsContextValues = {
   indicators: IndicatorMetadata[];
@@ -23,10 +28,12 @@ type IndicatorsContextValues = {
   errors: string[];
   currentIndicator: (IndicatorMetadata & IndicatorData) | null;
   searchIndicators: (searchParams: ODataParams) => void;
+  currentPage: number;
+  setCurrentPage: (page: number) => void;
+  indicatorsAmount: number;
 };
 
 const IndicatorsContext = createContext<IndicatorsContextValues | null>(null);
-export const INDICATORS_PER_PAGE = 5;
 
 export function IndicatorsCTX({ children }: { children: ReactNode }) {
   const { initiativeId, detailItem, indicatorId } = useParams();
@@ -36,24 +43,33 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
   const [searchParams, setSearchParams] = useState<ODataParams>({
     ...(initiativeId
       ? {
-          top: INDICATORS_PER_PAGE,
           filter: `initiativeId eq ${initiativeId}`,
-          orderby: "creationDate desc",
+          top: INDICATORS_PER_PAGE,
         }
       : {}),
   });
   const [indicators, setIndicators] = useState<IndicatorMetadata[]>([]);
-  const [currentIndicatorData, setCurrentIndicatorData] =
-    useState<IndicatorData | null>(null);
+  const [currentIndicator, setCurrentIndicator] = useState<
+    (IndicatorMetadata & IndicatorData) | null
+  >(null);
+  const navigate = useNavigate();
+
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const indicatorsAmount = useRef(0);
+  const prevSearchParamsRef = useRef(searchParams);
 
   const currentIndicatorId = detailItem || indicatorId;
+  const isNewFilter =
+    searchParams.filter !== prevSearchParamsRef.current.filter;
+  const resolvedPage = isNewFilter ? 1 : currentPage;
 
   useEffect(() => {
     const fetchIndicators = async () => {
       setIsLoading(true);
       setErrors([]);
 
-      const res = await getIndicators(searchParams);
+      const skip = (resolvedPage - 1) * INDICATORS_PER_PAGE;
+      const res = await getIndicators({ ...searchParams, skip });
       setIsLoading(false);
       if (isMonitoringAPIError(res)) {
         setErrors(res.data.map((err) => err.msg));
@@ -62,33 +78,51 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
       }
 
       setIndicators(res.value);
+      indicatorsAmount.current = res["@odata.count"];
     };
 
     void fetchIndicators();
-  }, [searchParams]);
+  }, [searchParams, resolvedPage]);
 
   useEffect(() => {
     if (!currentIndicatorId) {
-      setCurrentIndicatorData(null);
+      setCurrentIndicator(null);
       return;
     }
 
     const fetchIndicatorData = async () => {
       setIsLoading(true);
       setErrors([]);
-      const res = await getIndicatorData(Number(currentIndicatorId));
 
-      setIsLoading(false);
-      if (isMonitoringAPIError(res)) {
-        setCurrentIndicatorData(null);
-        setErrors(res.data.map((err) => err.msg));
+      const metadata = await getIndicatorMetadata(Number(currentIndicatorId));
+      if (isMonitoringAPIError(metadata)) {
+        setIsLoading(false);
+        setCurrentIndicator(null);
+        setErrors(metadata.data.map((err) => err.msg));
         return;
       }
-      setCurrentIndicatorData(res);
+
+      if (initiativeId && Number(initiativeId) !== metadata.initiativeId) {
+        void navigate(
+          `/Monitoreo/Iniciativas/${metadata.initiativeId}/Indicadores/${currentIndicatorId}`,
+        );
+        return;
+      }
+
+      const data = await getIndicatorData(Number(currentIndicatorId));
+      if (isMonitoringAPIError(data)) {
+        setIsLoading(false);
+        setCurrentIndicator(null);
+        setErrors(data.data.map((err) => err.msg));
+        return;
+      }
+
+      setIsLoading(false);
+      setCurrentIndicator({ ...metadata, ...data });
     };
 
     void fetchIndicatorData();
-  }, [currentIndicatorId]);
+  }, [currentIndicatorId, navigate, initiativeId]);
 
   const searchIndicators = (params: ODataParams) => {
     setSearchParams((oldParams) => {
@@ -105,21 +139,6 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
     });
   };
 
-  const currentIndicator = useMemo(() => {
-    if (!currentIndicatorId || !currentIndicatorData) {
-      return null;
-    }
-
-    const metadata = indicators.find(
-      (i) => i.id === Number(currentIndicatorId),
-    );
-    if (!metadata) {
-      return null;
-    }
-
-    return { ...metadata, ...currentIndicatorData };
-  }, [currentIndicatorId, indicators, currentIndicatorData]);
-
   return (
     <IndicatorsContext.Provider
       value={{
@@ -128,9 +147,22 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
         errors,
         searchIndicators,
         currentIndicator,
+        currentPage,
+        setCurrentPage,
+        indicatorsAmount: indicatorsAmount.current,
       }}
     >
       {children}
     </IndicatorsContext.Provider>
   );
+}
+
+export function useIndicatorsCTX() {
+  const context = useContext(IndicatorsContext);
+
+  if (!context) {
+    throw new Error("useIndicatorsCTX must be used within the IndicatorsCTX");
+  }
+
+  return context;
 }
