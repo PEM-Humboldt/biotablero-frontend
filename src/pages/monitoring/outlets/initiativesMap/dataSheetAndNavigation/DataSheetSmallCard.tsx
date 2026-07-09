@@ -5,7 +5,6 @@ import { cn } from "@ui/shadCN/lib/utils";
 import { Button } from "@ui/shadCN/component/button";
 import type { LucideIcon } from "lucide-react";
 import { TAG_COLORS } from "@config/monitoring";
-import { uiText } from "pages/monitoring/outlets/initiativesMap/layout/uiText";
 
 export function DataSheetSmallCard({
   title,

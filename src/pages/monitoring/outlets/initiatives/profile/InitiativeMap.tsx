@@ -31,7 +31,7 @@ export function InitiativeMap() {
   );
 
   useEffect(() => {
-    if (!initiativeInfo) {
+    if (!initiativeInfo?.hasPolygon) {
       return;
     }
 
@@ -43,10 +43,8 @@ export function InitiativeMap() {
       setIsLoading(false);
       if (isMonitoringAPIError(res)) {
         setInitiativePolygon(null);
+        setErrors(res.data.map((err) => err.msg));
 
-        if (res.status !== 404) {
-          setErrors(res.data.map((err) => err.msg));
-        }
         return;
       }
 
@@ -70,7 +68,7 @@ export function InitiativeMap() {
         mapBounds = bounds;
       }
     } catch (e) {
-      console.error("Error calculando bounds estáticos:", e);
+      console.error("Error calculando el mapa:", e);
     }
   }
   return (
