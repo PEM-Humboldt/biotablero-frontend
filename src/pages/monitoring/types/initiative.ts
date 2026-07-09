@@ -23,9 +23,9 @@ export type InitiativeAditionalInfo = {
 };
 
 export type InitiativeByLocation = {
-  initiativeId: number;
-  initiativeName: string;
-  initiativeShortName: string;
+  id: number;
+  name: string;
+  shortName: string;
   mainLocationId: number;
   coordinate: [number, number];
   tags?: TagInInitiative[];
