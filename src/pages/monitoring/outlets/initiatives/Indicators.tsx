@@ -6,7 +6,7 @@ export function Indicators() {
           Buscador
         </div>
 
-        <div className="flex-1 flex flex-col p-2 gap-2 [&_span]:bg-background/30 [&_span]:min-h-[500px] overflow-auto scrollbar-custom">
+        <div className="flex-1 flex flex-col p-2 gap-2 [&_span]:bg-background/30 overflow-auto scrollbar-custom">
           <span>item</span>
           <span>item</span>
           <span>item</span>
