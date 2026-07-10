@@ -4,10 +4,15 @@ import type {
 } from "pages/monitoring/types/odataResponse";
 
 export type indicatorDescription = { id: number; name: string };
-export type IndicatorVersion = { id: number; version: number };
+export type IndicatorVersion = {
+  id: number;
+  creationDate: string;
+  version: number;
+};
 
 export interface IndicatorMetadata {
   id: number;
+  name: string;
   initiativeId: number;
   type: indicatorDescription;
   locations: LocationCompleteInfo[];

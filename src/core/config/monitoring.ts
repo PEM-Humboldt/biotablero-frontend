@@ -2,6 +2,7 @@ import type { ImageMimeType } from "@appTypes/formats";
 import type { ODataParams } from "@appTypes/odata";
 import type { LatLngBoundsLiteral } from "leaflet";
 
+export const LOCALE = "es-ES";
 // Logs
 export const LOG_RECORDS_PER_PAGE = 20; // registrys on the logs summary
 

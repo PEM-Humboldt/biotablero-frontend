@@ -18,6 +18,7 @@ import {
   getIndicatorData,
   getIndicatorMetadata,
   getIndicators,
+  getIndicatorsByInitiative,
 } from "pages/monitoring/api/services/indicators";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { INDICATORS_PER_PAGE } from "@config/monitoring";
@@ -41,12 +42,7 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [searchParams, setSearchParams] = useState<ODataParams>({
-    ...(initiativeId
-      ? {
-          filter: `initiativeId eq ${initiativeId}`,
-          top: INDICATORS_PER_PAGE,
-        }
-      : {}),
+    top: INDICATORS_PER_PAGE,
   });
   const [indicators, setIndicators] = useState<IndicatorMetadata[]>([]);
   const [currentIndicator, setCurrentIndicator] = useState<
@@ -68,21 +64,34 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
       setIsLoading(true);
       setErrors([]);
 
-      const skip = (resolvedPage - 1) * INDICATORS_PER_PAGE;
-      const res = await getIndicators({ ...searchParams, skip });
-      setIsLoading(false);
-      if (isMonitoringAPIError(res)) {
-        setErrors(res.data.map((err) => err.msg));
-        setIndicators([]);
-        return;
-      }
+      if (initiativeId) {
+        const res = await getIndicatorsByInitiative(Number(initiativeId));
+        setIsLoading(false);
+        if (isMonitoringAPIError(res)) {
+          setErrors(res.data.map((err) => err.msg));
+          setIndicators([]);
+          return;
+        }
 
-      setIndicators(res.value);
-      indicatorsAmount.current = res["@odata.count"];
+        setIndicators(res);
+        indicatorsAmount.current = res.length;
+      } else {
+        const skip = (resolvedPage - 1) * INDICATORS_PER_PAGE;
+        const res = await getIndicators({ ...searchParams, skip });
+        setIsLoading(false);
+        if (isMonitoringAPIError(res)) {
+          setErrors(res.data.map((err) => err.msg));
+          setIndicators([]);
+          return;
+        }
+
+        setIndicators(res.value);
+        indicatorsAmount.current = res["@odata.count"];
+      }
     };
 
     void fetchIndicators();
-  }, [searchParams, resolvedPage]);
+  }, [searchParams, resolvedPage, initiativeId]);
 
   useEffect(() => {
     if (!currentIndicatorId) {
