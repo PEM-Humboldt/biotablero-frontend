@@ -1,18 +1,20 @@
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@ui/shadCN/component/input-group";
-import { IndicatorSmallCard } from "pages/monitoring/outlets/initiatives/indicators/search/indicatorSmallCard";
 import { useMemo, useState } from "react";
 import { SearchIcon } from "lucide-react";
-import { fuzzySearch } from "pages/monitoring/utils/search";
+
 import { Button } from "@ui/shadCN/component/button";
 import {
   NativeSelect,
   NativeSelectOption,
 } from "@ui/shadCN/component/native-select";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@ui/shadCN/component/input-group";
+
+import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
+import { IndicatorSmallCard } from "pages/monitoring/outlets/initiatives/indicators/search/indicatorSmallCard";
+import { fuzzySearch } from "pages/monitoring/utils/search";
 
 export function Search() {
   const { indicators: allInitiativeIndicators } = useIndicatorsCTX();

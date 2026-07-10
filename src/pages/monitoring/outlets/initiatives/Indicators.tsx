@@ -8,7 +8,7 @@ export function Indicators() {
       <div className="flex flex-col lg:flex-row min-h-full">
         <Search />
 
-        <main className="flex-3">
+        <main className="flex-3 bg-[#f5f5f5]">
           <IndicatorCard />
         </main>
       </div>
