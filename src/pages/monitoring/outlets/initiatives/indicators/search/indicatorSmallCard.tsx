@@ -34,7 +34,7 @@ export function IndicatorSmallCard({
       indicator.versions.length === 1
         ? {
             since: new Date(indicator.versions[0].creationDate),
-            until: null,
+            until: new Date(indicator.versions[0].creationDate),
           }
         : indicator.versions.reduce(
             (acc, v) => {
@@ -101,7 +101,7 @@ export function IndicatorSmallCard({
         </div>
       ) : (
         <div>
-          <dl className="text-sm mb-2 flex gap-2 *:m-0! *:flex *:flex-col *:items-center">
+          <dl className="text-sm mb-2 flex justify-between gap-2 *:m-0! *:flex *:flex-col text-center *:items-center">
             <div>
               <dt>Versiones</dt>
               <dd className="font-normal">{indicator.versions.length}</dd>
