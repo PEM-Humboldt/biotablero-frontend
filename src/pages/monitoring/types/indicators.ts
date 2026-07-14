@@ -3,7 +3,16 @@ import type {
   TagInIndicator,
 } from "pages/monitoring/types/odataResponse";
 
-export type indicatorDescription = { id: number; name: string };
+export enum IndicatorType {
+  OCCUPATION_SPECIES = 1,
+  DETECTION_PROBABILITY_WITHOUT_COVARIABLES = 2,
+  SPECIES_DIVERSITY = 3,
+  RELATIVE_SPECIES_USE_BY_GROUP = 4,
+  RELATIONAL_INTENSITY_INDEX = 5,
+  COLLECTIVE_ACTION_PARTICIPATION = 6,
+}
+
+export type indicatorDescription = { id: IndicatorType; name: string };
 export type IndicatorVersion = {
   id: number;
   creationDate: string;

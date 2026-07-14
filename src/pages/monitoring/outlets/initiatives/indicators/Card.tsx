@@ -23,6 +23,7 @@ import {
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import type { IndicatorMetadata } from "pages/monitoring/types/indicators";
+import { Graph } from "pages/monitoring/outlets/initiatives/indicators/card/Graph";
 
 const tabs = [
   { key: "methodology", label: "Metodología", icon: Network },
@@ -35,15 +36,16 @@ const tabs = [
   { key: "authorship", label: "Autoría", icon: FilePenLine },
 ];
 
-export function IndicatorCard() {
+export function Card() {
   const { currentIndicator, isLoading, errors } = useIndicatorsCTX();
 
   return (
-    <>
+    <main className="flex-3 bg-[#f5f5f5]">
       <ErrorsList
         errorItems={errors}
         className="m-2 p-4 bg-accent/10 border border-accent rounded-lg"
       />
+
       {!currentIndicator ? (
         <div className="m-8 p-4 text-2xl bg-primary/10 text-primary rounded-lg border border-primary font-normal">
           Selecciona un indicador
@@ -76,23 +78,19 @@ export function IndicatorCard() {
             >
               {new Date(currentIndicator.creationDate).toLocaleDateString(
                 LOCALE,
-                {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                },
+                { day: "numeric", month: "long", year: "numeric" },
               )}
             </time>
           </header>
 
-          <div className="flex flex-col lg:flex-row">
-            <section className="flex-2 aspect-3/2 px-4 pt-4 lg:py-4 lg:pl-4">
+          <div className="flex flex-wrap flex-col md:flex-row gap-4 p-4">
+            <section className="flex-2 md:min-w-[500px] aspect-3/2">
               <div className="w-full h-full bg-background rounded-lg p-4 shadow-2xl">
-                indicador
+                <Graph />
               </div>
             </section>
 
-            <section className="flex-1 m-4 ml-0 p-4 bg-background rounded-lg shadow-2xl">
+            <section className="flex-1 p-4 bg-background md:min-w-[200px] rounded-lg shadow-2xl">
               <h4 className="flex gap-1 items-center">
                 <BadgeCheck className="text-accent" /> ¿Qué dice este indicador?
                 {isLoading && <Spinner className="text-primary ml-2" />}
@@ -143,6 +141,6 @@ export function IndicatorCard() {
           </div>
         </>
       )}
-    </>
+    </main>
   );
 }

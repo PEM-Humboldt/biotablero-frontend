@@ -44,7 +44,7 @@ export function ModulesTabs({ activeTab }: { activeTab: number | null }) {
           orientation="vertical"
           className="flex flex-row -mt-17 max-w-[1000px] mx-auto gap-8 pb-8"
         >
-          <TabsList className="flex-1 flex flex-col bg-transparent h-auto items-stretch p-0 mt-1 justify-start">
+          <TabsList className="flex-1 flex flex-col gap-0! outline-none bg-transparent h-auto items-stretch p-0 mt-1 justify-start">
             {currentCategory.sections.map((section, i) => (
               <TabsTrigger
                 key={`${section.title}_${activeTab}`}

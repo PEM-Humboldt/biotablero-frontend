@@ -1,6 +1,6 @@
 import { Search } from "pages/monitoring/outlets/initiatives/indicators/Search";
 import { IndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
-import { IndicatorCard } from "pages/monitoring/outlets/initiatives/indicators/IndicatorCard";
+import { Card } from "pages/monitoring/outlets/initiatives/indicators/Card";
 
 export function Indicators() {
   return (
@@ -8,9 +8,7 @@ export function Indicators() {
       <div className="flex flex-col lg:flex-row min-h-full">
         <Search />
 
-        <main className="flex-3 bg-[#f5f5f5]">
-          <IndicatorCard />
-        </main>
+        <Card />
       </div>
     </IndicatorsCTX>
   );
