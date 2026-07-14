@@ -83,3 +83,33 @@ export interface IndicatorData {
   authorship: string;
   groups: IndicatorGroup[];
 }
+
+type LineDataValues = {
+  x: string;
+  y: number;
+  upperLimit?: number;
+  lowerLimit?: number;
+  hasLimits: boolean;
+  sortKey: number;
+};
+
+export type LineData = {
+  id: string;
+  scientificName: string;
+  commonName: string;
+  metricName: string;
+  data: LineDataValues[];
+};
+
+export type BarDatavalues = {
+  [key: string]: string | number;
+  date: string;
+  sortKey: number;
+};
+
+export type BarsData = {
+  keys: string[];
+  data: BarDatavalues[];
+};
+
+export type CleanDataType = { cleanData: BarsData | LineData[] };

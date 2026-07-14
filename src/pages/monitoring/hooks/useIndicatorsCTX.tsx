@@ -10,9 +10,11 @@ import { useNavigate, useParams } from "react-router";
 
 import type { ODataParams } from "@appTypes/odata";
 
-import type {
-  IndicatorData,
-  IndicatorMetadata,
+import {
+  type CleanDataType,
+  type IndicatorData,
+  type IndicatorMetadata,
+  IndicatorType,
 } from "pages/monitoring/types/indicators";
 import {
   getIndicatorData,
@@ -22,12 +24,16 @@ import {
 } from "pages/monitoring/api/services/indicators";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { INDICATORS_PER_PAGE } from "@config/monitoring";
+import {
+  dataTransformBarGraph,
+  dataTransformLineGraph,
+} from "pages/monitoring/utils/indicatorsTransformers";
 
 type IndicatorsContextValues = {
   indicators: IndicatorMetadata[];
   isLoading: boolean;
   errors: string[];
-  currentIndicator: (IndicatorMetadata & IndicatorData) | null;
+  currentIndicator: (IndicatorMetadata & IndicatorData & CleanDataType) | null;
   searchIndicators: (searchParams: ODataParams) => void;
   currentPage: number;
   setCurrentPage: (page: number) => void;
@@ -35,6 +41,16 @@ type IndicatorsContextValues = {
 };
 
 const IndicatorsContext = createContext<IndicatorsContextValues | null>(null);
+
+const dataTransformFunction = {
+  [IndicatorType.OCCUPATION_SPECIES]: dataTransformLineGraph,
+  [IndicatorType.DETECTION_PROBABILITY_WITHOUT_COVARIABLES]:
+    dataTransformLineGraph,
+  [IndicatorType.SPECIES_DIVERSITY]: dataTransformLineGraph,
+  [IndicatorType.RELATIVE_SPECIES_USE_BY_GROUP]: dataTransformBarGraph,
+  [IndicatorType.RELATIONAL_INTENSITY_INDEX]: dataTransformBarGraph,
+  [IndicatorType.COLLECTIVE_ACTION_PARTICIPATION]: dataTransformBarGraph,
+};
 
 export function IndicatorsCTX({ children }: { children: ReactNode }) {
   const { initiativeId, detailItem, indicatorId } = useParams();
@@ -46,7 +62,7 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
   });
   const [indicators, setIndicators] = useState<IndicatorMetadata[]>([]);
   const [currentIndicator, setCurrentIndicator] = useState<
-    (IndicatorMetadata & IndicatorData) | null
+    (IndicatorMetadata & IndicatorData & CleanDataType) | null
   >(null);
   const navigate = useNavigate();
 
@@ -127,7 +143,11 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
       }
 
       setIsLoading(false);
-      setCurrentIndicator({ ...metadata, ...data });
+      setCurrentIndicator({
+        ...metadata,
+        ...data,
+        cleanData: dataTransformFunction[metadata.type.id](data),
+      });
     };
 
     void fetchIndicatorData();
