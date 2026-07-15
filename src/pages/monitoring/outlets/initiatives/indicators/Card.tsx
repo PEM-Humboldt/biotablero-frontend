@@ -23,7 +23,7 @@ import {
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import type { IndicatorMetadata } from "pages/monitoring/types/indicators";
-import { Graph } from "pages/monitoring/outlets/initiatives/indicators/card/Graph";
+import { GraphSelector } from "pages/monitoring/outlets/initiatives/indicators/card/GraphSelector";
 
 const tabs = [
   { key: "methodology", label: "Metodología", icon: Network },
@@ -86,7 +86,7 @@ export function Card() {
           <div className="flex flex-wrap flex-col md:flex-row gap-4 p-4">
             <section className="flex-2 md:min-w-[500px] aspect-3/2">
               <div className="w-full h-full bg-background rounded-lg p-2 shadow-2xl flex flex-col gap-2">
-                <Graph />
+                <GraphSelector />
               </div>
             </section>
 
