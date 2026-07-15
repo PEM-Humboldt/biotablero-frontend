@@ -85,7 +85,7 @@ export function Card() {
 
           <div className="flex flex-wrap flex-col md:flex-row gap-4 p-4">
             <section className="flex-2 md:min-w-[500px] aspect-3/2">
-              <div className="w-full h-full bg-background rounded-lg p-4 shadow-2xl">
+              <div className="w-full h-full bg-background rounded-lg p-2 shadow-2xl flex flex-col gap-2">
                 <Graph />
               </div>
             </section>
@@ -95,8 +95,8 @@ export function Card() {
                 <BadgeCheck className="text-accent" /> ¿Qué dice este indicador?
                 {isLoading && <Spinner className="text-primary ml-2" />}
               </h4>
-              {currentIndicator.description.split("\n").map((par) => (
-                <p>{par}</p>
+              {currentIndicator.description.split("\n").map((par, i) => (
+                <p key={`currentDescription_${i}`}>{par}</p>
               ))}
             </section>
           </div>
@@ -131,8 +131,8 @@ export function Card() {
                       tab.key as GetKeysWithStringValues<IndicatorMetadata>
                     ]
                       .split("\n")
-                      .map((par) => (
-                        <p>{par}</p>
+                      .map((par, i) => (
+                        <p key={`tabContent_${tab.label}_${i}`}>{par}</p>
                       ))}
                   </section>
                 </TabsContent>

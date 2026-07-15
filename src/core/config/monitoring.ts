@@ -166,3 +166,4 @@ export const GLOSARY_FILTER_IS_AND = false;
 
 // Indicators
 export const INDICATORS_PER_PAGE = 5;
+export const INDICATORS_MAX_AMOUNT_OCUPATION_SPECIES = 3;

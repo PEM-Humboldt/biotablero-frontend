@@ -132,7 +132,10 @@ export function IndicatorSmallCard({
               const date = new Date(v.creationDate);
 
               return (
-                <div className="flex gap-2 justify-between p-1 rounded items-center hover:bg-muted">
+                <div
+                  key={`version_${indicator.id}_${v.version}`}
+                  className="flex gap-2 justify-between p-1 rounded items-center hover:bg-muted"
+                >
                   <div className="text-sm flex flex-col *:m-0!">
                     <span>Version {v.version}</span>
                     <time dateTime={date.toISOString()}>

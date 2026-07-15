@@ -6,6 +6,15 @@ import type {
   LineData,
 } from "pages/monitoring/types/indicators";
 
+/**
+ * Formats a single date or a date range into a localized, human-readable string.
+ *
+ * @param year - The starting year.
+ * @param month - The starting month (1-indexed).
+ * @param endYear - The optional ending year for a range.
+ * @param endMonth - The optional ending month (1-indexed) for a range.
+ * @returns A localized date or range string based on the `LOCALE` configuration.
+ */
 function displayDate(
   year: number,
   month: number,
@@ -32,6 +41,16 @@ function displayDate(
   });
 }
 
+/**
+ * Transforms raw indicator data into a compatible structure for Line charts (`LineData[]`).
+ * * Groups the incoming values by a combined key of category name and measurement unit.
+ * * Automatically computes confidence intervals (upper and lower bounds) based on absolute or relative limits.
+ * * Ensures all data points within each series are sorted chronologically before returning.
+ *
+ * @param data - The raw indicator payload containing groups, categories, and time-series values.
+ *
+ * @returns An array of series formatted for line charts, or an empty array if no groups are present.
+ */
 export function dataTransformLineGraph(data: IndicatorData) {
   if (!data?.groups) {
     return [];
@@ -42,9 +61,12 @@ export function dataTransformLineGraph(data: IndicatorData) {
   data.groups.forEach((group) => {
     group.values.forEach((value) => {
       const metricName = value.measureUnit?.name
-        ? ` - ${value.measureUnit.name}`
+        ? ` || ${value.measureUnit.name}`
         : "";
-      const seriesId = `${group.category.name}${metricName}`;
+      const seriesDescription = group.category?.description
+        ? `, ${group.category.description}`
+        : "";
+      const seriesId = `${group.category.name}${seriesDescription}${metricName}`;
 
       if (!seriesMap.has(seriesId)) {
         seriesMap.set(seriesId, {
@@ -94,6 +116,15 @@ export function dataTransformLineGraph(data: IndicatorData) {
   return series;
 }
 
+/**
+ * Transforms raw indicator data into a compatible structure for Bar charts (`BarsData`).
+ * * Aggregates and pivots category-specific metrics into flat, date-keyed objects.
+ * * Sorts the dataset chronologically based on the reconstructed timeline and returns unique series keys.
+ *
+ * @param data - The raw indicator payload containing groups, categories, and time-series values.
+ *
+ * @returns An object containing the sorted bar dataset and the array of unique category keys.
+ */
 export function dataTransformBarGraph(data: IndicatorData): BarsData {
   if (!data?.groups) {
     return { data: [], keys: [] };
@@ -118,7 +149,7 @@ export function dataTransformBarGraph(data: IndicatorData): BarsData {
         dateMap.set(date, { date, sortKey });
       }
 
-      dateMap.get(date)![key] = value.value * 1000000;
+      dateMap.get(date)![key] = value.value;
     });
   });
 
