@@ -34,7 +34,7 @@ export function IndicatorSmallCard({
       indicator.versions.length === 1
         ? {
             since: new Date(indicator.versions[0].creationDate),
-            until: new Date(indicator.versions[0].creationDate),
+            until: null,
           }
         : indicator.versions.reduce(
             (acc, v) => {

@@ -29,10 +29,7 @@ export function OccupationSpecies() {
           ? getSeriesColor(matchedGroup.category.id)
           : "#FF0000";
 
-        return {
-          ...line,
-          color,
-        };
+        return { ...line, color };
       });
   }, [currentIndicator, selectedSpecies]);
 

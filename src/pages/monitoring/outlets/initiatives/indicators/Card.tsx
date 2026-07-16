@@ -101,7 +101,7 @@ export function Card() {
             </section>
           </div>
 
-          <div className="bg-background mx-4 rounded-b-lg overflow-hidden shadow-2xl">
+          <div className="bg-background mx-4 mb-4 rounded-b-lg overflow-hidden shadow-2xl">
             <Tabs className="flex flex-col h-full" defaultValue={tabs[0].label}>
               <TabsList className="w-full h-auto flex *:flex-1 bg-accent p-0! m-0!">
                 {tabs.map((tab) => (

@@ -35,7 +35,7 @@ export function DetectionProbabilityWithoutCovariables() {
       }));
   }, [currentIndicator, selectedSpecie]);
 
-  const selectedSpecieName = useMemo(() => {
+  const selectedSpecieTitle = useMemo(() => {
     const current = currentIndicator?.groups.find(
       (specie) => specie.category.name === selectedSpecie,
     );
@@ -86,10 +86,12 @@ export function DetectionProbabilityWithoutCovariables() {
             "text-primary",
           )}
         >
-          <div>{selectedSpecieName?.commonName ?? selectedSpecieName.name}</div>
-          {selectedSpecieName?.commonName && (
+          <div>
+            {selectedSpecieTitle?.commonName ?? selectedSpecieTitle.name}
+          </div>
+          {selectedSpecieTitle?.commonName && (
             <div className="text-base italic font-light">
-              {selectedSpecieName.name}
+              {selectedSpecieTitle.name}
             </div>
           )}
         </h4>
@@ -97,7 +99,7 @@ export function DetectionProbabilityWithoutCovariables() {
 
       <div className="relative w-full h-full min-h-[200px]">
         <ResponsiveLine
-          data={filteredData as LineData[]}
+          data={filteredData}
           margin={{ top: 20, right: 30, bottom: 65, left: 30 }}
           xScale={{ type: "point" }}
           yScale={{
@@ -135,9 +137,10 @@ export function DetectionProbabilityWithoutCovariables() {
             },
           ]}
           tooltip={({ point }) => {
-            const [name, description] = point.seriesId
-              .replace(/\|\|.*$/, "")
-              .split(", ");
+            const [name] = point.seriesId.replace(/\|\|.*$/, "").split(", ");
+
+            const data = point.data.y;
+            const date = point.data.x;
 
             return (
               <div
@@ -145,16 +148,29 @@ export function DetectionProbabilityWithoutCovariables() {
                 style={{ pointerEvents: "none", whiteSpace: "nowrap" }}
               >
                 <div className="flex flex-col text-center text-sm mb-1 *:m-0!">
-                  <span className="font-normal">{description}</span>
-                  <span className="italic">{name}</span>
+                  <span className="font-normal">
+                    <span
+                      className="inline-block w-3 h-3 mr-1 rounded-full"
+                      style={{ backgroundColor: point.seriesColor }}
+                    />
+                    {name}
+                  </span>
+                  <span className="italic">{date}</span>
                 </div>
-                <div className="space-x-1">
-                  <span
-                    className="inline-block w-3 h-3 rounded-full"
-                    style={{ backgroundColor: point.color }}
-                  />
-                  <span className="font-normal">{point.data.y}</span>
-                </div>
+                <table className="space-x-1 [&_td]:px-2 [&_tr_td]:first:text-right">
+                  <tr>
+                    <td>Límite superior</td>
+                    <td>{point.data?.upperLimit ?? data}</td>
+                  </tr>
+                  <tr>
+                    <td>Índice</td>
+                    <td>{data}</td>
+                  </tr>
+                  <tr>
+                    <td>Límite inferior</td>
+                    <td>{point.data?.lowerLimit ?? data}</td>
+                  </tr>
+                </table>
               </div>
             );
           }}

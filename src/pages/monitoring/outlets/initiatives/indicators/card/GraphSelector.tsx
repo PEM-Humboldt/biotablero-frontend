@@ -2,6 +2,7 @@ import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { IndicatorType } from "pages/monitoring/types/indicators";
 import { OccupationSpecies } from "pages/monitoring/outlets/initiatives/indicators/card/OccupationSpecies";
 import { DetectionProbabilityWithoutCovariables } from "pages/monitoring/outlets/initiatives/indicators/card/DetectionProbabilityWithoutCovariables";
+import { SpeciesDiversity } from "pages/monitoring/outlets/initiatives/indicators/card/SpeciesDiversity";
 
 export function GraphSelector() {
   const { currentIndicator } = useIndicatorsCTX();
@@ -18,7 +19,7 @@ export function GraphSelector() {
       return <DetectionProbabilityWithoutCovariables />;
 
     case IndicatorType.SPECIES_DIVERSITY:
-      return <div>{JSON.stringify(currentIndicator.cleanData, null, 2)}</div>;
+      return <SpeciesDiversity />;
 
     case IndicatorType.RELATIVE_SPECIES_USE_BY_GROUP:
       return <div>{JSON.stringify(currentIndicator.cleanData, null, 2)}</div>;
