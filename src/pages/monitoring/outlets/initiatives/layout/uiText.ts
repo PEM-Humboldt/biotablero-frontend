@@ -46,4 +46,13 @@ export const uiText = {
       },
     },
   },
+
+  collaborators: {
+    title: "Colaboradores de la iniciativa",
+    descriptionMd:
+      "Los participantes del monitoreo comunitario combinan conocimiento local con apoyo técnico e institucional. Involucra líderes, voluntarios y grupos sociales que aportan su experiencia territorial, así como instituciones locales que facilitan recursos. También participan ONGs, universidades y entidades especializadas con metodologías y capacitación. La articulación de todos garantiza un monitoreo integral, participativo y útil para la toma de decisiones colectivas.",
+    noCollaborators:
+      "No es posible mostrar a las y los colaboradores en este momento",
+    joininInfo: (fromDate: string, role: string) => `${role} desde ${fromDate}`,
+  },
 };
