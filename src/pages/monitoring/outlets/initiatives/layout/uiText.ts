@@ -1,5 +1,3 @@
-// import { uiText } from "pages/monitoring/outlets/initiatives/layout/uiText";
-
 export const uiText = {
   profile: {
     basicInfo: {
@@ -18,7 +16,7 @@ export const uiText = {
 
     tagsAndContact: {
       mailBtn: {
-        sr: "Escribenos un correo",
+        sr: "Escríbenos un correo",
         title: "",
         label: "Escríbenos",
       },

@@ -30,7 +30,8 @@ export function MonitoringEventsGraph() {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [years, setYears] = useState<number[]>([]);
-  const [currentYearIndex, setCurrentYearIndex] = useState(0);
+  // const [currentYearIndex, setCurrentYearIndex] = useState(0);
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [monitoringEventsData, setMonitoringEventsData] = useState<
     InitiativeMonitoringEvent[]
   >([]);
@@ -43,6 +44,7 @@ export function MonitoringEventsGraph() {
 
       setIsLoading(true);
       setYears([]);
+      setSelectedYear(null);
 
       const availableYears = await getInitiativeMonitoringEvents(
         Number(initiativeId),
@@ -59,7 +61,9 @@ export function MonitoringEventsGraph() {
         .map((year) => year.groupNumber);
 
       setYears(sortedYears);
-      setCurrentYearIndex(0);
+      if (sortedYears.length > 0) {
+        setSelectedYear(sortedYears[0]);
+      }
     };
 
     void fetchYearsAvailable();
@@ -90,8 +94,10 @@ export function MonitoringEventsGraph() {
   );
 
   useEffect(() => {
-    void fetchMonitoringEvents(years[currentYearIndex]);
-  }, [fetchMonitoringEvents, currentYearIndex, years]);
+    if (selectedYear !== null) {
+      void fetchMonitoringEvents(selectedYear);
+    }
+  }, [fetchMonitoringEvents, selectedYear]);
 
   const formattedData = useMemo(() => {
     return monitoringEventsData.map((item) => ({
@@ -131,17 +137,15 @@ export function MonitoringEventsGraph() {
           <div className="flex gap-2 justify-between items-center">
             <div className="flex gap-2 items-center">
               <h4 className="m-0">
-                {uiText.profile.monitoringEventsGraph.title(
-                  years[currentYearIndex],
-                )}
+                {uiText.profile.monitoringEventsGraph.title(selectedYear ?? 0)}
               </h4>
               {isLoading && <Spinner />}
             </div>
 
             {years.length > 1 && (
               <Select
-                value={String(currentYearIndex)}
-                onValueChange={(value) => setCurrentYearIndex(Number(value))}
+                value={String(selectedYear)}
+                onValueChange={(value) => setSelectedYear(Number(value))}
                 disabled={years.length === 0}
                 aria-label={uiText.profile.monitoringEventsGraph.selectYear.sr}
               >
@@ -158,10 +162,10 @@ export function MonitoringEventsGraph() {
                 </SelectTrigger>
 
                 <SelectContent>
-                  {years.map((year, i) => (
+                  {years.map((year) => (
                     <SelectItem
                       key={`monitoringEventYear_${year}`}
-                      value={String(i)}
+                      value={String(year)}
                     >
                       {year}
                     </SelectItem>
