@@ -156,23 +156,26 @@ export function DetectionProbabilityWithoutCovariables() {
                   </span>
                   <span className="italic">{date}</span>
                 </div>
+
                 <table className="space-x-1 [&_td]:px-2 [&_tr_td]:first:text-right">
-                  <tr>
-                    <td>
-                      {uiText.indicatorCard.rangedTooltip.upperLimitTitle}
-                    </td>
-                    <td>{point.data?.upperLimit ?? data}</td>
-                  </tr>
-                  <tr>
-                    <td>Índice</td>
-                    <td>{data}</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      {uiText.indicatorCard.rangedTooltip.lowerLimitTitle}
-                    </td>
-                    <td>{point.data?.lowerLimit ?? data}</td>
-                  </tr>
+                  <tbody>
+                    <tr>
+                      <td>
+                        {uiText.indicatorCard.rangedTooltip.upperLimitTitle}
+                      </td>
+                      <td>{point.data?.upperLimit ?? data}</td>
+                    </tr>
+                    <tr>
+                      <td>Índice</td>
+                      <td>{data}</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        {uiText.indicatorCard.rangedTooltip.lowerLimitTitle}
+                      </td>
+                      <td>{point.data?.lowerLimit ?? data}</td>
+                    </tr>
+                  </tbody>
                 </table>
               </div>
             );
