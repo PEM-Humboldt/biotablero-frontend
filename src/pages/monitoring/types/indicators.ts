@@ -60,7 +60,7 @@ type IndicatorValue = {
  *  parent?: {id: number, name: string}
  *  los necesita 1,2,4,5,6
  */
-type IndicatorGroup = {
+export type IndicatorGroup = {
   id: number;
   category: {
     id: number;
@@ -70,6 +70,16 @@ type IndicatorGroup = {
   };
   values: IndicatorValue[];
 };
+
+export function isIndicatorGroup(data: unknown): data is IndicatorGroup {
+  return (
+    typeof data === "object" &&
+    data !== null &&
+    "id" in data &&
+    "values" in data &&
+    Array.isArray((data as Record<string, unknown>).values)
+  );
+}
 
 export interface IndicatorData {
   id: number;

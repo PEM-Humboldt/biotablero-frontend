@@ -1,9 +1,11 @@
 import { LOCALE } from "@config/monitoring";
-import type {
-  BarDatavalues,
-  BarsData,
-  IndicatorData,
-  LineData,
+import {
+  isIndicatorGroup,
+  type BarDatavalues,
+  type BarsData,
+  type IndicatorData,
+  type IndicatorGroup,
+  type LineData,
 } from "pages/monitoring/types/indicators";
 
 /**
@@ -125,19 +127,24 @@ export function dataTransformLineGraph(data: IndicatorData) {
  *
  * @returns An object containing the sorted bar dataset and the array of unique category keys.
  */
-export function dataTransformBarGraph(data: IndicatorData): BarsData {
-  if (!data?.groups) {
+export function dataTransformBarGraph(
+  data: IndicatorData | IndicatorGroup[],
+): BarsData {
+  const rawData = Array.isArray(data) ? data : data?.groups;
+
+  if (!rawData) {
     return { data: [], keys: [] };
   }
+
   const keys = new Set<string>();
   const dateMap = new Map<string, BarDatavalues>();
 
-  data.groups.forEach((group) => {
+  rawData.forEach((group) => {
     const key = group.category.name;
     keys.add(key);
 
     group.values.forEach((value) => {
-      const sortKey = new Date(value.date.year, value.date.month).getTime();
+      const sortKey = new Date(value.date.year, value.date.month, 1).getTime();
       const date = displayDate(
         value.date.year,
         value.date.month,
@@ -153,8 +160,12 @@ export function dataTransformBarGraph(data: IndicatorData): BarsData {
     });
   });
 
+  const sortedData = Array.from(dateMap.values()).sort(
+    (a, b) => a.sortKey - b.sortKey,
+  );
+
   return {
-    data: Array.from(dateMap.values()).sort((a, b) => a.sortKey - b.sortKey),
-    keys: [...keys],
+    data: sortedData,
+    keys: Array.from(keys),
   };
 }

@@ -39,12 +39,15 @@ export function Card() {
             {isLoading && (
               <Spinner className="text-primary-foreground size-8 self-center" />
             )}
+
             <h3 className="m-0 flex flex-col flex-wrap flex-1 text-primary-foreground font-normal">
               <span> {currentIndicator.name}</span>
+
               <span className="text-base italic">
                 {currentIndicator.type.name}
               </span>
             </h3>
+
             <time
               dateTime={new Date(currentIndicator.creationDate).toISOString()}
               className="text-primary-foreground border border-accent-foreground/20 rounded self-start px-2 py-1"
@@ -69,6 +72,7 @@ export function Card() {
                 {uiText.search.card.descriptionTitle}
                 {isLoading && <Spinner className="text-primary ml-2" />}
               </h4>
+
               {currentIndicator.description.split("\n").map((par, i) => (
                 <p key={`currentDescription_${i}`}>{par}</p>
               ))}
@@ -104,6 +108,7 @@ export function Card() {
                 >
                   <section>
                     <h4 className="sr-only">{tab.label}</h4>
+
                     {currentIndicator[
                       tab.key as GetKeysWithStringValues<IndicatorMetadata>
                     ]
