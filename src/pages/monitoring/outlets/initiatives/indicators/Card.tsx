@@ -1,19 +1,9 @@
-import {
-  Network,
-  BadgeCheck,
-  FilePlusCorner,
-  FolderDown,
-  BookOpenCheck,
-  MessageCircleWarning,
-  FilePenLine,
-} from "lucide-react";
+import { BadgeCheck } from "lucide-react";
 
 import type { GetKeysWithStringValues } from "@appTypes/utils";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { Spinner } from "@ui/shadCN/component/spinner";
 import { LOCALE } from "@config/monitoring";
-import { Button } from "@ui/shadCN/component/button";
-import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import {
   Tabs,
   TabsList,
@@ -24,20 +14,11 @@ import {
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import type { IndicatorMetadata } from "pages/monitoring/types/indicators";
 import { GraphSelector } from "pages/monitoring/outlets/initiatives/indicators/card/GraphSelector";
-
-const tabs = [
-  { key: "methodology", label: "Metodología", icon: Network },
-  { key: "interpretation", label: "Interpretación", icon: BookOpenCheck },
-  {
-    key: "considerations",
-    label: "Consideración",
-    icon: MessageCircleWarning,
-  },
-  { key: "authorship", label: "Autoría", icon: FilePenLine },
-];
+import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
 
 export function Card() {
-  const { currentIndicator, isLoading, errors } = useIndicatorsCTX();
+  const { indicators, currentIndicator, isLoading, errors } =
+    useIndicatorsCTX();
 
   return (
     <main className="flex-3 bg-[#f5f5f5]">
@@ -48,7 +29,9 @@ export function Card() {
 
       {!currentIndicator ? (
         <div className="m-8 p-4 text-2xl bg-primary/10 text-primary rounded-lg border border-primary font-normal">
-          Selecciona un indicador
+          {indicators.length === 0
+            ? uiText.indicatorCard.noIndicators
+            : uiText.indicatorCard.noSelection}
         </div>
       ) : (
         <>
@@ -62,16 +45,6 @@ export function Card() {
                 {currentIndicator.type.name}
               </span>
             </h3>
-            <ButtonGroup>
-              <Button variant="outline">
-                Añadir
-                <FilePlusCorner />
-              </Button>
-              <Button variant="outline">
-                Descargar
-                <FolderDown />
-              </Button>
-            </ButtonGroup>
             <time
               dateTime={new Date(currentIndicator.creationDate).toISOString()}
               className="text-primary-foreground border border-accent-foreground/20 rounded self-start px-2 py-1"
@@ -92,7 +65,8 @@ export function Card() {
 
             <section className="flex-1 p-4 bg-background md:min-w-[200px] rounded-lg shadow-2xl">
               <h4 className="flex gap-1 items-center">
-                <BadgeCheck className="text-accent" /> ¿Qué dice este indicador?
+                <BadgeCheck className="text-accent" />
+                {uiText.search.card.descriptionTitle}
                 {isLoading && <Spinner className="text-primary ml-2" />}
               </h4>
               {currentIndicator.description.split("\n").map((par, i) => (
@@ -102,9 +76,12 @@ export function Card() {
           </div>
 
           <div className="bg-background mx-4 mb-4 rounded-b-lg overflow-hidden shadow-2xl">
-            <Tabs className="flex flex-col h-full" defaultValue={tabs[0].label}>
+            <Tabs
+              className="flex flex-col h-full"
+              defaultValue={uiText.indicatorCard.tabs[0].label}
+            >
               <TabsList className="w-full h-auto flex *:flex-1 bg-accent p-0! m-0!">
-                {tabs.map((tab) => (
+                {uiText.indicatorCard.tabs.map((tab) => (
                   <TabsTrigger
                     key={`tabTriggerIndicator_${tab.key}`}
                     value={tab.label}
@@ -119,7 +96,7 @@ export function Card() {
                   </TabsTrigger>
                 ))}
               </TabsList>
-              {tabs.map((tab) => (
+              {uiText.indicatorCard.tabs.map((tab) => (
                 <TabsContent
                   key={`tabContentIndicator_${tab.key}`}
                   value={tab.label}

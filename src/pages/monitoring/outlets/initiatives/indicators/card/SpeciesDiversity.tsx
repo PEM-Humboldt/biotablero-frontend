@@ -1,11 +1,14 @@
+import { useEffect, useMemo, useState } from "react";
+
+import { ResponsiveLine } from "@nivo/line";
+import { hashStringToRange } from "@utils/format";
+import { cn } from "@ui/shadCN/lib/utils";
+
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { ConfidenceIntervalLayer } from "pages/monitoring/outlets/initiatives/indicators/card/utils/ConfidenceIntervalLayer";
-import { ResponsiveLine } from "@nivo/line";
 import type { LineData } from "pages/monitoring/types/indicators";
-import { useEffect, useMemo, useState } from "react";
-import { hashStringToRange } from "@utils/format";
 import { getSeriesColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
-import { cn } from "@ui/shadCN/lib/utils";
+import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
 
 export function SpeciesDiversity() {
   const { currentIndicator } = useIndicatorsCTX();
@@ -224,15 +227,19 @@ export function SpeciesDiversity() {
                 </div>
                 <table className="space-x-1 [&_td]:px-2 [&_tr_td]:first:text-right">
                   <tr>
-                    <td>Límite superior</td>
+                    <td>
+                      {uiText.indicatorCard.rangedTooltip.upperLimitTitle}
+                    </td>
                     <td>{point.data?.upperLimit ?? data}</td>
                   </tr>
                   <tr>
-                    <td>Índice</td>
+                    <td>{uiText.indicatorCard.rangedTooltip.valueTitle}</td>
                     <td>{data}</td>
                   </tr>
                   <tr>
-                    <td>Límite inferior</td>
+                    <td>
+                      {uiText.indicatorCard.rangedTooltip.lowerLimitTitle}
+                    </td>
                     <td>{point.data?.lowerLimit ?? data}</td>
                   </tr>
                 </table>

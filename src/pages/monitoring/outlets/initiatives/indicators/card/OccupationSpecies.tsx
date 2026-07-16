@@ -1,11 +1,13 @@
-import { ResponsiveLine } from "@nivo/line";
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
-import type { LineData } from "pages/monitoring/types/indicators";
 import { useEffect, useMemo, useState } from "react";
+import { ResponsiveLine } from "@nivo/line";
 
 import { INDICATORS_MAX_AMOUNT_OCUPATION_SPECIES } from "@config/monitoring";
 import { cn } from "@ui/shadCN/lib/utils";
+
+import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
+import type { LineData } from "pages/monitoring/types/indicators";
 import { getSeriesColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
+import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
 
 export function OccupationSpecies() {
   const { currentIndicator } = useIndicatorsCTX();
@@ -72,38 +74,46 @@ export function OccupationSpecies() {
 
   return (
     <>
-      <div className="pt-0 shrink-0">
-        <span className="px-2 italic text-sm">
-          selecciona hasta {INDICATORS_MAX_AMOUNT_OCUPATION_SPECIES} especies
-        </span>
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-2 max-h-40 overflow-y-auto p-2 pt-0 scrollbar-custom">
+      <div className="pt-2 shrink-0">
+        {currentIndicator.groups.length >
+          INDICATORS_MAX_AMOUNT_OCUPATION_SPECIES && (
+          <span className="px-2 italic text-sm m-0">
+            {uiText.indicatorCard.ocupationSpecies.maxSelection(
+              INDICATORS_MAX_AMOUNT_OCUPATION_SPECIES,
+            )}
+          </span>
+        )}
+        <ul className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-2 max-h-40 overflow-y-auto p-2 pt-0 scrollbar-custom">
           {currentIndicator.groups.map((g) => {
             const buttonColor = getSeriesColor(g.category.id);
             const isSelected = selectedSpecies.includes(g.category.name);
 
             return (
-              <button
-                key={g.category.name}
-                style={{
-                  background: buttonColor,
-                  borderColor: buttonColor,
-                }}
-                className={cn(
-                  "text-background w-auto min-w-[150px] flex-[1_0] px-2 py-1 flex gap-1 border rounded-lg transition-colors duration-300",
-                  isSelected ? "" : "text-foreground bg-background!",
-                )}
-                onClick={() => handleSelect(g.category.name)}
-              >
-                <div className="flex flex-col text-left *:m-0">
-                  <span className="text-base font-normal">
-                    {g.category.description}
-                  </span>
-                  <span className="text-sm italic">{g.category.name}</span>
-                </div>
-              </button>
+              <li key={`selectorBtn_${g.category.name}`}>
+                <button
+                  style={{
+                    background: buttonColor,
+                    borderColor: buttonColor,
+                  }}
+                  className={cn(
+                    "text-background w-full min-w-[150px] flex-[1_0] px-2 py-1 flex gap-1 border rounded-lg transition-colors duration-300",
+                    isSelected ? "" : "text-foreground bg-background!",
+                  )}
+                  aria-pressed={isSelected}
+                  disabled={isSelected}
+                  onClick={() => handleSelect(g.category.name)}
+                >
+                  <div className="flex flex-col text-left *:m-0">
+                    <span className="text-base font-normal">
+                      {g.category.description}
+                    </span>
+                    <span className="text-sm italic">{g.category.name}</span>
+                  </div>
+                </button>
+              </li>
             );
           })}
-        </div>
+        </ul>
       </div>
 
       <div className="relative w-full h-full min-h-[200px]">

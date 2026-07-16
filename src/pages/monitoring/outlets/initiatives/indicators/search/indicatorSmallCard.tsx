@@ -1,12 +1,15 @@
-import { LOCALE, TAG_COLORS } from "@config/monitoring";
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
-import { TagsRender } from "pages/monitoring/ui/TagsRender";
+import { useMemo } from "react";
+import { Link } from "react-router";
+import { ChevronRightCircle } from "lucide-react";
+
 import { cn } from "@ui/shadCN/lib/utils";
 import { Button } from "@ui/shadCN/component/button";
-import { ChevronRightCircle } from "lucide-react";
-import { Link } from "react-router";
+import { LOCALE, TAG_COLORS } from "@config/monitoring";
+
+import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
+import { TagsRender } from "pages/monitoring/ui/TagsRender";
 import type { IndicatorMetadata } from "pages/monitoring/types/indicators";
-import { useMemo } from "react";
+import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
 
 export function IndicatorSmallCard({
   indicator,
@@ -84,7 +87,7 @@ export function IndicatorSmallCard({
       {until === null ? (
         <div className="flex gap-2 justify-between p-1 rounded items-center hover:bg-muted">
           <div className="text-sm flex flex-col *:m-0!">
-            <span>Publicado</span>
+            <span>{uiText.search.card.singleVersion.title}</span>
             <time dateTime={since.toISOString()}>
               {since.toLocaleDateString(LOCALE)}
             </time>
@@ -93,8 +96,11 @@ export function IndicatorSmallCard({
             <Button variant="ghost-clean" className="px-1!" asChild>
               <Link
                 to={`/Monitoreo/Iniciativas/${indicator.initiativeId}/Indicadores/${indicator.versions[0].id}`}
+                title={uiText.search.card.gotoBtn.title}
+                aria-label={uiText.search.card.gotoBtn.sr}
               >
-                Ver indicador <ChevronRightCircle />
+                {uiText.search.card.gotoBtn.label}
+                <ChevronRightCircle />
               </Link>
             </Button>
           )}
@@ -103,12 +109,12 @@ export function IndicatorSmallCard({
         <div>
           <dl className="text-sm mb-2 flex justify-between gap-2 *:m-0! *:flex *:flex-col text-center *:items-center">
             <div>
-              <dt>Versiones</dt>
+              <dt>{uiText.search.card.nVersions.title}</dt>
               <dd className="font-normal">{indicator.versions.length}</dd>
             </div>
 
             <div>
-              <dt>Primera publicación</dt>
+              <dt>{uiText.search.card.nVersions.first}</dt>
               <dd className="font-normal">
                 <time dateTime={since.toISOString()}>
                   {since.toLocaleDateString(LOCALE)}
@@ -117,7 +123,7 @@ export function IndicatorSmallCard({
             </div>
 
             <div>
-              <dt>Última actualización</dt>
+              <dt>{uiText.search.card.nVersions.last}</dt>
               <dd className="font-normal">
                 <time dateTime={until.toISOString()}>
                   {until.toLocaleDateString(LOCALE)}
@@ -146,8 +152,11 @@ export function IndicatorSmallCard({
                     <Button variant="ghost-clean" className="px-1!" asChild>
                       <Link
                         to={`/Monitoreo/Iniciativas/${indicator.initiativeId}/Indicadores/${v.id}`}
+                        title={uiText.search.card.gotoBtn.title}
+                        aria-label={uiText.search.card.gotoBtn.sr}
                       >
-                        Ver indicador <ChevronRightCircle />
+                        {uiText.search.card.gotoBtn.label}
+                        <ChevronRightCircle />
                       </Link>
                     </Button>
                   )}

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { SearchIcon } from "lucide-react";
+import { SearchIcon, Trash2 } from "lucide-react";
 
 import { Button } from "@ui/shadCN/component/button";
 import {
@@ -15,6 +15,7 @@ import {
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { IndicatorSmallCard } from "pages/monitoring/outlets/initiatives/indicators/search/indicatorSmallCard";
 import { fuzzySearch } from "pages/monitoring/utils/search";
+import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
 
 export function Search() {
   const { indicators: allInitiativeIndicators } = useIndicatorsCTX();
@@ -123,19 +124,23 @@ export function Search() {
     setSelectedYear("");
   };
 
+  if (allInitiativeIndicators.length === 0) {
+    return null;
+  }
+
   return (
     <div className="bg-grey-light flex-1 flex lg:min-w-76 lg:flex-col max-h-102 lg:max-h-screen">
       <div className="bg-primary/70 rounded-xl m-2 overflow-hidden [&>div]:px-4 space-y-2">
         <h3 className="bg-primary p-4 pb-2  m-0 font-normal text-primary-foreground">
-          Buscar indicadores
+          {uiText.search.module.title}
         </h3>
 
-        <div>
+        <div className="pt-2">
           <label
             htmlFor="lookfor"
             className="text-primary-foreground font-normal"
           >
-            Nombre del indicador
+            {uiText.search.module.searchInputLabel}
           </label>
           <InputGroup>
             <InputGroupInput
@@ -151,8 +156,7 @@ export function Search() {
         </div>
 
         <FilterSelect
-          label="Escala Biológica"
-          placeholder="¿Qué ecosistema buscas?"
+          {...uiText.search.module.filterBiological}
           value={biologicalGroup}
           onChange={setBiologicalGroup}
           options={Object.entries(presentBiologicalGroups).map(
@@ -162,8 +166,7 @@ export function Search() {
         />
 
         <FilterSelect
-          label="Ecosistemas estratégicos"
-          placeholder="¿Qué ecosistema buscas?"
+          {...uiText.search.module.filterEcosystem}
           value={ecosystem}
           onChange={setEcosystem}
           options={Object.entries(presentEcosystems).map(([key, value]) => ({
@@ -174,11 +177,10 @@ export function Search() {
         />
 
         <FilterSelect
-          label="Año"
-          placeholder="¿De qué añó es el indicador?"
+          {...uiText.search.module.filterYear}
           value={selectedYear}
           onChange={setSelectedYear}
-          options={[...presentYears, "1998"].map((y) => ({
+          options={[...presentYears].map((y) => ({
             value: String(y),
             label: String(y),
           }))}
@@ -186,8 +188,14 @@ export function Search() {
         />
 
         <div className="text-right pt-2 pb-4">
-          <Button onClick={clearFilters} variant="outline_destructive">
-            Borrar filtros
+          <Button
+            onClick={clearFilters}
+            variant="outline_destructive"
+            aria-label={uiText.search.module.resetSearchBtn.sr}
+            title={uiText.search.module.resetSearchBtn.title}
+          >
+            <Trash2 />
+            {uiText.search.module.resetSearchBtn.label}
           </Button>
         </div>
       </div>

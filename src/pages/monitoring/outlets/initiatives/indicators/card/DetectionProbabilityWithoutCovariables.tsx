@@ -1,12 +1,15 @@
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { useEffect, useMemo, useState } from "react";
-import { ConfidenceIntervalLayer } from "pages/monitoring/outlets/initiatives/indicators/card/utils/ConfidenceIntervalLayer";
-import type { LineData } from "pages/monitoring/types/indicators";
+import { SearchIcon } from "lucide-react";
+
 import { ResponsiveLine } from "@nivo/line";
 import { INITIATIVES_MAP_STATS_GRAPH_COLORS } from "@config/monitoring";
 import { Combobox } from "@ui/ComboBox";
-import { SearchIcon } from "lucide-react";
 import { cn } from "@ui/shadCN/lib/utils";
+
+import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
+import { ConfidenceIntervalLayer } from "pages/monitoring/outlets/initiatives/indicators/card/utils/ConfidenceIntervalLayer";
+import type { LineData } from "pages/monitoring/types/indicators";
+import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
 
 export function DetectionProbabilityWithoutCovariables() {
   const { currentIndicator } = useIndicatorsCTX();
@@ -68,11 +71,7 @@ export function DetectionProbabilityWithoutCovariables() {
             items={speciesOptions ?? []}
             value={selectedSpecie}
             setValue={setSelectedSpecie}
-            uiText={{
-              itemNotFound: "No se encuentra esa especie",
-              trigger: "Selecciona una especie",
-              inputPlaceholder: "Escibe el nombre para buscar la especie",
-            }}
+            uiText={uiText.indicatorCard.detectionProbabilityWCov.selector}
             icon={SearchIcon}
             keys={{ forLabel: "label", forValue: "value" }}
           />
@@ -159,7 +158,9 @@ export function DetectionProbabilityWithoutCovariables() {
                 </div>
                 <table className="space-x-1 [&_td]:px-2 [&_tr_td]:first:text-right">
                   <tr>
-                    <td>Límite superior</td>
+                    <td>
+                      {uiText.indicatorCard.rangedTooltip.upperLimitTitle}
+                    </td>
                     <td>{point.data?.upperLimit ?? data}</td>
                   </tr>
                   <tr>
@@ -167,7 +168,9 @@ export function DetectionProbabilityWithoutCovariables() {
                     <td>{data}</td>
                   </tr>
                   <tr>
-                    <td>Límite inferior</td>
+                    <td>
+                      {uiText.indicatorCard.rangedTooltip.lowerLimitTitle}
+                    </td>
                     <td>{point.data?.lowerLimit ?? data}</td>
                   </tr>
                 </table>
