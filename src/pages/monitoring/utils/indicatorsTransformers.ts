@@ -1,6 +1,5 @@
 import { LOCALE } from "@config/monitoring";
 import {
-  isIndicatorGroup,
   type BarDatavalues,
   type BarsData,
   type IndicatorData,

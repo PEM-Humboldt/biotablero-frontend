@@ -129,7 +129,7 @@ export function Search() {
   }
 
   return (
-    <div className="bg-grey-light flex-1 flex lg:min-w-76 lg:flex-col max-h-102 lg:max-h-screen">
+    <div className="bg-grey-light border-b border-grey lg:border-b-0 flex-1 flex lg:min-w-76 lg:flex-col max-h-102 lg:max-h-screen">
       <div className="bg-primary/70 rounded-xl m-2 overflow-hidden [&>div]:px-4 space-y-2">
         <h3 className="bg-primary p-4 pb-2  m-0 font-normal text-primary-foreground">
           {uiText.search.module.title}

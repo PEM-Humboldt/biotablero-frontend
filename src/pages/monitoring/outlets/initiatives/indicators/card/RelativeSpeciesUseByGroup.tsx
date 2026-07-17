@@ -4,7 +4,7 @@ import {
 } from "@config/monitoring";
 import { ResponsiveBar } from "@nivo/bar";
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
-import { BarsData } from "pages/monitoring/types/indicators";
+import type { BarsData } from "pages/monitoring/types/indicators";
 import { cn } from "@ui/shadCN/lib/utils";
 import { dataTransformBarGraph } from "pages/monitoring/utils/indicatorsTransformers";
 import { useEffect, useMemo, useState } from "react";
