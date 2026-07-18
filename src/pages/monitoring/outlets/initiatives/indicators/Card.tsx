@@ -57,10 +57,11 @@ export function Card() {
           </header>
 
           <div className="flex flex-wrap flex-col md:flex-row gap-4 p-4">
-            <section className="flex-2 md:min-w-[500px] aspect-3/2">
-              <div className="w-full h-full bg-background rounded-lg p-2 shadow-2xl flex flex-col gap-2">
-                <GraphSelector />
-              </div>
+            <section className="flex-2 xl:flex-3 md:min-w-[500px] aspect-3/2 bg-background rounded-lg p-2 shadow-2xl">
+              <h4 className="sr-only">
+                Gráfica de {currentIndicator.type.name}
+              </h4>
+              <GraphSelector />
             </section>
 
             <section className="flex-1 p-4 bg-background md:min-w-[200px] rounded-lg shadow-2xl">
@@ -85,7 +86,7 @@ export function Card() {
                   <TabsTrigger
                     key={`tabTriggerIndicator_${tab.key}`}
                     value={tab.label}
-                    className="text-lg border-b-2 border-b-primary data-[state=active]:border-b-accent data-[state=active]:bg-primary data-[state=inactive]:hover:bg-accent data-[state=inactive]:hover:text-background bg-grey-light text-primary data-[state=active]:text-background justify-start p-0 cursor-pointer data-[state=active]:cursor-auto"
+                    className="text-sm lg:text-lg border-b-2 border-b-primary data-[state=active]:border-b-accent data-[state=active]:bg-primary data-[state=inactive]:hover:bg-accent data-[state=inactive]:hover:text-background bg-grey-light text-primary data-[state=active]:text-background justify-start p-0 cursor-pointer data-[state=active]:cursor-auto"
                   >
                     <tab.icon
                       className="bg-primary/20 p-2 mr-2 size-9 "

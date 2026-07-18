@@ -81,7 +81,10 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
       setErrors([]);
 
       if (initiativeId) {
-        const res = await getIndicatorsByInitiative(Number(initiativeId));
+        const res = await getIndicators({
+          filter: `initiativeId eq ${initiativeId}`,
+          orderby: "id desc",
+        });
         setIsLoading(false);
         if (isMonitoringAPIError(res)) {
           setErrors(res.data.map((err) => err.msg));
@@ -89,8 +92,8 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
           return;
         }
 
-        setIndicators(res);
-        indicatorsAmount.current = res.length;
+        setIndicators(res.value);
+        indicatorsAmount.current = res["@odata.count"];
       } else {
         const skip = (resolvedPage - 1) * INDICATORS_PER_PAGE;
         const res = await getIndicators({ ...searchParams, skip });
