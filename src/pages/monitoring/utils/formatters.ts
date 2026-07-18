@@ -33,6 +33,14 @@ export function formatLogDescription<T>(value: T) {
   )[0];
 }
 
+/**
+ * Formats an indicator dates objects to a date or a date range into a localized, human-readable string.
+ *
+ * @param dateObject - The Indicator date object.
+ * @param dateEndObject - The optional ending date object to create a range.
+ *
+ * @returns A localized date or range string based on the `LOCALE` configuration.
+ */
 export function indicatorsDateFormatter(
   dateObject: { year: number; month: number },
   dateEndObject?: { year: number; month: number },

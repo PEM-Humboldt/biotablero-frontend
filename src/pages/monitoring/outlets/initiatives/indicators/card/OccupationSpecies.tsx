@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ResponsiveLine } from "@nivo/line";
 
-import { INDICATORS_MAX_AMOUNT_OCUPATION_SPECIES } from "@config/monitoring";
+import { INDICATOR_MAX_COUNT_OCUPATION_SPECIES } from "@config/monitoring";
 import { cn } from "@ui/shadCN/lib/utils";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
@@ -43,7 +43,7 @@ export function OccupationSpecies() {
     setSelectedSpecies(() => {
       const loadSpecies: string[] = [];
       for (const specie of currentIndicator.groups) {
-        if (loadSpecies.length === INDICATORS_MAX_AMOUNT_OCUPATION_SPECIES) {
+        if (loadSpecies.length === INDICATOR_MAX_COUNT_OCUPATION_SPECIES) {
           break;
         }
 
@@ -65,7 +65,7 @@ export function OccupationSpecies() {
 
     setSelectedSpecies((oldList) => {
       const newList = [...oldList, item];
-      if (newList.length > INDICATORS_MAX_AMOUNT_OCUPATION_SPECIES) {
+      if (newList.length > INDICATOR_MAX_COUNT_OCUPATION_SPECIES) {
         newList.shift();
       }
       return newList;
@@ -76,10 +76,10 @@ export function OccupationSpecies() {
     <>
       <div className="pt-2 shrink-0">
         {currentIndicator.groups.length >
-          INDICATORS_MAX_AMOUNT_OCUPATION_SPECIES && (
+          INDICATOR_MAX_COUNT_OCUPATION_SPECIES && (
           <span className="px-2 italic text-sm m-0">
             {uiText.indicatorCard.ocupationSpecies.maxSelection(
-              INDICATORS_MAX_AMOUNT_OCUPATION_SPECIES,
+              INDICATOR_MAX_COUNT_OCUPATION_SPECIES,
             )}
           </span>
         )}

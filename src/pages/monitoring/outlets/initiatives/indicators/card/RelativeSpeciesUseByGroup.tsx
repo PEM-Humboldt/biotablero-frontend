@@ -54,7 +54,7 @@ export function RelativeSpeciesUseByGroup() {
   return (
     <>
       <div className="p-2 shrink-0 space-y-2">
-        <section title="Selecciona un grupo">
+        <div title="Selecciona un grupo">
           <h4 className="m-0 text-base text-primary">Grupos</h4>
           <ul className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-2 max-h-20 overflow-y-auto pr-2 scrollbar-custom">
             {(groupList ?? []).map((group) => {
@@ -80,7 +80,7 @@ export function RelativeSpeciesUseByGroup() {
               );
             })}
           </ul>
-        </section>
+        </div>
       </div>
 
       <div className="relative w-full h-full min-h-[200px]">

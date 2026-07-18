@@ -1,10 +1,10 @@
-import { BarDatum, ResponsiveBar } from "@nivo/bar";
+import { type BarDatum, ResponsiveBar } from "@nivo/bar";
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { useEffect, useMemo, useState } from "react";
 import { cn } from "@ui/shadCN/lib/utils";
 import { indicatorsDateFormatter } from "pages/monitoring/utils/formatters";
 import {
-  INDICATORS_MAX_AMOUNT_RELATIONAL_INTENSITY,
+  INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY,
   INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD,
   INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP,
 } from "@config/monitoring";
@@ -57,14 +57,10 @@ export function RelationalIntensityIndex() {
     return { rawDates, dataByDate };
   }, [currentIndicator?.groups]);
 
-  const sortedTimestamps = [...rawDates.keys()].sort((a, b) => b - a);
-  const allDates = sortedTimestamps.map((ts) => rawDates.get(ts)!);
-
-  useEffect(() => {
-    if (allDates.length > 0 && selectedDates.length === 0) {
-      setSelectedDates(allDates.slice(0, 2));
-    }
-  }, [allDates, selectedDates]);
+  const allDates = useMemo(() => {
+    const sortedTimestamps = [...rawDates.keys()].sort((a, b) => b - a);
+    return sortedTimestamps.map((ts) => rawDates.get(ts)!);
+  }, [rawDates]);
 
   const handleSelect = (date: string) => {
     if (selectedDates.includes(date)) {
@@ -75,12 +71,22 @@ export function RelationalIntensityIndex() {
     setSelectedDates((oldDates) => {
       const newList = [...oldDates, date];
 
-      if (newList.length > INDICATORS_MAX_AMOUNT_RELATIONAL_INTENSITY) {
+      if (newList.length > INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY) {
         newList.shift();
       }
-      return newList;
+      return allDates.filter((date) => newList.includes(date));
     });
   };
+
+  useEffect(() => {
+    if (allDates.length > 0 && selectedDates.length === 0) {
+      const preselectAmount = Math.max(
+        1,
+        Math.min(INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY, allDates.length) - 1,
+      );
+      setSelectedDates(allDates.slice(0, preselectAmount));
+    }
+  }, [allDates, selectedDates]);
 
   if (!currentIndicator) {
     return null;
@@ -89,11 +95,13 @@ export function RelationalIntensityIndex() {
   return (
     <>
       <div className="p-2 shrink-0 space-y-2">
-        <section title="Selecciona un grupo">
+        <div title="Selecciona un grupo">
           <h4 className="m-0 text-base/2 text-primary">Periodo</h4>
-          <span className="italic text-sm m-0">
-            selecciona hasta {INDICATORS_MAX_AMOUNT_RELATIONAL_INTENSITY}
-          </span>
+          {allDates.length > INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY && (
+            <span className="italic text-sm m-0">
+              selecciona hasta {INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY}
+            </span>
+          )}
           <ul className="grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] gap-2 max-h-20 overflow-y-auto mt-1 pr-2 scrollbar-custom">
             {allDates.toReversed().map((group) => {
               const groupName = group;
@@ -117,11 +125,11 @@ export function RelationalIntensityIndex() {
               );
             })}
           </ul>
-        </section>
+        </div>
       </div>
 
-      <div className="relative flex w-full h-full min-h-[200px] gap-2">
-        <div className="w-[140px]">
+      <div className="relative flex w-full h-full min-h-[200px]">
+        <div className="w-[150px]">
           <ResponsiveBar
             data={
               dataByDate[allDates[0]].map((d) => ({
@@ -149,7 +157,7 @@ export function RelationalIntensityIndex() {
           />
         </div>
 
-        {selectedDates.map((date) => (
+        {selectedDates.toReversed().map((date) => (
           <div
             key={`indicatorSection_${date}`}
             className="flex-1 hover:bg-grey-light rounded"
@@ -159,7 +167,7 @@ export function RelationalIntensityIndex() {
               keys={["value"]}
               indexBy="actor"
               layout="horizontal"
-              margin={{ top: 0, right: 5, bottom: 60, left: 5 }}
+              margin={{ top: 0, right: 10, bottom: 60, left: 10 }}
               padding={0.2}
               valueScale={{ type: "linear", min: -1.0, max: 1.0 }}
               indexScale={{ type: "band", round: true }}
