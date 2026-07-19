@@ -98,6 +98,7 @@ export function RelativeSpeciesUseByGroup() {
             INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP[bar.color.toLowerCase()] ||
             "#111111"
           }
+          valueFormat={(v) => `${Number(v.toFixed(1))}%`}
           legends={[
             {
               dataFrom: "keys",
