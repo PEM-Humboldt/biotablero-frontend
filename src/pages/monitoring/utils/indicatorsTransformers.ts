@@ -1,45 +1,10 @@
-import { LOCALE } from "@config/monitoring";
 import type {
   BarDatavalues,
   BarsData,
   IndicatorData,
   LineData,
 } from "pages/monitoring/types/indicators";
-
-/**
- * Formats a single date or a date range into a localized, human-readable string.
- *
- * @param year - The starting year.
- * @param month - The starting month (1-indexed).
- * @param endYear - The optional ending year for a range.
- * @param endMonth - The optional ending month (1-indexed) for a range.
- * @returns A localized date or range string based on the `LOCALE` configuration.
- */
-function displayDate(
-  year: number,
-  month: number,
-  endYear?: number,
-  endMonth?: number,
-): string {
-  const startDate = new Date(year, month - 1, 1);
-
-  if (endMonth && endYear) {
-    const endDate = new Date(endYear, endMonth - 1, 1);
-
-    const startStr = startDate.toLocaleDateString(LOCALE, { month: "short" });
-    const endStr = endDate.toLocaleDateString(LOCALE, {
-      month: "short",
-      year: "numeric",
-    });
-
-    return `${startStr} - ${endStr}`;
-  }
-
-  return startDate.toLocaleDateString(LOCALE, {
-    month: "short",
-    year: "numeric",
-  });
-}
+import { indicatorsDateFormatter } from "pages/monitoring/utils/formatters";
 
 /**
  * Transforms raw indicator data into a compatible structure for Line charts (`LineData[]`).
@@ -92,12 +57,7 @@ export function dataTransformLineGraph(data: IndicatorData) {
       const serie = seriesMap.get(seriesId);
       if (serie) {
         serie.data.push({
-          x: displayDate(
-            value.date.year,
-            value.date.month,
-            value.dateEnd?.year,
-            value.dateEnd?.month,
-          ),
+          x: indicatorsDateFormatter(value.date, value.dateEnd),
           y: value.value,
           upperLimit: hasLimits ? upperBound : undefined,
           lowerLimit: hasLimits ? lowerBound : undefined,
@@ -138,13 +98,7 @@ export function dataTransformBarGraph(data: IndicatorData): BarsData {
 
     group.values.forEach((value) => {
       const sortKey = new Date(value.date.year, value.date.month).getTime();
-      const date = displayDate(
-        value.date.year,
-        value.date.month,
-        value.dateEnd?.year,
-        value.dateEnd?.month,
-      );
-
+      const date = indicatorsDateFormatter(value.date, value.dateEnd);
       if (!dateMap.has(date)) {
         dateMap.set(date, { date, sortKey });
       }
