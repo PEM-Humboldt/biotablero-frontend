@@ -2,65 +2,48 @@ import { type BarDatum, ResponsiveBar } from "@nivo/bar";
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { useEffect, useMemo, useState } from "react";
 import { cn } from "@ui/shadCN/lib/utils";
-import { indicatorsDateFormatter } from "pages/monitoring/utils/formatters";
 import {
   INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY,
   INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD,
   INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP,
 } from "@config/monitoring";
+import type { BarsData } from "pages/monitoring/types/indicators";
 
 export function RelationalIntensityIndex() {
   const { currentIndicator } = useIndicatorsCTX();
 
   const [selectedDates, setSelectedDates] = useState<string[]>([]);
 
-  const { rawDates, dataByDate } = useMemo<{
-    rawDates: Map<number, string>;
-    dataByDate: Record<string, { actor: string; value: number }[]>;
-  }>(() => {
-    if (!currentIndicator?.groups || currentIndicator.groups.length === 0) {
-      return { rawDates: new Map(), dataByDate: {} };
+  const data = currentIndicator?.cleanData as BarsData;
+
+  const { dataByDate, allDates } = useMemo(() => {
+    const dataByDate: Record<string, { actor: string; value: number }[]> = {};
+    const sortedTime = [...data.keys.dateSorter!.keys()].sort((a, b) => b - a);
+    const allDates = sortedTime.map(
+      (time) => data.keys.dateSorter?.get(time) ?? "",
+    );
+
+    for (const value of data.values) {
+      if (!dataByDate[value.date]) {
+        dataByDate[value.date] = [];
+      }
+
+      dataByDate[value.date].push({ actor: value.name, value: value.value });
     }
 
-    const rawDates: Map<number, string> = new Map();
-    const dataByDateRaw: Map<string, Map<string, number>> = new Map();
+    for (const date in dataByDate) {
+      const average =
+        dataByDate[date].reduce((sum, cur) => sum + cur.value, 0) /
+        dataByDate[date].length;
 
-    currentIndicator.groups.forEach((group) => {
-      group.values.forEach((value) => {
-        const date = new Date(value.date.year, value.date.month - 1);
-        const displayDate = indicatorsDateFormatter(value.date, value?.dateEnd);
-
-        const dataObject =
-          dataByDateRaw.get(displayDate) ?? new Map<string, number>();
-        dataObject.set(group.category.name, value.value);
-
-        rawDates.set(date.getTime(), displayDate);
-        dataByDateRaw.set(displayDate, dataObject);
+      dataByDate[date].push({
+        actor: "Promedio poderado",
+        value: Number(average.toFixed(2)),
       });
-    });
+    }
 
-    const dataByDate: Record<string, { actor: string; value: number }[]> = {};
-    rawDates.forEach((date) => {
-      const data = dataByDateRaw.get(date);
-      if (data) {
-        const average = (
-          [...data.values()].reduce((sum, cur) => sum + cur, 0) / data.size
-        ).toFixed(2);
-
-        dataByDate[date] = [
-          ...data.entries().map(([k, v]) => ({ actor: k, value: v })),
-          { actor: "Promedio ponderado", value: Number(average) },
-        ];
-      }
-    });
-
-    return { rawDates, dataByDate };
-  }, [currentIndicator?.groups]);
-
-  const allDates = useMemo(() => {
-    const sortedTimestamps = [...rawDates.keys()].sort((a, b) => b - a);
-    return sortedTimestamps.map((ts) => rawDates.get(ts)!);
-  }, [rawDates]);
+    return { dataByDate: dataByDate, allDates };
+  }, [data]);
 
   const handleSelect = (date: string) => {
     if (selectedDates.includes(date)) {
@@ -88,10 +71,6 @@ export function RelationalIntensityIndex() {
     }
   }, [allDates, selectedDates]);
 
-  if (!currentIndicator) {
-    return null;
-  }
-
   return (
     <>
       <div className="p-2 shrink-0 space-y-2">
@@ -104,11 +83,10 @@ export function RelationalIntensityIndex() {
           )}
           <ul className="grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] gap-2 max-h-20 overflow-y-auto mt-1 pr-2 scrollbar-custom">
             {allDates.toReversed().map((group) => {
-              const groupName = group;
-              const isSelected = selectedDates.includes(groupName);
+              const isSelected = selectedDates.includes(group);
 
               return (
-                <li key={`selectorBtn_${groupName}`}>
+                <li key={`selectorBtn_${group}`}>
                   <button
                     className={cn(
                       "text-background w-full px-2 py-1 border rounded-lg transition-colors duration-300 text-base font-normal",
@@ -116,10 +94,10 @@ export function RelationalIntensityIndex() {
                         ? "bg-primary text-primary-foreground"
                         : "text-foreground bg-background! hover:cursor-pointer",
                     )}
-                    onClick={() => handleSelect(groupName)}
+                    onClick={() => handleSelect(group)}
                     aria-pressed={isSelected}
                   >
-                    {groupName}
+                    {group}
                   </button>
                 </li>
               );

@@ -101,15 +101,27 @@ export type LineData = {
   data: LineDataValues[];
 };
 
-export type BarDatavalues = {
-  [key: string]: string | number;
+export type BarDataValues = {
+  name: string;
+  commonName: string;
+  value: number;
   date: string;
+  parent: string;
   sortKey: number;
 };
 
-export type BarsData = {
-  keys: string[];
-  data: BarDatavalues[];
+export type BarDataKeys = {
+  date: Set<string>;
+  name: Set<string>;
+  parent: Set<string>;
+  dateSorter: Map<number, string>;
 };
 
-export type CleanDataType = { cleanData: BarsData | LineData[] };
+export type BarsData = {
+  keys: Partial<BarDataKeys>;
+  values: BarDataValues[];
+};
+
+export type CleanDataType = {
+  cleanData: BarsData | LineData[];
+};

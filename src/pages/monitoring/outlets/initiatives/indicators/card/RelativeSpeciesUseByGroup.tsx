@@ -4,52 +4,44 @@ import {
 } from "@config/monitoring";
 import { ResponsiveBar } from "@nivo/bar";
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
-import type { BarsData } from "pages/monitoring/types/indicators";
 import { cn } from "@ui/shadCN/lib/utils";
-import { dataTransformBarGraph } from "pages/monitoring/utils/indicatorsTransformers";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import { type BarsData } from "pages/monitoring/types/indicators";
 
 export function RelativeSpeciesUseByGroup() {
   const { currentIndicator } = useIndicatorsCTX();
-  const [selectedGroup, setSelectedGroup] = useState("");
+  const data = currentIndicator?.cleanData as BarsData;
 
-  const groupList = useMemo(() => {
-    if (
-      currentIndicator?.groups === undefined ||
-      currentIndicator?.groups.length === 0
-    ) {
-      return [];
+  const groupsList = useMemo(() => [...(data.keys.parent ?? [])], [data]);
+  const [selectedParent, setSelectedParent] = useState(groupsList[0]);
+
+  const { displayKeys, displayData } = useMemo(() => {
+    if (!data) {
+      return { displayKeys: [], displayData: [] };
     }
-    const unique = new Set<string>();
-    currentIndicator.groups.forEach((g) => {
-      if (g.category?.parent?.name) {
-        unique.add(g.category.parent.name);
+
+    const keys = new Set<string>();
+    const dataByDate: Record<string, Record<string, number | string>> = {};
+
+    for (const value of data.values) {
+      if (value.parent !== selectedParent) {
+        continue;
       }
-    });
-    return Array.from(unique);
-  }, [currentIndicator?.groups]);
 
-  useEffect(() => {
-    if (groupList.length > 0 && !selectedGroup) {
-      setSelectedGroup(groupList[0]);
-    }
-  }, [groupList, selectedGroup]);
+      keys.add(value.name);
 
-  const displayData = useMemo(() => {
-    if (!currentIndicator) {
-      return;
-    }
-    if (!selectedGroup) {
-      return currentIndicator?.cleanData as BarsData;
+      if (!dataByDate[value.date]) {
+        dataByDate[value.date] = { date: value.date };
+      }
+
+      dataByDate[value.date][value.name] = value.value;
     }
 
-    const filteredRaw =
-      currentIndicator.groups?.filter(
-        (g) => g.category?.parent?.name === selectedGroup,
-      ) ?? [];
-
-    return dataTransformBarGraph(filteredRaw);
-  }, [currentIndicator, selectedGroup]);
+    return {
+      displayKeys: [...keys],
+      displayData: Object.values(dataByDate),
+    };
+  }, [data, selectedParent]);
 
   return (
     <>
@@ -57,9 +49,9 @@ export function RelativeSpeciesUseByGroup() {
         <div title="Selecciona un grupo">
           <h4 className="m-0 text-base text-primary">Grupos</h4>
           <ul className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-2 max-h-20 overflow-y-auto pr-2 scrollbar-custom">
-            {(groupList ?? []).map((group) => {
+            {(groupsList ?? []).map((group) => {
               const groupName = group;
-              const isSelected = groupName === selectedGroup;
+              const isSelected = groupName === selectedParent;
 
               return (
                 <li key={`selectorBtn_${groupName}`}>
@@ -70,7 +62,7 @@ export function RelativeSpeciesUseByGroup() {
                         ? "bg-primary text-primary-foreground"
                         : "text-foreground bg-background! hover:cursor-pointer",
                     )}
-                    onClick={() => setSelectedGroup(groupName)}
+                    onClick={() => setSelectedParent(groupName)}
                     aria-pressed={isSelected}
                     disabled={isSelected}
                   >
@@ -85,8 +77,8 @@ export function RelativeSpeciesUseByGroup() {
 
       <div className="relative w-full h-full min-h-[200px]">
         <ResponsiveBar
-          data={displayData?.data ?? []}
-          keys={displayData?.keys ?? []}
+          data={displayData}
+          keys={displayKeys}
           indexBy="date"
           layout="horizontal"
           margin={{ top: 0, right: 30, bottom: 65, left: 120 }}
@@ -117,7 +109,7 @@ export function RelativeSpeciesUseByGroup() {
               itemDirection: "left-to-right",
             },
           ]}
-          tooltip={({ id, value, indexValue, color }) => {
+          tooltip={(bar) => {
             return (
               <div
                 className="bg-background px-4 py-2 shadow-md rounded flex flex-col items-center"
@@ -127,12 +119,12 @@ export function RelativeSpeciesUseByGroup() {
                   <span className="font-normal">
                     <span
                       className="inline-block w-3 h-3 mr-1 rounded-full"
-                      style={{ backgroundColor: color }}
+                      style={{ backgroundColor: bar.color }}
                     />
-                    {id}
+                    {bar.id}
                   </span>
-                  <span className="text-lg font-normal">{value}</span>
-                  <span className="italic">{indexValue}</span>
+                  <span className="text-lg font-normal">{bar.value}</span>
+                  <span className="italic">{bar.indexValue}</span>
                 </div>
               </div>
             );
