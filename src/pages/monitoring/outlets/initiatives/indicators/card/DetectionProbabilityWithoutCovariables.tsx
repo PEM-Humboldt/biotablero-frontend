@@ -17,26 +17,38 @@ export function DetectionProbabilityWithoutCovariables() {
 
   const speciesOptions = useMemo(
     () =>
-      currentIndicator?.groups.map((specie) => {
-        const commonName = specie.category?.description
-          ? `${specie.category?.description}, `
+      (currentIndicator?.groups ?? []).map((group) => {
+        const commonName = group.category?.description
+          ? `${group.category?.description}, `
           : "";
         return {
-          value: specie.category.name,
-          label: `${commonName}${specie.category.name}`,
+          value: group.category.name,
+          label: `${commonName}${group.category.name}`,
         };
-      }) ?? [],
+      }),
     [currentIndicator?.groups],
   );
 
-  const filteredData = useMemo(() => {
-    return ((currentIndicator?.cleanData ?? []) as LineData[])
-      .filter((s) => s.scientificName === selectedSpecie)
-      .map((s) => ({
-        ...s,
-        id: s.metricName || s.id,
-      }));
-  }, [currentIndicator, selectedSpecie]);
+  const renderIndicatorInfo = useMemo(() => {
+    if (!currentIndicator) {
+      return [];
+    }
+
+    const rawSeries = (currentIndicator.cleanData ?? []) as LineData[];
+
+    return rawSeries.map((serie) => ({
+      ...serie,
+      id: serie.metricName || serie.id,
+    }));
+  }, [currentIndicator]);
+
+  const filteredData = useMemo(
+    () =>
+      renderIndicatorInfo.filter(
+        (serie) => serie.scientificName === selectedSpecie,
+      ),
+    [renderIndicatorInfo, selectedSpecie],
+  );
 
   const selectedSpecieTitle = useMemo(() => {
     const current = currentIndicator?.groups.find(
@@ -59,11 +71,7 @@ export function DetectionProbabilityWithoutCovariables() {
     setSelectedSpecie(speciesOptions[0].value ?? "");
   }, [currentIndicator, speciesOptions]);
 
-  if (!currentIndicator) {
-    return null;
-  }
-
-  return (
+  return !currentIndicator ? null : (
     <>
       <div className="p-2 pb-0 shrink-0 space-y-4">
         {speciesOptions.length > 1 && (

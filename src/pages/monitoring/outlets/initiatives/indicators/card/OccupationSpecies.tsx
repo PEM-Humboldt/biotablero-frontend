@@ -13,27 +13,58 @@ export function OccupationSpecies() {
   const { currentIndicator } = useIndicatorsCTX();
   const [selectedSpecies, setSelectedSpecies] = useState<string[]>([]);
 
-  const filteredIndicator = useMemo(() => {
+  const speciesOptions = useMemo(
+    () =>
+      (currentIndicator?.groups ?? []).map((group) => ({
+        commonName: group.category.description,
+        name: group.category.name,
+        color: getSeriesColor(group.category.id),
+      })),
+    [currentIndicator?.groups],
+  );
+
+  const renderIndicatorInfo = useMemo(() => {
     if (!currentIndicator) {
       return [];
     }
 
-    const rawData = (currentIndicator.cleanData ?? []) as LineData[];
+    const rawSeries = (currentIndicator.cleanData ?? []) as LineData[];
 
-    return rawData
-      .filter((i) => selectedSpecies.includes(i.scientificName))
-      .map((line) => {
-        const matchedGroup = currentIndicator.groups.find(
-          (g) => g.category.name === line.scientificName,
-        );
+    return rawSeries.map((line) => {
+      const matchedGroup = currentIndicator.groups.find(
+        (g) => g.category.name === line.scientificName,
+      );
 
-        const color = matchedGroup
-          ? getSeriesColor(matchedGroup.category.id)
-          : "#FF0000";
+      const color = matchedGroup
+        ? getSeriesColor(matchedGroup.category.id)
+        : "#FF0000";
 
-        return { ...line, color };
-      });
-  }, [currentIndicator, selectedSpecies]);
+      return { ...line, color };
+    });
+  }, [currentIndicator]);
+
+  const filteredIndicator = useMemo(
+    () =>
+      renderIndicatorInfo.filter((i) =>
+        selectedSpecies.includes(i.scientificName),
+      ),
+    [renderIndicatorInfo, selectedSpecies],
+  );
+
+  const handleSelect = (item: string) => {
+    if (selectedSpecies.includes(item)) {
+      setSelectedSpecies((oldList) => oldList.filter((l) => l !== item));
+      return;
+    }
+
+    setSelectedSpecies((oldList) => {
+      const newList = [...oldList, item];
+      if (newList.length > INDICATOR_MAX_COUNT_OCUPATION_SPECIES) {
+        newList.shift();
+      }
+      return newList;
+    });
+  };
 
   useEffect(() => {
     if (!currentIndicator) {
@@ -53,26 +84,7 @@ export function OccupationSpecies() {
     });
   }, [currentIndicator]);
 
-  if (!currentIndicator) {
-    return null;
-  }
-
-  const handleSelect = (item: string) => {
-    if (selectedSpecies.includes(item)) {
-      setSelectedSpecies((oldList) => oldList.filter((l) => l !== item));
-      return;
-    }
-
-    setSelectedSpecies((oldList) => {
-      const newList = [...oldList, item];
-      if (newList.length > INDICATOR_MAX_COUNT_OCUPATION_SPECIES) {
-        newList.shift();
-      }
-      return newList;
-    });
-  };
-
-  return (
+  return !currentIndicator ? null : (
     <>
       <div className="pt-2 shrink-0">
         {currentIndicator.groups.length >
@@ -84,30 +96,28 @@ export function OccupationSpecies() {
           </span>
         )}
         <ul className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-2 max-h-40 overflow-y-auto p-2 pt-0 scrollbar-custom">
-          {currentIndicator.groups.map((g) => {
-            const buttonColor = getSeriesColor(g.category.id);
-            const isSelected = selectedSpecies.includes(g.category.name);
+          {speciesOptions.map((specie) => {
+            const isSelected = selectedSpecies.includes(specie.name);
 
             return (
-              <li key={`selectorBtn_${g.category.name}`}>
+              <li key={`selectorBtn_${specie.name}`}>
                 <button
                   style={{
-                    background: buttonColor,
-                    borderColor: buttonColor,
+                    background: specie.color,
+                    borderColor: specie.color,
                   }}
                   className={cn(
-                    "text-background w-full min-w-[150px] flex-[1_0] px-2 py-1 flex gap-1 border rounded-lg transition-colors duration-300",
+                    "text-background w-full min-w-[150px] flex-[1_0] px-2 py-1 flex gap-1 border rounded-lg transition-colors duration-300 hover:cursor-pointer",
                     isSelected ? "" : "text-foreground bg-background!",
                   )}
                   aria-pressed={isSelected}
-                  disabled={isSelected}
-                  onClick={() => handleSelect(g.category.name)}
+                  onClick={() => handleSelect(specie.name)}
                 >
                   <div className="flex flex-col text-left *:m-0">
                     <span className="text-base font-normal">
-                      {g.category.description}
+                      {specie.commonName}
                     </span>
-                    <span className="text-sm italic">{g.category.name}</span>
+                    <span className="text-sm italic">{specie.commonName}</span>
                   </div>
                 </button>
               </li>
@@ -138,14 +148,16 @@ export function OccupationSpecies() {
                 style={{ pointerEvents: "none", whiteSpace: "nowrap" }}
               >
                 <div className="flex flex-col text-center text-sm mb-1 *:m-0!">
-                  <span className="font-normal">{description}</span>
+                  <div className="space-x-1">
+                    <span
+                      className="inline-block w-3 h-3 rounded-full"
+                      style={{ backgroundColor: point.color }}
+                    />
+                    <span className="font-normal">{description}</span>
+                  </div>
                   <span className="italic">{name}</span>
                 </div>
                 <div className="space-x-1">
-                  <span
-                    className="inline-block w-3 h-3 rounded-full"
-                    style={{ backgroundColor: point.color }}
-                  />
                   <span className="font-normal">{point.data.y}</span>
                 </div>
               </div>

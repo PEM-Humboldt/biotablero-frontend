@@ -199,7 +199,7 @@ export function CollectiveActionParticipation() {
       </div>
       <ul className="flex justify-between gap-2 text-sm ml-[150px] mr-2 mb-4">
         {displayKeys.map((key) => (
-          <li className="flex items-center">
+          <li key={`legend_${key}`} className="flex items-center">
             <span
               className="inline-block w-4 h-4 mr-1"
               style={{ backgroundColor: colorMap[key] ?? "#FF0000" }}
