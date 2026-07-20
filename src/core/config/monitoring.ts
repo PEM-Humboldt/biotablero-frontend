@@ -80,6 +80,39 @@ export const INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD = [
   "#e84a5f",
 ];
 
+export const GRAPHS_EXTENDED_COLOR_PALETTE = [
+  "#2e2d62",
+  "#3d4469",
+  "#315d90",
+  "#3975a7",
+  "#428ebd",
+  "#4ca8d3",
+  "#62c2cb",
+  "#239498",
+  "#115f69",
+  "#5fa896",
+  "#99d3ba",
+  "#c1e7d2",
+  "#FDEBC4",
+  "#e6cd98",
+  "#f1cd73",
+  "#e89c1e",
+  "#e5a85c",
+  "#ed9054",
+  "#f2784f",
+  "#c85728",
+  "#9a3811",
+  "#f25e50",
+  "#e84a5f",
+  "#d63550",
+  "#F1A49E",
+  "#d980a3",
+  "#B079A8",
+  "#8a5d8f",
+  "#5e3a6e",
+  "#423258",
+];
+
 export const INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP: Record<string, string> =
   {
     [INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[0]]: "#ffffff",

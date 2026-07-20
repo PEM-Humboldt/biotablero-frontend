@@ -3,24 +3,23 @@ import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import type { BarsData } from "pages/monitoring/types/indicators";
 import { useMemo, useState } from "react";
 import { cn } from "@ui/shadCN/lib/utils";
+import {
+  getContrastColor,
+  getSeriesColor,
+} from "pages/monitoring/outlets/initiatives/indicators/card//utils/colors";
+import { hashStringToRange } from "@utils/format";
+import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/monitoring";
+import { BarsLegend } from "pages/monitoring/outlets/initiatives/indicators/card/ui/BarsLegend";
+import { GraphInfoSelector } from "./ui/GraphInfoSelector";
 
-const colorMap: Record<string, string> = {
-  Mujeres: "#99d3ba",
-  Hombres: "#115f69",
-  "Otras identidades": "#e6cd98",
-  "Jóvenes (14-28)": "#2e2d62",
-  "Jóvenes adultos (29-40)": "#e89c1e",
-  "Adultos (41-59)": "#239498",
-  "Adultos mayores (60+)": "#9a3811",
-};
-const contrastColorMap: Record<string, string> = {
-  Mujeres: "#000000",
-  Hombres: "#FFFFFF",
-  "Otras identidades": "#000000",
-  "Jóvenes (14-28)": "#FFFFFF",
-  "Jóvenes adultos (29-40)": "#000000",
-  "Adultos (41-59)": "#FFFFFF",
-  "Adultos mayores (60+)": "#FFFFFF",
+const customColorMap: Record<string, string> = {
+  Mujeres: GRAPHS_EXTENDED_COLOR_PALETTE[10],
+  Hombres: GRAPHS_EXTENDED_COLOR_PALETTE[8],
+  "Otras identidades": GRAPHS_EXTENDED_COLOR_PALETTE[13],
+  "Jóvenes (14-28)": GRAPHS_EXTENDED_COLOR_PALETTE[0],
+  "Jóvenes adultos (29-40)": GRAPHS_EXTENDED_COLOR_PALETTE[15],
+  "Adultos (41-59)": GRAPHS_EXTENDED_COLOR_PALETTE[7],
+  "Adultos mayores (60+)": GRAPHS_EXTENDED_COLOR_PALETTE[20],
 };
 
 export function CollectiveActionParticipation() {
@@ -103,32 +102,16 @@ export function CollectiveActionParticipation() {
 
   return (
     <>
-      <div className="p-2 shrink-0 space-y-2">
-        <div title="Selecciona una categoría">
-          <h4 className="m-0 text-base text-primary">Mostrar por:</h4>
-          <ul className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-2 max-h-20 overflow-y-auto pr-2 scrollbar-custom">
-            {groups.map((group) => {
-              const isSelected = group === currentGroup;
-
-              return (
-                <li key={`selectorBtn_${group}`}>
-                  <button
-                    className={cn(
-                      "text-background min-w-[150px] w-full px-2 py-1 border rounded-lg transition-colors duration-300 text-base font-normal",
-                      isSelected
-                        ? "bg-primary text-primary-foreground"
-                        : "text-foreground bg-background! hover:cursor-pointer",
-                    )}
-                    onClick={() => setCurrentGroup(group)}
-                    aria-pressed={isSelected}
-                  >
-                    {group}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+      <div className="p-2 shrink-0 space-y-2 border border-muted mb-4 rounded-lg">
+        <GraphInfoSelector
+          uiText={{
+            title: "Selecciona una categoría",
+            label: "Ver datos por:",
+          }}
+          options={groups}
+          current={currentGroup}
+          updateCurrent={setCurrentGroup}
+        />
       </div>
 
       <div className="relative w-full h-full min-h-[200px]">
@@ -140,9 +123,24 @@ export function CollectiveActionParticipation() {
           margin={{ top: 0, right: 10, bottom: 30, left: 150 }}
           valueScale={{ type: "linear", min: 0, max: 100 }}
           indexScale={{ type: "band", round: true }}
-          axisBottom={{ tickSize: 5, tickValues: [0, 20, 40, 60, 80, 100] }}
-          colors={(val) => colorMap[val.id] ?? "#FF0000"}
-          labelTextColor={(bar) => contrastColorMap[bar.data.id] ?? "#FF0000"}
+          enableGridX={true}
+          enableGridY={false}
+          theme={{ grid: { line: { strokeDasharray: "1 1" } } }}
+          axisBottom={{
+            tickValues: [0, 20, 40, 60, 80, 100],
+            format: (v) => `${v}%`,
+          }}
+          colors={(bar) =>
+            customColorMap[bar.id] ??
+            getSeriesColor(
+              hashStringToRange(
+                String(bar.id),
+                GRAPHS_EXTENDED_COLOR_PALETTE.length,
+              ),
+              GRAPHS_EXTENDED_COLOR_PALETTE,
+            )
+          }
+          labelTextColor={(bar) => getContrastColor(bar.color)}
           axisLeft={{
             renderTick: (tick) => {
               const item = displayData.find((d) => d.date === tick.value);
@@ -197,17 +195,8 @@ export function CollectiveActionParticipation() {
           }}
         />
       </div>
-      <ul className="flex justify-between gap-2 text-sm ml-[150px] mr-2 mb-4">
-        {displayKeys.map((key) => (
-          <li key={`legend_${key}`} className="flex items-center">
-            <span
-              className="inline-block w-4 h-4 mr-1"
-              style={{ backgroundColor: colorMap[key] ?? "#FF0000" }}
-            />
-            {key}
-          </li>
-        ))}
-      </ul>
+
+      <BarsLegend keys={displayKeys} customColorMap={customColorMap} />
     </>
   );
 }

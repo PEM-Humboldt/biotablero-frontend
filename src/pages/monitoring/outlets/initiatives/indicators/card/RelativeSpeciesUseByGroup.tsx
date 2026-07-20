@@ -1,19 +1,28 @@
-import {
-  INITIATIVES_MAP_STATS_GRAPH_COLORS,
-  INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP,
-} from "@config/monitoring";
+import { useEffect, useMemo, useState } from "react";
+
+import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/monitoring";
 import { ResponsiveBar } from "@nivo/bar";
+import { hashStringToRange } from "@utils/format";
+
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
-import { cn } from "@ui/shadCN/lib/utils";
-import { useMemo, useState } from "react";
 import { type BarsData } from "pages/monitoring/types/indicators";
+import {
+  getContrastColor,
+  getSeriesColor,
+} from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
+import { BarsLegend } from "pages/monitoring/outlets/initiatives/indicators/card/ui/BarsLegend";
+import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphInfoSelector";
 
 export function RelativeSpeciesUseByGroup() {
   const { currentIndicator } = useIndicatorsCTX();
   const data = currentIndicator?.cleanData as BarsData;
 
   const groupsList = useMemo(() => [...(data.keys.parent ?? [])], [data]);
-  const [selectedParent, setSelectedParent] = useState(groupsList[0]);
+  const [selectedParent, setSelectedParent] = useState("");
+
+  useEffect(() => {
+    setSelectedParent(groupsList[0]);
+  }, [groupsList]);
 
   const { displayKeys, displayData } = useMemo(() => {
     if (!data) {
@@ -45,34 +54,13 @@ export function RelativeSpeciesUseByGroup() {
 
   return (
     <>
-      <div className="p-2 shrink-0 space-y-2">
-        <div title="Selecciona un grupo">
-          <h4 className="m-0 text-base text-primary">Grupos</h4>
-          <ul className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-2 max-h-20 overflow-y-auto pr-2 scrollbar-custom">
-            {(groupsList ?? []).map((group) => {
-              const groupName = group;
-              const isSelected = groupName === selectedParent;
-
-              return (
-                <li key={`selectorBtn_${groupName}`}>
-                  <button
-                    className={cn(
-                      "text-background min-w-[150px] w-full px-2 py-1 border rounded-lg transition-colors duration-300 text-base font-normal",
-                      isSelected
-                        ? "bg-primary text-primary-foreground"
-                        : "text-foreground bg-background! hover:cursor-pointer",
-                    )}
-                    onClick={() => setSelectedParent(groupName)}
-                    aria-pressed={isSelected}
-                    disabled={isSelected}
-                  >
-                    {groupName}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+      <div className="p-2 shrink-0 space-y-2 border border-muted mb-4 rounded-lg">
+        <GraphInfoSelector
+          uiText={{ title: "Selecciona un grupo", label: "Grupos:" }}
+          options={groupsList}
+          current={selectedParent}
+          updateCurrent={setSelectedParent}
+        />
       </div>
 
       <div className="relative w-full h-full min-h-[200px]">
@@ -81,10 +69,25 @@ export function RelativeSpeciesUseByGroup() {
           keys={displayKeys}
           indexBy="date"
           layout="horizontal"
-          margin={{ top: 0, right: 30, bottom: 65, left: 120 }}
+          margin={{ top: 0, right: 30, bottom: 30, left: 120 }}
           padding={0.1}
-          valueScale={{ type: "linear" }}
-          colors={INITIATIVES_MAP_STATS_GRAPH_COLORS}
+          colors={(bar) =>
+            getSeriesColor(
+              hashStringToRange(
+                String(bar.id),
+                GRAPHS_EXTENDED_COLOR_PALETTE.length,
+              ),
+              GRAPHS_EXTENDED_COLOR_PALETTE,
+            )
+          }
+          enableGridX={true}
+          enableGridY={false}
+          theme={{ grid: { line: { strokeDasharray: "1 1" } } }}
+          valueScale={{ type: "linear", min: 0, max: 100 }}
+          axisBottom={{
+            tickValues: [0, 20, 40, 60, 80, 100],
+            format: (v) => `${v}%`,
+          }}
           axisLeft={{
             tickSize: 5,
             tickPadding: 5,
@@ -94,22 +97,8 @@ export function RelativeSpeciesUseByGroup() {
           }}
           labelSkipWidth={12}
           labelSkipHeight={12}
-          labelTextColor={(bar) =>
-            INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP[bar.color.toLowerCase()] ||
-            "#111111"
-          }
+          labelTextColor={(bar) => getContrastColor(bar.color)}
           valueFormat={(v) => `${Number(v.toFixed(1))}%`}
-          legends={[
-            {
-              dataFrom: "keys",
-              anchor: "bottom",
-              direction: "row",
-              translateY: 60,
-              itemWidth: 150,
-              itemHeight: 20,
-              itemDirection: "left-to-right",
-            },
-          ]}
           tooltip={(bar) => {
             return (
               <div
@@ -132,6 +121,8 @@ export function RelativeSpeciesUseByGroup() {
           }}
         />
       </div>
+
+      <BarsLegend keys={displayKeys} />
     </>
   );
 }

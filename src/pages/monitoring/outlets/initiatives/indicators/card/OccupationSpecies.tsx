@@ -99,6 +99,7 @@ export function OccupationSpecies() {
           {speciesOptions.map((specie) => {
             const isSelected = selectedSpecies.includes(specie.name);
 
+            console.log(specie);
             return (
               <li key={`selectorBtn_${specie.name}`}>
                 <button
@@ -117,7 +118,7 @@ export function OccupationSpecies() {
                     <span className="text-base font-normal">
                       {specie.commonName}
                     </span>
-                    <span className="text-sm italic">{specie.commonName}</span>
+                    <span className="text-sm italic">{specie.name}</span>
                   </div>
                 </button>
               </li>

@@ -1,13 +1,13 @@
 import { type BarDatum, ResponsiveBar } from "@nivo/bar";
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { useEffect, useMemo, useState } from "react";
-import { cn } from "@ui/shadCN/lib/utils";
 import {
   INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY,
   INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD,
   INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP,
 } from "@config/monitoring";
 import type { BarsData } from "pages/monitoring/types/indicators";
+import { GraphInfoSelector } from "./ui/GraphInfoSelector";
 
 export function RelationalIntensityIndex() {
   const { currentIndicator } = useIndicatorsCTX();
@@ -37,7 +37,7 @@ export function RelationalIntensityIndex() {
         dataByDate[date].length;
 
       dataByDate[date].push({
-        actor: "Promedio poderado",
+        actor: "Promedio ponderado",
         value: Number(average.toFixed(2)),
       });
     }
@@ -73,37 +73,21 @@ export function RelationalIntensityIndex() {
 
   return (
     <>
-      <div className="p-2 shrink-0 space-y-2">
-        <div title="Selecciona un grupo">
-          <h4 className="m-0 text-base/2 text-primary">Periodo</h4>
-          {allDates.length > INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY && (
-            <span className="italic text-sm m-0">
-              selecciona hasta {INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY}
-            </span>
-          )}
-          <ul className="grid grid-cols-[repeat(auto-fill,minmax(100px,1fr))] gap-2 max-h-20 overflow-y-auto mt-1 pr-2 scrollbar-custom">
-            {allDates.toReversed().map((group) => {
-              const isSelected = selectedDates.includes(group);
-
-              return (
-                <li key={`selectorBtn_${group}`}>
-                  <button
-                    className={cn(
-                      "text-background w-full px-2 py-1 border rounded-lg transition-colors duration-300 text-base font-normal",
-                      isSelected
-                        ? "bg-primary text-primary-foreground"
-                        : "text-foreground bg-background! hover:cursor-pointer",
-                    )}
-                    onClick={() => handleSelect(group)}
-                    aria-pressed={isSelected}
-                  >
-                    {group}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+      <div className="p-2 shrink-0 space-y-2 border border-muted mb-4 rounded-lg">
+        <GraphInfoSelector
+          uiText={{
+            title: "Selecciona un periodo",
+            label: "Periodos disponibles",
+            instruction:
+              allDates.length > INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY
+                ? `selecciona hasta ${INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY}`
+                : undefined,
+          }}
+          options={allDates}
+          current={selectedDates}
+          singleSelect={false}
+          updateCurrent={handleSelect}
+        />
       </div>
 
       <div className="relative flex w-full h-full min-h-[200px]">
@@ -160,6 +144,9 @@ export function RelationalIntensityIndex() {
               axisTop={null}
               axisRight={null}
               axisLeft={null}
+              enableGridX={true}
+              enableGridY={true}
+              theme={{ grid: { line: { strokeDasharray: "1 1" } } }}
               axisBottom={{
                 tickValues: [-1.0, -0.5, 0, 0.5, 1.0],
                 legend: date,
@@ -180,16 +167,6 @@ export function RelationalIntensityIndex() {
                   : INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP[
                       INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[9]
                     ];
-              }}
-              valueFormat=">-.2f"
-              theme={{
-                grid: {
-                  line: {
-                    stroke: "#bbb",
-                    strokeDasharray: "1 1",
-                    strokeWidth: "0.5",
-                  },
-                },
               }}
               markers={[
                 {
