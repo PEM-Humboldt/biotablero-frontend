@@ -1,13 +1,15 @@
-import { type BarDatum, ResponsiveBar } from "@nivo/bar";
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { useEffect, useMemo, useState } from "react";
+
+import { type BarDatum, ResponsiveBar } from "@nivo/bar";
+
+import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import {
   INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY,
   INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD,
-  INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP,
 } from "@config/monitoring";
 import type { BarsData } from "pages/monitoring/types/indicators";
-import { GraphInfoSelector } from "./ui/GraphInfoSelector";
+import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphInfoSelector";
+import { getContrastColor } from "pages/monitoring/outlets/initiatives/indicators/card//utils/colors";
 
 export function RelationalIntensityIndex() {
   const { currentIndicator } = useIndicatorsCTX();
@@ -73,7 +75,7 @@ export function RelationalIntensityIndex() {
 
   return (
     <>
-      <div className="p-2 shrink-0 space-y-2 border border-muted mb-4 rounded-lg">
+      <div className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300">
         <GraphInfoSelector
           uiText={{
             title: "Selecciona un periodo",
@@ -83,8 +85,8 @@ export function RelationalIntensityIndex() {
                 ? `selecciona hasta ${INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY}`
                 : undefined,
           }}
-          options={allDates}
-          current={selectedDates}
+          options={allDates.toReversed()}
+          currentSelection={selectedDates}
           singleSelect={false}
           updateCurrent={handleSelect}
         />
@@ -154,20 +156,7 @@ export function RelationalIntensityIndex() {
                 legendOffset: 40,
               }}
               labelSkipWidth={20}
-              labelTextColor={(label) => {
-                if (label.data.indexValue === "Promedio ponderado") {
-                  return INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP[
-                    INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[0]
-                  ];
-                }
-                return label.data.value >= 0
-                  ? INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP[
-                      INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[5]
-                    ]
-                  : INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP[
-                      INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[9]
-                    ];
-              }}
+              labelTextColor={(label) => getContrastColor(label.color)}
               markers={[
                 {
                   axis: "x",

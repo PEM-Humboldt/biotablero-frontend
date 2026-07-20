@@ -1,16 +1,17 @@
+import { useMemo, useState } from "react";
+
+import { hashStringToRange } from "@utils/format";
+import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/monitoring";
 import { ResponsiveBar } from "@nivo/bar";
+
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import type { BarsData } from "pages/monitoring/types/indicators";
-import { useMemo, useState } from "react";
-import { cn } from "@ui/shadCN/lib/utils";
 import {
   getContrastColor,
   getSeriesColor,
 } from "pages/monitoring/outlets/initiatives/indicators/card//utils/colors";
-import { hashStringToRange } from "@utils/format";
-import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/monitoring";
 import { BarsLegend } from "pages/monitoring/outlets/initiatives/indicators/card/ui/BarsLegend";
-import { GraphInfoSelector } from "./ui/GraphInfoSelector";
+import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphInfoSelector";
 
 const customColorMap: Record<string, string> = {
   Mujeres: GRAPHS_EXTENDED_COLOR_PALETTE[10],
@@ -102,14 +103,14 @@ export function CollectiveActionParticipation() {
 
   return (
     <>
-      <div className="p-2 shrink-0 space-y-2 border border-muted mb-4 rounded-lg">
+      <div className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300">
         <GraphInfoSelector
           uiText={{
             title: "Selecciona una categoría",
             label: "Ver datos por:",
           }}
           options={groups}
-          current={currentGroup}
+          currentSelection={currentGroup}
           updateCurrent={setCurrentGroup}
         />
       </div>

@@ -73,7 +73,7 @@ export function DetectionProbabilityWithoutCovariables() {
 
   return !currentIndicator ? null : (
     <>
-      <div className="p-2 pb-0 shrink-0 space-y-4">
+      <div className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300">
         {speciesOptions.length > 1 && (
           <Combobox
             items={speciesOptions ?? []}

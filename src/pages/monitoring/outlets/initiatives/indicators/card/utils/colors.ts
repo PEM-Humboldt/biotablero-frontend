@@ -1,4 +1,4 @@
-import { INITIATIVES_MAP_STATS_GRAPH_COLORS } from "@config/monitoring";
+import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/monitoring";
 
 /**
  * Calculates and returns a color from a provided palette based on a unique series identifier, and ensures that the same ID will always resolve to the same color.
@@ -10,7 +10,7 @@ import { INITIATIVES_MAP_STATS_GRAPH_COLORS } from "@config/monitoring";
  */
 export function getSeriesColor(
   serieId: number,
-  colorPalette: string[] = INITIATIVES_MAP_STATS_GRAPH_COLORS,
+  colorPalette: string[] = GRAPHS_EXTENDED_COLOR_PALETTE,
 ): string {
   const index = serieId % (colorPalette.length || 1);
   return colorPalette[index];

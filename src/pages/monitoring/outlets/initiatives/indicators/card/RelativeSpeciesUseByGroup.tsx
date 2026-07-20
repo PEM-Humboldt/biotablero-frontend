@@ -54,11 +54,11 @@ export function RelativeSpeciesUseByGroup() {
 
   return (
     <>
-      <div className="p-2 shrink-0 space-y-2 border border-muted mb-4 rounded-lg">
+      <div className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300">
         <GraphInfoSelector
           uiText={{ title: "Selecciona un grupo", label: "Grupos:" }}
           options={groupsList}
-          current={selectedParent}
+          currentSelection={selectedParent}
           updateCurrent={setSelectedParent}
         />
       </div>
