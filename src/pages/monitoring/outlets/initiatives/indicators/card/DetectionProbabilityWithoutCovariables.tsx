@@ -2,7 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { SearchIcon } from "lucide-react";
 
 import { ResponsiveLine } from "@nivo/line";
-import { INITIATIVES_MAP_STATS_GRAPH_COLORS } from "@config/monitoring";
+import {
+  GRAPHS_CONTRAST_COLOR_PALETTE,
+  GRAPHS_EXTENDED_COLOR_PALETTE,
+} from "@config/monitoring";
 import { Combobox } from "@ui/ComboBox";
 import { cn } from "@ui/shadCN/lib/utils";
 
@@ -115,8 +118,8 @@ export function DetectionProbabilityWithoutCovariables() {
             max: 1,
           }}
           colors={[
-            INITIATIVES_MAP_STATS_GRAPH_COLORS[3],
-            INITIATIVES_MAP_STATS_GRAPH_COLORS[7],
+            GRAPHS_EXTENDED_COLOR_PALETTE[2],
+            GRAPHS_EXTENDED_COLOR_PALETTE[22],
           ]}
           pointSize={10}
           useMesh={true}

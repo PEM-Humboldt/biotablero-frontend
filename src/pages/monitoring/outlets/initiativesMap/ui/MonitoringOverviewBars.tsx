@@ -1,10 +1,11 @@
 import {
+  GRAPHS_EXTENDED_COLOR_PALETTE,
   INITIATIVES_MAP_STATS_BAR_HEIGHT,
-  INITIATIVES_MAP_STATS_GRAPH_COLORS,
-  INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP,
   INITIATIVES_MAP_STATS_GRAPH_Y_MARGINS,
 } from "@config/monitoring";
 import { type BarDatum, ResponsiveBar } from "@nivo/bar";
+
+import { getContrastColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
 
 export function MonitorignOverviewBars<T extends Record<string, unknown>>({
   data,
@@ -48,14 +49,11 @@ export function MonitorignOverviewBars<T extends Record<string, unknown>>({
         labelSkipHeight={12}
         labelPosition="start"
         labelOffset={10}
-        labelTextColor={(bar) =>
-          INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP[bar.color.toLowerCase()] ||
-          "#111111"
-        }
+        labelTextColor={(bar) => getContrastColor(bar.color)}
         margin={{ top: 20, right: 10, bottom: 40, left: 120 }}
         padding={0.1}
         colorBy="indexValue"
-        colors={INITIATIVES_MAP_STATS_GRAPH_COLORS}
+        colors={GRAPHS_EXTENDED_COLOR_PALETTE}
         axisBottom={{
           legend: bottomAxisLabel,
           legendPosition: "middle",

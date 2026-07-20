@@ -5,7 +5,7 @@ import { type BarDatum, ResponsiveBar } from "@nivo/bar";
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import {
   INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY,
-  INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD,
+  GRAPHS_GRADIENT_COLOR_PALETTE,
 } from "@config/monitoring";
 import type { BarsData } from "pages/monitoring/types/indicators";
 import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphInfoSelector";
@@ -137,11 +137,11 @@ export function RelationalIntensityIndex() {
               indexScale={{ type: "band", round: true }}
               colors={(bar) => {
                 if (bar.indexValue === "Promedio ponderado") {
-                  return INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[0];
+                  return GRAPHS_GRADIENT_COLOR_PALETTE[0];
                 }
                 return bar.value! >= 0
-                  ? INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[5]
-                  : INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[9];
+                  ? GRAPHS_GRADIENT_COLOR_PALETTE[5]
+                  : GRAPHS_GRADIENT_COLOR_PALETTE[9];
               }}
               axisTop={null}
               axisRight={null}
