@@ -13,8 +13,7 @@ import { matchColor } from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
 import TextBoxes from "@ui/TextBoxes";
 
-import {
-  LargeStackedBar,
+import LargeStackedBar, {
   LargeStackedBarData,
 } from "@composites/charts/LargeStackedBar";
 
@@ -130,6 +129,7 @@ export function CurrentFootprint() {
     hfCurrent,
     hfCurrentValue,
     hfCurrentCategory,
+    message,
     texts,
     layers,
   } = state;
@@ -288,6 +288,7 @@ export function CurrentFootprint() {
       <h6>Natural, Baja, Media, Alta y Muy Alta</h6>
 
       <LargeStackedBar
+        loadStatus={message}
         data={hfCurrent}
         labelX="Hectáreas"
         labelY="Huella Humana Actual"
