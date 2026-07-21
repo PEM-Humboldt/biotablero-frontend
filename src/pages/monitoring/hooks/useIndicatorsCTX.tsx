@@ -20,6 +20,7 @@ import {
   getIndicatorData,
   getIndicatorMetadata,
   getIndicators,
+  getIndicatorsByInitiative,
 } from "pages/monitoring/api/services/indicators";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { INDICATORS_PER_PAGE } from "@config/monitoring";
@@ -80,10 +81,7 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
       setErrors([]);
 
       if (initiativeId) {
-        const res = await getIndicators({
-          filter: `initiativeId eq ${initiativeId}`,
-          orderby: "id desc",
-        });
+        const res = await getIndicatorsByInitiative(Number(initiativeId));
         setIsLoading(false);
         if (isMonitoringAPIError(res)) {
           setErrors(res.data.map((err) => err.msg));
@@ -91,8 +89,8 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
           return;
         }
 
-        setIndicators(res.value);
-        indicatorsAmount.current = res["@odata.count"];
+        setIndicators(res.toSorted((a, b) => b.id - a.id));
+        indicatorsAmount.current = res.length;
       } else {
         const skip = (resolvedPage - 1) * INDICATORS_PER_PAGE;
         const res = await getIndicators({ ...searchParams, skip });
