@@ -12,6 +12,7 @@ import {
 } from "pages/monitoring/outlets/initiatives/indicators/card//utils/colors";
 import { BarsLegend } from "pages/monitoring/outlets/initiatives/indicators/card/ui/BarsLegend";
 import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphInfoSelector";
+import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
 
 const customColorMap: Record<string, string> = {
   Mujeres: GRAPHS_EXTENDED_COLOR_PALETTE[10],
@@ -61,7 +62,9 @@ export function CollectiveActionParticipation() {
 
     dataByDateByGroup.forEach((datesMap, parentKey) => {
       datesMap.forEach((dataMap) => {
-        const total = dataMap["total"] as number;
+        const amountKey =
+          uiText.indicatorCard.collectiveActionParticipation.amountKey;
+        const total = dataMap[amountKey] as number;
 
         if (total > 0) {
           const actorKeys = keysByGroup.get(parentKey);
@@ -69,7 +72,7 @@ export function CollectiveActionParticipation() {
           if (actorKeys) {
             actorKeys.forEach((name) => {
               if (
-                name !== "total" &&
+                name !== amountKey &&
                 dataMap[name] !== undefined &&
                 typeof dataMap[name] === "number"
               ) {
@@ -105,10 +108,7 @@ export function CollectiveActionParticipation() {
     <>
       <div className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300">
         <GraphInfoSelector
-          uiText={{
-            title: "Selecciona una categoría",
-            label: "Ver datos por:",
-          }}
+          uiText={uiText.indicatorCard.collectiveActionParticipation.selector}
           options={groups}
           currentSelection={currentGroup}
           updateCurrent={setCurrentGroup}
@@ -165,7 +165,9 @@ export function CollectiveActionParticipation() {
                     x={-5}
                     y={8}
                   >
-                    {total} Personas
+                    {uiText.indicatorCard.collectiveActionParticipation.amountLabel(
+                      Number(total),
+                    )}
                   </text>
                 </g>
               );

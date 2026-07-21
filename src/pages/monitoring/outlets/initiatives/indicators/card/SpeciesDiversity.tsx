@@ -2,15 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 
 import { ResponsiveLine } from "@nivo/line";
 import { hashStringToRange } from "@utils/format";
-import { cn } from "@ui/shadCN/lib/utils";
+import { GRAPHS_CONTRAST_COLOR_PALETTE } from "@config/monitoring";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { ConfidenceIntervalLayer } from "pages/monitoring/outlets/initiatives/indicators/card/utils/ConfidenceIntervalLayer";
 import type { LineData } from "pages/monitoring/types/indicators";
 import { getSeriesColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
-import { GraphInfoSelector } from "./ui/GraphInfoSelector";
-import { GRAPHS_CONTRAST_COLOR_PALETTE } from "@config/monitoring";
+import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphInfoSelector";
 
 export function SpeciesDiversity() {
   const { currentIndicator } = useIndicatorsCTX();
@@ -111,7 +110,7 @@ export function SpeciesDiversity() {
     <>
       <div className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300">
         <GraphInfoSelector
-          uiText={{ title: "Selecciona un grupo", label: "Grupos:" }}
+          uiText={uiText.indicatorCard.speciesDiversity.groupSelector}
           options={speciesList}
           currentSelection={selectedSpecie}
           updateCurrent={setSelectedSpecie}
@@ -120,7 +119,7 @@ export function SpeciesDiversity() {
         />
 
         <GraphInfoSelector
-          uiText={{ title: "Selecciona un índice", label: "Índices:" }}
+          uiText={uiText.indicatorCard.speciesDiversity.indexSelector}
           options={indexesList}
           currentSelection={selectedIndex}
           updateCurrent={setSelectedIndex}
@@ -138,7 +137,7 @@ export function SpeciesDiversity() {
             max: maxY,
           }}
           axisLeft={{
-            legend: "Spp. estimados",
+            legend: uiText.indicatorCard.speciesDiversity.leftAxisLegend,
             legendOffset: -40,
           }}
           colors={(series) =>

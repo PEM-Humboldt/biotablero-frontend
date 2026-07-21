@@ -1,5 +1,3 @@
-// import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
-
 import {
   Network,
   BookOpenCheck,
@@ -51,8 +49,16 @@ export const uiText = {
     noIndicators: "Esta iniciativa todavía no tiene indicadores asociados",
 
     tabs: [
-      { key: "methodology", label: "Metodología", icon: Network },
-      { key: "interpretation", label: "Interpretación", icon: BookOpenCheck },
+      {
+        key: "methodology",
+        label: "Metodología",
+        icon: Network,
+      },
+      {
+        key: "interpretation",
+        label: "Interpretación",
+        icon: BookOpenCheck,
+      },
       {
         key: "considerations",
         label: "Consideración",
@@ -68,6 +74,7 @@ export const uiText = {
     },
 
     ocupationSpecies: {
+      title: "Selecciona las especies",
       maxSelection: (amount: number) => `selecciona hasta ${amount} especies`,
     },
 
@@ -77,6 +84,46 @@ export const uiText = {
         trigger: "Selecciona una especie",
         inputPlaceholder: "Escibe el nombre para buscar la especie",
       },
+    },
+
+    speciesDiversity: {
+      groupSelector: {
+        title: "Selecciona un grupo",
+        label: "Grupos:",
+      },
+      indexSelector: {
+        title: "Selecciona un índice",
+        label: "Índices:",
+      },
+      leftAxisLegend: "Spp. estimados",
+    },
+
+    relativeSpeciesUseByGroup: {
+      selector: {
+        title: "Selecciona un grupo",
+        label: "Grupos:",
+      },
+    },
+
+    relationalIntensityIndex: {
+      averageLabel: "Promedio ponderado",
+      selector: {
+        title: "Selecciona un periodo",
+        label: "Periodos disponibles",
+        maxSelection: (amount: number) =>
+          `selecciona hasta ${amount} especies rangos`,
+      },
+      bottomLegend:
+        "Linea central= relación neutra · Barra a la derecha= relación colaborativa · Barra a la izquierda= relación conflictiva",
+    },
+
+    collectiveActionParticipation: {
+      selector: {
+        title: "Selecciona una categoría",
+        label: "Ver datos por:",
+      },
+      amountKey: "total",
+      amountLabel: (amount: number) => `${amount} Personas`,
     },
   },
 };

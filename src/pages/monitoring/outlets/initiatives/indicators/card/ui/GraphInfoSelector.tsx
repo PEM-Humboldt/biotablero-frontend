@@ -4,7 +4,10 @@ import { Button } from "@ui/shadCN/component/button";
 import { cn } from "@ui/shadCN/lib/utils";
 import { CheckIcon } from "lucide-react";
 import { hashStringToRange } from "@utils/format";
-import { getContrastColor, getSeriesColor } from "../utils/colors";
+import {
+  getContrastColor,
+  getSeriesColor,
+} from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
 import { GRAPHS_CONTRAST_COLOR_PALETTE } from "@config/monitoring";
 
 export function GraphInfoSelector({

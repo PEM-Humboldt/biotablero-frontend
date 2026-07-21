@@ -94,7 +94,7 @@ export function OccupationSpecies() {
     <>
       <div
         className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300"
-        title="Selecciona las especies"
+        title={uiText.indicatorCard.ocupationSpecies.title}
       >
         {currentIndicator.groups.length >
           INDICATOR_MAX_COUNT_OCUPATION_SPECIES && (

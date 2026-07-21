@@ -1,15 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { type BarDatum, ResponsiveBar } from "@nivo/bar";
-
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import {
   INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY,
   GRAPHS_GRADIENT_COLOR_PALETTE,
 } from "@config/monitoring";
+
+import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import type { BarsData } from "pages/monitoring/types/indicators";
 import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphInfoSelector";
 import { getContrastColor } from "pages/monitoring/outlets/initiatives/indicators/card//utils/colors";
+import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
 
 export function RelationalIntensityIndex() {
   const { currentIndicator } = useIndicatorsCTX();
@@ -39,7 +40,7 @@ export function RelationalIntensityIndex() {
         dataByDate[date].length;
 
       dataByDate[date].push({
-        actor: "Promedio ponderado",
+        actor: uiText.indicatorCard.relationalIntensityIndex.averageLabel,
         value: Number(average.toFixed(2)),
       });
     }
@@ -78,11 +79,13 @@ export function RelationalIntensityIndex() {
       <div className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300">
         <GraphInfoSelector
           uiText={{
-            title: "Selecciona un periodo",
-            label: "Periodos disponibles",
+            title: uiText.indicatorCard.relationalIntensityIndex.selector.title,
+            label: uiText.indicatorCard.relationalIntensityIndex.selector.label,
             instruction:
               allDates.length > INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY
-                ? `selecciona hasta ${INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY}`
+                ? uiText.indicatorCard.relationalIntensityIndex.selector.maxSelection(
+                    INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY,
+                  )
                 : undefined,
           }}
           options={allDates.toReversed()}
@@ -136,7 +139,10 @@ export function RelationalIntensityIndex() {
               valueScale={{ type: "linear", min: -1.0, max: 1.0 }}
               indexScale={{ type: "band", round: true }}
               colors={(bar) => {
-                if (bar.indexValue === "Promedio ponderado") {
+                if (
+                  bar.indexValue ===
+                  uiText.indicatorCard.relationalIntensityIndex.averageLabel
+                ) {
                   return GRAPHS_GRADIENT_COLOR_PALETTE[0];
                 }
                 return bar.value! >= 0
@@ -188,8 +194,7 @@ export function RelationalIntensityIndex() {
         ))}
       </div>
       <p className="text-sm italic m-0 text-center">
-        Linea central= relación neutra · Barra a la derecha= relación
-        colaborativa · Barra a la izquierda= relación conflictiva
+        {uiText.indicatorCard.relationalIntensityIndex.bottomLegend}
       </p>
     </>
   );

@@ -12,6 +12,7 @@ import {
 } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
 import { BarsLegend } from "pages/monitoring/outlets/initiatives/indicators/card/ui/BarsLegend";
 import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphInfoSelector";
+import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
 
 export function RelativeSpeciesUseByGroup() {
   const { currentIndicator } = useIndicatorsCTX();
@@ -56,7 +57,7 @@ export function RelativeSpeciesUseByGroup() {
     <>
       <div className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300">
         <GraphInfoSelector
-          uiText={{ title: "Selecciona un grupo", label: "Grupos:" }}
+          uiText={uiText.indicatorCard.relativeSpeciesUseByGroup.selector}
           options={groupsList}
           currentSelection={selectedParent}
           updateCurrent={setSelectedParent}
@@ -113,7 +114,7 @@ export function RelativeSpeciesUseByGroup() {
                     />
                     {bar.id}
                   </span>
-                  <span className="text-lg font-normal">{bar.value}</span>
+                  <span className="text-lg font-normal">{bar.value}%</span>
                   <span className="italic">{bar.indexValue}</span>
                 </div>
               </div>
