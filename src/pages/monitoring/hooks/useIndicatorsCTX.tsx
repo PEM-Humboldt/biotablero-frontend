@@ -34,7 +34,7 @@ type IndicatorsContextValues = {
   isLoading: boolean;
   errors: string[];
   currentIndicator: (IndicatorMetadata & IndicatorData & CleanDataType) | null;
-  searchIndicators: (searchParams: ODataParams) => void;
+  setSearchIndicators: (searchParams: ODataParams) => void;
   currentPage: number;
   setCurrentPage: (page: number) => void;
   indicatorsAmount: number;
@@ -174,7 +174,7 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
         indicators,
         isLoading,
         errors,
-        searchIndicators,
+        setSearchIndicators: searchIndicators,
         currentIndicator,
         currentPage,
         setCurrentPage,
