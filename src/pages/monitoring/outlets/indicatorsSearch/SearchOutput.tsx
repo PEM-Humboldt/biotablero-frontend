@@ -5,6 +5,7 @@ import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { Button } from "@ui/shadCN/component/button";
 import { TagsRender } from "pages/monitoring/ui/TagsRender";
 import { cn } from "@ui/shadCN/lib/utils";
+import { Link } from "react-router";
 
 // TODO: Actualizar el componente para cuando Cesar haya actualizado
 // al back y que el objeto del odata contenga Locations e initiativeName
@@ -93,11 +94,19 @@ export function SearchOutput() {
                 </div>
               </div>
 
-              <div className="text-right pb-2">
-                <hr className="border-b-0.5 border-grey-light mx-4 mt-auto" />
+              <div className="text-right mt-auto">
+                <hr className="border-b-0.5 border-grey-light mx-4" />
 
-                <Button variant="ghost-clean" className=" self-end">
-                  Ver el indicador <ChevronRight />{" "}
+                <Button
+                  variant="ghost-clean"
+                  className="mb-2 mt-1 self-end"
+                  asChild
+                >
+                  <Link
+                    to={`/Monitoreo/Iniciativas/${indicator.initiativeId}/Indicadores/${indicator.id}`}
+                  >
+                    Ver el indicador <ChevronRight />{" "}
+                  </Link>
                 </Button>
               </div>
             </li>
