@@ -25,7 +25,42 @@ export function formatLogDate<T>(value: T) {
       });
 }
 
-// NOTE: Pendiente a realizar la implementacion completa para cuando se tenga
+/**
+ * Formats a month value (name or number) into a localized string based on the current year.
+ *
+ * @param month - Month value to format (English name string, or number index)
+ * @param [isShort=true] - Determines whether to return the short abbreviation or full name
+ * @param [hasMonthOffset=true] - If true, treats numbers as 1-12 (Base 1). If false, treats them as 0-11 (Base 0)
+ * @returns Formatted month string in the configured locale or the original string if invalid
+ */
+export function getLocaleMonthString(month: string, isShort: boolean): string;
+export function getLocaleMonthString(
+  month: number,
+  isShort: boolean,
+  hasMonthOffset: boolean,
+): string;
+export function getLocaleMonthString(
+  month: string | number,
+  isShort: boolean = true,
+  hasMonthOffset: boolean = true,
+): string {
+  const currentYear = new Date().getFullYear();
+
+  const date =
+    typeof month === "number"
+      ? new Date(currentYear, month - (hasMonthOffset ? 1 : 0), 1)
+      : new Date(`${month} 1, ${currentYear}`);
+
+  if (isNaN(date.getTime())) {
+    return String(month);
+  }
+
+  return new Intl.DateTimeFormat(LOCALE, { month: isShort ? "short" : "long" })
+    .format(date)
+    .replace(".", "");
+}
+
+// TODO: Pendiente a realizar la implementacion completa para cuando se tenga
 // el formato de los detalles del log definidos
 export function formatLogDescription<T>(value: T) {
   return (typeof value === "string" ? value : JSON.stringify(value)).split(

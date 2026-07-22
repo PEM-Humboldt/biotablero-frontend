@@ -9,11 +9,13 @@ import { TAG_COLORS } from "@config/monitoring";
 export function DataSheetSmallCard({
   title,
   tags,
+  location,
   bottonLeftInfo,
   link,
 }: {
   title: string;
   tags?: Omit<ODataTag, "categoryName">[];
+  location?: string;
   bottonLeftInfo?: Date | string;
   link: {
     href: string;
@@ -40,22 +42,30 @@ export function DataSheetSmallCard({
 
   return (
     <div className="bg-background p-2 rounded-lg outline outline-transparent hover:outline-primary transition-colors duration-300">
-      <h5 className="text-base font-normal mb-0 px-2">{title}</h5>
-      <div className="flex m-1 gap-2">
-        {Object.values(tagsGrouped).map((group, i) => {
-          const colorValues = TAG_COLORS[i % TAG_COLORS.length];
-          const colorSet = `${colorValues.bg} ${colorValues.fg}`;
+      <h5 className="text-base/5 font-normal mb-0 px-2 text-balance">
+        {title}
+      </h5>
+      {tags && Object.keys(tagsGrouped).length > 0 && (
+        <div className="m-1 gap-2 space-y-2">
+          {Object.values(tagsGrouped).map((group, i) => {
+            const colorValues = TAG_COLORS[i % TAG_COLORS.length];
+            const colorSet = `${colorValues.bg} ${colorValues.fg}`;
 
-          return (
-            <TagsRender
-              key={`${prefix}_${group[i]}_${i}`}
-              tags={group}
-              srTitle="Etiquetas 1"
-              className={cn(colorSet, "font-normal")}
-            />
-          );
-        })}
-      </div>
+            return (
+              <TagsRender
+                key={`${prefix}_${group[i]}_${i}`}
+                tags={group}
+                srTitle="Etiquetas 1"
+                className={cn(colorSet, "font-normal")}
+              />
+            );
+          })}
+        </div>
+      )}
+
+      {location && location !== "" && (
+        <address className="px-2">{location}</address>
+      )}
 
       <hr className="border-t border-grey-light mt-2" />
 
