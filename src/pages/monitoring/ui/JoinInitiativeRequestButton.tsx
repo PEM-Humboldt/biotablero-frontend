@@ -33,9 +33,6 @@ export function JoinInitiativeRequestButton() {
     case UserStateInInitiative.USER_ASPIRING:
       return <CancelJoinInitiativeRequestBtnAlert />;
 
-    // TODO: actualizar el endpoint de `leaveInitiative` dentro de
-    // `src/pages/monitoring/api/monitoringAPI.ts` cuando esté disponible,
-    // de lo contrario va a arrojar error
     case UserStateInInitiative.USER_PARTICIPANT:
     case UserStateInInitiative.USER_VIEWER:
       return <LeaveInitiativeBtnAlert />;

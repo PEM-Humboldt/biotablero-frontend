@@ -73,9 +73,19 @@ export const INITIATIVES_PER_PAGE = 10; // Initiatives on the admin panel
 
 export const INITIAVIVE_NAME_MAX_LENGTH = 100;
 export const INITIAVIVE_SHORTNAME_MAX_LENGTH = 120;
-export const INITIAVIVE_DESCRIPTION_MAX_LENGTH = 300;
+export const INITIAVIVE_DESCRIPTION_MAX_LENGTH = 1000;
 export const INITIAVIVE_OBJECTIVE_MAX_LENGTH = 1000;
 export const INITIAVIVE_INFLUENCE_MAX_LENGTH = 1000;
+
+export const INITIATIVE_IMG_BANNER_WIDTH_MAX = 1600;
+export const INITIATIVE_IMG_BANNER_WIDTH_MIN = 200;
+export const INITIATIVE_IMG_BANNER_HEIGHT_MAX = 1600;
+export const INITIATIVE_IMG_BANNER_HEIGHT_MIN = 200;
+
+export const INITIATIVE_IMG_GENERAL_WIDTH_MAX = 1600;
+export const INITIATIVE_IMG_GENERAL_WIDTH_MIN = 200;
+export const INITIATIVE_IMG_GENERAL_HEIGHT_MAX = 1600;
+export const INITIATIVE_IMG_GENERAL_HEIGHT_MIN = 200;
 
 export const INITIATIVE_LOCATIONS_MAX_AMOUNT = 0; // 0 for infinity
 export const INITIATIVE_LOCATIONS_MIN_AMOUNT = 1;
@@ -97,7 +107,7 @@ export const INITIATIVE_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS: ODataParams = {
   orderby: "name asc",
 };
 
-export const INITIATIVES_IMG_ALLOWED_FORMATS: ImageMimeType[] = [
+export const MONITORING_IMG_ALLOWED_FORMATS: ImageMimeType[] = [
   "image/jpeg",
   "image/png",
   "image/webp",
@@ -112,10 +122,10 @@ export const INITIATIVES_MAP_PADDING_LG = {
   west: 300,
 };
 export const INITIATIVES_MAP_PADDING_SM = {
-  south: 100,
-  north: 0,
-  east: 20,
-  west: 20,
+  south: 50,
+  north: 50,
+  east: 0,
+  west: 50,
 };
 export const INITIATIVES_MAP_STATS_BAR_HEIGHT = 20;
 export const INITIATIVES_MAP_STATS_GRAPH_Y_MARGINS = 70;
@@ -134,6 +144,9 @@ export const INITIATIVES_MAP_GRADIENT = [
     position: 1,
   },
 ];
+
+export const INITIATIVE_MONITORING_EVENTS_HORIZONTAL_TICS = 5;
+export const INITIATIVE_MAP_DEFAULT_ZOOM = 10;
 
 // initiative admin
 export const JOIN_REQUESTS_PER_PAGE = 10;
@@ -170,7 +183,7 @@ export const TAG_COLORS = [
 ];
 
 // Tag admin
-export const TAG_NAME_MAX_LENGTH = 40;
+export const TAG_NAME_MAX_LENGTH = 100;
 export const TAG_URL_MAX_LENGTH = 150;
 export const TAG_RECORDS_PER_PAGE = 20;
 

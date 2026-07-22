@@ -18,7 +18,17 @@ import {
 import type { ImageMimeType } from "@appTypes/formats";
 import { ImgValidator } from "@utils/imgValidator";
 import { Button } from "@ui/shadCN/component/button";
-import { INITIATIVES_IMG_ALLOWED_FORMATS } from "@config/monitoring";
+import {
+  INITIATIVE_IMG_GENERAL_HEIGHT_MAX,
+  INITIATIVE_IMG_GENERAL_HEIGHT_MIN,
+  INITIATIVE_IMG_GENERAL_WIDTH_MAX,
+  INITIATIVE_IMG_GENERAL_WIDTH_MIN,
+  INITIATIVE_IMG_BANNER_HEIGHT_MAX,
+  INITIATIVE_IMG_BANNER_HEIGHT_MIN,
+  INITIATIVE_IMG_BANNER_WIDTH_MAX,
+  INITIATIVE_IMG_BANNER_WIDTH_MIN,
+  MONITORING_IMG_ALLOWED_FORMATS,
+} from "@config/monitoring";
 
 import type { ImagesData } from "pages/monitoring/types/initiative";
 import type {
@@ -128,8 +138,13 @@ export function ImagesInput({
     (validations: ImgValidator) =>
       validations
         .maxSize(1)
-        .isFormat(INITIATIVES_IMG_ALLOWED_FORMATS)
-        .validateDimensions({ maxWidth: 800 }),
+        .isFormat(MONITORING_IMG_ALLOWED_FORMATS)
+        .validateDimensions({
+          maxWidth: INITIATIVE_IMG_GENERAL_WIDTH_MAX,
+          minWidth: INITIATIVE_IMG_GENERAL_WIDTH_MIN,
+          maxHeight: INITIATIVE_IMG_GENERAL_HEIGHT_MAX,
+          minHeight: INITIATIVE_IMG_GENERAL_HEIGHT_MIN,
+        }),
   );
 
   const onChangeBannerUrl = handleOnChangeImage(
@@ -137,8 +152,13 @@ export function ImagesInput({
     (validations: ImgValidator) =>
       validations
         .maxSize(1)
-        .isFormat(INITIATIVES_IMG_ALLOWED_FORMATS)
-        .validateDimensions({ maxWidth: 800 }),
+        .isFormat(MONITORING_IMG_ALLOWED_FORMATS)
+        .validateDimensions({
+          maxWidth: INITIATIVE_IMG_BANNER_WIDTH_MAX,
+          minWidth: INITIATIVE_IMG_BANNER_WIDTH_MIN,
+          maxHeight: INITIATIVE_IMG_BANNER_HEIGHT_MAX,
+          minHeight: INITIATIVE_IMG_BANNER_HEIGHT_MIN,
+        }),
   );
 
   return (
@@ -161,7 +181,7 @@ export function ImagesInput({
           errorObject={inputErr}
           previewObject={imagesPreview}
           inputRef={imageUrlRef}
-          validFormats={INITIATIVES_IMG_ALLOWED_FORMATS}
+          validFormats={MONITORING_IMG_ALLOWED_FORMATS}
           onChangeCallback={onChangeImageUrl}
           removeHandler={handleRemoveImage}
         />
@@ -172,7 +192,7 @@ export function ImagesInput({
           errorObject={inputErr}
           previewObject={imagesPreview}
           inputRef={bannerUrlRef}
-          validFormats={INITIATIVES_IMG_ALLOWED_FORMATS}
+          validFormats={MONITORING_IMG_ALLOWED_FORMATS}
           onChangeCallback={onChangeBannerUrl}
           removeHandler={handleRemoveImage}
         />

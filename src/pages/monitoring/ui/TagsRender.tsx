@@ -6,7 +6,7 @@ export function TagsRender({
   className,
 }: {
   tags?: string[];
-  srTitle: string;
+  srTitle?: string;
   className?: string;
 }) {
   if (!tags || !tags.length) {

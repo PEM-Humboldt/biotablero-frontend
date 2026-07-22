@@ -55,7 +55,7 @@ export const uiText = {
             ? "Area cubierta por la iniciativa"
             : "Area donde se realiza monitoreo comunitario",
         description: undefined,
-        dataUnit: "ha",
+        dataUnit: " ha",
       },
       initiativeSupport: {
         text: (inInitiative: boolean) =>

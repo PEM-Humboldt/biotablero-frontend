@@ -1,3 +1,4 @@
+import { LOCALE } from "@config/monitoring";
 import { cn } from "@ui/shadCN/lib/utils";
 
 import type { TerritoryStoryShort } from "pages/monitoring/types/odataResponse";
@@ -34,7 +35,7 @@ export function StoryTimestamp({
 
   return (
     <time className={className} dateTime={creationDate.toLocaleDateString()}>
-      {creationDate.toLocaleDateString("es-ES", {
+      {creationDate.toLocaleDateString(LOCALE, {
         day: "numeric",
         month: "long",
         year: "numeric",

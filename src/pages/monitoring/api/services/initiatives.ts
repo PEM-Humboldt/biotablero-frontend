@@ -17,7 +17,14 @@ import { createODataGetter } from "pages/monitoring/api/oDataGetter";
 import type { UserJoinRequestData } from "pages/monitoring/types/userJoinRequest";
 import type { JoinInitiativeDataForm } from "pages/monitoring/types/userJoinRequest";
 import type { RoleInInitiative } from "pages/monitoring/types/catalog";
-import type { StatsResponseMap, StatsType } from "pages/monitoring/types/stats";
+import type {
+  InitiativeMonitoringEvent,
+  InitiativeRelated,
+  InitiativeStats,
+  StatsResponseMap,
+  StatsType,
+} from "pages/monitoring/types/stats";
+import type { Geometry } from "geojson";
 
 /**
  * Retrieves all the info about the initiative that has the specified id.
@@ -385,7 +392,7 @@ export async function getInitiativeLocations(locationId?: number) {
  * - On success: The object corresponding to the provided `type` category.
  * - On failure: An `ApiRequestError` object.
  */
-export async function getStats<T extends StatsType>(
+export async function getOverviewStats<T extends StatsType>(
   type: T,
   departmentId?: number,
   initiativeId?: number,
@@ -397,6 +404,79 @@ export async function getStats<T extends StatsType>(
   const res = await monitoringAPI<StatsResponseMap[T]>({
     type: "get",
     endpoint: `GeneralStats/${type}${params !== "" ? `?${params}` : ""}`,
+  });
+
+  return res;
+}
+
+/**
+ * Retrieves specific metrics and statistics for a single initiative.
+ *
+ * @param initiativeId - The identifier of the specific initiative to isolate its metrics.
+ *
+ * @returns A `Promise` that resolves to:
+ * - On success: An `InitiativeStats` object containing the data.
+ * - On failure: An `ApiRequestError` object.
+ */
+export async function getInitiativeStats(initiativeId: number) {
+  const res = await monitoringAPI<InitiativeStats>({
+    type: "get",
+    endpoint: `InitiativeStats/${initiativeId}`,
+  });
+
+  return res;
+}
+
+/**
+ * Retrieves the tracking events of a specific initiative, with an option to filter by year.
+ *
+ * @param initiativeId - The identifier of the initiative whose events are being requested.
+ * @param year - Optional. The specific calendar year to filter the event history.
+ *
+ * @returns A `Promise` that resolves to:
+ * - On success: An array of `InitiativeMonitoringEvent` objects.
+ * - On failure: An `ApiRequestError` object.
+ */
+export async function getInitiativeMonitoringEvents(
+  initiativeId: number,
+  year?: number,
+) {
+  const fetchFromYear = year ? `?year=${year}` : "";
+  const res = await monitoringAPI<InitiativeMonitoringEvent[]>({
+    type: "get",
+    endpoint: `InitiativeStats/GetMonitoringEvents/${initiativeId}${fetchFromYear}`,
+  });
+
+  return res;
+}
+
+/**
+ * Retrieves a list of initiatives that are related or linked within the ecosystem.
+ *
+ * @returns A `Promise` that resolves to:
+ * - On success: An array of `InitiativeRelated` objects.
+ * - On failure: An `ApiRequestError` object.
+ */
+export async function getRelatedInitiatives() {
+  const res = await monitoringAPI<InitiativeRelated[]>({
+    type: "get",
+    endpoint: "Initiative/Related",
+  });
+
+  return res;
+}
+
+/**
+ * Fetches the GeoJSON geometry polygon of a specific initiative.
+ *
+ * @returns A `Promise` that resolves to:
+ * - On success: the initiative's Geometry data.
+ * - On failure: An `ApiRequestError` object.
+ */
+export async function getInitiativePolygon(initiativeId: number) {
+  const res = await monitoringAPI<Geometry>({
+    type: "get",
+    endpoint: `Initiative/Polygon/${initiativeId}`,
   });
 
   return res;
