@@ -57,7 +57,7 @@ export function Card() {
           </header>
 
           <div className="flex flex-wrap flex-col md:flex-row gap-4 p-4">
-            <section className="flex-2 xl:flex-3 md:min-w-[500px] aspect-3/2 bg-background rounded-lg p-2 shadow-2xl">
+            <section className="flex-2 xl:flex-3 w-full h-full bg-background rounded-lg p-2 shadow-2xl">
               <h4 className="sr-only">
                 Gráfica de {currentIndicator.type.name}
               </h4>

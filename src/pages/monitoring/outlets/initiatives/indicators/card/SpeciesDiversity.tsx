@@ -168,7 +168,7 @@ export function SpeciesDiversity() {
         </div>
       </div>
 
-      <div className="relative w-full h-full min-h-[200px]">
+      <div className="w-full h-full aspect-3/2">
         <ResponsiveLine
           data={filteredData}
           margin={{ top: 20, right: 30, bottom: 30, left: 60 }}
