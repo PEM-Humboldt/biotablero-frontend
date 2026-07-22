@@ -5,6 +5,7 @@ import {
   useEffect,
   useContext,
   useRef,
+  useCallback,
 } from "react";
 import { useNavigate, useParams } from "react-router";
 
@@ -153,20 +154,23 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
     void fetchIndicatorData();
   }, [currentIndicatorId, navigate, initiativeId]);
 
-  const searchIndicators = (params: ODataParams) => {
-    setSearchParams((oldParams) => {
-      const baseFilter = params.filter || oldParams.filter;
-      let finalFilter = baseFilter || "";
+  const searchIndicators = useCallback(
+    (params: ODataParams) => {
+      setSearchParams((oldParams) => {
+        const baseFilter = params.filter || oldParams.filter;
+        let finalFilter = baseFilter || "";
 
-      if (initiativeId) {
-        finalFilter = baseFilter
-          ? `initiativeId eq ${initiativeId} and (${baseFilter})`
-          : `initiativeId eq ${initiativeId}`;
-      }
+        if (initiativeId) {
+          finalFilter = baseFilter
+            ? `initiativeId eq ${initiativeId} and (${baseFilter})`
+            : `initiativeId eq ${initiativeId}`;
+        }
 
-      return { ...oldParams, ...params, filter: finalFilter || undefined };
-    });
-  };
+        return { ...oldParams, ...params, filter: finalFilter || undefined };
+      });
+    },
+    [initiativeId],
+  );
 
   return (
     <IndicatorsContext.Provider

@@ -8,6 +8,7 @@ export function IndicatorsSearch() {
     <IndicatorsCTX>
       <div className="w-full h-full bg-grey-form">
         <PageTitleUpdater title="Indicadores" />
+
         <SearchInput />
 
         <SearchOutput />

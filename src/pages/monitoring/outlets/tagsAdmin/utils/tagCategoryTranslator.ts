@@ -1,4 +1,4 @@
-import { uiText } from "pages/monitoring/outlets/tagsAdmin/layout/uiText";
+import { tagCategories } from "pages/monitoring/layout/commonDictionary";
 
 /**
  * Translate English tag category name to Spanish
@@ -7,7 +7,7 @@ import { uiText } from "pages/monitoring/outlets/tagsAdmin/layout/uiText";
  */
 export function translateTagCategory(tagCategoryName: string): string {
   return (
-    (uiText.categoryTranslations as Record<string, string>)[tagCategoryName] ||
+    (tagCategories as Record<string, string>)[tagCategoryName] ||
     tagCategoryName
   );
 }
