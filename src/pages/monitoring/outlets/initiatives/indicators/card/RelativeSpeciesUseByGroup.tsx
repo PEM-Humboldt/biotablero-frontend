@@ -64,7 +64,7 @@ export function RelativeSpeciesUseByGroup() {
         />
       </div>
 
-      <div className="relative w-full h-full min-h-[200px]">
+      <div className="w-full h-full aspect-3/2">
         <ResponsiveBar
           data={displayData}
           keys={displayKeys}
