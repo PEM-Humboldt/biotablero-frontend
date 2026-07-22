@@ -23,7 +23,7 @@ export async function searchInitiativeComponents(): Promise<
       type: "select",
       source: ["location/id", "location/parent/id"],
       values: departments,
-      oDataEntity: "IndicatorVersions",
+      oDataEntity: "IndicatorLocations",
     },
   ];
 }

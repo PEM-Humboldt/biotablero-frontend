@@ -111,6 +111,7 @@ interface TagCategory extends HasId {
 export interface ODataTag extends HasId {
   name: string;
   url?: string;
+  fullName?: string;
   category: TagCategory;
   categoryName: string;
 }

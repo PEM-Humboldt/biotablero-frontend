@@ -1,5 +1,5 @@
-import { TablePager } from "@composites/TablePager";
-import { INDICATORS_PER_PAGE, LOCALE, TAG_COLORS } from "@config/monitoring";
+import { Link } from "react-router";
+import { useEffect, useState } from "react";
 import {
   ArrowDownAZ,
   ArrowUpAZ,
@@ -7,15 +7,17 @@ import {
   CalendarArrowUp,
   ChevronRight,
 } from "lucide-react";
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
+
+import { INDICATORS_PER_PAGE, LOCALE, TAG_COLORS } from "@config/monitoring";
 import { Button } from "@ui/shadCN/component/button";
-import { TagsRender } from "pages/monitoring/ui/TagsRender";
 import { cn } from "@ui/shadCN/lib/utils";
-import { Link } from "react-router";
-import { translateTagCategory } from "../tagsAdmin/utils/tagCategoryTranslator";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
-import { useEffect, useState } from "react";
-import { ODataParams } from "@appTypes/odata";
+import type { ODataParams } from "@appTypes/odata";
+import { TablePager } from "@composites/TablePager";
+
+import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
+import { TagsRender } from "pages/monitoring/ui/TagsRender";
+import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
 
 // TODO: Actualizar el componente para cuando Cesar haya realizado los ajustes
 // al back y que el objeto del odata contenga Locations e initiativeName

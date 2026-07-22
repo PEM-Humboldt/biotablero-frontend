@@ -6,13 +6,13 @@ import { IndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 export function IndicatorsSearch() {
   return (
     <IndicatorsCTX>
-      <div className="w-full h-full bg-grey-form">
+      <main className="w-full h-full bg-grey-form">
         <PageTitleUpdater title="Indicadores" />
 
         <SearchInput />
 
         <SearchOutput />
-      </div>
+      </main>
     </IndicatorsCTX>
   );
 }
