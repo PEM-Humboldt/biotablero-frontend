@@ -28,7 +28,7 @@ export function InitiativeError({
       <ErrorsList errorItems={errors ?? []} />
       <Button asChild>
         <Link
-          to={goBack ?? "/Monitoreo/Iniciativas"}
+          to={goBack ?? "/Monitoreo"}
           className="underline text-primary hover:text-accent"
         >
           Volver al buscador

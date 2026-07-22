@@ -1,4 +1,4 @@
-import { getStats } from "pages/monitoring/api/services/initiatives";
+import { getOverviewStats } from "pages/monitoring/api/services/initiatives";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import type { StatsResponseMap, StatsType } from "pages/monitoring/types/stats";
 import { useEffect, useState } from "react";
@@ -14,7 +14,7 @@ export function useStats<T extends StatsType>(type: T) {
     const fetchStatsData = async () => {
       setIsLoading(true);
       setErrors([]);
-      const res = await getStats(
+      const res = await getOverviewStats(
         type,
         departmentId ? Number(departmentId) : undefined,
         initiativeId ? Number(initiativeId) : undefined,

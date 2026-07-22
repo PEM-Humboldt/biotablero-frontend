@@ -7,6 +7,7 @@ import {
   Minimize2,
 } from "lucide-react";
 
+import { PageTitleUpdater } from "@ui/PageTitleUpdater";
 import { Button } from "@ui/shadCN/component/button";
 import {
   Collapsible,
@@ -49,7 +50,7 @@ export function DataSheetAndNavigation({
 
   const currentInitiative = useMemo(() => {
     const foundInitiative = initiatives.find(
-      (i) => i.initiativeId === Number(initiativeId),
+      (i) => i.id === Number(initiativeId),
     );
 
     return foundInitiative ?? null;
@@ -57,7 +58,7 @@ export function DataSheetAndNavigation({
 
   const { statsScope, title } = useMemo(() => {
     if (currentInitiative) {
-      const scopeName = currentInitiative.initiativeName;
+      const scopeName = currentInitiative.name;
       return {
         statsScope: scopeName,
         title: uiText.dataSheet.scope.initiativeDescription(scopeName),
@@ -80,6 +81,11 @@ export function DataSheetAndNavigation({
 
   return (
     <div className="absolute top-1 left-1 w-106 lg:top-4 lg:left-4 z-10 rounded-lg shadow-md">
+      <PageTitleUpdater
+        title={"Iniciativas"}
+        subtitle={statsScope || "Colombia"}
+      />
+
       <Collapsible open={expanded} onOpenChange={setExpanded}>
         <header className="bg-primary px-4 h-12 border border-primary/50 border-b-0 rounded-t-lg flex gap-2 justify-between items-center">
           <h4
@@ -88,7 +94,7 @@ export function DataSheetAndNavigation({
           >
             {uiText.dataSheet.title}
           </h4>
-          <div className="space-x-2">
+          <div>
             {(departmentId || initiativeId) && (
               <Button
                 className="p-0 text-primary-foreground"
@@ -159,7 +165,7 @@ export function DataSheetAndNavigation({
                 }
                 size="sm"
                 variant="outline"
-                className="mt-1"
+                className="mt-1 ml-2"
                 title={uiText.dataSheet.goToInitiativeBtn.title}
                 aria-label={uiText.dataSheet.goToInitiativeBtn.sr}
               >

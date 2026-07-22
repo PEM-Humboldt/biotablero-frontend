@@ -1,15 +1,22 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import { UserRoundPlus } from "lucide-react";
 
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { ConfirmationDialog } from "@ui/ConfirmationDialog";
+import { Button } from "@ui/shadCN/component/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@ui/shadCN/component/popover";
 
 import { RoleInInitiative } from "pages/monitoring/types/catalog";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { makeJoinRequestToInitiative } from "pages/monitoring/api/services/initiatives";
-import { uiText } from "pages/monitoring/ui/joinInitiativeRequestButton/layout/uiText";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
+import { uiText } from "pages/monitoring/ui/joinInitiativeRequestButton/layout/uiText";
 
 export function MakeJoinInitiativeRequestBtnDialog() {
   const [isLoading, setIsLoading] = useState(false);
@@ -17,7 +24,7 @@ export function MakeJoinInitiativeRequestBtnDialog() {
   const { initiativeInfo, updateInitiative } = useInitiativeCTX();
   const { reloadUserInMonitoringData } = useUserInMonitoringCTX();
 
-  const handleJoinInitiative = async () => {
+  const handleJoinInitiative = async (asRole: RoleInInitiative) => {
     if (!initiativeInfo) {
       return;
     }
@@ -25,12 +32,13 @@ export function MakeJoinInitiativeRequestBtnDialog() {
 
     const joinRequest = await makeJoinRequestToInitiative(
       initiativeInfo.id,
-      RoleInInitiative.COLLABORATOR,
+      asRole,
     );
 
     if (isMonitoringAPIError(joinRequest)) {
       setIsLoading(false);
       setError(joinRequest.data[0].msg);
+      await reloadUserInMonitoringData();
       return;
     }
 
@@ -52,26 +60,51 @@ export function MakeJoinInitiativeRequestBtnDialog() {
     setIsLoading(false);
   };
 
+  const btnVariants = [
+    {
+      role: RoleInInitiative.COLLABORATOR,
+      config: uiText.makeJoinRequestToInitiative.asCollaborator,
+    },
+    {
+      role: RoleInInitiative.READER,
+      config: uiText.makeJoinRequestToInitiative.asReader,
+    },
+  ];
+
   return (
     <>
       {error && <ErrorsList errorItems={[error]} />}
 
-      <ConfirmationDialog
-        texts={{
-          trigger: uiText.makeJoinRequestToInitiative.dialog.trigger,
-          dialog: {
-            title: uiText.makeJoinRequestToInitiative.dialog.dialog.title(
-              initiativeInfo?.name ?? "",
-            ),
-            description:
-              uiText.makeJoinRequestToInitiative.dialog.dialog.description,
-          },
-          actionBtns: uiText.makeJoinRequestToInitiative.dialog.actionBtns,
-        }}
-        triggerBtnVariant="default"
-        handler={() => void handleJoinInitiative()}
-        isLoading={isLoading}
-      />
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button>
+            <UserRoundPlus />
+            {uiText.makeJoinRequestToInitiative.popoverTrigger}
+          </Button>
+        </PopoverTrigger>
+
+        <PopoverContent
+          align="end"
+          className="p-2 flex flex-col w-fit border border-primary"
+        >
+          {btnVariants.map(({ role, config }) => (
+            <ConfirmationDialog
+              key={`joinDialog_${role}`}
+              texts={{
+                trigger: config.trigger,
+                dialog: {
+                  title: config.dialog.title(initiativeInfo?.name ?? ""),
+                  description: config.dialog.description,
+                },
+                actionBtns: config.actionBtns,
+              }}
+              triggerBtnVariant="ghost"
+              handler={() => void handleJoinInitiative(role)}
+              isLoading={isLoading}
+            />
+          ))}
+        </PopoverContent>
+      </Popover>
     </>
   );
 }

@@ -42,7 +42,7 @@ export function Header({
         <Menu />
 
         {renderCompositeTitle && (
-          <h2 className="text-xl! font-light! border-l border-l-grey-light px-4! m-0! truncate">
+          <h2 className="hidden lg:block! lg:text-xl! font-light! border-l border-l-grey-light px-4! m-0! truncate">
             {title} {subtitle !== "" ? `/ ${subtitle}` : ""}
           </h2>
         )}
@@ -55,7 +55,7 @@ export function Header({
           className="flex gap-4 px-6 items-center bg-grey-light h-full"
           aria-hidden="true"
         >
-          <span className="text-base text-grey-dark md:text-lg font-normal">
+          <span className="hidden lg:inline! text-base text-grey-dark md:text-lg font-normal">
             {activeModuleInfo.name}
           </span>
           {activeModuleInfo.icon && (

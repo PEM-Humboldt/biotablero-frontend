@@ -9,6 +9,7 @@ import {
 import { Profile } from "pages/monitoring/outlets/initiatives/Profile";
 import { Indicators } from "pages/monitoring/outlets/initiatives/Indicators";
 import { TerritoryStories } from "pages/monitoring/outlets/initiatives/TerritoryStories";
+import { Collaborators } from "pages/monitoring/outlets/initiatives/Collaborators";
 
 export const initiativeTabs = new Map<
   string,
@@ -46,9 +47,7 @@ export const initiativeTabs = new Map<
     {
       label: "Colaboradores",
       slug: "Colaboradores",
-      component: () => (
-        <h1>Acá van las fotos nais de la pipol de la iniciativa</h1>
-      ),
+      component: Collaborators,
       icon: UsersRound,
     },
   ],

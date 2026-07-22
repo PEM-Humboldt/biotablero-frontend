@@ -41,13 +41,17 @@ export function Initiatives() {
         }
       />
 
-      <Tabs value={currentTab} onValueChange={(e) => void handleOnChangeTab(e)}>
+      <Tabs
+        value={currentTab}
+        onValueChange={(e) => void handleOnChangeTab(e)}
+        className="flex flex-col h-full"
+      >
         <TabsList className="w-full h-auto flex *:flex-1 bg-accent p-0! m-0!">
           {[...initiativeTabs].map(([key, value]) => (
             <TabsTrigger
               key={`tTrigger_${key}`}
               value={value.slug}
-              className="text-lg border-b-2 border-b-primary data-[state=active]:border-b-accent data-[state=active]:bg-primary data-[state=inactive]:hover:bg-accent data-[state=inactive]:hover:text-background bg-grey-light text-primary data-[state=active]:text-background justify-start p-0 cursor-pointer data-[state=active]:cursor-auto"
+              className="text-sm lg:text-lg border-b-2 border-b-primary data-[state=active]:border-b-accent data-[state=active]:bg-primary data-[state=inactive]:hover:bg-accent data-[state=inactive]:hover:text-background bg-grey-light text-primary data-[state=active]:text-background justify-start p-0 cursor-pointer data-[state=active]:cursor-auto"
             >
               <value.icon
                 className="bg-primary/20 p-2 mr-2 size-9 "
@@ -61,7 +65,7 @@ export function Initiatives() {
           <TabsContent
             key={`tContent_${key}`}
             value={value.slug}
-            className="m-0 p-0"
+            className="m-0 p-0 h-full"
           >
             <value.component />
           </TabsContent>

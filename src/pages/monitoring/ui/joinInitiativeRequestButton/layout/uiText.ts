@@ -1,4 +1,12 @@
-import { LogOut, Merge, TicketCheck, TicketX, UserRoundX } from "lucide-react";
+import {
+  Eye,
+  HeartHandshake,
+  LogOut,
+  Merge,
+  TicketCheck,
+  TicketX,
+  UserRoundX,
+} from "lucide-react";
 
 export const uiText = {
   loading: "Cargando...",
@@ -9,12 +17,33 @@ export const uiText = {
   },
 
   makeJoinRequestToInitiative: {
-    dialog: {
+    popoverTrigger: "Unete a la iniciativa",
+    asReader: {
       trigger: {
-        label: "Unirse a la iniciativa",
+        label: "Como lector",
         title: undefined,
         sr: undefined,
-        icon: TicketCheck,
+        icon: Eye,
+      },
+      dialog: {
+        title: (initiativeName: string) =>
+          `Estás solicitando unirte a la iniciativa '${initiativeName}' como lector`,
+        description:
+          "¿Realmente perteneces a este territorio y su trabajo por la biodiversidad?",
+      },
+      actionBtns: {
+        confirm: undefined,
+        cancel: undefined,
+        exit: undefined,
+      },
+    },
+
+    asCollaborator: {
+      trigger: {
+        label: "Como colaborador",
+        title: undefined,
+        sr: undefined,
+        icon: HeartHandshake,
       },
       dialog: {
         title: (initiativeName: string) =>
@@ -28,6 +57,7 @@ export const uiText = {
         exit: undefined,
       },
     },
+
     toast: {
       title: `Solicitud enviada`,
       description: (initiativeName: string) =>

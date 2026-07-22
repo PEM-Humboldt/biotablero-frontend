@@ -31,13 +31,12 @@ export function MapMarker({
 
   return (
     <Marker
-      key={initiative.initiativeId}
       icon={markerIcon}
       position={initiative.coordinate}
       eventHandlers={{
         click: () => {
           void navigate(
-            `/Monitoreo/Departamento/${initiative.mainLocationId}/${initiative.initiativeId}`,
+            `/Monitoreo/Departamento/${initiative.mainLocationId}/${initiative.id}`,
           );
         },
       }}
@@ -49,7 +48,7 @@ export function MapMarker({
         permanent={false}
         className="bg-background! text-primary! px-4! py-2! rounded-lg! shadow-none!"
       >
-        {initiative.initiativeName}
+        {initiative.name}
       </Tooltip>
     </Marker>
   );

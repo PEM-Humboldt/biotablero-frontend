@@ -84,7 +84,7 @@ export function MapFinder({
 
     if (initiativeId && initiatives.length > 0) {
       const selectedInitiative = initiatives.find(
-        (i) => String(i.initiativeId) === initiativeId,
+        (i) => String(i.id) === initiativeId,
       );
 
       if (selectedInitiative) {
@@ -161,7 +161,7 @@ export function MapFinder({
 
   return (
     <MapContainer
-      bounds={bounds ?? COUNTRY_BOUNDS}
+      bounds={COUNTRY_BOUNDS}
       maxZoom={10}
       minZoom={5}
       className="outline-none [&_.leaflet-interactive]:outline-none"
@@ -171,15 +171,12 @@ export function MapFinder({
 
       <MarkerClusterGroup
         iconCreateFunction={clusterCustomIcon}
-        maxClusterRadius={100}
+        maxClusterRadius={25}
         spiderfyOnMaxZoom={true}
         showCoverageOnHover={true}
       >
         {initiatives.map((initiative) => (
-          <MapMarker
-            key={`marker_${initiative.initiativeId}`}
-            initiative={initiative}
-          />
+          <MapMarker key={`marker_${initiative.id}`} initiative={initiative} />
         ))}
       </MarkerClusterGroup>
 

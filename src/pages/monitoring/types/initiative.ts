@@ -23,12 +23,11 @@ export type InitiativeAditionalInfo = {
 };
 
 export type InitiativeByLocation = {
-  initiativeId: number;
-  initiativeName: string;
-  initiativeShortName: string;
+  id: number;
+  name: string;
   mainLocationId: number;
   coordinate: [number, number];
-  tags?: TagInInitiative[];
+  locations: LocationCompleteInfo[];
   creationDate?: string;
 };
 
@@ -72,6 +71,7 @@ export type InitiativeCompleteInfo = {
   objective: string;
   creationDate: string;
   coordinate: [number, number];
+  hasPolygon: boolean;
   polygonArea: number;
   enabled: boolean;
   users: UserInInitiativeCompleteInfo[];
