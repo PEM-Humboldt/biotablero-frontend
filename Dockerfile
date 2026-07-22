@@ -25,6 +25,7 @@ FROM node:$NODE_IMG_TAG AS release
 WORKDIR /app
 
 COPY --from=build /app/dist ./dist
+COPY serve.json .
 
 RUN npm install -g serve@~13.0.0
 
@@ -33,4 +34,4 @@ RUN chmod +x /generate-env.sh
 
 EXPOSE 5000
 ENTRYPOINT ["/generate-env.sh"]
-CMD [ "serve", "-p", "5000", "-s", "dist" ]
+CMD ["serve", "-p", "5000", "-s", "dist", "--config", "/app/serve.json"]
