@@ -95,7 +95,7 @@ export function RelationalIntensityIndex() {
         />
       </div>
 
-      <div className="relative flex w-full h-full min-h-[200px]">
+      <div className="flex w-full h-full aspect-3/2">
         <div className="w-[150px]">
           <ResponsiveBar
             data={
