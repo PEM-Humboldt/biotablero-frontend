@@ -15,6 +15,13 @@ import type {
 } from "pages/monitoring/types/odataResponse";
 import { Combobox } from "@ui/ComboBox";
 import { getColombianDepartments } from "pages/monitoring/utils/manageLocation";
+import { Select } from "@ui/shadCN/component/select";
+import {
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from "@radix-ui/react-select";
+import { MONITORING_YEARS_AVAILABLE } from "@config/monitoring";
 
 export function SearchInput() {
   const [searchIndicator, setSearchIndicator] = useState("");
@@ -130,6 +137,15 @@ export function SearchInput() {
               inputPlaceholder: "Buscar un departamento",
             }}
           />
+
+          <Select>
+            <SelectTrigger>Selecciona un año de inicio</SelectTrigger>
+            <SelectContent>
+              {MONITORING_YEARS_AVAILABLE.map((year) => (
+                <SelectItem value={year}>{year}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </form>
       </div>
     </header>

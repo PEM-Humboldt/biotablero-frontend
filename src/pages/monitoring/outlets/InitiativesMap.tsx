@@ -25,8 +25,8 @@ import { MapLegend } from "pages/monitoring/outlets/initiativesMap/MapLegend";
 import { CardsAttachment } from "pages/monitoring/outlets/initiativesMap/CardsAttachment";
 
 export function InitiativesMap() {
-  const [tiles, setTiles] = useState<keyof typeof MAP_TILES>(0);
-  const [layer, setLayer] = useState<keyof typeof MAP_LAYERS | null>(null);
+  const [tiles, setTiles] = useState(0);
+  const [layer, setLayer] = useState<number | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
 
   const [nation, setNation] = useState<FeatureCollection | null>(null);

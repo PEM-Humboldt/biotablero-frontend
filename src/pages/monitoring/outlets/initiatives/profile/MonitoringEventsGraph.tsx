@@ -15,8 +15,7 @@ import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import type { InitiativeMonitoringEvent } from "pages/monitoring/types/stats";
 import {
-  INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD,
-  INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP,
+  GRAPHS_GRADIENT_COLOR_PALETTE,
   INITIATIVE_MONITORING_EVENTS_HORIZONTAL_TICS,
 } from "@config/monitoring";
 import { ErrorsList } from "@ui/LabelingWithErrors";
@@ -30,7 +29,6 @@ export function MonitoringEventsGraph() {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [years, setYears] = useState<number[]>([]);
-  // const [currentYearIndex, setCurrentYearIndex] = useState(0);
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [monitoringEventsData, setMonitoringEventsData] = useState<
     InitiativeMonitoringEvent[]
@@ -183,16 +181,12 @@ export function MonitoringEventsGraph() {
               groupMode="grouped"
               margin={{ top: 10, right: 10, bottom: 30, left: 30 }}
               padding={0.1}
-              colors={INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[1]}
+              colors={GRAPHS_GRADIENT_COLOR_PALETTE[1]}
               labelSkipWidth={12}
               labelSkipHeight={12}
               labelPosition="start"
               labelOffset={12}
-              labelTextColor={
-                INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP[
-                  INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[1]
-                ]
-              }
+              labelTextColor="#FFFFFF"
               valueScale={{
                 type: "linear",
                 max: computedMaxValue,

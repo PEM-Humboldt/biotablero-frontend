@@ -31,7 +31,7 @@ export function Collaborators() {
       <header className="p-6 pb-0 w-full">
         <h3 className="text-primary">{uiText.collaborators.title}</h3>
         <div className="[&_p]:max-w-[65ch] [&_p]:text-lg">
-          {parseSimpleMarkdown(uiText.collaborators.title)}
+          {parseSimpleMarkdown(uiText.collaborators.descriptionMd)}
         </div>
       </header>
 
