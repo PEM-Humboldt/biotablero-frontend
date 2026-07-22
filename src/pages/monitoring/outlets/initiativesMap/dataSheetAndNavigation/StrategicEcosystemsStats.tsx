@@ -53,7 +53,7 @@ export function StrategicEcosystemsStats() {
           <Accordion
             type="single"
             collapsible
-            className="flex flex-col gap-2 [&_h3]:m-0!"
+            className="flex flex-col m-2 gap-2 [&_h3]:m-0! *:outline-none! *:shadow-none!"
           >
             {Object.entries(ecosystemsAndDefinitions).map(
               ([name, description]) => (
@@ -62,10 +62,10 @@ export function StrategicEcosystemsStats() {
                   value={`ecosystemDescription_${name}`}
                   className="my-0!"
                 >
-                  <AccordionTrigger className="text-primary font-normal">
+                  <AccordionTrigger className="text-primary font-normal border border-primary">
                     {name}
                   </AccordionTrigger>
-                  <AccordionContent className="py-4 overflow-hidden">
+                  <AccordionContent className="py-4 overflow-hidden border border-primary rounded-b-lg">
                     {description}
                   </AccordionContent>
                 </AccordionItem>

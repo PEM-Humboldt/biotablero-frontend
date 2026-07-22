@@ -61,14 +61,13 @@ export function CurrentInitiativeCTX({
 
     const initiativeInfo = await getInitiative(initiativeId);
 
+    setIsLoading(false);
     if (isMonitoringAPIError(initiativeInfo)) {
-      setInitiative(null);
-      setIsLoading(false);
       return initiativeInfo.data[0].msg;
     }
 
-    setInitiative(initiativeInfo ?? null);
-    setIsLoading(false);
+    setInitiative(initiativeInfo);
+
     return null;
   }, []);
 

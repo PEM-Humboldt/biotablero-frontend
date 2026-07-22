@@ -85,7 +85,7 @@ function StatValue({
   description?: string;
 }) {
   const displayValue = new Intl.NumberFormat("es-CO", {
-    maximumFractionDigits: 2,
+    maximumFractionDigits: 0,
   }).format(value);
 
   return (

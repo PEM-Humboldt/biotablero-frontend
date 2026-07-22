@@ -26,7 +26,7 @@ export function useSidebarItems() {
   const groupsInfo = useMemo(
     () => ({
       1: { label: "", sr: "" },
-      2: { label: "Usuario", sr: "Administrar tu cuenta" },
+      2: { label: "", sr: "Administrar tu cuenta" },
       3: { label: "Administrar", sr: "Administrar el módulo" },
     }),
     [],
@@ -64,21 +64,21 @@ export function useSidebarItems() {
           group: 1,
         },
         {
+          label: "Ayudas",
+          description:
+            "Resuelve las dudas más frecuentes sobre monitoreo y el uso de la plataforma",
+          icon: BadgeQuestionMark,
+          linkTo: "/Monitoreo/Ayudas",
+          role: RoleInMonitoring.NONE,
+          group: 1,
+        },
+        {
           label: "Glosario",
           description:
             "Consulta el significado de los términos clave usados en la plataforma",
           icon: NotepadText,
           action: toggleSidebar,
           isActive: open,
-          role: RoleInMonitoring.NONE,
-          group: 1,
-        },
-        {
-          label: "Ayudas",
-          description:
-            "Resuelve las dudas más frecuentes sobre monitoreo y el uso de la plataforma",
-          icon: BadgeQuestionMark,
-          linkTo: "/Monitoreo/Ayudas",
           role: RoleInMonitoring.NONE,
           group: 1,
         },
