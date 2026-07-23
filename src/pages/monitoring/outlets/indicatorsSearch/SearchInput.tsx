@@ -90,7 +90,7 @@ export function SearchInput() {
 
   return (
     <header
-      className="w-full p-4 bg-cover bg-center"
+      className="w-full p-8 bg-cover bg-center"
       style={{ backgroundImage: `url(${indicatorsSearchBkg})` }}
     >
       <div className="max-w-[1600px] mx-auto">

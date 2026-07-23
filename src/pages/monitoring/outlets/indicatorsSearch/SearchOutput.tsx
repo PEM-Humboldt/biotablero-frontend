@@ -43,7 +43,7 @@ export function SearchOutput() {
   }, [sortDate, sortName, setSearchIndicators]);
 
   return (
-    <div className="max-w-[1600px] w-full space-y-4 mx-auto p-4">
+    <div className="max-w-[1600px] w-full space-y-4 mx-auto p-8">
       <div className="flex gap-2 items-center">
         <div className="text-primary">
           <span className="font-normal">{indicatorsAmount}</span> indicadores
@@ -72,7 +72,7 @@ export function SearchOutput() {
           </Button>
         </ButtonGroup>
       </div>
-      <ul className="grid grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-4">
+      <ul className="grid grid-cols-[repeat(auto-fill,minmax(350px,1fr))] gap-4">
         {indicators.map((indicator) => {
           const lastUpdate = new Date(
             indicator.versions[indicator.versions.length - 1].creationDate,

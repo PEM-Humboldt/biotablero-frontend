@@ -3,9 +3,12 @@ import { SearchIcon, Trash2 } from "lucide-react";
 
 import { Button } from "@ui/shadCN/component/button";
 import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@ui/shadCN/component/native-select";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@ui/shadCN/component/select";
 import {
   InputGroup,
   InputGroupAddon,
@@ -150,7 +153,7 @@ export function Search() {
               autoComplete="off"
             />
             <InputGroupAddon align="inline-end">
-              <SearchIcon />
+              <SearchIcon className="text-accent" />
             </InputGroupAddon>
           </InputGroup>
         </div>
@@ -234,23 +237,29 @@ export function FilterSelect({
   const id = label.replaceAll(" ", "_");
 
   return (
-    <div>
+    <div className="flex flex-col gap-1.5">
       <label htmlFor={id} className="text-primary-foreground font-normal">
         {label}
       </label>
-      <NativeSelect
-        id={id}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="bg-background"
-      >
-        <NativeSelectOption value="">{placeholder}</NativeSelectOption>
-        {options.map((opt) => (
-          <NativeSelectOption key={`${id}_opt_${opt.value}`} value={opt.value}>
-            {opt.label}
-          </NativeSelectOption>
-        ))}
-      </NativeSelect>
+
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger id={id} className="bg-background text-foreground">
+          <SelectValue placeholder={placeholder} />
+        </SelectTrigger>
+
+        <SelectContent>
+          {value !== "" && (
+            <SelectItem value="" className="text-muted-foreground">
+              Borrar seleccion
+            </SelectItem>
+          )}
+          {options.map((opt) => (
+            <SelectItem key={`${label}_opt_${opt.value}`} value={opt.value}>
+              {opt.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 }
