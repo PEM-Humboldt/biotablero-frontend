@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import { useEffect, useState } from "react";
 import {
   ArrowDownAZ,
-  ArrowUpAZ,
+  ArrowDownZA,
   CalendarArrowDown,
   CalendarArrowUp,
   ChevronRight,
@@ -18,6 +18,7 @@ import { TablePager } from "@composites/TablePager";
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { TagsRender } from "pages/monitoring/ui/TagsRender";
 import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
+import { uiText } from "./layout/uiText";
 
 // TODO: Actualizar el componente para cuando Cesar haya realizado los ajustes
 // al back y que el objeto del odata contenga Locations e initiativeName
@@ -46,8 +47,7 @@ export function SearchOutput() {
     <div className="max-w-[1600px] w-full space-y-4 mx-auto p-8">
       <div className="flex gap-2 items-center">
         <div className="text-primary">
-          <span className="font-normal">{indicatorsAmount}</span> indicadores
-          encontrados
+          {uiText.searchOutput.searchResults(indicatorsAmount)}
         </div>
         <ButtonGroup>
           <Button
@@ -57,8 +57,18 @@ export function SearchOutput() {
               setSortDate(0);
               setSortName((old) => (old + 1) % 3);
             }}
+            title={
+              sortName === 2
+                ? uiText.searchOutput.sortByNameBtn.desc.title
+                : uiText.searchOutput.sortByNameBtn.asc.title
+            }
+            aria-label={
+              sortName === 2
+                ? uiText.searchOutput.sortByNameBtn.desc.sr
+                : uiText.searchOutput.sortByNameBtn.asc.sr
+            }
           >
-            {sortName === 2 ? <ArrowDownAZ /> : <ArrowUpAZ />}
+            {sortName === 2 ? <ArrowDownAZ /> : <ArrowDownZA />}
           </Button>
           <Button
             variant={sortDate === 0 ? "outline" : "default"}
@@ -67,11 +77,22 @@ export function SearchOutput() {
               setSortName(0);
               setSortDate((old) => (old + 1) % 3);
             }}
+            title={
+              sortDate === 2
+                ? uiText.searchOutput.sortByDateBtn.desc.title
+                : uiText.searchOutput.sortByDateBtn.asc.title
+            }
+            aria-label={
+              sortDate === 2
+                ? uiText.searchOutput.sortByDateBtn.desc.sr
+                : uiText.searchOutput.sortByDateBtn.asc.sr
+            }
           >
-            {sortDate !== 2 ? <CalendarArrowUp /> : <CalendarArrowDown />}
+            {sortDate !== 2 ? <CalendarArrowDown /> : <CalendarArrowUp />}
           </Button>
         </ButtonGroup>
       </div>
+
       <ul className="grid grid-cols-[repeat(auto-fill,minmax(350px,1fr))] gap-4">
         {indicators.map((indicator) => {
           const lastUpdate = new Date(
@@ -114,7 +135,7 @@ export function SearchOutput() {
 
                 <time
                   dateTime={lastUpdate.toISOString()}
-                  title="Última actualización del indicador"
+                  title={uiText.searchOutput.card.lastUpdateTitle}
                   className="absolute top-0 right-2 text-sm px-2 py-0.5 bg-primary rounded-b text-primary-foreground"
                 >
                   {lastUpdate.toLocaleDateString(LOCALE, {
@@ -127,12 +148,21 @@ export function SearchOutput() {
 
               <hr className="border-b-0.5 border-grey-light mx-4" />
 
-              <div title="Iniciativa que realizó el indicador" className="px-4">
-                <div className="text-base/4 font-normal mb-0">
-                  {indicator?.initiativeName ?? "Nombre de la iniciativa"}
+              <div className="px-4">
+                <div
+                  title={uiText.searchOutput.card.initiative}
+                  className="text-base/4 font-normal mb-0"
+                >
+                  {indicator?.initiativeName ??
+                    `id: ${indicator.initiativeId}, Nombre de la iniciativa`}
                 </div>
-                <div className="text-sm italic mb-4">
-                  {initiativeLocations !== "" ? initiativeLocations : "nombre"}
+                <div
+                  title={uiText.searchOutput.card.location}
+                  className="text-sm italic mb-4"
+                >
+                  {initiativeLocations !== ""
+                    ? initiativeLocations
+                    : "ubicación"}
                 </div>
 
                 <div className="flex flex-col m-1 gap-2">
@@ -162,8 +192,11 @@ export function SearchOutput() {
                 >
                   <Link
                     to={`/Monitoreo/Iniciativas/${indicator.initiativeId}/Indicadores/${indicator.id}`}
+                    title={uiText.searchOutput.card.gotoBtn.title}
+                    aria-label={uiText.searchOutput.card.gotoBtn.sr}
                   >
-                    Ver el indicador <ChevronRight />
+                    {uiText.searchOutput.card.gotoBtn.label}
+                    <ChevronRight />
                   </Link>
                 </Button>
               </div>

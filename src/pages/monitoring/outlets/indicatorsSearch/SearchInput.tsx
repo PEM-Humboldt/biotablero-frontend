@@ -24,6 +24,7 @@ import {
 } from "@ui/shadCN/component/select";
 import { Button } from "@ui/shadCN/component/button";
 import { MONITORING_YEARS_AVAILABLE } from "@config/monitoring";
+import { uiText } from "./layout/uiText";
 
 export function SearchInput() {
   const { setSearchIndicators } = useIndicatorsCTX();
@@ -96,125 +97,168 @@ export function SearchInput() {
       <div className="max-w-[1600px] mx-auto">
         <div className="w-full lg:w-[60%] lg:max-w-[600px] rounded-xl outline-2 -outline-offset-1 overflow-hidden outline-primary">
           <h3 className="bg-primary text-primary-foreground p-4 py-2 m-0 font-normal">
-            Encuentra un indicador
+            {uiText.searchInput.title}
           </h3>
           <form
             onReset={handleReset}
-            className="flex flex-col gap-3 p-4 bg-primary/70 backdrop-blur-sm"
+            className="flex flex-col gap-2 p-4 bg-primary/70 backdrop-blur-sm"
           >
-            <InputGroup>
-              <InputGroupInput
-                type="text"
-                value={searchIndicator}
-                onChange={(e) => setSearchIndicator(e.target.value)}
-                className="placeholder:text-foreground"
-                placeholder="Excribe una palabra clave"
-              />
-              <InputGroupAddon align="inline-end">
-                <SearchIcon className="text-accent" />
-              </InputGroupAddon>
-            </InputGroup>
+            <div>
+              <label
+                htmlFor="searchIndicator"
+                className="text-primary-foreground font-normal"
+              >
+                {uiText.searchInput.indicatorSearch.label}
+              </label>
+              <InputGroup>
+                <InputGroupInput
+                  id="searchIndicator"
+                  type="text"
+                  value={searchIndicator}
+                  onChange={(e) => setSearchIndicator(e.target.value)}
+                  className="placeholder:text-foreground"
+                  placeholder={uiText.searchInput.indicatorSearch.placeholder}
+                />
+                <InputGroupAddon align="inline-end">
+                  <SearchIcon className="text-accent" />
+                </InputGroupAddon>
+              </InputGroup>
+            </div>
 
-            <StableComboboxOData<ODataInitiativeShort>
-              id="InitiativeSearchfield"
-              value={filterInitiative}
-              setValue={setFilterInitiative}
-              endpoint="Initiative"
-              sources={["name"]}
-              sourceProcess={(items) =>
-                items.map((i) => ({ value: String(i.id), label: i.name }))
-              }
-              maxItems={4}
-              uiText={{
-                itemNotFound: "No se encontraron iniciativas",
-                trigger: "Filtrar por iniciativa",
-                inputPlaceholder: "Buscar la iniciativa",
-              }}
-              className="[&_svg]:text-accent"
-            />
-
-            <div className="flex gap-2">
-              <StableComboboxOData<ODataTag>
-                id="ecosystemTagFilter"
-                value={filterEcosystem}
-                setValue={setFilterEcosystem}
-                endpoint="Tag"
+            <div>
+              <label
+                htmlFor="InitiativeSearchfield"
+                className="text-primary-foreground font-normal"
+              >
+                {uiText.searchInput.initiativeFilter.label}
+              </label>
+              <StableComboboxOData<ODataInitiativeShort>
+                id="InitiativeSearchfield"
+                value={filterInitiative}
+                setValue={setFilterInitiative}
+                endpoint="Initiative"
                 sources={["name"]}
                 sourceProcess={(items) =>
                   items.map((i) => ({ value: String(i.id), label: i.name }))
                 }
                 maxItems={4}
-                uiText={{
-                  itemNotFound: "Sin resultados",
-                  trigger: "¿Qué ecosistema buscas?",
-                  inputPlaceholder: "Buscar ecosistema estratégico",
-                }}
-                fixedFilter="category/id eq 4"
-                className="flex-1 [&_svg]:text-accent"
-              />
-
-              <StableComboboxOData<ODataTag>
-                id="biologicalGroupTagFilter"
-                value={filterBiologicalGroup}
-                setValue={setFilterBiologicalGroup}
-                endpoint="Tag"
-                sources={["name"]}
-                sourceProcess={(items) =>
-                  items.map((i) => ({ value: String(i.id), label: i.name }))
-                }
-                maxItems={4}
-                uiText={{
-                  itemNotFound: "Sin resultados",
-                  trigger: "¿Qué escala biológica?",
-                  inputPlaceholder: "Buscar la escala biológica",
-                }}
-                fixedFilter="category/id eq 3"
-                className="flex-1 [&_svg]:text-accent"
+                uiText={uiText.searchInput.initiativeFilter.comboboxText}
+                className="[&_svg]:text-accent"
               />
             </div>
 
-            <Combobox
-              items={departments}
-              value={filterDepartment}
-              setValue={setFilterDepartment}
-              keys={{ forLabel: "name", forValue: "value" }}
-              uiText={{
-                itemNotFound: "",
-                trigger: "Selecciona un departamento",
-                inputPlaceholder: "Buscar un departamento",
-              }}
-              className="[&_svg]:text-accent"
-            />
+            <div className="flex *:flex-1 gap-2">
+              <div>
+                <label
+                  htmlFor="ecosystemTagFilter"
+                  className="text-primary-foreground font-normal"
+                >
+                  {uiText.searchInput.ecosystemFilter.label}
+                </label>
+                <StableComboboxOData<ODataTag>
+                  id="ecosystemTagFilter"
+                  value={filterEcosystem}
+                  setValue={setFilterEcosystem}
+                  endpoint="Tag"
+                  sources={["name"]}
+                  sourceProcess={(items) =>
+                    items.map((i) => ({ value: String(i.id), label: i.name }))
+                  }
+                  maxItems={4}
+                  uiText={uiText.searchInput.ecosystemFilter.comboboxText}
+                  fixedFilter="category/id eq 4"
+                  className="flex-1 [&_svg]:text-accent"
+                />
+              </div>
 
-            <Select value={filterYear} onValueChange={setFilterYear}>
-              <SelectTrigger className="bg-background [&_svg]:text-accent data-placeholder:text-foreground data-placeholder:texr-base">
-                <SelectValue placeholder="Selecciona un año de inicio" />
-              </SelectTrigger>
+              <div>
+                <label
+                  htmlFor="biologicalGroupTagFilter"
+                  className="text-primary-foreground font-normal"
+                >
+                  {uiText.searchInput.biologicalGroupFilter.label}
+                </label>
+                <StableComboboxOData<ODataTag>
+                  id="biologicalGroupTagFilter"
+                  value={filterBiologicalGroup}
+                  setValue={setFilterBiologicalGroup}
+                  endpoint="Tag"
+                  sources={["name"]}
+                  sourceProcess={(items) =>
+                    items.map((i) => ({ value: String(i.id), label: i.name }))
+                  }
+                  maxItems={4}
+                  uiText={uiText.searchInput.biologicalGroupFilter.comboboxText}
+                  fixedFilter="category/id eq 3"
+                  className="flex-1 [&_svg]:text-accent"
+                />
+              </div>
+            </div>
 
-              <SelectContent>
-                {filterYear !== "" && (
-                  <SelectItem value="" className="text-muted-foreground">
-                    Borrar seleccion
-                  </SelectItem>
-                )}
-                {MONITORING_YEARS_AVAILABLE.map((year) => (
-                  <SelectItem
-                    key={`indicatorYear_${year}`}
-                    value={String(year)}
+            <div className="flex *:flex-1 gap-2">
+              <div>
+                <label
+                  htmlFor="departmentFilter"
+                  className="text-primary-foreground font-normal"
+                >
+                  {uiText.searchInput.departmentFilter.label}
+                </label>
+                <Combobox
+                  id="departmentFilter"
+                  items={departments}
+                  value={filterDepartment}
+                  setValue={setFilterDepartment}
+                  keys={{ forLabel: "name", forValue: "value" }}
+                  uiText={uiText.searchInput.departmentFilter.comboboxText}
+                  className="[&_svg]:text-accent"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="yearFilter"
+                  className="text-primary-foreground font-normal"
+                >
+                  {uiText.searchInput.yearFilter.label}
+                </label>
+                <Select value={filterYear} onValueChange={setFilterYear}>
+                  <SelectTrigger
+                    id="yearFilter"
+                    className="bg-background [&_svg]:text-accent data-placeholder:text-foreground data-placeholder:texr-base"
                   >
-                    {year}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                    <SelectValue
+                      placeholder={uiText.searchInput.yearFilter.placeholder}
+                    />
+                  </SelectTrigger>
+
+                  <SelectContent>
+                    {filterYear !== "" && (
+                      <SelectItem value="" className="text-muted-foreground">
+                        {uiText.searchInput.yearFilter.removeSelection}
+                      </SelectItem>
+                    )}
+                    {MONITORING_YEARS_AVAILABLE.map((year) => (
+                      <SelectItem
+                        key={`indicatorYear_${year}`}
+                        value={String(year)}
+                      >
+                        {year}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
 
             <Button
               type="reset"
               className="self-end"
               variant="outline_destructive"
+              title={uiText.searchInput.resetSearch.title}
+              aria-label={uiText.searchInput.resetSearch.sr}
             >
               <Trash2 />
-              Borrar filtros
+              {uiText.searchInput.resetSearch.label}
             </Button>
           </form>
         </div>
