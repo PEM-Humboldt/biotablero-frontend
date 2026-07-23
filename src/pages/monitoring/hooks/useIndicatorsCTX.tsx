@@ -6,6 +6,8 @@ import {
   useContext,
   useRef,
   useCallback,
+  type SetStateAction,
+  type Dispatch,
 } from "react";
 import { useNavigate, useParams } from "react-router";
 
@@ -35,7 +37,7 @@ type IndicatorsContextValues = {
   isLoading: boolean;
   errors: string[];
   currentIndicator: (IndicatorMetadata & IndicatorData & CleanDataType) | null;
-  setSearchIndicators: (searchParams: ODataParams) => void;
+  setSearchIndicators: Dispatch<SetStateAction<ODataParams>>;
   currentPage: number;
   setCurrentPage: (page: number) => void;
   indicatorsAmount: number;
@@ -72,8 +74,7 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
   const prevSearchParamsRef = useRef(searchParams);
 
   const currentIndicatorId = detailItem || indicatorId;
-  const isNewFilter =
-    searchParams.filter !== prevSearchParamsRef.current.filter;
+  const isNewFilter = searchParams !== prevSearchParamsRef.current;
   const resolvedPage = isNewFilter ? 1 : currentPage;
 
   useEffect(() => {
@@ -94,7 +95,11 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
         indicatorsAmount.current = res.length;
       } else {
         const skip = (resolvedPage - 1) * INDICATORS_PER_PAGE;
-        const res = await getIndicators({ ...searchParams, skip });
+        const res = await getIndicators({
+          ...searchParams,
+          skip,
+          top: INDICATORS_PER_PAGE,
+        });
         setIsLoading(false);
         if (isMonitoringAPIError(res)) {
           setErrors(res.data.map((err) => err.msg));
@@ -107,6 +112,7 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
       }
     };
 
+    prevSearchParamsRef.current = searchParams;
     void fetchIndicators();
   }, [searchParams, resolvedPage, initiativeId]);
 
@@ -154,31 +160,13 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
     void fetchIndicatorData();
   }, [currentIndicatorId, navigate, initiativeId]);
 
-  const searchIndicators = useCallback(
-    (params: ODataParams) => {
-      setSearchParams((oldParams) => {
-        const baseFilter = params.filter || oldParams.filter;
-        let finalFilter = baseFilter || "";
-
-        if (initiativeId) {
-          finalFilter = baseFilter
-            ? `initiativeId eq ${initiativeId} and (${baseFilter})`
-            : `initiativeId eq ${initiativeId}`;
-        }
-
-        return { ...oldParams, ...params, filter: finalFilter || undefined };
-      });
-    },
-    [initiativeId],
-  );
-
   return (
     <IndicatorsContext.Provider
       value={{
         indicators,
         isLoading,
         errors,
-        setSearchIndicators: searchIndicators,
+        setSearchIndicators: setSearchParams,
         currentIndicator,
         currentPage,
         setCurrentPage,
