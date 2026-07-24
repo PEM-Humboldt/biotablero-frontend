@@ -19,7 +19,9 @@ import {
 } from "pages/search/types/connectivity";
 import { CurrentSEPAConnectivityController } from "pages/search/dashboard/landscape/connectivity/CurrentSEPAConnectivityController";
 import { textsObject } from "pages/search/types/texts";
-import LargeStackedBar from "@composites/charts/LargeStackedBar";
+import {
+  LargeStackedBar,
+} from "@composites/charts/LargeStackedBar";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { ShapeLayer } from "pages/search/types/layers";
 

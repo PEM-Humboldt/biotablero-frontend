@@ -13,7 +13,8 @@ import { matchColor } from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
 import TextBoxes from "@ui/TextBoxes";
 
-import LargeStackedBar, {
+import {
+  LargeStackedBar,
   LargeStackedBarData,
 } from "@composites/charts/LargeStackedBar";
 
