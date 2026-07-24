@@ -16,8 +16,8 @@ import { useEffect, useState } from "react";
 import { getInitiativePolygon } from "pages/monitoring/api/services/initiatives";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import {
+  GRAPHS_GRADIENT_COLOR_PALETTE,
   INITIATIVE_MAP_DEFAULT_ZOOM,
-  INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD,
 } from "@config/monitoring";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { LoadingDiv } from "@ui/LoadingDiv";
@@ -116,10 +116,10 @@ export function InitiativeMap() {
               key={`geojson-layer-${initiativeInfo.id}`}
               data={initiativePolygon}
               style={{
-                fillColor: INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[1],
+                fillColor: GRAPHS_GRADIENT_COLOR_PALETTE[1],
                 weight: 2,
                 opacity: 1,
-                color: INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[9],
+                color: GRAPHS_GRADIENT_COLOR_PALETTE[9],
                 fillOpacity: 0.7,
               }}
             />

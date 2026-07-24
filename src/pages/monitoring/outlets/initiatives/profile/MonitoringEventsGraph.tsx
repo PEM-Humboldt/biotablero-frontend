@@ -9,21 +9,20 @@ import {
   SelectValue,
 } from "@ui/shadCN/component/select";
 import { ResponsiveBar } from "@nivo/bar";
+import {
+  GRAPHS_GRADIENT_COLOR_PALETTE,
+  INITIATIVE_MONITORING_EVENTS_HORIZONTAL_TICS,
+} from "@config/monitoring";
+import { ErrorsList } from "@ui/LabelingWithErrors";
+import { Spinner } from "@ui/shadCN/component/spinner";
 
 import { getInitiativeMonitoringEvents } from "pages/monitoring/api/services/initiatives";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import type { InitiativeMonitoringEvent } from "pages/monitoring/types/stats";
-import {
-  INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD,
-  INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP,
-  INITIATIVE_MONITORING_EVENTS_HORIZONTAL_TICS,
-} from "@config/monitoring";
-import { ErrorsList } from "@ui/LabelingWithErrors";
-import { Spinner } from "@ui/shadCN/component/spinner";
 import { getLocaleMonthString } from "pages/monitoring/utils/formatters";
-
 import { uiText } from "pages/monitoring/outlets/initiatives/layout/uiText";
+import { getContrastColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
 
 export function MonitoringEventsGraph() {
   const { initiativeId } = useInitiativeCTX();
@@ -183,16 +182,12 @@ export function MonitoringEventsGraph() {
               groupMode="grouped"
               margin={{ top: 10, right: 10, bottom: 30, left: 30 }}
               padding={0.1}
-              colors={INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[1]}
+              colors={GRAPHS_GRADIENT_COLOR_PALETTE[1]}
               labelSkipWidth={12}
               labelSkipHeight={12}
               labelPosition="start"
               labelOffset={12}
-              labelTextColor={
-                INITIATIVES_MAP_STATS_GRAPH_CONTRAST_MAP[
-                  INITIATIVES_MAP_STATS_GRAPH_COLORS_GRAD[1]
-                ]
-              }
+              labelTextColor={(bar) => getContrastColor(bar.color)}
               valueScale={{
                 type: "linear",
                 max: computedMaxValue,

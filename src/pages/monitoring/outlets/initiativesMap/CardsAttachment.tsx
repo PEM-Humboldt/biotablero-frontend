@@ -75,7 +75,7 @@ export function CardsAttachment() {
         return;
       }
 
-      setIndicators(res.value);
+      setIndicators(res);
     };
 
     void fetchIndicators();
