@@ -16,8 +16,8 @@ import { useEffect, useState } from "react";
 import { getInitiativePolygon } from "pages/monitoring/api/services/initiatives";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import {
-  INITIATIVE_MAP_DEFAULT_ZOOM,
   GRAPHS_GRADIENT_COLOR_PALETTE,
+  INITIATIVE_MAP_DEFAULT_ZOOM,
 } from "@config/monitoring";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { LoadingDiv } from "@ui/LoadingDiv";
