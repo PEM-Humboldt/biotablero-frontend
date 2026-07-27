@@ -102,7 +102,7 @@ export function CMIndicatorReportModel({
                     <Image src={graph.blobUrl} style={reportStyles.graph} />
                   </View>
 
-                  {graph.maps.map((map, mIndex) => (
+                  {graph.map.map((map, mIndex) => (
                     <View
                       key={`m-${mIndex}`}
                       style={reportStyles.mapBlock}

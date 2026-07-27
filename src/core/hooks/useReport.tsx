@@ -5,15 +5,26 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { useUserCTX } from "@hooks/UserCTX";
 import { domToBlob, type Options as ScrenshotOptions } from "modern-screenshot";
 import workerUrl from "modern-screenshot/worker?url";
 import { createRoot } from "react-dom/client";
-import type { MapDTO, SectionDTO, SectionInfo } from "@appTypes/report";
+import type {
+  MapDTO,
+  SectionDTO,
+  SearchSection,
+  IndicatorContext,
+  SearchContext,
+} from "@appTypes/report";
 import { CMIndicatorReportModel } from "@hooks/useReport/reportModels/CMIndicatorReportModel";
 import { pdf } from "@react-pdf/renderer";
+import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
+import { useLocation } from "react-router";
+import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
+import { fetchIndicatorContext as fetchIndicatorContext } from "./useReport/utils/fetchInitiativeContext";
 
 type ReportContextType = {
   isBusy: boolean;
@@ -21,7 +32,7 @@ type ReportContextType = {
   reportDownloaded: boolean;
   addSection: (
     sectionId: string,
-    sectionInfo: SectionInfo,
+    sectionInfo: Record<string, string>,
     graphComponent: ReactElement,
     graphStateId: string | null,
     map: string | null,
@@ -50,18 +61,66 @@ const screenshotOptions: ScrenshotOptions = {
   timeout: 10000,
 };
 
+const mcIndicatorPathComponents = ["Monitoreo", "Iniciativas", "Indicadores"];
+const searchComponents = ["Consultas"];
+
 export function ReportCTX({ children }: { children: ReactNode }) {
-  const { user } = useUserCTX();
-  const [isBusy, setIsBusy] = useState(false);
-  const [reportDownloaded, setReportDownloaded] = useState(true);
-  const [documentSections, setDocumentSections] = useState<
-    Map<string, SectionDTO>
-  >(new Map());
+  const { pathname } = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
+  const [reportDownloaded, setReportDownloaded] = useState(true);
+
+  const { user } = useUserCTX();
+  const { initiativeInfo } = useInitiativeCTX();
+  const { currentIndicator } = useIndicatorsCTX();
+
+  const [docContext, setDocContext] = useState<
+    IndicatorContext | SearchContext | null
+  >(null);
+  const [docSections, setDocSections] = useState<Map<string, SectionDTO>>(
+    new Map(),
+  );
+
+  const reportType = useMemo(() => {
+    const segments = pathname.split("/").filter(Boolean);
+    const firstSegment = segments[0];
+
+    if (firstSegment === searchComponents[0]) {
+      return "Monitoring";
+    }
+
+    const fullPath = mcIndicatorPathComponents.every((required) =>
+      segments.includes(required),
+    );
+
+    return fullPath ? "InitiativeIndicator" : null;
+  }, [pathname]);
+
+  useEffect(() => {
+    const fetchContext = async () => {
+      if (reportType === "InitiativeIndicator" && initiativeInfo) {
+        setIsLoading(true);
+        setErrors([]);
+        setDocContext(null);
+
+        const { data, errors: fetchErrors } =
+          await fetchIndicatorContext(initiativeInfo);
+        setIsLoading(false);
+        if (fetchErrors.length > 0 || !data) {
+          setErrors(fetchErrors);
+          return;
+        }
+
+        setDocContext(data);
+      }
+    };
+
+    void fetchContext();
+  }, [initiativeInfo, reportType]);
 
   const addSection = async (
     sectionId: string,
-    sectionInfo: SectionInfo,
+    sectionInfo: SearchSection,
     graphComponent: ReactElement,
     graphStateId: string | null,
     map: string | null,
@@ -70,7 +129,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       return;
     }
 
-    setIsBusy(true);
+    setIsLoading(true);
     setErrors([]);
 
     try {
@@ -80,7 +139,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
         const mapElement = document.getElementById(map);
         if (!mapElement) {
           console.error("Cannot get the map from the DOM");
-          setIsBusy(false);
+          setIsLoading(false);
           return;
         }
 
@@ -112,7 +171,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       const targetGraphState = graphStateId ?? "";
       const newGraphBlobUrl = URL.createObjectURL(graphBlob);
 
-      setDocumentSections((oldSections) => {
+      setDocSections((oldSections) => {
         const newSections = new Map(oldSections);
 
         const existingSection = newSections.get(sectionId) ?? {
@@ -131,20 +190,20 @@ export function ReportCTX({ children }: { children: ReactNode }) {
         if (graphIndex !== -1) {
           URL.revokeObjectURL(updatedGraphs[graphIndex].blobUrl);
 
-          const existingMaps = updatedGraphs[graphIndex].maps;
+          const existingMaps = updatedGraphs[graphIndex].map;
           const updatedMaps = mapDTO ? [...existingMaps, mapDTO] : existingMaps;
           updatedGraphs[graphIndex] = {
             state: targetGraphState,
             blobUrl: newGraphBlobUrl,
             info: sectionInfo?.graphInfo,
-            maps: updatedMaps,
+            map: updatedMaps,
           };
         } else {
           updatedGraphs.push({
             state: targetGraphState,
             blobUrl: newGraphBlobUrl,
             info: sectionInfo?.graphInfo,
-            maps: mapDTO ? [mapDTO] : [],
+            map: mapDTO ? [mapDTO] : [],
           });
         }
 
@@ -158,30 +217,30 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error("Error while serializing DOM elements:", error);
     } finally {
-      setIsBusy(false);
+      setIsLoading(false);
     }
   };
 
   const removeElement = useCallback(
     (sectionId: string, graphStateId?: string, mapIndex?: number) => {
-      if (!documentSections.has(sectionId)) {
+      if (!docSections.has(sectionId)) {
         return;
       }
 
       const isMapDel = graphStateId !== undefined && mapIndex !== undefined;
       const isGraphDel = graphStateId !== undefined && mapIndex === undefined;
 
-      setDocumentSections((oldSections) => {
+      setDocSections((oldSections) => {
         const nextSections = new Map(oldSections);
         const section = nextSections.get(sectionId)!;
 
         if (isMapDel) {
           const graph = section.graphs.find((g) => g.state === graphStateId);
-          if (!graph || graph.maps.length <= 1) {
+          if (!graph || graph.map.length <= 1) {
             return oldSections;
           }
 
-          const mapToRemove = graph.maps[mapIndex];
+          const mapToRemove = graph.map[mapIndex];
           if (!mapToRemove) {
             return oldSections;
           }
@@ -193,7 +252,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
               g.state === graphStateId
                 ? {
                     ...g,
-                    maps: g.maps.filter((_, index) => index !== mapIndex),
+                    maps: g.map.filter((_, index) => index !== mapIndex),
                   }
                 : g,
             ),
@@ -212,7 +271,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
           }
 
           URL.revokeObjectURL(graph.blobUrl);
-          graph.maps.forEach((m) => URL.revokeObjectURL(m.blobUrl));
+          graph.map.forEach((m) => URL.revokeObjectURL(m.blobUrl));
 
           nextSections.set(sectionId, {
             ...section,
@@ -224,21 +283,21 @@ export function ReportCTX({ children }: { children: ReactNode }) {
 
         section?.graphs.forEach((g) => {
           URL.revokeObjectURL(g.blobUrl);
-          g?.maps.forEach((m) => URL.revokeObjectURL(m.blobUrl));
+          g?.map.forEach((m) => URL.revokeObjectURL(m.blobUrl));
         });
 
         nextSections.delete(sectionId);
         return nextSections;
       });
     },
-    [documentSections],
+    [docSections],
   );
 
   const removeReport = useCallback(() => {
-    for (const section of documentSections.keys()) {
+    for (const section of docSections.keys()) {
       removeElement(section);
     }
-  }, [documentSections, removeElement]);
+  }, [docSections, removeElement]);
 
   const moveElement = (
     direction: "prev" | "next",
@@ -246,7 +305,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     graphStateId?: string,
     mapIndex?: number,
   ) => {
-    const section = documentSections.get(sectionId);
+    const section = docSections.get(sectionId);
     if (!section) {
       return;
     }
@@ -259,7 +318,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       if (
         !graph ||
         (direction === "prev" && mapIndex === 0) ||
-        (direction === "next" && mapIndex === graph.maps.length - 1)
+        (direction === "next" && mapIndex === graph.map.length - 1)
       ) {
         return;
       }
@@ -279,7 +338,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     }
 
     if (graphStateId === undefined) {
-      const keys = Array.from(documentSections.keys());
+      const keys = Array.from(docSections.keys());
       const sectionIndex = keys.indexOf(sectionId);
       if (
         sectionIndex === -1 ||
@@ -302,7 +361,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       return result;
     }
 
-    setDocumentSections((oldSections) => {
+    setDocSections((oldSections) => {
       const nextSections = new Map(oldSections);
       const currentSection = oldSections.get(sectionId)!;
 
@@ -311,7 +370,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
           ...currentSection,
           graphs: currentSection.graphs.map((g) =>
             g.state === graphStateId
-              ? { ...g, maps: reorderArray(g.maps, mapIndex, direction) }
+              ? { ...g, map: reorderArray(g.map, mapIndex, direction) }
               : g,
           ),
         });
@@ -347,8 +406,8 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       return;
     }
     try {
-      setIsBusy(true);
-      const sections = Array.from(documentSections.values());
+      setIsLoading(true);
+      const sections = Array.from(docSections.values());
       const blob = await pdf(
         <CMIndicatorReportModel
           sections={sections}
@@ -361,13 +420,13 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error("Error al generar el PDF:", error);
     } finally {
-      setIsBusy(false);
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     setReportDownloaded(false);
-  }, [documentSections]);
+  }, [docSections]);
 
   useEffect(() => {
     return () => {
@@ -375,10 +434,11 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     };
   }, [removeReport]);
 
+  console.log(docContext);
   return (
     <ReportContext.Provider
       value={{
-        isBusy,
+        isBusy: isLoading,
         errors,
         reportDownloaded,
         addSection,
@@ -386,7 +446,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
         removeReport,
         moveElement,
         openReportInNewTab,
-        documentSections,
+        documentSections: docSections,
       }}
     >
       {children}

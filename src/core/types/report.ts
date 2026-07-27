@@ -32,7 +32,7 @@ export type SearchSection = {
   mapUrl?: string;
 };
 
-type SearchContext = {
+export type SearchContext = {
   location: {
     type: string;
     name: string;
@@ -43,10 +43,10 @@ type SearchContext = {
 };
 
 // Indicadores
-type IndicatorTag = {
+export type IndicatorTag = {
   name: string;
   fullName?: string;
-  url: string;
+  url?: string;
 };
 
 type IndicatorSection = {
@@ -74,7 +74,7 @@ export type IndicatorContext = {
   initiativeLocation: LocationCompleteInfo[];
   initiativeCreationDate: string;
   initiativeDescription: string;
-  initiativeStats: {
+  initiativeStats?: {
     area: number;
     areaUnit: string;
     localitiesUnderMonitoring: number;
