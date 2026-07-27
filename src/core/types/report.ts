@@ -2,7 +2,7 @@ import type { LocationCompleteInfo } from "pages/monitoring/types/odataResponse"
 
 export type MapDTO = {
   id: string;
-  mapUrl: string;
+  blobUrl: string;
 };
 
 export type GraphDTO = {
@@ -49,7 +49,7 @@ export type IndicatorTag = {
   url?: string;
 };
 
-type IndicatorSection = {
+export type IndicatorSection = {
   title: string;
   type: string;
   creationDate: string;

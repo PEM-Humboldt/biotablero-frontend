@@ -9,9 +9,8 @@ import {
   useState,
 } from "react";
 import { useUserCTX } from "@hooks/UserCTX";
-import { domToBlob, type Options as ScrenshotOptions } from "modern-screenshot";
+import { type Options as ScrenshotOptions } from "modern-screenshot";
 import workerUrl from "modern-screenshot/worker?url";
-import { createRoot } from "react-dom/client";
 import type {
   MapDTO,
   SectionDTO,
@@ -19,13 +18,17 @@ import type {
   IndicatorContext,
   SearchContext,
   ReportMetadata,
+  IndicatorSection,
 } from "@appTypes/report";
 import { CMIndicatorReportModel } from "@hooks/useReport/reportModels/CMIndicatorReportModel";
 import { pdf } from "@react-pdf/renderer";
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { useLocation } from "react-router";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
-import { fetchIndicatorContext as fetchIndicatorContext } from "./useReport/utils/fetchInitiativeContext";
+import { fetchIndicatorContext } from "./useReport/utils/fetchInitiativeContext";
+import { LOCALE } from "@config/monitoring";
+import { makeMapImg } from "./useReport/utils/makeMapImg";
+import { makeGraphImg } from "./useReport/utils/makeGraphImg";
 
 type ReportContextType = {
   isBusy: boolean;
@@ -56,12 +59,6 @@ type ReportContextType = {
 
 const ReportContext = createContext<ReportContextType | null>(null);
 
-const screenshotOptions: ScrenshotOptions = {
-  scale: 2,
-  workerUrl,
-  timeout: 10000,
-};
-
 const mcIndicatorPathComponents = ["Monitoreo", "Iniciativas", "Indicadores"];
 const searchComponents = ["Consultas"];
 
@@ -73,12 +70,12 @@ export function ReportCTX({ children }: { children: ReactNode }) {
 
   const { user } = useUserCTX();
   const { initiativeInfo } = useInitiativeCTX();
-  const { currentIndicator } = useIndicatorsCTX();
 
   const [docMetadata, setDocMetadata] = useState<ReportMetadata | null>(null);
   const [docContext, setDocContext] = useState<
     IndicatorContext | SearchContext | null
   >(null);
+
   const [docSections, setDocSections] = useState<Map<string, SectionDTO>>(
     new Map(),
   );
@@ -105,7 +102,11 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     }
 
     setDocMetadata({
-      creationDate: new Date().toISOString(),
+      creationDate: new Date().toLocaleDateString(LOCALE, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }),
       madeBy: {
         name: `${user.firstName} ${user.lastName}`,
         username: user.username,
@@ -137,11 +138,11 @@ export function ReportCTX({ children }: { children: ReactNode }) {
   }, [initiativeInfo, reportType]);
 
   const addSection = async (
-    sectionId: string,
-    sectionInfo: SearchSection,
+    baseId: string,
+    graphStateStringId: string,
+    sectionInfo: SearchSection | IndicatorSection,
     graphComponent: ReactElement,
-    graphStateId: string | null,
-    map: string | null,
+    mapFromLeafletElementId: string | null,
   ) => {
     if (!user) {
       return;
@@ -150,93 +151,77 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     setIsLoading(true);
     setErrors([]);
 
-    try {
-      let mapDTO: MapDTO | null = null;
+    let mapDTO: MapDTO | null = null;
 
-      if (map) {
-        const mapElement = document.getElementById(map);
-        if (!mapElement) {
-          console.error("Cannot get the map from the DOM");
-          setIsLoading(false);
-          return;
-        }
+    if (mapFromLeafletElementId) {
+      const buildtMap = await makeMapImg(mapFromLeafletElementId, {
+        scale: 2,
+        workerUrl,
+        timeout: 10000,
+      });
 
-        const mapTitle =
-          mapElement.getElementsByClassName("title")[0]?.textContent || "";
-        const mapBlob = await domToBlob(mapElement, screenshotOptions);
+      if (buildtMap.errors.length > 0 || !buildtMap.map) {
+        setErrors(buildtMap.errors);
+        return;
+      }
+      mapDTO = buildtMap.map;
+    }
 
-        mapDTO = {
-          title: mapTitle,
-          blobUrl: URL.createObjectURL(mapBlob),
+    const targetGraphState = graphStateId ?? "";
+    const buildtGraph = await makeGraphImg(graphComponent, {
+      scale: 2,
+      workerUrl,
+      timeout: 10000,
+    });
+    if (buildtGraph.errors.length > 0 || !buildtGraph.graph) {
+      setErrors(buildtGraph.errors);
+      return;
+    }
+    const newGraphBlobUrl = buildtGraph.graph.blobUrl;
+
+    setDocSections((oldSections) => {
+      const newSections = new Map(oldSections);
+
+      const existingSection = newSections.get(sectionId) ?? {
+        title: sectionInfo.title,
+        description: sectionInfo.description,
+        link: window.location.href,
+        graphs: [],
+      };
+
+      const graphIndex = existingSection.graphs.findIndex(
+        (g) => g.state === targetGraphState,
+      );
+
+      const updatedGraphs = [...existingSection.graphs];
+
+      if (graphIndex !== -1) {
+        URL.revokeObjectURL(updatedGraphs[graphIndex].blobUrl);
+
+        const existingMaps = updatedGraphs[graphIndex].map;
+        const updatedMaps = mapDTO ? [...existingMaps, mapDTO] : existingMaps;
+        updatedGraphs[graphIndex] = {
+          state: targetGraphState,
+          blobUrl: newGraphBlobUrl,
+          info: sectionInfo?.graphInfo,
+          map: updatedMaps,
         };
+      } else {
+        updatedGraphs.push({
+          state: targetGraphState,
+          blobUrl: newGraphBlobUrl,
+          info: sectionInfo?.graphInfo,
+          map: mapDTO ? [mapDTO] : [],
+        });
       }
 
-      const tempContainer = document.createElement("div");
-      tempContainer.style.position = "absolute";
-      tempContainer.style.left = "-9999px";
-      tempContainer.style.width = "1200px";
-      document.body.appendChild(tempContainer);
-
-      const root = createRoot(tempContainer);
-      root.render(graphComponent);
-
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      const graphBlob = await domToBlob(tempContainer, screenshotOptions);
-      root.unmount();
-      document.body.removeChild(tempContainer);
-
-      const targetGraphState = graphStateId ?? "";
-      const newGraphBlobUrl = URL.createObjectURL(graphBlob);
-
-      setDocSections((oldSections) => {
-        const newSections = new Map(oldSections);
-
-        const existingSection = newSections.get(sectionId) ?? {
-          title: sectionInfo.title,
-          description: sectionInfo.description,
-          link: window.location.href,
-          graphs: [],
-        };
-
-        const graphIndex = existingSection.graphs.findIndex(
-          (g) => g.state === targetGraphState,
-        );
-
-        const updatedGraphs = [...existingSection.graphs];
-
-        if (graphIndex !== -1) {
-          URL.revokeObjectURL(updatedGraphs[graphIndex].blobUrl);
-
-          const existingMaps = updatedGraphs[graphIndex].map;
-          const updatedMaps = mapDTO ? [...existingMaps, mapDTO] : existingMaps;
-          updatedGraphs[graphIndex] = {
-            state: targetGraphState,
-            blobUrl: newGraphBlobUrl,
-            info: sectionInfo?.graphInfo,
-            map: updatedMaps,
-          };
-        } else {
-          updatedGraphs.push({
-            state: targetGraphState,
-            blobUrl: newGraphBlobUrl,
-            info: sectionInfo?.graphInfo,
-            map: mapDTO ? [mapDTO] : [],
-          });
-        }
-
-        newSections.set(sectionId, {
-          ...existingSection,
-          graphs: updatedGraphs,
-        });
-
-        return newSections;
+      newSections.set(sectionId, {
+        ...existingSection,
+        graphs: updatedGraphs,
       });
-    } catch (error) {
-      console.error("Error while serializing DOM elements:", error);
-    } finally {
-      setIsLoading(false);
-    }
+
+      return newSections;
+    });
   };
 
   const removeElement = useCallback(
