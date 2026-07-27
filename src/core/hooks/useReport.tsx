@@ -18,6 +18,7 @@ import type {
   SearchSection,
   IndicatorContext,
   SearchContext,
+  ReportMetadata,
 } from "@appTypes/report";
 import { CMIndicatorReportModel } from "@hooks/useReport/reportModels/CMIndicatorReportModel";
 import { pdf } from "@react-pdf/renderer";
@@ -74,6 +75,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
   const { initiativeInfo } = useInitiativeCTX();
   const { currentIndicator } = useIndicatorsCTX();
 
+  const [docMetadata, setDocMetadata] = useState<ReportMetadata | null>(null);
   const [docContext, setDocContext] = useState<
     IndicatorContext | SearchContext | null
   >(null);
@@ -95,6 +97,22 @@ export function ReportCTX({ children }: { children: ReactNode }) {
 
     return fullPath ? "InitiativeIndicator" : null;
   }, [pathname]);
+
+  useEffect(() => {
+    if (!user) {
+      setDocMetadata(null);
+      return;
+    }
+
+    setDocMetadata({
+      creationDate: new Date().toISOString(),
+      madeBy: {
+        name: `${user.firstName} ${user.lastName}`,
+        username: user.username,
+        email: user.email,
+      },
+    });
+  }, [user]);
 
   useEffect(() => {
     const fetchContext = async () => {
@@ -434,7 +452,8 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     };
   }, [removeReport]);
 
-  console.log(docContext);
+  console.log("meta", docMetadata, "cotx", docContext);
+
   return (
     <ReportContext.Provider
       value={{

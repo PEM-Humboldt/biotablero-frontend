@@ -88,7 +88,11 @@ export type IndicatorContext = {
 // General
 export type ReportMetadata = {
   creationDate: string;
-  madeBy: { name: string; username?: string; mail: string };
+  madeBy: {
+    name: string;
+    username: string;
+    email: string;
+  };
 };
 
 export type ReportInfo = {
