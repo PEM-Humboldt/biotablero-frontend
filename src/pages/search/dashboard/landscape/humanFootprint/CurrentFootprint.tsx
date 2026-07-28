@@ -9,7 +9,6 @@ import {
 
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
-import { matchColor } from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
 import TextBoxes from "@ui/TextBoxes";
 
@@ -22,8 +21,11 @@ import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CurrentFootprintController } from "pages/search/dashboard/landscape/humanFootprint/CurrentFootprintController";
 import { RasterLayer } from "pages/search/types/layers";
 import { textsObject } from "pages/search/types/texts";
-import colorPalettes from "pages/search/utils/colorPalettes";
 import { formatNumber } from "@utils/format";
+import { matchColor } from "pages/search/utils/matchColor";
+import colorPalettes from "pages/search/utils/colorPalettes";
+
+type RasterMethod = "layer" | "css-mask";
 
 interface State {
   showInfoGraph: boolean;
@@ -34,6 +36,7 @@ interface State {
   message: MessageWrapperType;
   texts: { hfCurrent: textsObject };
   layers: RasterLayer[];
+  rasterMethod: RasterMethod;
 }
 
 type Action =
@@ -43,6 +46,7 @@ type Action =
       payload: { id: string; average: number; category: string };
     }
   | { type: "CURRENTHF_LAYERS_SUCCEEDED"; payload: RasterLayer[] }
+  | { type: "SET_RASTER_METHOD"; payload: RasterMethod }
   | { type: "CURRENTHF_VALUES_SUCCEEDED"; payload: LargeStackedBarData[] }
   | { type: "CURRENTHF_VALUES_FAILED" }
   | { type: "SET_TEXTS"; payload: textsObject };
@@ -54,6 +58,7 @@ const initialState: State = {
   hfCurrentValue: 0,
   hfCurrentCategory: "",
   message: "loading",
+  rasterMethod: "css-mask",
   texts: {
     hfCurrent: {
       info: "",
@@ -106,6 +111,12 @@ function reducer(state: State, action: Action): State {
         layers: action.payload,
       };
 
+    case "SET_RASTER_METHOD":
+      return {
+        ...state,
+        rasterMethod: action.payload,
+      };
+
     default:
       return state;
   }
@@ -132,6 +143,7 @@ export function CurrentFootprint() {
     hfCurrentCategory,
     texts,
     layers,
+    rasterMethod,
   } = state;
 
   const controller = new CurrentFootprintController();
@@ -145,6 +157,7 @@ export function CurrentFootprint() {
   const areaIdId = areaId.id;
 
   controller.setArea(areaTypeId, areaIdId);
+  controller.setRasterMethod(rasterMethod);
 
   useEffect(() => {
     setLoadingLayer(true);
@@ -162,19 +175,7 @@ export function CurrentFootprint() {
               type: "CURRENTHF_LAYERS_SUCCEEDED",
               payload: layersRes,
             });
-            setRasterLayers(
-              layersRes.map((layer, index) =>
-                index === 0
-                  ? {
-                      ...layer,
-                      colorize: {
-                        method: "svg-filter",
-                        color: "#5d1488",
-                      },
-                    }
-                  : layer,
-              ),
-            );
+            setRasterLayers(layersRes);
             setLoadingLayer(false);
             setMapTitle({
               name: `HH promedio · ${period}`,
@@ -212,7 +213,7 @@ export function CurrentFootprint() {
     return () => {
       controller.cancelActiveRequests();
     };
-  }, [areaTypeId, areaIdId]);
+  }, [areaTypeId, areaIdId, rasterMethod]);
 
   const toggleInfoGraph = () => {
     dispatch({ type: "TOGGLE_INFO_GRAPH" });
@@ -225,6 +226,11 @@ export function CurrentFootprint() {
         selected: layer.id === selectedKey,
       })),
     );
+  };
+
+  const setRasterMethod = (method: RasterMethod) => {
+    setRasterLayers([]);
+    dispatch({ type: "SET_RASTER_METHOD", payload: method });
   };
 
   return (
@@ -259,6 +265,30 @@ export function CurrentFootprint() {
         >
           {formatNumber(hfCurrentValue, 2)}
         </h5>
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          gap: 8,
+          marginBottom: 12,
+          flexWrap: "wrap",
+        }}
+      >
+        <button
+          type="button"
+          className={`secondary-button ${rasterMethod === "layer" ? "active" : ""}`}
+          onClick={() => setRasterMethod("layer")}
+        >
+          Capa solamente
+        </button>
+        <button
+          type="button"
+          className={`secondary-button ${rasterMethod === "css-mask" ? "active" : ""}`}
+          onClick={() => setRasterMethod("css-mask")}
+        >
+          css-mask
+        </button>
       </div>
 
       <h6>Natural, Baja, Media, Alta y Muy Alta</h6>

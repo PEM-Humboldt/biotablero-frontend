@@ -5,12 +5,9 @@ import L, {
 } from "leaflet";
 import { useMap } from "react-leaflet";
 
-import { buildCssColorFilter } from "pages/search/utils/cssColorFilter";
-
 type CssFilterRasterOverlayProps = {
   bounds: LatLngBoundsExpression;
   source: string;
-  color: string;
   opacity?: number;
 };
 
@@ -24,12 +21,10 @@ type OverlayStyle = {
 export function CssFilterRasterOverlay({
   bounds,
   source,
-  color,
   opacity = 1,
 }: CssFilterRasterOverlayProps) {
   const map = useMap();
   const [style, setStyle] = useState<OverlayStyle | null>(null);
-  const filter = buildCssColorFilter(color);
 
   useEffect(() => {
     const updatePosition = () => {
@@ -76,8 +71,6 @@ export function CssFilterRasterOverlay({
         opacity,
         pointerEvents: "none",
         display: "block",
-        filter,
-        WebkitFilter: filter,
       }}
     />
   );

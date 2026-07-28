@@ -5,17 +5,7 @@ import { CancelTokenSource } from "axios";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import { transformCoverageValues } from "pages/search/dashboard/ecosystems/transformData";
 import { matchColor } from "pages/search/utils/matchColor";
-
-type CoverageRasterColorizeMethod = NonNullable<
-  RasterLayer["colorize"]
->["method"];
-
-const COVERAGE_RASTER_COLORIZE_METHOD: CoverageRasterColorizeMethod =
-  "alpha-mask-canvas";
-const COVERAGE_RASTER_BLEND_MODE: NonNullable<
-  RasterLayer["colorize"]
->["blendMode"] = "multiply";
-const DEFAULT_COVERAGE_RASTER_COLOR = "#2a7c4f";
+import colorPalettes from "../utils/colorPalettes";
 
 /**
  * Controller for Ecosystems Component
@@ -65,9 +55,7 @@ export class EcosystemsController {
    *
    * @returns { Promise<Array<RasterLayer>> } layers for the classes in the current area
    */
-  async getCoveragesLayers(
-    colorizeMethod: CoverageRasterColorizeMethod = COVERAGE_RASTER_COLORIZE_METHOD,
-  ): Promise<Array<RasterLayer>> {
+  async getCoveragesLayers(): Promise<Array<RasterLayer>> {
     if (this.areaId) {
       const requests: Array<Promise<{ layer: string }>> = [];
 
@@ -116,17 +104,14 @@ export class EcosystemsController {
       });
 
       const layersBase64 = await Promise.all(layersBase64Promises);
-      const coverageColor = matchColor("coverage");
-
       return [...this.classes].map((classId, index) => ({
         id: classId,
         data: layersBase64[index],
         selected: false,
         paneLevel: 2,
         colorize: {
-          method: colorizeMethod,
-          color: "#2a7c4f",
-          blendMode: COVERAGE_RASTER_BLEND_MODE,
+          method: "css-mask",
+          color: matchColor("coverage")(classId) ?? colorPalettes.default[0],
         },
       }));
     }

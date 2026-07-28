@@ -1,6 +1,6 @@
 import colorPalettes from "pages/search/utils/colorPalettes";
 
-type MatchColorType = keyof typeof match;
+export type MatchColorType = keyof typeof match;
 interface MatchInfo {
   palette: keyof typeof colorPalettes;
   sort?: (string | number)[];

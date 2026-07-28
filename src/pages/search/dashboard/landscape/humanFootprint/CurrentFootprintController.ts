@@ -8,6 +8,7 @@ import { MetricTypesMap } from "pages/search/types/metrics";
 import SearchAPI from "pages/search/api/searchAPI";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import LayerAPI from "pages/search/api/layerAPI";
+import colorPalettes from "pages/search/utils/colorPalettes";
 
 type HFCategory = keyof Omit<MetricTypesMap["currentHF"], "id">;
 
@@ -30,12 +31,17 @@ export class CurrentFootprintController {
   activeRequests: Map<string, CancelTokenSource> = new Map();
   classes: Set<string> = new Set();
   itemId: string = "";
+  rasterMethod: "layer" | "css-mask" = "layer";
 
   constructor() {}
 
   setArea(areaType: string, areaId: number) {
     this.areaType = areaType;
     this.areaId = areaId;
+  }
+
+  setRasterMethod(method: "layer" | "css-mask") {
+    this.rasterMethod = method;
   }
 
   /**
@@ -149,6 +155,10 @@ export class CurrentFootprintController {
         data: layersBase64[index],
         selected: false,
         paneLevel: 2,
+        colorize: {
+          color: matchColor("hfCurrent")(classId) ?? colorPalettes.default[0],
+          method: this.rasterMethod,
+        },
       }));
     }
     throw Error("Polygon and area undefined");

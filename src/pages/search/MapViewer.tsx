@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { LatLngBoundsExpression, LatLngBoundsLiteral, Map } from "leaflet";
 import {
-  ImageOverlay,
   MapContainer,
   TileLayer,
   WMSTileLayer,
@@ -20,11 +19,8 @@ import "leaflet/dist/leaflet.css";
 import { useUserCTX } from "@hooks/UserContext";
 import { COLOMBIA_BOUNDS } from "pages/utils/settings";
 import { OnLoadingModal } from "@ui/OnLoadingModal";
-import { colorizeRasterByAlphaMask } from "pages/search/utils/rasterColorizer";
 import { CssMaskRasterOverlay } from "pages/search/mapViewer/CssMaskRasterOverlay";
 import { CssFilterRasterOverlay } from "pages/search/mapViewer/CssFilterRasterOverlay";
-import { SvgFilterRasterOverlay } from "pages/search/mapViewer/SvgFilterRasterOverlay";
-import { CssBlendRasterOverlay } from "pages/search/mapViewer/CssBlendRasterOverlay";
 
 const config = {
   params: {
@@ -48,7 +44,6 @@ export function MapViewer({
   loadPolygonInfo: _,
 }: MapViewerProps) {
   const [errorModal, setErrorModal] = useState(true);
-  const [rasterUrls, setRasterUrls] = useState<Record<string, string>>({});
   const mapRef = useRef<Map>(null);
   const { user } = useUserCTX();
 
@@ -87,44 +82,6 @@ export function MapViewer({
       setErrorModal(true);
     }
   }, [layerError]);
-
-  useEffect(() => {
-    let mounted = true;
-
-    const resolveRasterUrls = async () => {
-      const entries = await Promise.all(
-        rasterLayers.map(async (layer) => {
-          const key = `${layer.id}-${layer.data}`;
-
-          if (layer.colorize?.method === "alpha-mask-canvas") {
-            try {
-              const colorized = await colorizeRasterByAlphaMask(
-                layer.data,
-                layer.colorize.color,
-              );
-              return [key, colorized] as const;
-            } catch (error) {
-              console.warn("Failed to colorize raster layer", layer.id, error);
-            }
-          }
-
-          return [key, layer.data] as const;
-        }),
-      );
-
-      if (!mounted) {
-        return;
-      }
-
-      setRasterUrls(Object.fromEntries(entries));
-    };
-
-    void resolveRasterUrls();
-
-    return () => {
-      mounted = false;
-    };
-  }, [rasterLayers]);
 
   const handleModalClose = () => setErrorModal(false);
 
@@ -211,52 +168,15 @@ export function MapViewer({
               if (layer.opacity) {
                 opacity = layer.opacity;
               }
-              const layerKey = `${layer.id}-${layer.data}`;
-              const rasterUrl = rasterUrls[layerKey] ?? layer.data;
 
-              if (layer.colorize?.method === "css-mask") {
+              const rasterMethod = layer.colorize?.method ?? "layer";
+
+              if (rasterMethod === "css-mask") {
                 return (
                   <CssMaskRasterOverlay
-                    key={layerKey}
-                    source={rasterUrl}
-                    color={layer.colorize.color}
-                    bounds={bounds}
-                    opacity={opacity}
-                  />
-                );
-              }
-
-              if (layer.colorize?.method === "css-filter") {
-                return (
-                  <CssFilterRasterOverlay
-                    key={layerKey}
-                    source={rasterUrl}
-                    color={layer.colorize.color}
-                    bounds={bounds}
-                    opacity={opacity}
-                  />
-                );
-              }
-
-              if (layer.colorize?.method === "css-blend") {
-                return (
-                  <CssBlendRasterOverlay
-                    key={layerKey}
-                    source={rasterUrl}
-                    color={layer.colorize.color}
-                    blendMode={layer.colorize.blendMode}
-                    bounds={bounds}
-                    opacity={opacity}
-                  />
-                );
-              }
-
-              if (layer.colorize?.method === "svg-filter") {
-                return (
-                  <SvgFilterRasterOverlay
-                    key={layerKey}
-                    source={rasterUrl}
-                    color={layer.colorize.color}
+                    key={`${layer.id}-${layer.data}`}
+                    source={layer.data}
+                    color={layer.colorize?.color ?? "#000000"}
                     bounds={bounds}
                     opacity={opacity}
                   />
@@ -264,9 +184,9 @@ export function MapViewer({
               }
 
               return (
-                <ImageOverlay
-                  key={layerKey}
-                  url={rasterUrl}
+                <CssFilterRasterOverlay
+                  key={`${layer.id}-${layer.data}`}
+                  source={layer.data}
                   bounds={bounds}
                   opacity={opacity}
                 />
