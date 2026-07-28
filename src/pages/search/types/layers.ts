@@ -1,5 +1,4 @@
 import type * as geojson from "geojson";
-import type { CSSProperties } from "react";
 import type { GeoJSONOptions, StyleFunction } from "leaflet";
 
 export interface ShapeLayer {
@@ -19,7 +18,6 @@ export interface RasterLayer {
   colorize?: {
     color: string;
     method?: "layer" | "css-mask";
-    blendMode?: CSSProperties["mixBlendMode"];
   };
 }
 

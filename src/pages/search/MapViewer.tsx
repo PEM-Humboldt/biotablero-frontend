@@ -4,6 +4,7 @@ import {
   MapContainer,
   TileLayer,
   WMSTileLayer,
+  ImageOverlay,
   Pane,
   GeoJSON,
   Polygon,
@@ -20,7 +21,6 @@ import { useUserCTX } from "@hooks/UserContext";
 import { COLOMBIA_BOUNDS } from "pages/utils/settings";
 import { OnLoadingModal } from "@ui/OnLoadingModal";
 import { CssMaskRasterOverlay } from "pages/search/mapViewer/CssMaskRasterOverlay";
-import { CssFilterRasterOverlay } from "pages/search/mapViewer/CssFilterRasterOverlay";
 
 const config = {
   params: {
@@ -169,9 +169,7 @@ export function MapViewer({
                 opacity = layer.opacity;
               }
 
-              const rasterMethod = layer.colorize?.method ?? "layer";
-
-              if (rasterMethod === "css-mask") {
+              if (layer.colorize?.method === "css-mask") {
                 return (
                   <CssMaskRasterOverlay
                     key={`${layer.id}-${layer.data}`}
@@ -184,9 +182,9 @@ export function MapViewer({
               }
 
               return (
-                <CssFilterRasterOverlay
+                <ImageOverlay
                   key={`${layer.id}-${layer.data}`}
-                  source={layer.data}
+                  url={layer.data}
                   bounds={bounds}
                   opacity={opacity}
                 />

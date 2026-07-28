@@ -58,7 +58,7 @@ const initialState: State = {
   hfCurrentValue: 0,
   hfCurrentCategory: "",
   message: "loading",
-  rasterMethod: "css-mask",
+  rasterMethod: "layer",
   texts: {
     hfCurrent: {
       info: "",
@@ -280,7 +280,7 @@ export function CurrentFootprint() {
           className={`secondary-button ${rasterMethod === "layer" ? "active" : ""}`}
           onClick={() => setRasterMethod("layer")}
         >
-          Capa solamente
+          Capa por defecto
         </button>
         <button
           type="button"
