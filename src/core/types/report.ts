@@ -1,13 +1,10 @@
 import type { LocationCompleteInfo } from "pages/monitoring/types/odataResponse";
 
-export type MapDTO = {
+export type GraphDTO = {
   id: string;
   blobUrl: string;
-};
-
-export type GraphDTO = {
-  state: string;
-  blobUrl: string;
+  mapUrl?: string;
+  userNote?: string;
 };
 
 export type SectionDTO = {
@@ -17,19 +14,12 @@ export type SectionDTO = {
   graphs: GraphDTO[];
 };
 
-type Graph = {
-  id: string;
-  blobUrl: string;
-  creatorNote?: string;
-};
-
 // Consultas
 export type SearchSection = {
   title: string;
   description: string;
   graphInfo?: Record<string, string>;
-  graphs: Graph[];
-  mapUrl?: string;
+  graphs: GraphDTO[];
 };
 
 export type SearchContext = {
@@ -57,9 +47,8 @@ export type IndicatorSection = {
   version: number;
   BiologicalGroupTag: IndicatorTag[];
   EcosystemTag: IndicatorTag[];
-  mapUrl?: string;
-  graphs: Graph[];
-  explanation: string;
+  graphs: GraphDTO[];
+  description: string;
   card: {
     methodology: string;
     interpretation: string;

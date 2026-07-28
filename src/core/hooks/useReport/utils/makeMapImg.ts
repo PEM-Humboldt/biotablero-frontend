@@ -1,11 +1,10 @@
-import type { MapDTO } from "@appTypes/report";
 import { domToBlob, type Options } from "modern-screenshot";
 
 export async function makeMapImg(
   leafletElementId: string,
   screenshotOptions: Options,
 ): Promise<{
-  map: MapDTO | null;
+  map: string | null;
   errors: string[];
 }> {
   const mapElement = document.getElementById(leafletElementId);
@@ -16,16 +15,11 @@ export async function makeMapImg(
     };
   }
 
-  const mapTitle =
-    mapElement.getElementsByClassName("title")[0]?.textContent || "";
   try {
     const mapBlob = await domToBlob(mapElement, screenshotOptions);
 
     return {
-      map: {
-        id: mapTitle,
-        blobUrl: URL.createObjectURL(mapBlob),
-      },
+      map: URL.createObjectURL(mapBlob),
       errors: [],
     };
   } catch (error) {

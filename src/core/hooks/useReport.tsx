@@ -9,49 +9,45 @@ import {
   useState,
 } from "react";
 import { useUserCTX } from "@hooks/UserCTX";
-import { type Options as ScrenshotOptions } from "modern-screenshot";
 import workerUrl from "modern-screenshot/worker?url";
 import type {
-  MapDTO,
   SectionDTO,
   SearchSection,
   IndicatorContext,
   SearchContext,
   ReportMetadata,
   IndicatorSection,
+  GraphDTO,
 } from "@appTypes/report";
 import { CMIndicatorReportModel } from "@hooks/useReport/reportModels/CMIndicatorReportModel";
 import { pdf } from "@react-pdf/renderer";
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { useLocation } from "react-router";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
-import { fetchIndicatorContext } from "./useReport/utils/fetchInitiativeContext";
+import { fetchIndicatorContext } from "@hooks/useReport/utils/fetchInitiativeContext";
 import { LOCALE } from "@config/monitoring";
-import { makeMapImg } from "./useReport/utils/makeMapImg";
-import { makeGraphImg } from "./useReport/utils/makeGraphImg";
+import { makeMapImg } from "@hooks/useReport/utils/makeMapImg";
+import { makeGraphImg } from "@hooks/useReport/utils/makeGraphImg";
 
 type ReportContextType = {
   isBusy: boolean;
   errors: string[];
   reportDownloaded: boolean;
   addSection: (
-    sectionId: string,
-    sectionInfo: Record<string, string>,
+    baseId: string,
+    graphStateStringId: string,
+    sectionInfo:
+      | Omit<SearchSection, "graphs" | "mapUrl">
+      | Omit<IndicatorSection, "graphs" | "mapUrl">,
     graphComponent: ReactElement,
-    graphStateId: string | null,
-    map: string | null,
+    mapFromLeafletElementId: string | null,
+    userNote?: string,
   ) => Promise<void>;
-  removeElement: (
-    sectionId: string,
-    graphStateId?: string,
-    mapIndex?: number,
-  ) => void;
+  removeElement: (sectionId: string, graphStateId?: string) => void;
   removeReport: () => void;
   moveElement: (
     direction: "prev" | "next",
     sectionId: string,
     graphStateId?: string,
-    mapIndex?: number,
   ) => void;
   openReportInNewTab: () => Promise<void>;
   documentSections: Map<string, SectionDTO>;
@@ -61,6 +57,13 @@ const ReportContext = createContext<ReportContextType | null>(null);
 
 const mcIndicatorPathComponents = ["Monitoreo", "Iniciativas", "Indicadores"];
 const searchComponents = ["Consultas"];
+
+const revokeGraphUrls = (graph: GraphDTO) => {
+  URL.revokeObjectURL(graph.blobUrl);
+  if (graph.mapUrl) {
+    URL.revokeObjectURL(graph.mapUrl);
+  }
+};
 
 export function ReportCTX({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
@@ -76,9 +79,9 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     IndicatorContext | SearchContext | null
   >(null);
 
-  const [docSections, setDocSections] = useState<Map<string, SectionDTO>>(
-    new Map(),
-  );
+  const [docSections, setDocSections] = useState<
+    Map<string, SearchSection | IndicatorSection>
+  >(new Map());
 
   const reportType = useMemo(() => {
     const segments = pathname.split("/").filter(Boolean);
@@ -140,19 +143,29 @@ export function ReportCTX({ children }: { children: ReactNode }) {
   const addSection = async (
     baseId: string,
     graphStateStringId: string,
-    sectionInfo: SearchSection | IndicatorSection,
+    sectionInfo:
+      | Omit<SearchSection, "graphs" | "mapUrl">
+      | Omit<IndicatorSection, "graphs" | "mapUrl">,
     graphComponent: ReactElement,
     mapFromLeafletElementId: string | null,
+    userNote?: string,
   ) => {
     if (!user) {
+      return;
+    }
+
+    const currentSection = docSections.get(baseId);
+    if (
+      currentSection &&
+      currentSection.graphs.some((g) => g.id === graphStateStringId)
+    ) {
       return;
     }
 
     setIsLoading(true);
     setErrors([]);
 
-    let mapDTO: MapDTO | null = null;
-
+    let newMapUrl: string | null = null;
     if (mapFromLeafletElementId) {
       const buildtMap = await makeMapImg(mapFromLeafletElementId, {
         scale: 2,
@@ -162,247 +175,75 @@ export function ReportCTX({ children }: { children: ReactNode }) {
 
       if (buildtMap.errors.length > 0 || !buildtMap.map) {
         setErrors(buildtMap.errors);
+        setIsLoading(false);
         return;
       }
-      mapDTO = buildtMap.map;
+      newMapUrl = buildtMap.map;
     }
 
-    const targetGraphState = graphStateId ?? "";
     const buildtGraph = await makeGraphImg(graphComponent, {
       scale: 2,
       workerUrl,
       timeout: 10000,
     });
+    setIsLoading(false);
     if (buildtGraph.errors.length > 0 || !buildtGraph.graph) {
       setErrors(buildtGraph.errors);
       return;
     }
-    const newGraphBlobUrl = buildtGraph.graph.blobUrl;
 
-    setDocSections((oldSections) => {
-      const newSections = new Map(oldSections);
+    const newGraph: GraphDTO = {
+      id: graphStateStringId,
+      blobUrl: buildtGraph.graph.blobUrl,
+      userNote: userNote,
+      mapUrl: newMapUrl ?? undefined,
+    };
 
-      const existingSection = newSections.get(sectionId) ?? {
-        title: sectionInfo.title,
-        description: sectionInfo.description,
-        link: window.location.href,
-        graphs: [],
-      };
+    const updatedSection: SearchSection | IndicatorSection = {
+      ...(currentSection ?? {}),
+      ...sectionInfo,
+      graphs: [...(currentSection?.graphs ?? []), newGraph],
+    };
 
-      const graphIndex = existingSection.graphs.findIndex(
-        (g) => g.state === targetGraphState,
-      );
-
-      const updatedGraphs = [...existingSection.graphs];
-
-      if (graphIndex !== -1) {
-        URL.revokeObjectURL(updatedGraphs[graphIndex].blobUrl);
-
-        const existingMaps = updatedGraphs[graphIndex].map;
-        const updatedMaps = mapDTO ? [...existingMaps, mapDTO] : existingMaps;
-        updatedGraphs[graphIndex] = {
-          state: targetGraphState,
-          blobUrl: newGraphBlobUrl,
-          info: sectionInfo?.graphInfo,
-          map: updatedMaps,
-        };
-      } else {
-        updatedGraphs.push({
-          state: targetGraphState,
-          blobUrl: newGraphBlobUrl,
-          info: sectionInfo?.graphInfo,
-          map: mapDTO ? [mapDTO] : [],
-        });
-      }
-
-      newSections.set(sectionId, {
-        ...existingSection,
-        graphs: updatedGraphs,
-      });
-
-      return newSections;
-    });
+    setDocSections((oldSections) =>
+      new Map(oldSections).set(baseId, updatedSection),
+    );
   };
 
-  const removeElement = useCallback(
-    (sectionId: string, graphStateId?: string, mapIndex?: number) => {
-      if (!docSections.has(sectionId)) {
-        return;
+  const removeElement = useCallback((sectionId: string, graphId?: string) => {
+    setDocSections((oldSections) => {
+      const updatedSections = new Map(oldSections);
+      const sectionToWork = updatedSections.get(sectionId);
+      if (!sectionToWork) {
+        return oldSections;
       }
 
-      const isMapDel = graphStateId !== undefined && mapIndex !== undefined;
-      const isGraphDel = graphStateId !== undefined && mapIndex === undefined;
+      if (!graphId) {
+        sectionToWork.graphs.forEach(revokeGraphUrls);
+        updatedSections.delete(sectionId);
+        return updatedSections;
+      }
 
-      setDocSections((oldSections) => {
-        const nextSections = new Map(oldSections);
-        const section = nextSections.get(sectionId)!;
+      const graphToRemove = sectionToWork.graphs.find((g) => g.id === graphId);
+      if (!graphToRemove) {
+        return oldSections;
+      }
 
-        if (isMapDel) {
-          const graph = section.graphs.find((g) => g.state === graphStateId);
-          if (!graph || graph.map.length <= 1) {
-            return oldSections;
-          }
-
-          const mapToRemove = graph.map[mapIndex];
-          if (!mapToRemove) {
-            return oldSections;
-          }
-
-          URL.revokeObjectURL(mapToRemove.blobUrl);
-          nextSections.set(sectionId, {
-            ...section,
-            graphs: section.graphs.map((g) =>
-              g.state === graphStateId
-                ? {
-                    ...g,
-                    maps: g.map.filter((_, index) => index !== mapIndex),
-                  }
-                : g,
-            ),
-          });
-
-          return nextSections;
-        }
-
-        if (isGraphDel) {
-          if (section.graphs.length <= 1) {
-            return oldSections;
-          }
-          const graph = section.graphs.find((g) => g.state === graphStateId);
-          if (!graph) {
-            return oldSections;
-          }
-
-          URL.revokeObjectURL(graph.blobUrl);
-          graph.map.forEach((m) => URL.revokeObjectURL(m.blobUrl));
-
-          nextSections.set(sectionId, {
-            ...section,
-            graphs: section.graphs.filter((g) => g.state !== graphStateId),
-          });
-
-          return nextSections;
-        }
-
-        section?.graphs.forEach((g) => {
-          URL.revokeObjectURL(g.blobUrl);
-          g?.map.forEach((m) => URL.revokeObjectURL(m.blobUrl));
-        });
-
-        nextSections.delete(sectionId);
-        return nextSections;
+      revokeGraphUrls(graphToRemove);
+      updatedSections.set(sectionId, {
+        ...sectionToWork,
+        graphs: sectionToWork.graphs.filter((g) => g.id !== graphId),
       });
-    },
-    [docSections],
-  );
+
+      return updatedSections;
+    });
+  }, []);
 
   const removeReport = useCallback(() => {
     for (const section of docSections.keys()) {
       removeElement(section);
     }
   }, [docSections, removeElement]);
-
-  const moveElement = (
-    direction: "prev" | "next",
-    sectionId: string,
-    graphStateId?: string,
-    mapIndex?: number,
-  ) => {
-    const section = docSections.get(sectionId);
-    if (!section) {
-      return;
-    }
-
-    const isMapMove = graphStateId !== undefined && mapIndex !== undefined;
-    const isGraphMove = graphStateId !== undefined && mapIndex === undefined;
-
-    if (isMapMove) {
-      const graph = section.graphs.find((g) => g.state === graphStateId);
-      if (
-        !graph ||
-        (direction === "prev" && mapIndex === 0) ||
-        (direction === "next" && mapIndex === graph.map.length - 1)
-      ) {
-        return;
-      }
-    }
-
-    if (isGraphMove) {
-      const graphIndex = section.graphs.findIndex(
-        (g) => g.state === graphStateId,
-      );
-      if (
-        graphIndex === -1 ||
-        (direction === "prev" && graphIndex === 0) ||
-        (direction === "next" && graphIndex === section.graphs.length - 1)
-      ) {
-        return;
-      }
-    }
-
-    if (graphStateId === undefined) {
-      const keys = Array.from(docSections.keys());
-      const sectionIndex = keys.indexOf(sectionId);
-      if (
-        sectionIndex === -1 ||
-        (direction === "prev" && sectionIndex === 0) ||
-        (direction === "next" && sectionIndex === keys.length - 1)
-      ) {
-        return;
-      }
-    }
-
-    function reorderArray<T>(
-      arr: T[],
-      index: number,
-      dir: "prev" | "next",
-    ): T[] {
-      const targetIndex = dir === "prev" ? index - 1 : index + 1;
-      const result = [...arr];
-      const [movedItem] = result.splice(index, 1);
-      result.splice(targetIndex, 0, movedItem);
-      return result;
-    }
-
-    setDocSections((oldSections) => {
-      const nextSections = new Map(oldSections);
-      const currentSection = oldSections.get(sectionId)!;
-
-      if (isMapMove) {
-        nextSections.set(sectionId, {
-          ...currentSection,
-          graphs: currentSection.graphs.map((g) =>
-            g.state === graphStateId
-              ? { ...g, map: reorderArray(g.map, mapIndex, direction) }
-              : g,
-          ),
-        });
-        return nextSections;
-      }
-
-      if (isGraphMove) {
-        const graphIndex = currentSection.graphs.findIndex(
-          (g) => g.state === graphStateId,
-        );
-        nextSections.set(sectionId, {
-          ...currentSection,
-          graphs: reorderArray(currentSection.graphs, graphIndex, direction),
-        });
-        return nextSections;
-      }
-
-      const keys = Array.from(oldSections.keys());
-      const sectionIndex = keys.indexOf(sectionId);
-      const reorderedKeys = reorderArray(keys, sectionIndex, direction);
-
-      const orderedSections = new Map<string, SectionDTO>();
-      reorderedKeys.forEach((key) => {
-        orderedSections.set(key, oldSections.get(key)!);
-      });
-
-      return orderedSections;
-    });
-  };
 
   const openReportInNewTab = async () => {
     if (!user) {
