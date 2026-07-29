@@ -7,13 +7,6 @@ export type GraphDTO = {
   userNote?: string;
 };
 
-export type SectionDTO = {
-  title: string;
-  description: string;
-  link: string;
-  graphs: GraphDTO[];
-};
-
 // Consultas
 export type SearchSection = {
   title: string;

@@ -1,15 +1,23 @@
 import { Document, Page, Text, View, Image, Link } from "@react-pdf/renderer";
 
-import type { SectionDTO } from "@appTypes/report";
+import type {
+  IndicatorContext,
+  IndicatorSection,
+  ReportMetadata,
+  SearchContext,
+  SearchSection,
+} from "@appTypes/report";
 import logoHumboldt from "@assets/logos/humboldt.png";
 import { reportStyles } from "@hooks/useReport/reportModels/layout/MCIndicatorReportStyles";
 
 export function CMIndicatorReportModel({
+  context,
+  metadata,
   sections,
-  creator,
 }: {
-  sections: SectionDTO[];
-  creator: { name: string; email: string };
+  context: IndicatorContext;
+  metadata: ReportMetadata;
+  sections: Map<string, IndicatorSection>;
 }) {
   const coverBookmark = { bookmark: { title: "Portada", fit: true } };
 
@@ -28,7 +36,8 @@ export function CMIndicatorReportModel({
 
           <View style={{ marginTop: 15, alignItems: "center" }}>
             <Text style={reportStyles.textGeneral}>
-              Informe recopilado por: {creator.name}
+              Informe recopilado por:{" "}
+              {metadata.madeBy.name || metadata.madeBy.username}
             </Text>
 
             <Text style={reportStyles.textGeneral}>
@@ -40,15 +49,15 @@ export function CMIndicatorReportModel({
                 reportStyles.textGeneral,
                 { color: "blue", marginTop: 2 },
               ]}
-              src={`mailto:${creator.email}`}
+              src={`mailto:${metadata.madeBy.email}`}
             >
-              Contactar: {creator.email}
+              Contactar: {metadata.madeBy.email}
             </Link>
           </View>
         </View>
       </Page>
 
-      {sections.map((section, sIndex) => {
+      {[...sections.entries()].map(([sIndex, section]) => {
         const sectionBookmark = {
           bookmark: { title: section.title, fit: true },
         };
@@ -68,9 +77,7 @@ export function CMIndicatorReportModel({
             </View>
 
             {section.graphs.map((graph, gIndex) => {
-              const graphBookmarkTitle = graph.state
-                ? `Gráfica: ${graph.state}`
-                : `Gráfica ${gIndex + 1}`;
+              const graphBookmarkTitle = `Gráfica: ${section.title}, ${graph.id}`;
 
               const bookmarkProps = {
                 bookmark: { title: graphBookmarkTitle, fit: true },

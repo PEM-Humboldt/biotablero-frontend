@@ -11,7 +11,6 @@ import {
 import { useUserCTX } from "@hooks/UserCTX";
 import workerUrl from "modern-screenshot/worker?url";
 import type {
-  SectionDTO,
   SearchSection,
   IndicatorContext,
   SearchContext,
@@ -29,7 +28,7 @@ import { makeMapImg } from "@hooks/useReport/utils/makeMapImg";
 import { makeGraphImg } from "@hooks/useReport/utils/makeGraphImg";
 
 type ReportContextType = {
-  isBusy: boolean;
+  isLoading: boolean;
   errors: string[];
   reportDownloaded: boolean;
   addSection: (
@@ -50,7 +49,7 @@ type ReportContextType = {
     graphStateId?: string,
   ) => void;
   openReportInNewTab: () => Promise<void>;
-  documentSections: Map<string, SectionDTO>;
+  documentSections: Map<string, SearchSection | IndicatorSection>;
 };
 
 const ReportContext = createContext<ReportContextType | null>(null);
@@ -88,7 +87,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     const firstSegment = segments[0];
 
     if (firstSegment === searchComponents[0]) {
-      return "Monitoring";
+      return "Search";
     }
 
     const fullPath = mcIndicatorPathComponents.every((required) =>
@@ -245,22 +244,80 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     }
   }, [docSections, removeElement]);
 
+  const moveElement = (
+    direction: "prev" | "next",
+    sectionId: string,
+    graphStateId?: string,
+  ) => {
+    const shift = direction === "prev" ? -1 : 1;
+
+    setDocSections((oldSections) => {
+      if (graphStateId) {
+        const section = oldSections.get(sectionId);
+        if (!section) {
+          return oldSections;
+        }
+
+        const graphIdx = section.graphs.findIndex((g) => g.id === graphStateId);
+        const newIdx = graphIdx + shift;
+
+        if (graphIdx < 0 || newIdx < 0 || newIdx >= section.graphs.length) {
+          return oldSections;
+        }
+
+        const newGraphs = [...section.graphs];
+        [newGraphs[graphIdx], newGraphs[newIdx]] = [
+          newGraphs[newIdx],
+          newGraphs[graphIdx],
+        ];
+
+        return new Map(oldSections).set(sectionId, {
+          ...section,
+          graphs: newGraphs,
+        });
+      }
+
+      const sectionKeys = [...oldSections.keys()];
+      const sectionIdx = sectionKeys.findIndex((id) => id === sectionId);
+      const newIdx = sectionIdx + shift;
+
+      if (sectionIdx < 0 || newIdx < 0 || newIdx >= sectionKeys.length) {
+        return oldSections;
+      }
+
+      [sectionKeys[sectionIdx], sectionKeys[newIdx]] = [
+        sectionKeys[newIdx],
+        sectionKeys[sectionIdx],
+      ];
+
+      const newSections = new Map();
+      sectionKeys.forEach((key) => {
+        newSections.set(key, oldSections.get(key));
+      });
+
+      return newSections;
+    });
+  };
+
   const openReportInNewTab = async () => {
     if (!user) {
       return;
     }
+
     try {
       setIsLoading(true);
-      const sections = Array.from(docSections.values());
-      const blob = await pdf(
-        <CMIndicatorReportModel
-          sections={sections}
-          creator={{ name: user.name ?? user.email, email: user.email }}
-        />,
-      ).toBlob();
-      const pdfUrl = URL.createObjectURL(blob);
-      window.open(pdfUrl, "_blank");
-      setTimeout(() => URL.revokeObjectURL(pdfUrl), 1000);
+      if (reportType === "InitiativeIndicator" && docMetadata && docContext) {
+        const blob = await pdf(
+          <CMIndicatorReportModel
+            metadata={docMetadata}
+            context={docContext as IndicatorContext}
+            sections={docSections as Map<string, IndicatorSection>}
+          />,
+        ).toBlob();
+        const pdfUrl = URL.createObjectURL(blob);
+        window.open(pdfUrl, "_blank");
+        setTimeout(() => URL.revokeObjectURL(pdfUrl), 1000);
+      }
     } catch (error) {
       console.error("Error al generar el PDF:", error);
     } finally {
@@ -283,7 +340,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
   return (
     <ReportContext.Provider
       value={{
-        isBusy: isLoading,
+        isLoading,
         errors,
         reportDownloaded,
         addSection,
