@@ -137,8 +137,7 @@ export function OccupationSpecies() {
       </div>
 
       <GetIndicatorInfo
-        baseId={"carajo"}
-        graphStateStringId={selectedSpecies.join(", ")}
+        graphStateStringId={selectedSpecies.toSorted().join("_")}
         mapFromLeafletElementId={null}
       >
         <div className="w-full h-full aspect-3/2">

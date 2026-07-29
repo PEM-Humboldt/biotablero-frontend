@@ -1,4 +1,4 @@
-import { BadgeCheck } from "lucide-react";
+import { BadgeCheck, Calendar } from "lucide-react";
 
 import type { GetKeysWithStringValues } from "@appTypes/utils";
 import { ErrorsList } from "@ui/LabelingWithErrors";
@@ -15,7 +15,7 @@ import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import type { IndicatorMetadata } from "pages/monitoring/types/indicators";
 import { GraphSelector } from "pages/monitoring/outlets/initiatives/indicators/card/GraphSelector";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
-import { AddToReportButtonGroup } from "@ui/AddToReportButtonGroup";
+import { AddMCIndicatorToReport } from "@ui/AddMCIndicatorToReport";
 
 export function Card() {
   const { indicators, currentIndicator, isLoading, errors } =
@@ -36,7 +36,7 @@ export function Card() {
         </div>
       ) : (
         <>
-          <header className="bg-primary mx-4 mt-2 p-4 flex gap-2 rounded-lg">
+          <header className="bg-primary mx-4 mt-2 p-4 flex items-start gap-2 rounded-lg">
             {isLoading && (
               <Spinner className="text-primary-foreground size-8 self-center" />
             )}
@@ -49,11 +49,11 @@ export function Card() {
               </span>
             </h3>
 
-            <AddToReportButtonGroup />
+            <AddMCIndicatorToReport />
 
             <time
               dateTime={new Date(currentIndicator.creationDate).toISOString()}
-              className="text-primary-foreground border border-accent-foreground/20 rounded self-start px-2 py-1"
+              className="text-primary-foreground text-sm! border border-accent-foreground/20 rounded px-2 py-1 h-8"
             >
               {new Date(currentIndicator.creationDate).toLocaleDateString(
                 LOCALE,
