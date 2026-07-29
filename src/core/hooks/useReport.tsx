@@ -27,15 +27,19 @@ import { fetchIndicatorContext } from "@hooks/useReport/utils/fetchInitiativeCon
 import { LOCALE } from "@config/monitoring";
 import { makeMapImg } from "@hooks/useReport/utils/makeMapImg";
 import { makeGraphImg } from "@hooks/useReport/utils/makeGraphImg";
+import { toast } from "sonner";
+import { FileCheck, Shredder } from "lucide-react";
 
 type ReportContextType = {
   isLoading: boolean;
   errors: string[];
   reportDownloaded: boolean;
-  setCurrentSection: (section: SectionInfo | null) => void;
+  setCurrentSectionPool: (section: SectionInfo | null) => void;
   addSection: (userNote?: string) => Promise<void>;
   removeElement: (sectionId: string, graphStateId?: string) => void;
+  removeCurrentSection: () => void;
   removeReport: () => void;
+  toggleEditor: (forceState?: boolean) => void;
   moveElement: (
     direction: "prev" | "next",
     sectionId: string,
@@ -57,7 +61,6 @@ const revokeGraphUrls = (graph: GraphDTO) => {
   }
 };
 
-// Si usas el alias que creamos previamente:
 type SectionInfo = {
   baseId: string;
   graphStateStringId: string;
@@ -71,19 +74,18 @@ type SectionInfo = {
 export function ReportCTX({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
   const [isLoading, setIsLoading] = useState(false);
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [reportDownloaded, setReportDownloaded] = useState(true);
 
   const { user } = useUserCTX();
   const { initiativeInfo } = useInitiativeCTX();
 
-  const currentSectionInfoRef = useRef<SectionInfo | null>(null);
+  const currentSectionInfoPool = useRef<SectionInfo | null>(null);
   const [docMetadata, setDocMetadata] = useState<ReportMetadata | null>(null);
   const [docContext, setDocContext] = useState<
     IndicatorContext | SearchContext | null
   >(null);
-
-  // NOTE: Evaluar qué tanto de useMemo, está detonando rerenders en subpaths
   const [docSections, setDocSections] = useState<
     Map<string, SearchSection | IndicatorSection>
   >(new Map());
@@ -103,70 +105,20 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     return fullPath ? "InitiativeIndicator" : null;
   }, [pathname]);
 
-  useEffect(() => {
-    if (!user) {
-      setDocMetadata(null);
-      return;
-    }
-
-    setDocMetadata({
-      creationDate: new Date().toLocaleDateString(LOCALE, {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
-      madeBy: {
-        name: `${user.firstName} ${user.lastName}`,
-        username: user.username,
-        email: user.email,
-      },
-    });
-  }, [user]);
-
-  useEffect(() => {
-    const fetchContext = async () => {
-      if (reportType === "InitiativeIndicator" && initiativeInfo) {
-        setIsLoading(true);
-        setErrors([]);
-        setDocContext(null);
-
-        const { data, errors: fetchErrors } =
-          await fetchIndicatorContext(initiativeInfo);
-        setIsLoading(false);
-        if (fetchErrors.length > 0 || !data) {
-          setErrors(fetchErrors);
-          return;
-        }
-
-        setDocContext(data);
-      }
-    };
-
-    void fetchContext();
-  }, [initiativeInfo, reportType]);
-
   const addSection = async (userNote?: string) => {
-    if (!user || !currentSectionInfoRef.current) {
+    if (!user || !currentSectionInfoPool.current) {
       return;
     }
-
-    console.log(currentSectionInfoRef.current);
 
     const {
       baseId,
-      graphStateStringId,
+      graphStateStringId: graphId,
       sectionInfo,
       graphComponent,
       mapFromLeafletElementId,
-    } = currentSectionInfoRef.current;
+    } = currentSectionInfoPool.current;
 
     const currentSection = docSections.get(baseId);
-    if (
-      currentSection &&
-      currentSection.graphs.some((g) => g.id === graphStateStringId)
-    ) {
-      return;
-    }
 
     setIsLoading(true);
     setErrors([]);
@@ -199,7 +151,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     }
 
     const newGraph: GraphDTO = {
-      id: graphStateStringId,
+      id: graphId,
       blobUrl: buildtGraph.graph.blobUrl,
       userNote: userNote,
       mapUrl: newMapUrl ?? undefined,
@@ -208,12 +160,23 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     const updatedSection: SearchSection | IndicatorSection = {
       ...(currentSection ?? {}),
       ...sectionInfo,
-      graphs: [...(currentSection?.graphs ?? []), newGraph],
+      graphs: [
+        ...(currentSection?.graphs.filter((g) => g.id !== graphId) ?? []),
+        newGraph,
+      ],
     };
 
     setDocSections((oldSections) =>
       new Map(oldSections).set(baseId, updatedSection),
     );
+
+    toast("Agregado al reporte exitosamente", {
+      position: "bottom-right",
+      description: `${currentSectionInfoPool.current.sectionInfo.title} se ha agregado al reporte.`,
+      icon: <FileCheck className="size-8 text-primary" />,
+      className: "px-6! gap-6! border-2! border-primary!",
+      duration: 4 * 1000,
+    });
   };
 
   const removeElement = useCallback((sectionId: string, graphId?: string) => {
@@ -245,11 +208,41 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const removeReport = useCallback(() => {
-    for (const section of docSections.keys()) {
-      removeElement(section);
+  const removeCurrentSection = () => {
+    if (
+      !currentSectionInfoPool.current?.baseId ||
+      !docSections.get(currentSectionInfoPool.current?.baseId)
+    ) {
+      return;
     }
-  }, [docSections, removeElement]);
+    removeElement(currentSectionInfoPool.current.baseId);
+
+    toast("Sección eliminada", {
+      position: "bottom-right",
+      description: `${currentSectionInfoPool.current.sectionInfo.title} se ha eliminado del reporte.`,
+      icon: <Shredder className="size-8 text-accent" />,
+      className: "px-6! gap-6! border-2! border-accent!",
+      duration: 4 * 1000,
+    });
+  };
+
+  const removeReport = useCallback(() => {
+    setDocSections((oldSections) => {
+      const sections = [...oldSections.keys()];
+      for (const section of sections) {
+        removeElement(section);
+      }
+      return new Map();
+    });
+
+    toast("Reporte descartado", {
+      position: "bottom-right",
+      description: "El reporte ha sido descartado correctamente",
+      icon: <Shredder className="size-8 text-accent" />,
+      className: "px-6! gap-6! border-2! border-accent!",
+      duration: 4 * 1000,
+    });
+  }, [removeElement]);
 
   const moveElement = (
     direction: "prev" | "next",
@@ -332,9 +325,57 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     }
   };
 
-  const setCurrentSection = (section: SectionInfo | null) => {
-    currentSectionInfoRef.current = section;
+  const setCurrentSectionPool = (section: SectionInfo | null) => {
+    currentSectionInfoPool.current = section;
   };
+
+  const toggleEditor = (forceState?: boolean) => {
+    setIsEditorOpen((oldState) =>
+      forceState !== undefined ? forceState : !oldState,
+    );
+  };
+
+  useEffect(() => {
+    if (!user) {
+      setDocMetadata(null);
+      return;
+    }
+
+    setDocMetadata({
+      creationDate: new Date().toLocaleDateString(LOCALE, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }),
+      madeBy: {
+        name: `${user.firstName} ${user.lastName}`,
+        username: user.username,
+        email: user.email,
+      },
+    });
+  }, [user]);
+
+  useEffect(() => {
+    const fetchContext = async () => {
+      if (reportType === "InitiativeIndicator" && initiativeInfo) {
+        setIsLoading(true);
+        setErrors([]);
+        setDocContext(null);
+
+        const { data, errors: fetchErrors } =
+          await fetchIndicatorContext(initiativeInfo);
+        setIsLoading(false);
+        if (fetchErrors.length > 0 || !data) {
+          setErrors(fetchErrors);
+          return;
+        }
+
+        setDocContext(data);
+      }
+    };
+
+    void fetchContext();
+  }, [initiativeInfo, reportType]);
 
   useEffect(() => {
     setReportDownloaded(false);
@@ -346,16 +387,9 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     };
   }, [removeReport]);
 
-  console.log(
-    "meta",
-    docMetadata,
-    "cotx",
-    docContext,
-    "current",
-    currentSectionInfoRef.current,
-    "docS",
-    docSections,
-  );
+  // TODO: update note
+
+  console.log(docSections);
 
   return (
     <ReportContext.Provider
@@ -363,15 +397,23 @@ export function ReportCTX({ children }: { children: ReactNode }) {
         isLoading,
         errors,
         reportDownloaded,
-        setCurrentSection,
+        setCurrentSectionPool,
         addSection,
         removeElement,
+        removeCurrentSection,
         removeReport,
+        toggleEditor,
         moveElement,
         openReportInNewTab,
         documentSections: docSections,
       }}
     >
+      {isEditorOpen && (
+        <div>
+          {[...docSections.keys()].join(", ")}
+          <button onClick={() => toggleEditor(false)}>cerrar editor</button>
+        </div>
+      )}
       {children}
     </ReportContext.Provider>
   );
