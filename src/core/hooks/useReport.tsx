@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { useUserCTX } from "@hooks/UserCTX";
@@ -31,16 +32,8 @@ type ReportContextType = {
   isLoading: boolean;
   errors: string[];
   reportDownloaded: boolean;
-  addSection: (
-    baseId: string,
-    graphStateStringId: string,
-    sectionInfo:
-      | Omit<SearchSection, "graphs" | "mapUrl">
-      | Omit<IndicatorSection, "graphs" | "mapUrl">,
-    graphComponent: ReactElement,
-    mapFromLeafletElementId: string | null,
-    userNote?: string,
-  ) => Promise<void>;
+  setCurrentSection: (section: SectionInfo | null) => void;
+  addSection: (userNote?: string) => Promise<void>;
   removeElement: (sectionId: string, graphStateId?: string) => void;
   removeReport: () => void;
   moveElement: (
@@ -64,6 +57,17 @@ const revokeGraphUrls = (graph: GraphDTO) => {
   }
 };
 
+// Si usas el alias que creamos previamente:
+type SectionInfo = {
+  baseId: string;
+  graphStateStringId: string;
+  sectionInfo:
+    | Omit<SearchSection, "graphs" | "mapUrl">
+    | Omit<IndicatorSection, "graphs" | "mapUrl">;
+  graphComponent: ReactElement;
+  mapFromLeafletElementId: string | null;
+};
+
 export function ReportCTX({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
   const [isLoading, setIsLoading] = useState(false);
@@ -73,11 +77,13 @@ export function ReportCTX({ children }: { children: ReactNode }) {
   const { user } = useUserCTX();
   const { initiativeInfo } = useInitiativeCTX();
 
+  const currentSectionInfoRef = useRef<SectionInfo | null>(null);
   const [docMetadata, setDocMetadata] = useState<ReportMetadata | null>(null);
   const [docContext, setDocContext] = useState<
     IndicatorContext | SearchContext | null
   >(null);
 
+  // NOTE: Evaluar qué tanto de useMemo, está detonando rerenders en subpaths
   const [docSections, setDocSections] = useState<
     Map<string, SearchSection | IndicatorSection>
   >(new Map());
@@ -139,19 +145,20 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     void fetchContext();
   }, [initiativeInfo, reportType]);
 
-  const addSection = async (
-    baseId: string,
-    graphStateStringId: string,
-    sectionInfo:
-      | Omit<SearchSection, "graphs" | "mapUrl">
-      | Omit<IndicatorSection, "graphs" | "mapUrl">,
-    graphComponent: ReactElement,
-    mapFromLeafletElementId: string | null,
-    userNote?: string,
-  ) => {
-    if (!user) {
+  const addSection = async (userNote?: string) => {
+    if (!user || !currentSectionInfoRef.current) {
       return;
     }
+
+    console.log(currentSectionInfoRef.current);
+
+    const {
+      baseId,
+      graphStateStringId,
+      sectionInfo,
+      graphComponent,
+      mapFromLeafletElementId,
+    } = currentSectionInfoRef.current;
 
     const currentSection = docSections.get(baseId);
     if (
@@ -325,6 +332,10 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     }
   };
 
+  const setCurrentSection = (section: SectionInfo | null) => {
+    currentSectionInfoRef.current = section;
+  };
+
   useEffect(() => {
     setReportDownloaded(false);
   }, [docSections]);
@@ -335,7 +346,16 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     };
   }, [removeReport]);
 
-  console.log("meta", docMetadata, "cotx", docContext);
+  console.log(
+    "meta",
+    docMetadata,
+    "cotx",
+    docContext,
+    "current",
+    currentSectionInfoRef.current,
+    "docS",
+    docSections,
+  );
 
   return (
     <ReportContext.Provider
@@ -343,6 +363,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
         isLoading,
         errors,
         reportDownloaded,
+        setCurrentSection,
         addSection,
         removeElement,
         removeReport,

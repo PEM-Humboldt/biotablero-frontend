@@ -11,6 +11,7 @@ import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import type { LineData } from "pages/monitoring/types/indicators";
 import { getSeriesColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
+import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
 
 export function OccupationSpecies() {
   const { currentIndicator } = useIndicatorsCTX();
@@ -135,45 +136,51 @@ export function OccupationSpecies() {
         </ul>
       </div>
 
-      <div className="w-full h-full aspect-3/2">
-        <ResponsiveLine
-          data={filteredIndicator}
-          margin={{ top: 20, right: 30, bottom: 30, left: 30 }}
-          xScale={{ type: "point" }}
-          yScale={{ type: "linear", min: 0, max: 100 }}
-          axisBottom={{ tickSize: 5, legendPosition: "middle" }}
-          axisLeft={{ tickSize: 5, legendPosition: "middle" }}
-          colors={(series) => series.color}
-          pointSize={10}
-          useMesh={true}
-          tooltip={({ point }) => {
-            const [name, description] = point.seriesId
-              .replace(/\|\|.*$/, "")
-              .split(", ");
+      <GetIndicatorInfo
+        baseId={"carajo"}
+        graphStateStringId={selectedSpecies.join(", ")}
+        mapFromLeafletElementId={null}
+      >
+        <div className="w-full h-full aspect-3/2">
+          <ResponsiveLine
+            data={filteredIndicator}
+            margin={{ top: 20, right: 30, bottom: 30, left: 30 }}
+            xScale={{ type: "point" }}
+            yScale={{ type: "linear", min: 0, max: 100 }}
+            axisBottom={{ tickSize: 5, legendPosition: "middle" }}
+            axisLeft={{ tickSize: 5, legendPosition: "middle" }}
+            colors={(series) => series.color}
+            pointSize={10}
+            useMesh={true}
+            tooltip={({ point }) => {
+              const [name, description] = point.seriesId
+                .replace(/\|\|.*$/, "")
+                .split(", ");
 
-            return (
-              <div
-                className="bg-background px-4 py-2 shadow-md rounded flex flex-col items-center"
-                style={{ pointerEvents: "none", whiteSpace: "nowrap" }}
-              >
-                <div className="flex flex-col text-center text-sm mb-1 *:m-0!">
-                  <div className="space-x-1">
-                    <span
-                      className="inline-block w-3 h-3 rounded-full"
-                      style={{ backgroundColor: point.color }}
-                    />
-                    <span className="font-normal">{description}</span>
+              return (
+                <div
+                  className="bg-background px-4 py-2 shadow-md rounded flex flex-col items-center"
+                  style={{ pointerEvents: "none", whiteSpace: "nowrap" }}
+                >
+                  <div className="flex flex-col text-center text-sm mb-1 *:m-0!">
+                    <div className="space-x-1">
+                      <span
+                        className="inline-block w-3 h-3 rounded-full"
+                        style={{ backgroundColor: point.color }}
+                      />
+                      <span className="font-normal">{description}</span>
+                    </div>
+                    <span className="italic">{name}</span>
                   </div>
-                  <span className="italic">{name}</span>
+                  <div className="space-x-1">
+                    <span className="font-normal">{point.data.y}</span>
+                  </div>
                 </div>
-                <div className="space-x-1">
-                  <span className="font-normal">{point.data.y}</span>
-                </div>
-              </div>
-            );
-          }}
-        />
-      </div>
+              );
+            }}
+          />
+        </div>
+      </GetIndicatorInfo>
     </>
   );
 }

@@ -15,6 +15,7 @@ import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import type { IndicatorMetadata } from "pages/monitoring/types/indicators";
 import { GraphSelector } from "pages/monitoring/outlets/initiatives/indicators/card/GraphSelector";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
+import { AddToReportButtonGroup } from "@ui/AddToReportButtonGroup";
 
 export function Card() {
   const { indicators, currentIndicator, isLoading, errors } =
@@ -47,6 +48,8 @@ export function Card() {
                 {currentIndicator.type.name}
               </span>
             </h3>
+
+            <AddToReportButtonGroup />
 
             <time
               dateTime={new Date(currentIndicator.creationDate).toISOString()}
