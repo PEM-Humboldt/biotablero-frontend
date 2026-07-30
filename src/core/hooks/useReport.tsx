@@ -37,7 +37,20 @@ import { CMIndicatorReportModel } from "@hooks/useReport/reportModels/CMIndicato
 import { LOCALE } from "@config/monitoring";
 import { ReportDocumentTree } from "@hooks/useReport/reportModels/ReportDocumentTree";
 
+import { Button } from "@ui/shadCN/component/button";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@ui/shadCN/component/sheet";
+
 import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
+import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 
 type ReportContextType = {
   isLoading: boolean;
@@ -91,6 +104,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
   const [reportDownloaded, setReportDownloaded] = useState(true);
 
   const { user } = useUserCTX();
+  const { initiativeInfo } = useInitiativeCTX();
   // TODO: Complementar el type cuando se incorpore consultas
   const reportContextRef = useRef<InitiativeCompleteInfo | null>(null);
 
@@ -454,8 +468,6 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     });
   };
 
-  console.log(docSections);
-
   return (
     <ReportContext.Provider
       value={{
@@ -475,12 +487,36 @@ export function ReportCTX({ children }: { children: ReactNode }) {
         documentSections: docSections,
       }}
     >
-      {isEditorOpen && (
-        <div>
+      <Sheet open={isEditorOpen} onOpenChange={setIsEditorOpen}>
+        <SheetContent
+          className="min-w-1 sm:min-w-3/4 lg:min-w-1/2"
+          onCloseAutoFocus={(e) => {
+            e.preventDefault();
+            document.body.style.pointerEvents = "";
+          }}
+          onPointerDownOutside={() => {
+            document.body.style.pointerEvents = "";
+          }}
+        >
+          <SheetHeader>
+            <SheetTitle>Reporte de indicadores</SheetTitle>
+            <SheetDescription>
+              Este reporte se basa en la informacion obtenida durante los
+              eventos de monitoreo de la iniciativa {initiativeInfo?.name}.
+            </SheetDescription>
+          </SheetHeader>
+
           <ReportDocumentTree documentSections={docSections} />
-          <button onClick={() => toggleEditor(false)}>cerrar editor</button>
-        </div>
-      )}
+
+          <SheetFooter>
+            <Button type="button">Descargar</Button>
+            <SheetClose asChild>
+              <Button variant="outline">Cerrar</Button>
+            </SheetClose>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
+
       {children}
     </ReportContext.Provider>
   );
