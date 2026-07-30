@@ -1,9 +1,4 @@
-import {
-  ChevronDown,
-  ClipboardPen,
-  ClipboardPlus,
-  Ellipsis,
-} from "lucide-react";
+import { ChevronDown, ClipboardPen, ClipboardPlus } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
 
 import { useReport } from "@hooks/useReport";
@@ -35,7 +30,6 @@ export function AddMCIndicatorToReport() {
   const {
     addSection,
     isLoading,
-    removeCurrentSection,
     removeReport,
     toggleEditor,
     openReportInNewTab,
@@ -184,20 +178,7 @@ export function AddMCIndicatorToReport() {
             <DropdownMenuGroup>
               <DropdownMenuItem
                 className="text-accent"
-                onClick={() => {
-                  console.log("a");
-                  removeCurrentSection();
-                }}
-              >
-                Borrar este indicador
-              </DropdownMenuItem>
-
-              <DropdownMenuItem
-                className="text-accent"
-                onClick={() => {
-                  console.log("b");
-                  removeReport();
-                }}
+                onClick={() => removeReport()}
               >
                 Borrar todo el reporte
               </DropdownMenuItem>

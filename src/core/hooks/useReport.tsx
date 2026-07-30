@@ -1,5 +1,11 @@
 import { toast } from "sonner";
-import { ChartLine, FileCheck, type LucideIcon, Shredder } from "lucide-react";
+import {
+  ChartLine,
+  FileCheck,
+  FileXCorner,
+  type LucideIcon,
+  Shredder,
+} from "lucide-react";
 import {
   createContext,
   type ReactElement,
@@ -29,6 +35,7 @@ import { makeMapImg } from "@hooks/useReport/utils/makeMapImg";
 import { makeGraphImg } from "@hooks/useReport/utils/makeGraphImg";
 import { CMIndicatorReportModel } from "@hooks/useReport/reportModels/CMIndicatorReportModel";
 import { LOCALE } from "@config/monitoring";
+import { ReportDocumentTree } from "@hooks/useReport/reportModels/ReportDocumentTree";
 
 import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
 
@@ -42,7 +49,7 @@ type ReportContextType = {
   removeGraph: (sectionId: string, graphId: string) => void;
   removeSection: (sectionId: string) => void;
   removeReport: () => void;
-  updateNote: (sectionId: string, graphId: string, newNote: string) => void;
+  updateNote: (sectionId: string, graphId: string, newNote?: string) => void;
   toggleEditor: (forceState?: boolean) => void;
   moveElement: (
     direction: "prev" | "next",
@@ -274,7 +281,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       toastInfo: {
         title: "Sección eliminada",
         description: `${sectionId} se ha eliminado del reporte.`,
-        icon: Shredder,
+        icon: FileXCorner,
       },
     });
   };
@@ -284,6 +291,12 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     if (!sectionToWork || !sectionToWork.graphs.some((g) => g.id === graphId)) {
       return;
     }
+
+    if (sectionToWork.graphs.length <= 1) {
+      removeSection(sectionId);
+      return;
+    }
+
     removeElements({
       sectionId,
       graphId,
@@ -419,7 +432,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     };
   }, [removeElements]);
 
-  const updateNote = (sectionId: string, graphId: string, newNote: string) => {
+  const updateNote = (sectionId: string, graphId: string, newNote?: string) => {
     setDocSections((oldSections) => {
       const newSections = new Map(oldSections);
       const sectionToWork = newSections.get(sectionId);
@@ -464,7 +477,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     >
       {isEditorOpen && (
         <div>
-          {[...docSections.keys()].join(", ")}
+          <ReportDocumentTree documentSections={docSections} />
           <button onClick={() => toggleEditor(false)}>cerrar editor</button>
         </div>
       )}
