@@ -60,8 +60,8 @@ export function GetIndicatorInfo({
     };
 
     setCurrentSectionPool({
-      baseId: `${name}_${type.name}_${version}`,
-      graphStateStringId,
+      sectionId: `${name}_${type.name}_${version}`,
+      graphId: graphStateStringId,
       graphComponent: children,
       sectionInfo,
       mapFromLeafletElementId,

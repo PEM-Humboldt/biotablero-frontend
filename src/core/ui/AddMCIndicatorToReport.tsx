@@ -184,13 +184,20 @@ export function AddMCIndicatorToReport() {
             <DropdownMenuGroup>
               <DropdownMenuItem
                 className="text-accent"
-                onClick={() => removeCurrentSection()}
+                onClick={() => {
+                  console.log("a");
+                  removeCurrentSection();
+                }}
               >
                 Borrar este indicador
               </DropdownMenuItem>
+
               <DropdownMenuItem
                 className="text-accent"
-                onClick={() => removeReport()}
+                onClick={() => {
+                  console.log("b");
+                  removeReport();
+                }}
               >
                 Borrar todo el reporte
               </DropdownMenuItem>

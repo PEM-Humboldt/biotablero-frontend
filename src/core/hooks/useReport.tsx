@@ -1,3 +1,5 @@
+import { toast } from "sonner";
+import { ChartLine, FileCheck, type LucideIcon, Shredder } from "lucide-react";
 import {
   createContext,
   type ReactElement,
@@ -9,8 +11,11 @@ import {
   useRef,
   useState,
 } from "react";
-import { useUserCTX } from "@hooks/UserCTX";
 import workerUrl from "modern-screenshot/worker?url";
+import { useLocation } from "react-router";
+import { pdf } from "@react-pdf/renderer";
+
+import { useUserCTX } from "@hooks/UserCTX";
 import type {
   SearchSection,
   IndicatorContext,
@@ -19,26 +24,25 @@ import type {
   IndicatorSection,
   GraphDTO,
 } from "@appTypes/report";
-import { CMIndicatorReportModel } from "@hooks/useReport/reportModels/CMIndicatorReportModel";
-import { pdf } from "@react-pdf/renderer";
-import { useLocation } from "react-router";
-import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
-import { fetchIndicatorContext } from "@hooks/useReport/utils/fetchInitiativeContext";
-import { LOCALE } from "@config/monitoring";
+import { fetchInitiativeContext } from "@hooks/useReport/utils/fetchInitiativeContext";
 import { makeMapImg } from "@hooks/useReport/utils/makeMapImg";
 import { makeGraphImg } from "@hooks/useReport/utils/makeGraphImg";
-import { toast } from "sonner";
-import { FileCheck, Shredder } from "lucide-react";
+import { CMIndicatorReportModel } from "@hooks/useReport/reportModels/CMIndicatorReportModel";
+import { LOCALE } from "@config/monitoring";
+
+import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
 
 type ReportContextType = {
   isLoading: boolean;
   errors: string[];
+  reportContextResolver: (context: InitiativeCompleteInfo) => void;
   reportDownloaded: boolean;
   setCurrentSectionPool: (section: SectionInfo | null) => void;
   addSection: (userNote?: string) => Promise<void>;
-  removeElement: (sectionId: string, graphStateId?: string) => void;
-  removeCurrentSection: () => void;
+  removeGraph: (sectionId: string, graphId: string) => void;
+  removeSection: (sectionId: string) => void;
   removeReport: () => void;
+  updateNote: (sectionId: string, graphId: string, newNote: string) => void;
   toggleEditor: (forceState?: boolean) => void;
   moveElement: (
     direction: "prev" | "next",
@@ -62,8 +66,8 @@ const revokeGraphUrls = (graph: GraphDTO) => {
 };
 
 type SectionInfo = {
-  baseId: string;
-  graphStateStringId: string;
+  sectionId: string;
+  graphId: string;
   sectionInfo:
     | Omit<SearchSection, "graphs" | "mapUrl">
     | Omit<IndicatorSection, "graphs" | "mapUrl">;
@@ -79,10 +83,17 @@ export function ReportCTX({ children }: { children: ReactNode }) {
   const [reportDownloaded, setReportDownloaded] = useState(true);
 
   const { user } = useUserCTX();
-  const { initiativeInfo } = useInitiativeCTX();
+  // TODO: Complementar el type cuando se incorpore consultas
+  const reportContextRef = useRef<InitiativeCompleteInfo | null>(null);
+
+  const reportContextResolver = useCallback(
+    (context: InitiativeCompleteInfo) => {
+      reportContextRef.current = context;
+    },
+    [],
+  );
 
   const currentSectionInfoPool = useRef<SectionInfo | null>(null);
-  const [docMetadata, setDocMetadata] = useState<ReportMetadata | null>(null);
   const [docContext, setDocContext] = useState<
     IndicatorContext | SearchContext | null
   >(null);
@@ -106,22 +117,36 @@ export function ReportCTX({ children }: { children: ReactNode }) {
   }, [pathname]);
 
   const addSection = async (userNote?: string) => {
-    if (!user || !currentSectionInfoPool.current) {
+    if (!user || !currentSectionInfoPool.current || !reportContextRef.current) {
       return;
     }
 
+    setIsLoading(true);
+    setErrors([]);
+
+    if (!docContext) {
+      const { data, errors: ctxErrors } =
+        reportType === "InitiativeIndicator"
+          ? await fetchInitiativeContext(reportContextRef.current)
+          : { data: null, errors: [] };
+
+      if (ctxErrors.length > 0) {
+        setErrors(ctxErrors);
+        return;
+      }
+
+      setDocContext(data);
+    }
+
     const {
-      baseId,
-      graphStateStringId: graphId,
+      sectionId,
+      graphId,
       sectionInfo,
       graphComponent,
       mapFromLeafletElementId,
     } = currentSectionInfoPool.current;
 
-    const currentSection = docSections.get(baseId);
-
-    setIsLoading(true);
-    setErrors([]);
+    const currentSection = docSections.get(sectionId);
 
     let newMapUrl: string | null = null;
     if (mapFromLeafletElementId) {
@@ -167,7 +192,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     };
 
     setDocSections((oldSections) =>
-      new Map(oldSections).set(baseId, updatedSection),
+      new Map(oldSections).set(sectionId, updatedSection),
     );
 
     toast("Agregado al reporte exitosamente", {
@@ -179,70 +204,104 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     });
   };
 
-  const removeElement = useCallback((sectionId: string, graphId?: string) => {
-    setDocSections((oldSections) => {
-      const updatedSections = new Map(oldSections);
-      const sectionToWork = updatedSections.get(sectionId);
-      if (!sectionToWork) {
-        return oldSections;
-      }
+  const removeElements = useCallback(
+    ({
+      sectionId,
+      graphId,
+      toastInfo,
+    }: {
+      sectionId?: string;
+      graphId?: string;
+      toastInfo?: { title: string; description: string; icon: LucideIcon };
+    }) => {
+      setDocSections((oldSections) => {
+        if (!sectionId) {
+          for (const section of oldSections.values()) {
+            section.graphs.forEach(revokeGraphUrls);
+          }
+          return new Map();
+        }
 
-      if (!graphId) {
-        sectionToWork.graphs.forEach(revokeGraphUrls);
-        updatedSections.delete(sectionId);
+        const updatedSections = new Map(oldSections);
+        const sectionToWork = updatedSections.get(sectionId);
+        if (!sectionToWork) {
+          return oldSections;
+        }
+
+        if (!graphId) {
+          sectionToWork.graphs.forEach(revokeGraphUrls);
+          updatedSections.delete(sectionId);
+          return updatedSections;
+        }
+
+        const graphToRemove = sectionToWork.graphs.find(
+          (g) => g.id === graphId,
+        );
+        if (!graphToRemove) {
+          return oldSections;
+        }
+
+        revokeGraphUrls(graphToRemove);
+        updatedSections.set(sectionId, {
+          ...sectionToWork,
+          graphs: sectionToWork.graphs.filter((g) => g.id !== graphId),
+        });
+
         return updatedSections;
-      }
-
-      const graphToRemove = sectionToWork.graphs.find((g) => g.id === graphId);
-      if (!graphToRemove) {
-        return oldSections;
-      }
-
-      revokeGraphUrls(graphToRemove);
-      updatedSections.set(sectionId, {
-        ...sectionToWork,
-        graphs: sectionToWork.graphs.filter((g) => g.id !== graphId),
       });
 
-      return updatedSections;
-    });
-  }, []);
+      if (toastInfo) {
+        toast(toastInfo.title, {
+          position: "bottom-right",
+          description: toastInfo.description,
+          icon: <toastInfo.icon className="size-8 text-accent" />,
+          className: "px-6! gap-6! border-2! border-accent!",
+          duration: 4 * 1000,
+        });
+      }
+    },
+    [],
+  );
 
-  const removeCurrentSection = () => {
-    if (
-      !currentSectionInfoPool.current?.baseId ||
-      !docSections.get(currentSectionInfoPool.current?.baseId)
-    ) {
+  const removeSection = (sectionId: string) => {
+    if (!docSections.has(sectionId)) {
       return;
     }
-    removeElement(currentSectionInfoPool.current.baseId);
-
-    toast("Sección eliminada", {
-      position: "bottom-right",
-      description: `${currentSectionInfoPool.current.sectionInfo.title} se ha eliminado del reporte.`,
-      icon: <Shredder className="size-8 text-accent" />,
-      className: "px-6! gap-6! border-2! border-accent!",
-      duration: 4 * 1000,
+    removeElements({
+      sectionId,
+      toastInfo: {
+        title: "Sección eliminada",
+        description: `${sectionId} se ha eliminado del reporte.`,
+        icon: Shredder,
+      },
     });
   };
 
-  const removeReport = useCallback(() => {
-    setDocSections((oldSections) => {
-      const sections = [...oldSections.keys()];
-      for (const section of sections) {
-        removeElement(section);
-      }
-      return new Map();
+  const removeGraph = (sectionId: string, graphId: string) => {
+    const sectionToWork = docSections.get(sectionId);
+    if (!sectionToWork || !sectionToWork.graphs.some((g) => g.id === graphId)) {
+      return;
+    }
+    removeElements({
+      sectionId,
+      graphId,
+      toastInfo: {
+        title: "Grafica eliminada",
+        description: `${graphId} se ha eliminado del reporte.`,
+        icon: ChartLine,
+      },
     });
+  };
 
-    toast("Reporte descartado", {
-      position: "bottom-right",
-      description: "El reporte ha sido descartado correctamente",
-      icon: <Shredder className="size-8 text-accent" />,
-      className: "px-6! gap-6! border-2! border-accent!",
-      duration: 4 * 1000,
+  const removeReport = () => {
+    removeElements({
+      toastInfo: {
+        title: "Reporte descartado",
+        description: "El reporte ha sido descartado correctamente",
+        icon: Shredder,
+      },
     });
-  }, [removeElement]);
+  };
 
   const moveElement = (
     direction: "prev" | "next",
@@ -304,9 +363,22 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       return;
     }
 
+    const docMetadata: ReportMetadata = {
+      creationDate: new Date().toLocaleDateString(LOCALE, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }),
+      madeBy: {
+        name: `${user.firstName} ${user.lastName}`,
+        username: user.username,
+        email: user.email,
+      },
+    };
+
     try {
       setIsLoading(true);
-      if (reportType === "InitiativeIndicator" && docMetadata && docContext) {
+      if (reportType === "InitiativeIndicator" && docContext) {
         const blob = await pdf(
           <CMIndicatorReportModel
             metadata={docMetadata}
@@ -336,72 +408,50 @@ export function ReportCTX({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    if (!user) {
-      setDocMetadata(null);
-      return;
-    }
-
-    setDocMetadata({
-      creationDate: new Date().toLocaleDateString(LOCALE, {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
-      madeBy: {
-        name: `${user.firstName} ${user.lastName}`,
-        username: user.username,
-        email: user.email,
-      },
-    });
-  }, [user]);
-
-  useEffect(() => {
-    const fetchContext = async () => {
-      if (reportType === "InitiativeIndicator" && initiativeInfo) {
-        setIsLoading(true);
-        setErrors([]);
-        setDocContext(null);
-
-        const { data, errors: fetchErrors } =
-          await fetchIndicatorContext(initiativeInfo);
-        setIsLoading(false);
-        if (fetchErrors.length > 0 || !data) {
-          setErrors(fetchErrors);
-          return;
-        }
-
-        setDocContext(data);
-      }
-    };
-
-    void fetchContext();
-  }, [initiativeInfo, reportType]);
-
-  useEffect(() => {
     setReportDownloaded(false);
   }, [docSections]);
 
   useEffect(() => {
     return () => {
-      removeReport();
+      removeElements({});
     };
-  }, [removeReport]);
+  }, [removeElements]);
 
-  // TODO: update note
+  const updateNote = (sectionId: string, graphId: string, newNote: string) => {
+    setDocSections((oldSections) => {
+      const newSections = new Map(oldSections);
+      const sectionToWork = newSections.get(sectionId);
+      if (!sectionToWork) {
+        return oldSections;
+      }
+      const graphIdx = sectionToWork.graphs.findIndex((g) => g.id === graphId);
+      if (graphIdx < 0) {
+        return oldSections;
+      }
 
-  console.log(docSections);
+      const newGraphs = [...sectionToWork.graphs];
+      newGraphs[graphIdx] = {
+        ...newGraphs[graphIdx],
+        userNote: newNote,
+      };
+      newSections.set(sectionId, { ...sectionToWork, graphs: newGraphs });
+      return newSections;
+    });
+  };
 
   return (
     <ReportContext.Provider
       value={{
         isLoading,
         errors,
+        reportContextResolver,
         reportDownloaded,
         setCurrentSectionPool,
         addSection,
-        removeElement,
-        removeCurrentSection,
+        removeGraph,
+        removeSection,
         removeReport,
+        updateNote,
         toggleEditor,
         moveElement,
         openReportInNewTab,

@@ -11,7 +11,7 @@ type FetchIndicatorContextReturn = {
   errors: string[];
 };
 
-export async function fetchIndicatorContext(
+export async function fetchInitiativeContext(
   initiativeInfo: InitiativeCompleteInfo,
 ): Promise<FetchIndicatorContextReturn> {
   const [initiativeStats, monitoringEvents] = await Promise.all([

@@ -5,14 +5,14 @@ import { ReportCTX } from "@hooks/useReport";
 
 export function Indicators() {
   return (
-    <IndicatorsCTX>
-      <ReportCTX>
+    <ReportCTX>
+      <IndicatorsCTX>
         <div className="flex flex-col lg:flex-row min-h-full">
           <Search />
 
           <Card />
         </div>
-      </ReportCTX>
-    </IndicatorsCTX>
+      </IndicatorsCTX>
+    </ReportCTX>
   );
 }
