@@ -13,6 +13,7 @@ import {
 import { BarsLegend } from "pages/monitoring/outlets/initiatives/indicators/card/ui/BarsLegend";
 import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphInfoSelector";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
+import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
 
 const customColorMap: Record<string, string> = {
   Mujeres: GRAPHS_EXTENDED_COLOR_PALETTE[10],
@@ -115,91 +116,100 @@ export function CollectiveActionParticipation() {
         />
       </div>
 
-      <div className="w-full h-full aspect-3/2">
-        <ResponsiveBar
-          data={displayData}
-          keys={displayKeys}
-          indexBy="date"
-          layout="horizontal"
-          margin={{ top: 0, right: 10, bottom: 30, left: 150 }}
-          valueScale={{ type: "linear", min: 0, max: 100 }}
-          indexScale={{ type: "band", round: true }}
-          enableGridX={true}
-          enableGridY={false}
-          theme={{ grid: { line: { strokeDasharray: "1 1" } } }}
-          axisBottom={{
-            tickValues: [0, 20, 40, 60, 80, 100],
-            format: (v) => `${v}%`,
-          }}
-          colors={(bar) =>
-            customColorMap[bar.id] ??
-            getSeriesColor(
-              hashStringToRange(
-                String(bar.id),
-                GRAPHS_EXTENDED_COLOR_PALETTE.length,
-              ),
-              GRAPHS_EXTENDED_COLOR_PALETTE,
-            )
-          }
-          labelTextColor={(bar) => getContrastColor(bar.color)}
-          axisLeft={{
-            renderTick: (tick) => {
-              const item = displayData.find((d) => d.date === tick.value);
-              const total = item ? item.total : 0;
+      <GetIndicatorInfo
+        graphId={currentGroup}
+        mapElementId={null}
+        mapUrl={null}
+      >
+        <>
+          <div className="w-full h-full aspect-video">
+            <ResponsiveBar
+              data={displayData}
+              keys={displayKeys}
+              indexBy="date"
+              layout="horizontal"
+              margin={{ top: 0, right: 20, bottom: 30, left: 150 }}
+              valueScale={{ type: "linear", min: 0, max: 100 }}
+              indexScale={{ type: "band", round: true }}
+              enableGridX={true}
+              enableGridY={false}
+              theme={{ grid: { line: { strokeDasharray: "1 1" } } }}
+              padding={0.5}
+              axisBottom={{
+                tickValues: [0, 20, 40, 60, 80, 100],
+                format: (v) => `${v}%`,
+              }}
+              colors={(bar) =>
+                customColorMap[bar.id] ??
+                getSeriesColor(
+                  hashStringToRange(
+                    String(bar.id),
+                    GRAPHS_EXTENDED_COLOR_PALETTE.length,
+                  ),
+                  GRAPHS_EXTENDED_COLOR_PALETTE,
+                )
+              }
+              labelTextColor={(bar) => getContrastColor(bar.color)}
+              axisLeft={{
+                renderTick: (tick) => {
+                  const item = displayData.find((d) => d.date === tick.value);
+                  const total = item ? item.total : 0;
 
-              return (
-                <g transform={`translate(0,${tick.y})`}>
-                  <text
-                    textAnchor="end"
-                    dominantBaseline="middle"
-                    style={{ fontSize: 12, fontWeight: "bold" }}
-                    x={-5}
-                    y={-8}
+                  return (
+                    <g transform={`translate(0,${tick.y})`}>
+                      <text
+                        textAnchor="end"
+                        dominantBaseline="middle"
+                        style={{ fontSize: 12, fontWeight: "bold" }}
+                        x={-5}
+                        y={-8}
+                      >
+                        {tick.value}
+                      </text>
+                      <text
+                        textAnchor="end"
+                        dominantBaseline="middle"
+                        style={{ fontSize: 11 }}
+                        x={-5}
+                        y={8}
+                      >
+                        {uiText.indicatorCard.collectiveActionParticipation.amountLabel(
+                          Number(total),
+                        )}
+                      </text>
+                    </g>
+                  );
+                },
+              }}
+              labelSkipWidth={16}
+              labelSkipHeight={16}
+              valueFormat={(v) => `${Number(v.toFixed(1))}%`}
+              tooltip={({ id, value, indexValue, color }) => {
+                return (
+                  <div
+                    className="bg-background px-4 py-2 shadow-md rounded flex flex-col items-center"
+                    style={{ pointerEvents: "none", whiteSpace: "nowrap" }}
                   >
-                    {tick.value}
-                  </text>
-                  <text
-                    textAnchor="end"
-                    dominantBaseline="middle"
-                    style={{ fontSize: 11 }}
-                    x={-5}
-                    y={8}
-                  >
-                    {uiText.indicatorCard.collectiveActionParticipation.amountLabel(
-                      Number(total),
-                    )}
-                  </text>
-                </g>
-              );
-            },
-          }}
-          labelSkipWidth={16}
-          labelSkipHeight={16}
-          valueFormat={(v) => `${Number(v.toFixed(1))}%`}
-          tooltip={({ id, value, indexValue, color }) => {
-            return (
-              <div
-                className="bg-background px-4 py-2 shadow-md rounded flex flex-col items-center"
-                style={{ pointerEvents: "none", whiteSpace: "nowrap" }}
-              >
-                <div className="flex flex-col text-center text-sm mb-1 *:m-0!">
-                  <span className="font-normal">
-                    <span
-                      className="inline-block w-3 h-3 mr-1 rounded-full"
-                      style={{ backgroundColor: color }}
-                    />
-                    {id}
-                  </span>
-                  <span className="text-lg font-normal">{value}%</span>
-                  <span className="italic">{indexValue}</span>
-                </div>
-              </div>
-            );
-          }}
-        />
-      </div>
+                    <div className="flex flex-col text-center text-sm mb-1 *:m-0!">
+                      <span className="font-normal">
+                        <span
+                          className="inline-block w-3 h-3 mr-1 rounded-full"
+                          style={{ backgroundColor: color }}
+                        />
+                        {id}
+                      </span>
+                      <span className="text-lg font-normal">{value}%</span>
+                      <span className="italic">{indexValue}</span>
+                    </div>
+                  </div>
+                );
+              }}
+            />
+          </div>
 
-      <BarsLegend keys={displayKeys} customColorMap={customColorMap} />
+          <BarsLegend keys={displayKeys} customColorMap={customColorMap} />
+        </>
+      </GetIndicatorInfo>
     </>
   );
 }

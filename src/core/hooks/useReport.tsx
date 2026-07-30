@@ -72,7 +72,8 @@ type SectionInfo = {
     | Omit<SearchSection, "graphs" | "mapUrl">
     | Omit<IndicatorSection, "graphs" | "mapUrl">;
   graphComponent: ReactElement;
-  mapFromLeafletElementId: string | null;
+  mapUrl: string | null;
+  mapElementId: string | null;
 };
 
 export function ReportCTX({ children }: { children: ReactNode }) {
@@ -143,14 +144,15 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       graphId,
       sectionInfo,
       graphComponent,
-      mapFromLeafletElementId,
+      mapElementId,
+      mapUrl,
     } = currentSectionInfoPool.current;
 
     const currentSection = docSections.get(sectionId);
 
-    let newMapUrl: string | null = null;
-    if (mapFromLeafletElementId) {
-      const buildtMap = await makeMapImg(mapFromLeafletElementId, {
+    let newMapUrl: string | null = mapUrl;
+    if (!newMapUrl && mapElementId) {
+      const buildtMap = await makeMapImg(mapElementId, {
         scale: 2,
         workerUrl,
         timeout: 10000,
@@ -438,6 +440,8 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       return newSections;
     });
   };
+
+  console.log(docSections);
 
   return (
     <ReportContext.Provider

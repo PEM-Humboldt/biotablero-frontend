@@ -4,12 +4,14 @@ import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import type { IndicatorSection, IndicatorTag } from "@appTypes/report";
 
 export function GetIndicatorInfo({
-  graphStateStringId,
-  mapFromLeafletElementId,
+  graphId: graphId,
+  mapUrl,
+  mapElementId,
   children,
 }: {
-  graphStateStringId: string;
-  mapFromLeafletElementId: string | null;
+  graphId: string;
+  mapUrl: string | null;
+  mapElementId: string | null;
   children: ReactElement;
 }) {
   const { currentIndicator } = useIndicatorsCTX();
@@ -61,18 +63,20 @@ export function GetIndicatorInfo({
 
     setCurrentSectionPool({
       sectionId: `${name}_${type.name}_${version}`,
-      graphId: graphStateStringId,
+      graphId: graphId,
       graphComponent: children,
       sectionInfo,
-      mapFromLeafletElementId,
+      mapUrl,
+      mapElementId,
     });
 
     return () => {
       setCurrentSectionPool(null);
     };
   }, [
-    graphStateStringId,
-    mapFromLeafletElementId,
+    graphId,
+    mapElementId,
+    mapUrl,
     children,
     currentIndicator,
     setCurrentSectionPool,
