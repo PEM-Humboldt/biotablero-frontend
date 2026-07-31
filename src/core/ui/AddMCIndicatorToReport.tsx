@@ -27,13 +27,7 @@ import { inputWarnColor } from "@utils/ui";
 
 export function AddMCIndicatorToReport() {
   const { user } = useUserCTX();
-  const {
-    addSection,
-    isLoading,
-    removeReport,
-    toggleEditor,
-    openReportInNewTab,
-  } = useReport();
+  const { addSection, isLoading, removeReport, toggleEditor } = useReport();
 
   const [withNote, setWithNote] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -160,10 +154,6 @@ export function AddMCIndicatorToReport() {
                 Editar
               </DropdownMenuItem>
 
-              <DropdownMenuItem onClick={() => void openReportInNewTab()}>
-                Ver
-              </DropdownMenuItem>
-
               <DropdownMenuItem
                 onClick={() => {
                   console.log("descargar");
@@ -171,16 +161,12 @@ export function AddMCIndicatorToReport() {
               >
                 Descargar
               </DropdownMenuItem>
-            </DropdownMenuGroup>
 
-            <DropdownMenuSeparator />
-
-            <DropdownMenuGroup>
               <DropdownMenuItem
                 className="text-accent"
                 onClick={() => removeReport()}
               >
-                Borrar todo el reporte
+                Borrar
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>

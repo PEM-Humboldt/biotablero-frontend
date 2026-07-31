@@ -20,6 +20,7 @@ import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 import TextareaAutosize from "react-textarea-autosize";
 import { INDICATOR_NOTE_MAX_LENGTH } from "@config/monitoring";
 import { inputWarnColor } from "@utils/ui";
+import { motion, AnimatePresence } from "motion/react";
 
 export function ReportDocumentTree({
   documentSections,
@@ -28,80 +29,98 @@ export function ReportDocumentTree({
 }) {
   return (
     <div className="flex flex-col gap-4 p-4">
-      {[...documentSections.entries()].map(
-        ([sectionId, value], sectionIdx, { length: sectionsLength }) => {
-          const [name, indicatorType, version] = sectionId.split("_");
+      <AnimatePresence mode="popLayout">
+        {[...documentSections.entries()].map(
+          ([sectionId, value], sectionIdx, { length: sectionsLength }) => {
+            const [name, indicatorType, version] = sectionId.split("_");
 
-          return (
-            <section
-              key={sectionId}
-              className="bg-background border border-input hover:border-primary hover:[&>div]:first:bg-muted rounded-lg transition-colors duration-300 overflow-hidden"
-            >
-              <div className="flex gap-2 p-2 justify-between items-center">
-                <header className="space-y-0.5 text-primary!">
-                  <h3 className="m-0 font-normal text-lg">{name}</h3>
-                  <p className="text-sm italic truncate m-0">
-                    {indicatorType} • Versión: {version}
-                  </p>
-                </header>
-
-                <DocEdit
-                  sectionId={sectionId}
-                  position={sectionIdx}
-                  total={sectionsLength}
-                />
-              </div>
-
-              <ul
-                aria-labelledby="Gráficos de esta sección"
-                className="flex flex-col list-none"
+            return (
+              <motion.section
+                key={sectionId}
+                layout
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 350, damping: 25 }}
+                className="bg-background border border-input hover:border-primary hover:[&>div]:first:bg-muted rounded-lg overflow-hidden"
               >
-                {value.graphs.map(
-                  (graph, graphIdx, { length: graphsLength }) => {
-                    const graphLabelId = `graph-title-${graph.id}`;
+                <div className="flex gap-2 p-2 justify-between items-center">
+                  <header className="space-y-0.5 text-primary!">
+                    <h3 className="m-0 font-normal text-lg">{name}</h3>
+                    <p className="text-sm italic truncate m-0">
+                      {indicatorType} • Versión: {version}
+                    </p>
+                  </header>
 
-                    return (
-                      <li
-                        key={graph.id}
-                        aria-labelledby={graphLabelId}
-                        className="p-2 bg-transparent border-t border-t-input hover:bg-input transition-colors duration-300"
-                      >
-                        <div className="flex gap-2 min-w-0 justify-between items-center">
-                          <span
-                            id={graphLabelId}
-                            className="text-base text-foreground truncate"
+                  <DocEdit
+                    sectionId={sectionId}
+                    position={sectionIdx}
+                    total={sectionsLength}
+                  />
+                </div>
+
+                <ul
+                  aria-labelledby="Gráficos de esta sección"
+                  className="flex flex-col list-none"
+                >
+                  <AnimatePresence mode="popLayout">
+                    {value.graphs.map(
+                      (graph, graphIdx, { length: graphsLength }) => {
+                        const graphLabelId = `graph-title-${graph.id}`;
+
+                        return (
+                          <motion.li
+                            key={graph.id}
+                            layout
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{
+                              type: "spring",
+                              stiffness: 350,
+                              damping: 25,
+                            }}
+                            aria-labelledby={graphLabelId}
+                            className="p-2 bg-transparent border-t border-t-input hover:bg-input"
                           >
-                            Gráfica: {graph.id}
-                          </span>
+                            <div className="flex gap-2 min-w-0 justify-between items-center">
+                              <span
+                                id={graphLabelId}
+                                className="text-base text-foreground truncate"
+                              >
+                                Gráfica: {graph.id}
+                              </span>
 
-                          <DocEdit
-                            sectionId={sectionId}
-                            graphId={graph.id}
-                            graphUrl={graph.blobUrl}
-                            mapUrl={graph.mapUrl}
-                            position={graphIdx}
-                            total={graphsLength}
-                            userNote={graph.userNote}
-                          />
-                        </div>
+                              <DocEdit
+                                sectionId={sectionId}
+                                graphId={graph.id}
+                                graphUrl={graph.blobUrl}
+                                mapUrl={graph.mapUrl}
+                                position={graphIdx}
+                                total={graphsLength}
+                                userNote={graph.userNote}
+                              />
+                            </div>
 
-                        {graph.userNote && (
-                          <p
-                            className="line-clamp-2 m-0 ml-8 rounded"
-                            aria-label={`Nota sobre la gráfica ${graph.id}`}
-                          >
-                            "{graph.userNote}"
-                          </p>
-                        )}
-                      </li>
-                    );
-                  },
-                )}
-              </ul>
-            </section>
-          );
-        },
-      )}
+                            {graph.userNote && (
+                              <p
+                                className="line-clamp-2 m-0 ml-8 rounded"
+                                aria-label={`Nota sobre la gráfica ${graph.id}`}
+                              >
+                                "{graph.userNote}"
+                              </p>
+                            )}
+                          </motion.li>
+                        );
+                      },
+                    )}
+                  </AnimatePresence>
+                </ul>
+              </motion.section>
+            );
+          },
+        )}
+      </AnimatePresence>
     </div>
   );
 }
@@ -233,27 +252,29 @@ function DocEdit({
         )}
       </ButtonGroup>
 
-      <ButtonGroup>
-        {position > 0 && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => moveElement("prev", sectionId, graphId)}
-          >
-            <ChevronUpCircle />
-          </Button>
-        )}
+      {(position > 0 || position < total - 1) && (
+        <ButtonGroup>
+          {position > 0 && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => moveElement("prev", sectionId, graphId)}
+            >
+              <ChevronUpCircle />
+            </Button>
+          )}
 
-        {position < total - 1 && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => moveElement("next", sectionId, graphId)}
-          >
-            <ChevronDownCircle />
-          </Button>
-        )}
-      </ButtonGroup>
+          {position < total - 1 && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => moveElement("next", sectionId, graphId)}
+            >
+              <ChevronDownCircle />
+            </Button>
+          )}
+        </ButtonGroup>
+      )}
 
       <Button
         variant="outline_destructive"

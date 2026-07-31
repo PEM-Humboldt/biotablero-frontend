@@ -20,6 +20,7 @@ import {
 import workerUrl from "modern-screenshot/worker?url";
 import { useLocation } from "react-router";
 import { pdf } from "@react-pdf/renderer";
+import { AnimatePresence } from "motion/react";
 
 import { useUserCTX } from "@hooks/UserCTX";
 import type {
@@ -488,33 +489,37 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       }}
     >
       <Sheet open={isEditorOpen} onOpenChange={setIsEditorOpen}>
-        <SheetContent
-          className="min-w-1 sm:min-w-3/4 lg:min-w-1/2"
-          onCloseAutoFocus={(e) => {
-            e.preventDefault();
-            document.body.style.pointerEvents = "";
-          }}
-          onPointerDownOutside={() => {
-            document.body.style.pointerEvents = "";
-          }}
-        >
-          <SheetHeader>
-            <SheetTitle>Reporte de indicadores</SheetTitle>
-            <SheetDescription>
-              Este reporte se basa en la informacion obtenida durante los
-              eventos de monitoreo de la iniciativa {initiativeInfo?.name}.
-            </SheetDescription>
-          </SheetHeader>
+        <AnimatePresence>
+          {isEditorOpen && (
+            <SheetContent
+              className="min-w-1 sm:min-w-3/4 lg:min-w-1/2"
+              onCloseAutoFocus={(e) => {
+                e.preventDefault();
+                document.body.style.pointerEvents = "";
+              }}
+              onPointerDownOutside={() => {
+                document.body.style.pointerEvents = "";
+              }}
+            >
+              <SheetHeader>
+                <SheetTitle>Reporte de indicadores</SheetTitle>
+                <SheetDescription>
+                  Este reporte se basa en la informacion obtenida durante los
+                  eventos de monitoreo de la iniciativa {initiativeInfo?.name}.
+                </SheetDescription>
+              </SheetHeader>
 
-          <ReportDocumentTree documentSections={docSections} />
+              <ReportDocumentTree documentSections={docSections} />
 
-          <SheetFooter>
-            <Button type="button">Descargar</Button>
-            <SheetClose asChild>
-              <Button variant="outline">Cerrar</Button>
-            </SheetClose>
-          </SheetFooter>
-        </SheetContent>
+              <SheetFooter>
+                <Button type="button">Descargar</Button>
+                <SheetClose asChild>
+                  <Button variant="outline">Cerrar</Button>
+                </SheetClose>
+              </SheetFooter>
+            </SheetContent>
+          )}
+        </AnimatePresence>
       </Sheet>
 
       {children}
