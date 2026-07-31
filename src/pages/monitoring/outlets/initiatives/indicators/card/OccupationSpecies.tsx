@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ResponsiveLine } from "@nivo/line";
 
 import {
+  GRAPH_ANIMATION_CONFIG,
   GRAPHS_CONTRAST_COLOR_PALETTE,
   INDICATOR_MAX_COUNT_OCUPATION_SPECIES,
 } from "@config/monitoring";
@@ -149,6 +150,7 @@ export function OccupationSpecies() {
             yScale={{ type: "linear", min: 0, max: 100 }}
             axisBottom={{ tickSize: 5, legendPosition: "middle" }}
             axisLeft={{ tickSize: 5, legendPosition: "middle" }}
+            motionConfig={GRAPH_ANIMATION_CONFIG}
             colors={(series) => series.color}
             pointSize={10}
             useMesh={true}

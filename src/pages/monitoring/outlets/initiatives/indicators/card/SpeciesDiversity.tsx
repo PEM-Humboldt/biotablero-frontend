@@ -2,7 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 
 import { ResponsiveLine } from "@nivo/line";
 import { hashStringToRange } from "@utils/format";
-import { GRAPHS_CONTRAST_COLOR_PALETTE } from "@config/monitoring";
+import {
+  GRAPH_ANIMATION_CONFIG,
+  GRAPHS_CONTRAST_COLOR_PALETTE,
+} from "@config/monitoring";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { ConfidenceIntervalLayer } from "pages/monitoring/outlets/initiatives/indicators/card/utils/ConfidenceIntervalLayer";
@@ -146,6 +149,7 @@ export function SpeciesDiversity() {
               legend: uiText.indicatorCard.speciesDiversity.leftAxisLegend,
               legendOffset: -40,
             }}
+            motionConfig={GRAPH_ANIMATION_CONFIG}
             colors={(series) =>
               getSeriesColor(
                 hashStringToRange(series.id),

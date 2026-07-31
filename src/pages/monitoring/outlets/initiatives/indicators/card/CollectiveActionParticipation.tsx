@@ -1,7 +1,10 @@
 import { useMemo, useState } from "react";
 
 import { hashStringToRange } from "@utils/format";
-import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/monitoring";
+import {
+  GRAPH_ANIMATION_CONFIG,
+  GRAPHS_EXTENDED_COLOR_PALETTE,
+} from "@config/monitoring";
 import { ResponsiveBar } from "@nivo/bar";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
@@ -128,6 +131,7 @@ export function CollectiveActionParticipation() {
               keys={displayKeys}
               indexBy="date"
               layout="horizontal"
+              motionConfig={GRAPH_ANIMATION_CONFIG}
               margin={{ top: 0, right: 20, bottom: 30, left: 150 }}
               valueScale={{ type: "linear", min: 0, max: 100 }}
               indexScale={{ type: "band", round: true }}

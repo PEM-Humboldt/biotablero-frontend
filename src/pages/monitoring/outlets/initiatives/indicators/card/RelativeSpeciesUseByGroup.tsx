@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/monitoring";
+import {
+  GRAPH_ANIMATION_CONFIG,
+  GRAPHS_EXTENDED_COLOR_PALETTE,
+} from "@config/monitoring";
 import { ResponsiveBar } from "@nivo/bar";
 import { hashStringToRange } from "@utils/format";
 
@@ -79,6 +82,7 @@ export function RelativeSpeciesUseByGroup() {
               layout="horizontal"
               margin={{ top: 0, right: 30, bottom: 30, left: 120 }}
               padding={0.1}
+              motionConfig={GRAPH_ANIMATION_CONFIG}
               colors={(bar) =>
                 getSeriesColor(
                   hashStringToRange(

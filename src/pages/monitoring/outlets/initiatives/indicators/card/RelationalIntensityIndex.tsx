@@ -4,6 +4,7 @@ import { type BarDatum, ResponsiveBar } from "@nivo/bar";
 import {
   INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY,
   GRAPHS_GRADIENT_COLOR_PALETTE,
+  GRAPH_ANIMATION_CONFIG,
 } from "@config/monitoring";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
@@ -111,6 +112,7 @@ export function RelationalIntensityIndex() {
                     value: null,
                   })) as unknown as BarDatum[]
                 }
+                motionConfig={GRAPH_ANIMATION_CONFIG}
                 indexBy="actor"
                 layout="horizontal"
                 margin={{ top: 0, right: 0, bottom: 60, left: 150 }}
@@ -145,6 +147,7 @@ export function RelationalIntensityIndex() {
                   padding={0.2}
                   valueScale={{ type: "linear", min: -1.0, max: 1.0 }}
                   indexScale={{ type: "band", round: true }}
+                  motionConfig={GRAPH_ANIMATION_CONFIG}
                   colors={(bar) => {
                     if (
                       bar.indexValue ===

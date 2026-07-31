@@ -1,6 +1,7 @@
 import type { ReactElement } from "react";
 import { domToBlob, type Options } from "modern-screenshot";
 import { createRoot } from "react-dom/client";
+import { GRAPH_ANIMATION_CONFIG } from "@config/monitoring";
 
 export async function makeGraphImg(
   graphComponent: ReactElement,
@@ -19,7 +20,9 @@ export async function makeGraphImg(
   try {
     root.render(graphComponent);
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) =>
+      setTimeout(resolve, GRAPH_ANIMATION_CONFIG.duration + 200),
+    );
 
     const graphBlob = await domToBlob(tempContainer, screenshotOptions);
     root.unmount();

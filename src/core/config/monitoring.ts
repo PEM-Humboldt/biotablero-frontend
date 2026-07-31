@@ -64,6 +64,12 @@ export const GRAPHS_GRADIENT_COLOR_PALETTE = [
   GRAPHS_EXTENDED_COLOR_PALETTE[21], // #f25e50
   GRAPHS_EXTENDED_COLOR_PALETTE[22], // #e84a5f
 ];
+export const GRAPH_ANIMATION_CONFIG = {
+  duration: 300,
+  // NOTE: EaseInOut Cuadratica
+  easing: (t: number) =>
+    t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2,
+};
 
 // Logs
 export const LOG_RECORDS_PER_PAGE = 20; // registrys on the logs summary

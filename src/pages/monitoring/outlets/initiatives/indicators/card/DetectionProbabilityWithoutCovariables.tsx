@@ -2,7 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { SearchIcon } from "lucide-react";
 
 import { ResponsiveLine } from "@nivo/line";
-import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/monitoring";
+import {
+  GRAPH_ANIMATION_CONFIG,
+  GRAPHS_EXTENDED_COLOR_PALETTE,
+} from "@config/monitoring";
 import { Combobox } from "@ui/ComboBox";
 import { cn } from "@ui/shadCN/lib/utils";
 import { hashStringToRange } from "@utils/format";
@@ -137,6 +140,7 @@ export function DetectionProbabilityWithoutCovariables() {
                 min: 0,
                 max: 1,
               }}
+              motionConfig={GRAPH_ANIMATION_CONFIG}
               colors={(serie) =>
                 customColorMap[serie.id] ??
                 getSeriesColor(
