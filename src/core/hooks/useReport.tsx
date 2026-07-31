@@ -511,11 +511,11 @@ export function ReportCTX({ children }: { children: ReactNode }) {
                 document.body.style.pointerEvents = "";
               }}
             >
-              <SheetHeader className="border-muted mt-8">
-                <SheetTitle className="text-3xl text-primary font-normal">
+              <SheetHeader className="border-muted">
+                <SheetTitle className="text-3xl text-primary m-0 font-normal">
                   Estructura del reporte
                 </SheetTitle>
-                <SheetDescription className="text-base text-primary max-w-[65ch] text-balance">
+                <SheetDescription className="text-base text-primary m-0 max-w-[65ch] text-balance">
                   Este es el esquema con la información que haz añadido
                 </SheetDescription>
               </SheetHeader>

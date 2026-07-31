@@ -34,7 +34,7 @@ export function ReportDocumentTree({
       <FileSearchCorner className="size-20 text-accent" strokeWidth={1} />
     </div>
   ) : (
-    <div className="flex flex-col gap-4 p-4">
+    <div className="flex flex-col gap-4 px-4">
       <AnimatePresence mode="popLayout">
         {[...documentSections.entries()].map(
           ([sectionId, value], sectionIdx, { length: sectionsLength }) => {
@@ -48,12 +48,14 @@ export function ReportDocumentTree({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ type: "spring", stiffness: 350, damping: 25 }}
-                className="bg-background border border-input hover:border-primary hover:[&>div]:first:bg-muted rounded-lg overflow-hidden"
+                className="bg-background border border-input hover:border-primary rounded-lg overflow-hidden group"
               >
-                <div className="flex gap-2 p-2 justify-between items-center">
+                <div className="flex gap-2 py-2 px-4 justify-between items-center group-hover:bg-primary">
                   <header className="space-y-0.5 text-primary!">
-                    <h3 className="m-0 font-normal text-lg">{name}</h3>
-                    <p className="text-sm italic truncate m-0">
+                    <h3 className="m-0 font-normal text-lg group-hover:text-primary-foreground">
+                      {name}
+                    </h3>
+                    <p className="text-sm italic m-0 group-hover:text-primary-foreground">
                       {indicatorType} • Versión: {version}
                     </p>
                   </header>
@@ -87,7 +89,7 @@ export function ReportDocumentTree({
                               damping: 25,
                             }}
                             aria-labelledby={graphLabelId}
-                            className="p-2 bg-transparent border-t border-t-input hover:bg-input"
+                            className="py-2 px-4 bg-transparent border-t border-t-input hover:bg-input"
                           >
                             <div className="flex gap-2 min-w-0 justify-between items-center">
                               <span
