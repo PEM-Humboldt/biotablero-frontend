@@ -54,6 +54,7 @@ export function Card() {
             <time
               dateTime={new Date(currentIndicator.creationDate).toISOString()}
               className="text-primary-foreground text-sm! border border-accent-foreground/20 rounded px-2 py-1 h-8"
+              title={uiText.indicatorCard.header.lastUpdate}
             >
               {new Date(currentIndicator.creationDate).toLocaleDateString(
                 LOCALE,
