@@ -6,6 +6,7 @@ import {
   ChartBar,
   ChevronDownCircle,
   ChevronUpCircle,
+  FileSearchCorner,
   MapIcon,
   SquarePen,
   Trash2Icon,
@@ -27,7 +28,12 @@ export function ReportDocumentTree({
 }: {
   documentSections: Map<string, SearchSection | IndicatorSection>;
 }) {
-  return (
+  return documentSections.size === 0 ? (
+    <div className="flex flex-col gap-4 items-center h-full p-8 m-4 text-center font-normal text-3xl text-primary">
+      No hay información para generar el reporte
+      <FileSearchCorner className="size-20 text-accent" strokeWidth={1} />
+    </div>
+  ) : (
     <div className="flex flex-col gap-4 p-4">
       <AnimatePresence mode="popLayout">
         {[...documentSections.entries()].map(
@@ -166,18 +172,21 @@ function DocEdit({
                 <ChartBar />
               </Button>
             </PopoverTrigger>
-            <PopoverContent align="center" className="w-auto p-1.5 rounded-xl">
+            <PopoverContent
+              align="center"
+              className="w-auto p-2 bg-muted hover:bg-input rounded-xl transition-colors duration-300"
+            >
               <a
                 href={graphUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block overflow-hidden rounded-lg group"
+                className="block overflow-hidden rounded-lg"
                 title="Haz clic para abrir a tamaño completo"
               >
                 <img
                   src={graphUrl}
                   alt="Vista previa gráfica"
-                  className="max-w-xs max-h-60 object-contain transition-transform group-hover:scale-[1.02]"
+                  className="max-w-xs max-h-60 object-contain p-1 bg-background transition-transform"
                 />
               </a>
             </PopoverContent>
@@ -185,11 +194,31 @@ function DocEdit({
         )}
 
         {mapUrl && (
-          <Button asChild>
-            <a href={mapUrl} target="_blank">
-              <MapIcon />
-            </a>
-          </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" size="sm" title="Vista previa gráfica">
+                <MapIcon />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              align="center"
+              className="w-auto p-2 bg-muted hover:bg-input rounded-xl transition-colors duration-300"
+            >
+              <a
+                href={mapUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block overflow-hidden rounded-lg"
+                title="Haz clic para abrir a tamaño completo"
+              >
+                <img
+                  src={mapUrl}
+                  alt="Vista previa gráfica"
+                  className="max-w-xs max-h-60 object-contain p-1 bg-background transition-transform"
+                />
+              </a>
+            </PopoverContent>
+          </Popover>
         )}
 
         {graphId && (

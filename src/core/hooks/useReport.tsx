@@ -8,8 +8,10 @@ import {
 } from "lucide-react";
 import {
   createContext,
+  type Dispatch,
   type ReactElement,
   type ReactNode,
+  type SetStateAction,
   useCallback,
   useContext,
   useEffect,
@@ -21,8 +23,18 @@ import workerUrl from "modern-screenshot/worker?url";
 import { useLocation } from "react-router";
 import { pdf } from "@react-pdf/renderer";
 import { AnimatePresence } from "motion/react";
+import TextareaAutosize from "react-textarea-autosize";
 
+import { INDICATOR_NOTE_MAX_LENGTH } from "@config/monitoring";
+import { inputWarnColor } from "@utils/ui";
 import { useUserCTX } from "@hooks/UserCTX";
+import { fetchInitiativeContext } from "@hooks/useReport/utils/fetchInitiativeContext";
+import { makeMapImg } from "@hooks/useReport/utils/makeMapImg";
+import { makeGraphImg } from "@hooks/useReport/utils/makeGraphImg";
+import { CMIndicatorReportModel } from "@hooks/useReport/reportModels/CMIndicatorReportModel";
+import { LOCALE } from "@config/monitoring";
+import { ReportDocumentTree } from "@hooks/useReport/reportModels/ReportDocumentTree";
+import { Button } from "@ui/shadCN/component/button";
 import type {
   SearchSection,
   IndicatorContext,
@@ -31,14 +43,6 @@ import type {
   IndicatorSection,
   GraphDTO,
 } from "@appTypes/report";
-import { fetchInitiativeContext } from "@hooks/useReport/utils/fetchInitiativeContext";
-import { makeMapImg } from "@hooks/useReport/utils/makeMapImg";
-import { makeGraphImg } from "@hooks/useReport/utils/makeGraphImg";
-import { CMIndicatorReportModel } from "@hooks/useReport/reportModels/CMIndicatorReportModel";
-import { LOCALE } from "@config/monitoring";
-import { ReportDocumentTree } from "@hooks/useReport/reportModels/ReportDocumentTree";
-
-import { Button } from "@ui/shadCN/component/button";
 import {
   Sheet,
   SheetClose,
@@ -47,11 +51,10 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@ui/shadCN/component/sheet";
 
 import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
-import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
+import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 
 type ReportContextType = {
   isLoading: boolean;
@@ -59,18 +62,21 @@ type ReportContextType = {
   reportContextResolver: (context: InitiativeCompleteInfo) => void;
   reportDownloaded: boolean;
   setCurrentSectionPool: (section: SectionInfo | null) => void;
+  hasSections: boolean;
   addSection: (userNote?: string) => Promise<void>;
   removeGraph: (sectionId: string, graphId: string) => void;
   removeSection: (sectionId: string) => void;
   removeReport: () => void;
   updateNote: (sectionId: string, graphId: string, newNote?: string) => void;
   toggleEditor: (forceState?: boolean) => void;
+  whyDownload: string;
+  setWhyDownload: Dispatch<SetStateAction<string>>;
   moveElement: (
     direction: "prev" | "next",
     sectionId: string,
     graphStateId?: string,
   ) => void;
-  openReportInNewTab: () => Promise<void>;
+  downloadReport: () => Promise<void>;
   documentSections: Map<string, SearchSection | IndicatorSection>;
 };
 
@@ -105,7 +111,6 @@ export function ReportCTX({ children }: { children: ReactNode }) {
   const [reportDownloaded, setReportDownloaded] = useState(true);
 
   const { user } = useUserCTX();
-  const { initiativeInfo } = useInitiativeCTX();
   // TODO: Complementar el type cuando se incorpore consultas
   const reportContextRef = useRef<InitiativeCompleteInfo | null>(null);
 
@@ -123,6 +128,8 @@ export function ReportCTX({ children }: { children: ReactNode }) {
   const [docSections, setDocSections] = useState<
     Map<string, SearchSection | IndicatorSection>
   >(new Map());
+
+  const [whyDownload, setWhyDownload] = useState("");
 
   const reportType = useMemo(() => {
     const segments = pathname.split("/").filter(Boolean);
@@ -388,7 +395,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     });
   };
 
-  const openReportInNewTab = async () => {
+  const downloadReport = async () => {
     if (!user) {
       return;
     }
@@ -477,14 +484,17 @@ export function ReportCTX({ children }: { children: ReactNode }) {
         reportContextResolver,
         reportDownloaded,
         setCurrentSectionPool,
+        hasSections: docSections.size > 0,
         addSection,
         removeGraph,
         removeSection,
         removeReport,
         updateNote,
         toggleEditor,
+        whyDownload,
+        setWhyDownload,
         moveElement,
-        openReportInNewTab,
+        downloadReport,
         documentSections: docSections,
       }}
     >
@@ -501,21 +511,61 @@ export function ReportCTX({ children }: { children: ReactNode }) {
                 document.body.style.pointerEvents = "";
               }}
             >
-              <SheetHeader>
-                <SheetTitle>Reporte de indicadores</SheetTitle>
-                <SheetDescription>
-                  Este reporte se basa en la informacion obtenida durante los
-                  eventos de monitoreo de la iniciativa {initiativeInfo?.name}.
+              <SheetHeader className="border-muted mt-8">
+                <SheetTitle className="text-3xl text-primary font-normal">
+                  Estructura del reporte
+                </SheetTitle>
+                <SheetDescription className="text-base text-primary max-w-[65ch] text-balance">
+                  Este es el esquema con la información que haz añadido
                 </SheetDescription>
               </SheetHeader>
 
               <ReportDocumentTree documentSections={docSections} />
 
-              <SheetFooter>
-                <Button type="button">Descargar</Button>
-                <SheetClose asChild>
-                  <Button variant="outline">Cerrar</Button>
-                </SheetClose>
+              <SheetFooter className="flex-col! gap-2 bg-muted border border-input hover:border-primary transition-colors duration-300">
+                <div>
+                  <label
+                    htmlFor="whyDownload"
+                    className="text-primary font-normal"
+                  >
+                    ¿Cuál es el objetivo de este reporte que estás creando?
+                  </label>
+                  <InputGroup>
+                    <TextareaAutosize
+                      data-slot="input-group-control"
+                      className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base! transition-[color,box-shadow] outline-none md:text-sm"
+                      id="whyDownload"
+                      name="whyDownload"
+                      placeholder="Estoy creando este reporte para..."
+                      value={whyDownload}
+                      onChange={(e) => setWhyDownload(e.target.value)}
+                      maxLength={INDICATOR_NOTE_MAX_LENGTH}
+                    />
+                    <InputGroupAddon
+                      align="block-end"
+                      className={`${inputWarnColor(
+                        whyDownload,
+                        INDICATOR_NOTE_MAX_LENGTH,
+                        0.95,
+                      )} flex-row-reverse`}
+                    >
+                      {whyDownload.length} / {INDICATOR_NOTE_MAX_LENGTH}
+                    </InputGroupAddon>
+                  </InputGroup>
+                </div>
+
+                <div className="flex flex-row-reverse gap-2 justify-between">
+                  <Button
+                    disabled={whyDownload === "" || docSections.size === 0}
+                    type="button"
+                    onClick={() => void downloadReport()}
+                  >
+                    Descargar
+                  </Button>
+                  <SheetClose asChild>
+                    <Button variant="outline_destructive">Cerrar</Button>
+                  </SheetClose>
+                </div>
               </SheetFooter>
             </SheetContent>
           )}

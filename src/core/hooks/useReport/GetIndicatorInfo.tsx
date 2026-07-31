@@ -1,7 +1,9 @@
-import { useReport } from "@hooks/useReport";
 import { useEffect, type ReactElement } from "react";
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
+
+import { useReport } from "@hooks/useReport";
 import type { IndicatorSection, IndicatorTag } from "@appTypes/report";
+
+import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 
 export function GetIndicatorInfo({
   graphId: graphId,
