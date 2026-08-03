@@ -1,5 +1,9 @@
-import { Text } from "@react-pdf/renderer";
+import { Text, Svg, Path } from "@react-pdf/renderer";
 import { colors } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/theme";
+import {
+  HUMBOLDT_LOGO_PATHS,
+  HUMBOLDT_LOGO_RATIO,
+} from "@assets/logos/HumboldtLogoPath";
 
 export function Wordmark({
   size = 16,
@@ -37,5 +41,27 @@ export function Slogan({
       <Text style={base}>Cifras e Indicadores</Text>
       <Text style={base}>sobre biodiversidad</Text>
     </>
+  );
+}
+
+export function HumboldtLogo({
+  height = 40,
+  color = "#29363a",
+}: {
+  height?: number;
+  color?: string;
+}) {
+  const width = height * HUMBOLDT_LOGO_RATIO;
+  return (
+    <Svg
+      width={width}
+      height={height}
+      viewBox="0 0 377.9 409.6"
+      style={{ width, height }}
+    >
+      {HUMBOLDT_LOGO_PATHS.map((d, i) => (
+        <Path key={i} d={d} fill={color} />
+      ))}
+    </Svg>
   );
 }

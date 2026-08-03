@@ -7,10 +7,10 @@ import { styles } from "@hooks/useReport/reportModels/cmIndicatorReportModel/lay
 import {
   Wordmark,
   Slogan,
+  HumboldtLogo,
 } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/branding";
-import HumboldtLogo from "@assets/logos/Humboldt_green.svg";
 import { LOCALE } from "@config/monitoring";
-import { makeLocationsString } from "./utils/formatters";
+import { makeLocationsString } from "@hooks/useReport/reportModels/cmIndicatorReportModel/utils/formatters";
 
 export function CoverPage({
   context,
@@ -50,13 +50,7 @@ export function CoverPage({
         <View style={styles.coverMetaRow}>
           <View style={styles.coverMetaItem}>
             <Text style={styles.coverMetaLabel}>Generado</Text>
-            <Text style={styles.coverMetaValue}>
-              {new Date(metadata.creationDate).toLocaleDateString(LOCALE, {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </Text>
+            <Text style={styles.coverMetaValue}>{metadata.creationDate}</Text>
           </View>
           <View style={styles.coverMetaItem}>
             <Text style={styles.coverMetaLabel}>Elaborado por</Text>
@@ -78,7 +72,7 @@ export function CoverPage({
       </View>
 
       <View style={styles.coverBrandRow}>
-        <Image src={HumboldtLogo} />
+        <HumboldtLogo height={56} />
         <View style={{ alignItems: "flex-end" }}>
           <Wordmark size={15} />
           <View style={{ marginTop: 3 }}>

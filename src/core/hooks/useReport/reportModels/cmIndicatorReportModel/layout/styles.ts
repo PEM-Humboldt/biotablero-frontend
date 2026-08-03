@@ -162,7 +162,7 @@ export const styles = StyleSheet.create({
     color: colors.slate,
     marginBottom: 5,
   },
-  conceptGroup: { marginBottom: 10 },
+  conceptGroup: {},
 
   // ---- Lista de vínculos (con enlace) ----
   vinculoGroup: { marginBottom: 12 },
@@ -181,25 +181,30 @@ export const styles = StyleSheet.create({
 
   // ---- Fechas del indicador (debajo del título) ----
   dateRow: { flexDirection: "row", marginBottom: 10 },
-  dateItem: { flexDirection: "row", alignItems: "baseline", marginRight: 22 },
+  dateItem: { flexDirection: "row", alignItems: "center", marginRight: 22 },
   dateLabel: {
-    fontSize: 7.5,
+    fontSize: 10,
     letterSpacing: 0.5,
     textTransform: "uppercase",
     color: colors.textMuted,
     marginRight: 5,
   },
-  dateVal: { fontSize: 9.5, fontWeight: 700, color: colors.slate },
+  dateVal: { fontSize: 10, fontWeight: 700, color: colors.slate },
 
   // ---- Pills ----
   pillRow: { flexDirection: "row", flexWrap: "wrap", marginBottom: 8 },
   pill: {
     borderRadius: 9,
-    paddingVertical: 2,
     paddingHorizontal: 8,
+    paddingVertical: 2,
     marginRight: 5,
     marginBottom: 4,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  pillText: {
     fontSize: 8,
+    lineHeight: 1.3,
   },
 
   // ---- Indicador ----
@@ -211,15 +216,14 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.white,
     marginBottom: 10,
   },
-  legendRow: { flexDirection: "row", flexWrap: "wrap", marginTop: 6 },
-  legendItem: {
+  graphStateRow: { flexDirection: "row", flexWrap: "wrap", marginTop: 6 },
+  graphStateItem: {
     flexDirection: "row",
     alignItems: "center",
     marginRight: 10,
     marginBottom: 2,
   },
-  legendSwatch: { width: 9, height: 3, borderRadius: 2, marginRight: 4 },
-  legendText: { fontSize: 8, color: colors.textMuted },
+  graphStateText: { fontSize: 10, color: colors.textMuted },
 
   quoteBox: {
     backgroundColor: colors.bgSoft,
