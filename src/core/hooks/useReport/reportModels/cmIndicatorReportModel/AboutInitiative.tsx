@@ -21,7 +21,11 @@ export function InitiativeSection({
   const locations = makeLocationsString(context.initiativeLocation);
 
   return (
-    <Page size="A4" style={styles.page}>
+    <Page
+      size="A4"
+      style={styles.page}
+      bookmark={{ title: context.initiativeName, fit: true }}
+    >
       <Header title="Perfil de la iniciativa" />
 
       <Text style={[styles.titleGeneral, { fontSize: 16, marginBottom: 1 }]}>

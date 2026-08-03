@@ -290,7 +290,7 @@ export const styles = StyleSheet.create({
     borderTopColor: colors.line,
     paddingTop: 6,
   },
-  footerText: { fontSize: 7.5, color: colors.textMuted },
+  footerText: { fontSize: 8, color: colors.textMuted },
   pageNumber: {
     fontSize: 8,
     color: colors.textMuted,

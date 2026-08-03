@@ -17,7 +17,6 @@ export function Wordmark({
   );
 }
 
-/** Eslogan de marca en dos líneas: Lato Light, altas e interespaciado. */
 export function Slogan({
   size = 8,
   color = colors.coral,
@@ -29,13 +28,13 @@ export function Slogan({
 }) {
   const base = {
     fontSize: size,
-    fontWeight: 300 as const,
+    fontWeight: 300,
     color,
-    textTransform: "uppercase" as const,
-    letterSpacing: 2.2,
+    textTransform: "uppercase",
+    letterSpacing: 2,
     textAlign: align,
-    lineHeight: 1.35,
-  };
+    lineHeight: 1.2,
+  } as const;
   return (
     <>
       <Text style={base}>Cifras e Indicadores</Text>

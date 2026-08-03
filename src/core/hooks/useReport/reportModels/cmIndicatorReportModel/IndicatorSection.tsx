@@ -19,7 +19,11 @@ export function IndicatorSection({
   metadata: ReportMetadata;
 }) {
   return (
-    <Page size="A4" style={styles.page}>
+    <Page
+      size="A4"
+      style={styles.page}
+      bookmark={{ title: section.title, fit: true }}
+    >
       <Header title={section.title} />
 
       <View style={styles.dateRow}>
@@ -57,6 +61,13 @@ export function IndicatorSection({
           type="biologicalGroup"
         />
       </View>
+
+      <Text
+        style={{ backgroundColor: "#ff0" }}
+        render={({ pageNumber, totalPages }) => {
+          return pageNumber > 1 ? `${pageNumber} / ${totalPages}` : "";
+        }}
+      />
 
       {section.graphs.map((graph) => (
         <Fragment key={graph.id}>

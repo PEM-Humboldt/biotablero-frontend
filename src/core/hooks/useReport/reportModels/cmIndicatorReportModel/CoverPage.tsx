@@ -23,7 +23,14 @@ export function CoverPage({
 }) {
   const locations = makeLocationsString(context.initiativeLocation);
   return (
-    <Page size="A4" style={styles.coverPage}>
+    <Page
+      size="A4"
+      style={styles.coverPage}
+      bookmark={{
+        title: "Reporte personalizado de Monitoreo Comunitario",
+        fit: true,
+      }}
+    >
       <View style={styles.coverImageBox}>
         <Image src={InitiativeReportCover} style={styles.coverImage} />
       </View>
@@ -74,10 +81,8 @@ export function CoverPage({
       <View style={styles.coverBrandRow}>
         <HumboldtLogo height={56} />
         <View style={{ alignItems: "flex-end" }}>
-          <Wordmark size={15} />
-          <View style={{ marginTop: 3 }}>
-            <Slogan size={7} />
-          </View>
+          <Wordmark />
+          <Slogan />
         </View>
       </View>
     </Page>
