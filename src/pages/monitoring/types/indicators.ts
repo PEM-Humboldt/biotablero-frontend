@@ -84,7 +84,7 @@ export interface IndicatorData {
   groups: IndicatorGroup[];
 }
 
-type LineDataValues = {
+export type LineDataValues = {
   x: string;
   y: number;
   upperLimit?: number;
