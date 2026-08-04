@@ -45,10 +45,14 @@ export function GraphInfoSelector({
 
           const bgColor = colorFromOptionHash
             ? getSeriesColor(
-                hashStringToRange(title, 30),
+                hashStringToRange(
+                  title,
+                  highContrast ? GRAPHS_CONTRAST_COLOR_PALETTE.length : 30,
+                ),
                 highContrast ? GRAPHS_CONTRAST_COLOR_PALETTE : undefined,
               )
             : undefined;
+
           const textColor = bgColor ? getContrastColor(bgColor) : undefined;
 
           return (

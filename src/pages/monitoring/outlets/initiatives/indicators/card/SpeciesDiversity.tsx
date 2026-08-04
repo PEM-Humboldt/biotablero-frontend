@@ -153,7 +153,7 @@ export function SpeciesDiversity() {
               motionConfig={GRAPH_ANIMATION_CONFIG}
               colors={(series) =>
                 getSeriesColor(
-                  hashStringToRange(series.id),
+                  hashStringToRange(series.scientificName),
                   GRAPHS_CONTRAST_COLOR_PALETTE,
                 )
               }
