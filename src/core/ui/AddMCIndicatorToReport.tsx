@@ -169,13 +169,25 @@ export function AddMCIndicatorToReport() {
               <DropdownMenuGroup>
                 <DropdownMenuLabel>Reporte</DropdownMenuLabel>
 
-                <DropdownMenuItem onClick={() => toggleEditor(true)}>
+                <DropdownMenuItem
+                  onClick={() => {
+                    if (document.activeElement instanceof HTMLElement) {
+                      document.activeElement.blur();
+                    }
+                    toggleEditor(true);
+                  }}
+                >
                   Editar
                 </DropdownMenuItem>
 
                 <DropdownMenuItem
                   disabled={!hasSections}
-                  onClick={() => setIsDownloadDialogOpen(true)}
+                  onClick={() => {
+                    if (document.activeElement instanceof HTMLElement) {
+                      document.activeElement.blur();
+                    }
+                    setIsDownloadDialogOpen(true);
+                  }}
                 >
                   Descargar
                 </DropdownMenuItem>

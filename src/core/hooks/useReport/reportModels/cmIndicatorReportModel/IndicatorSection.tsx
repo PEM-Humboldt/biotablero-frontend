@@ -62,13 +62,6 @@ export function IndicatorSection({
         />
       </View>
 
-      <Text
-        style={{ backgroundColor: "#ff0" }}
-        render={({ pageNumber, totalPages }) => {
-          return pageNumber > 1 ? `${pageNumber} / ${totalPages}` : "";
-        }}
-      />
-
       {section.graphs.map((graph) => (
         <Fragment key={graph.id}>
           <View style={styles.chartBox} wrap={false}>
@@ -81,13 +74,7 @@ export function IndicatorSection({
             </View>
 
             {graph.blobUrl && (
-              <Image
-                src={graph.blobUrl}
-                style={[
-                  styles.indicatorImage,
-                  { width: "100%", objectFit: "contain", marginBottom: 8 },
-                ]}
-              />
+              <Image src={graph.blobUrl} style={styles.indicatorImage} />
             )}
           </View>
 

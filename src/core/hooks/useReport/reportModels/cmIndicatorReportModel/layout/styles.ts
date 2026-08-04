@@ -257,7 +257,6 @@ export const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 6,
     marginBottom: 10,
-    objectFit: "cover",
   },
 
   // ---- Disclaimer / cierre ----
@@ -292,7 +291,13 @@ export const styles = StyleSheet.create({
   },
   footerText: { fontSize: 8, color: colors.textMuted },
   pageNumber: {
+    position: "absolute",
+    textAlign: "right",
+    width: 80,
+    paddingTop: 6,
     fontSize: 8,
+    right: 0,
+    top: 0,
     color: colors.textMuted,
   },
 });

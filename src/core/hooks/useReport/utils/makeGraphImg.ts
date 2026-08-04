@@ -13,7 +13,7 @@ export async function makeGraphImg(
   const tempContainer = document.createElement("div");
   tempContainer.style.position = "absolute";
   tempContainer.style.left = "-9999px";
-  tempContainer.style.width = "1200px";
+  tempContainer.style.width = "800px";
   document.body.appendChild(tempContainer);
 
   const root = createRoot(tempContainer);

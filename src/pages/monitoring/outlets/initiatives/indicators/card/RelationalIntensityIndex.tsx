@@ -115,7 +115,7 @@ export function RelationalIntensityIndex() {
                 motionConfig={GRAPH_ANIMATION_CONFIG}
                 indexBy="actor"
                 layout="horizontal"
-                margin={{ top: 0, right: 0, bottom: 60, left: 150 }}
+                margin={{ top: 0, right: 0, bottom: 60, left: 160 }}
                 padding={0.4}
                 valueScale={{ type: "linear", min: -1.0, max: 1.0 }}
                 indexScale={{ type: "band", round: true }}
@@ -203,7 +203,7 @@ export function RelationalIntensityIndex() {
               </div>
             ))}
           </div>
-          <p className="text-sm italic m-0 text-center">
+          <p className="text-sm italic mb-4 text-center">
             {uiText.indicatorCard.relationalIntensityIndex.bottomLegend}
           </p>
         </>
