@@ -6,13 +6,13 @@ import {
   GRAPHS_GRADIENT_COLOR_PALETTE,
   GRAPH_ANIMATION_CONFIG,
 } from "@config/monitoring";
+import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import type { BarsData } from "pages/monitoring/types/indicators";
 import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphInfoSelector";
 import { getContrastColor } from "pages/monitoring/outlets/initiatives/indicators/card//utils/colors";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
-import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
 
 export function RelationalIntensityIndex() {
   const { currentIndicator } = useIndicatorsCTX();

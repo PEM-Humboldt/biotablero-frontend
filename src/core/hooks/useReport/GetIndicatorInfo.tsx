@@ -73,6 +73,7 @@ export function GetIndicatorInfo({
       sectionInfo,
       mapUrl,
       mapElementId,
+      sectionUrl: `${window.location.origin}/Monitoreo/Iniciativas/${currentIndicator.initiativeId}/Indicadores/${currentIndicator.indicatorId}`,
     });
 
     return () => {
@@ -80,6 +81,7 @@ export function GetIndicatorInfo({
     };
   }, [
     graphId,
+    singleMap,
     mapElementId,
     mapUrl,
     children,

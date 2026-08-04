@@ -6,6 +6,7 @@ import {
 } from "@config/monitoring";
 import { ResponsiveBar } from "@nivo/bar";
 import { hashStringToRange } from "@utils/format";
+import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { type BarsData } from "pages/monitoring/types/indicators";
@@ -13,10 +14,9 @@ import {
   getContrastColor,
   getSeriesColor,
 } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
-import { BarsLegend } from "pages/monitoring/outlets/initiatives/indicators/card/ui/BarsLegend";
+import { GraphLegend } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphLegend";
 import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphInfoSelector";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
-import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
 
 export function RelativeSpeciesUseByGroup() {
   const { currentIndicator } = useIndicatorsCTX();
@@ -134,7 +134,7 @@ export function RelativeSpeciesUseByGroup() {
             />
           </div>
 
-          <BarsLegend keys={displayKeys} />
+          <GraphLegend keys={displayKeys} />
         </>
       </GetIndicatorInfo>
     </>

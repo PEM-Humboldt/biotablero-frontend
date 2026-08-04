@@ -101,6 +101,7 @@ type SectionInfo = {
   graphComponent: ReactElement;
   mapUrl: string | null;
   mapElementId: string | null;
+  sectionUrl: string;
 };
 
 export function ReportCTX({ children }: { children: ReactNode }) {
@@ -175,6 +176,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       graphComponent,
       mapElementId,
       mapUrl,
+      sectionUrl,
     } = currentSectionInfoPool.current;
 
     const currentSection = docSections.get(sectionId);
@@ -216,6 +218,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     const updatedSection: SearchSection | IndicatorSection = {
       ...(currentSection ?? {}),
       ...sectionInfo,
+      url: sectionUrl,
       graphs: [
         ...(currentSection?.graphs.filter((g) => g.id !== graphId) ?? []),
         newGraph,
@@ -502,7 +505,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
         <AnimatePresence>
           {isEditorOpen && (
             <SheetContent
-              className="min-w-1 sm:min-w-3/4 lg:min-w-1/2"
+              className="min-w-1 sm:min-w-3/4 lg:min-w-1/2 h-full flex flex-col"
               onCloseAutoFocus={(e) => {
                 e.preventDefault();
                 document.body.style.pointerEvents = "";
@@ -511,7 +514,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
                 document.body.style.pointerEvents = "";
               }}
             >
-              <SheetHeader className="border-muted">
+              <SheetHeader className="border-muted shrink-0">
                 <SheetTitle className="text-3xl text-primary m-0 font-normal">
                   Estructura del reporte
                 </SheetTitle>
@@ -520,9 +523,11 @@ export function ReportCTX({ children }: { children: ReactNode }) {
                 </SheetDescription>
               </SheetHeader>
 
-              <ReportDocumentTree documentSections={docSections} />
+              <div className="flex-1 overflow-y-auto min-h-0 my-4 pr-1 scrollbar-custom">
+                <ReportDocumentTree documentSections={docSections} />
+              </div>
 
-              <SheetFooter className="flex-col! gap-2 bg-muted border border-input hover:border-primary transition-colors duration-300">
+              <SheetFooter className="shrink-0 flex-col! gap-2 bg-muted border border-input hover:border-primary transition-colors duration-300">
                 <div>
                   <label
                     htmlFor="whyDownload"
@@ -556,9 +561,14 @@ export function ReportCTX({ children }: { children: ReactNode }) {
 
                 <div className="flex flex-row-reverse gap-2 justify-between">
                   <Button
-                    disabled={whyDownload === "" || docSections.size === 0}
+                    disabled={
+                      whyDownload === "" || docSections.size === 0 || isLoading
+                    }
                     type="button"
-                    onClick={() => void downloadReport()}
+                    onClick={() => {
+                      void downloadReport();
+                      setIsEditorOpen(false);
+                    }}
                   >
                     Descargar
                   </Button>

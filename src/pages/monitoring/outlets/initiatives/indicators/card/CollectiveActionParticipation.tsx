@@ -13,7 +13,7 @@ import {
   getContrastColor,
   getSeriesColor,
 } from "pages/monitoring/outlets/initiatives/indicators/card//utils/colors";
-import { BarsLegend } from "pages/monitoring/outlets/initiatives/indicators/card/ui/BarsLegend";
+import { GraphLegend } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphLegend";
 import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphInfoSelector";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
 import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
@@ -211,7 +211,7 @@ export function CollectiveActionParticipation() {
             />
           </div>
 
-          <BarsLegend keys={displayKeys} customColorMap={customColorMap} />
+          <GraphLegend keys={displayKeys} customColorMap={customColorMap} />
         </>
       </GetIndicatorInfo>
     </>

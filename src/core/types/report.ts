@@ -10,6 +10,7 @@ export type GraphDTO = {
 // Consultas
 export type SearchSection = {
   title: string;
+  sectionUrl: string;
   description: string;
   graphInfo?: Record<string, string>;
   graphs: GraphDTO[];
@@ -34,6 +35,7 @@ export type IndicatorTag = {
 
 export type IndicatorSection = {
   title: string;
+  url: string;
   type: string;
   creationDate: string;
   lastUpdate: string;

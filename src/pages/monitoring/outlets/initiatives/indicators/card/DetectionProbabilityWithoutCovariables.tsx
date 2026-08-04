@@ -9,14 +9,14 @@ import {
 import { Combobox } from "@ui/ComboBox";
 import { cn } from "@ui/shadCN/lib/utils";
 import { hashStringToRange } from "@utils/format";
+import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { ConfidenceIntervalLayer } from "pages/monitoring/outlets/initiatives/indicators/card/utils/ConfidenceIntervalLayer";
 import type { LineData } from "pages/monitoring/types/indicators";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
-import { BarsLegend } from "pages/monitoring/outlets/initiatives/indicators/card/ui/BarsLegend";
+import { GraphLegend } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphLegend";
 import { getSeriesColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
-import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
 
 const customColorMap: Record<string, string> = {
   "Probabilidad de detección": GRAPHS_EXTENDED_COLOR_PALETTE[2],
@@ -213,7 +213,11 @@ export function DetectionProbabilityWithoutCovariables() {
             />
           </div>
 
-          <BarsLegend keys={keys} customColorMap={customColorMap} />
+          <GraphLegend
+            keys={keys}
+            customColorMap={customColorMap}
+            isBar={false}
+          />
         </>
       </GetIndicatorInfo>
     </>

@@ -170,6 +170,7 @@ export function AddMCIndicatorToReport() {
                 <DropdownMenuLabel>Reporte</DropdownMenuLabel>
 
                 <DropdownMenuItem
+                  disabled={!hasSections}
                   onClick={() => {
                     if (document.activeElement instanceof HTMLElement) {
                       document.activeElement.blur();
@@ -193,6 +194,7 @@ export function AddMCIndicatorToReport() {
                 </DropdownMenuItem>
 
                 <DropdownMenuItem
+                  disabled={!hasSections}
                   className="text-accent"
                   onClick={() => removeReport()}
                 >
@@ -255,15 +257,7 @@ export function AddMCIndicatorToReport() {
             </InputGroup>
           </div>
 
-          <DialogFooter className="">
-            <Button
-              variant="outline_destructive"
-              size="sm"
-              onClick={() => setIsDownloadDialogOpen(false)}
-            >
-              Cancelar
-            </Button>
-
+          <DialogFooter className="gap-2 justify-between! flex-row-reverse!">
             <Button
               size="sm"
               disabled={whyDownload === ""}
@@ -273,6 +267,14 @@ export function AddMCIndicatorToReport() {
               }}
             >
               Descargar
+            </Button>
+
+            <Button
+              variant="outline_destructive"
+              size="sm"
+              onClick={() => setIsDownloadDialogOpen(false)}
+            >
+              Cancelar
             </Button>
           </DialogFooter>
         </DialogContent>

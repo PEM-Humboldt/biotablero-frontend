@@ -7,12 +7,14 @@ import {
   INDICATOR_MAX_COUNT_OCUPATION_SPECIES,
 } from "@config/monitoring";
 import { cn } from "@ui/shadCN/lib/utils";
+import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
+import { hashStringToRange } from "@utils/format";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import type { LineData } from "pages/monitoring/types/indicators";
 import { getSeriesColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
-import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
+import { GraphLegend } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphLegend";
 
 export function OccupationSpecies() {
   const { currentIndicator } = useIndicatorsCTX();
@@ -23,7 +25,12 @@ export function OccupationSpecies() {
       (currentIndicator?.groups ?? []).map((group) => ({
         commonName: group.category.description,
         name: group.category.name,
-        color: getSeriesColor(group.category.id, GRAPHS_CONTRAST_COLOR_PALETTE),
+        color: getSeriesColor(
+          hashStringToRange(
+            `${group.category.description}, ${group.category.name}`,
+          ),
+          GRAPHS_CONTRAST_COLOR_PALETTE,
+        ),
       })),
     [currentIndicator?.groups],
   );
@@ -42,7 +49,7 @@ export function OccupationSpecies() {
 
       const color = matchedGroup
         ? getSeriesColor(
-            matchedGroup.category.id,
+            hashStringToRange(`${line.commonName}, ${line.scientificName}`),
             GRAPHS_CONTRAST_COLOR_PALETTE,
           )
         : "#FF0000";
@@ -142,46 +149,56 @@ export function OccupationSpecies() {
         mapElementId={null}
         mapUrl={null}
       >
-        <div className="w-full h-full aspect-3/2">
-          <ResponsiveLine
-            data={filteredIndicator}
-            margin={{ top: 20, right: 30, bottom: 30, left: 30 }}
-            xScale={{ type: "point" }}
-            yScale={{ type: "linear", min: 0, max: 100 }}
-            axisBottom={{ tickSize: 5, legendPosition: "middle" }}
-            axisLeft={{ tickSize: 5, legendPosition: "middle" }}
-            motionConfig={GRAPH_ANIMATION_CONFIG}
-            colors={(series) => series.color}
-            pointSize={10}
-            useMesh={true}
-            tooltip={({ point }) => {
-              const [name, description] = point.seriesId
-                .replace(/\|\|.*$/, "")
-                .split(", ");
+        <>
+          <div className="w-full h-full aspect-3/2">
+            <ResponsiveLine
+              data={filteredIndicator}
+              margin={{ top: 20, right: 30, bottom: 30, left: 30 }}
+              xScale={{ type: "point" }}
+              yScale={{ type: "linear", min: 0, max: 100 }}
+              axisBottom={{ tickSize: 5, legendPosition: "middle" }}
+              axisLeft={{ tickSize: 5, legendPosition: "middle" }}
+              motionConfig={GRAPH_ANIMATION_CONFIG}
+              colors={(series) => series.color}
+              pointSize={10}
+              useMesh={true}
+              tooltip={({ point }) => {
+                const [name, description] = point.seriesId
+                  .replace(/\|\|.*$/, "")
+                  .split(", ");
 
-              return (
-                <div
-                  className="bg-background px-4 py-2 shadow-md rounded flex flex-col items-center"
-                  style={{ pointerEvents: "none", whiteSpace: "nowrap" }}
-                >
-                  <div className="flex flex-col text-center text-sm mb-1 *:m-0!">
-                    <div className="space-x-1">
-                      <span
-                        className="inline-block w-3 h-3 rounded-full"
-                        style={{ backgroundColor: point.color }}
-                      />
-                      <span className="font-normal">{description}</span>
+                return (
+                  <div
+                    className="bg-background px-4 py-2 shadow-md rounded flex flex-col items-center"
+                    style={{ pointerEvents: "none", whiteSpace: "nowrap" }}
+                  >
+                    <div className="flex flex-col text-center text-sm mb-1 *:m-0!">
+                      <div className="space-x-1">
+                        <span
+                          className="inline-block w-3 h-3 rounded-full"
+                          style={{ backgroundColor: point.color }}
+                        />
+                        <span className="font-normal">{description}</span>
+                      </div>
+                      <span className="italic">{name}</span>
                     </div>
-                    <span className="italic">{name}</span>
+                    <div className="space-x-1">
+                      <span className="font-normal">{point.data.y}</span>
+                    </div>
                   </div>
-                  <div className="space-x-1">
-                    <span className="font-normal">{point.data.y}</span>
-                  </div>
-                </div>
-              );
-            }}
+                );
+              }}
+            />
+          </div>
+
+          <GraphLegend
+            keys={filteredIndicator.map(
+              (i) => `${i.commonName}, ${i.scientificName}`,
+            )}
+            customColorList={GRAPHS_CONTRAST_COLOR_PALETTE}
+            isBar={false}
           />
-        </div>
+        </>
       </GetIndicatorInfo>
     </>
   );

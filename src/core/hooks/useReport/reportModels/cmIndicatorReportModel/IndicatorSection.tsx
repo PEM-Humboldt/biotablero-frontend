@@ -1,4 +1,4 @@
-import { View, Page, Text, Image } from "@react-pdf/renderer";
+import { View, Page, Text, Image, Link } from "@react-pdf/renderer";
 import { colors } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/theme";
 import { styles } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/styles";
 import { Header } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/header";
@@ -46,6 +46,18 @@ export function IndicatorSection({
               day: "numeric",
             })}
           </Text>
+        </View>
+      </View>
+
+      <View style={styles.dateRow}>
+        <View style={styles.dateItem}>
+          <Text style={styles.dateLabel}>Enlace</Text>
+          <Link
+            src={section.url}
+            style={[styles.kvVal, { color: colors.coral }]}
+          >
+            {section.url}
+          </Link>
         </View>
       </View>
 
