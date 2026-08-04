@@ -65,6 +65,8 @@ export const GRAPHS_GRADIENT_COLOR_PALETTE = [
   GRAPHS_EXTENDED_COLOR_PALETTE[22], // #e84a5f
 ];
 
+export const MONITORING_YEARS_AVAILABLE = [2024, 2025, 2026];
+
 // Logs
 export const LOG_RECORDS_PER_PAGE = 20; // registrys on the logs summary
 
@@ -208,6 +210,6 @@ export const RESOURCES_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS: ODataParams = {
 export const GLOSARY_FILTER_IS_AND = false;
 
 // Indicators
-export const INDICATORS_PER_PAGE = 5;
+export const INDICATORS_PER_PAGE = 7;
 export const INDICATOR_MAX_COUNT_OCUPATION_SPECIES = 3;
 export const INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY = 3;

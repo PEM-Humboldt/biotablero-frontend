@@ -202,6 +202,7 @@ export function CardsAttachment() {
                         />
                       );
                     })}
+
                   {initiativeId &&
                     indicators.length > 0 &&
                     indicators.map((indicator) => (
@@ -211,7 +212,7 @@ export function CardsAttachment() {
                         tags={indicator.tags.map((t) => t.tag)}
                         bottonLeftInfo={`Version: ${indicator.versions[0].version}`}
                         link={{
-                          href: `/Monitoreo/Indicadores/${indicator.id}`,
+                          href: `/Monitoreo/Iniciativas/${indicator.initiativeId}/Indicadores/${indicator.id}`,
                           icon: ChevronRight,
                           label:
                             uiText.cardsAttachment.indicators.gotoBtn.label,
@@ -220,6 +221,7 @@ export function CardsAttachment() {
                         }}
                       />
                     ))}
+
                   {(departmentId &&
                     !initiativeId &&
                     initiatives.length === 0) ||

@@ -1,4 +1,5 @@
 import {
+  GRAPHS_CONTRAST_COLOR_PALETTE,
   GRAPHS_EXTENDED_COLOR_PALETTE,
   INITIATIVES_MAP_STATS_BAR_HEIGHT,
   INITIATIVES_MAP_STATS_GRAPH_Y_MARGINS,
@@ -53,7 +54,7 @@ export function MonitorignOverviewBars<T extends Record<string, unknown>>({
         margin={{ top: 20, right: 10, bottom: 40, left: 120 }}
         padding={0.1}
         colorBy="indexValue"
-        colors={GRAPHS_EXTENDED_COLOR_PALETTE}
+        colors={GRAPHS_CONTRAST_COLOR_PALETTE}
         axisBottom={{
           legend: bottomAxisLabel,
           legendPosition: "middle",

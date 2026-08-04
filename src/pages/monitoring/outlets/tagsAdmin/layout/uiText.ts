@@ -28,13 +28,6 @@ export const uiText = {
     error: "No fue posible cargar los registros, intenta más tarde.",
   },
 
-  categoryTranslations: {
-    PoliticalContext: "Contexto político",
-    SocialContext: "Contexto social",
-    BiologicalGroup: "Grupo biológico",
-    Ecosystem: "Ecosistema",
-  },
-
   tag: {
     createTitle: "Nueva etiqueta",
     create: "Crear etiqueta",
