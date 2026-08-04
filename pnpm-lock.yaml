@@ -149,6 +149,9 @@ dependencies:
   cmdk:
     specifier: 1.1.1
     version: 1.1.1(@types/react-dom@18.3.7)(@types/react@18.3.24)(react-dom@18.3.1)(react@18.3.1)
+  d3-shape:
+    specifier: ^3.2.0
+    version: 3.2.0
   embla-carousel-react:
     specifier: 8.6.0
     version: 8.6.0(react@18.3.1)
@@ -223,6 +226,9 @@ devDependencies:
   '@eslint/js':
     specifier: 9.35.0
     version: 9.35.0
+  '@types/d3-shape':
+    specifier: ^3.1.8
+    version: 3.1.8
   '@types/geojson':
     specifier: 7946.0.14
     version: 7946.0.14
@@ -4370,7 +4376,6 @@ packages:
 
   /@types/d3-path@2.0.4:
     resolution: {integrity: sha512-jjZVLBjEX4q6xneKMmv62UocaFJFOTQSb/1aTzs3m3ICTOFoVaqGBHpNLm/4dVi0/FTltfBKgmOK1ECj3/gGjA==}
-    dev: false
 
   /@types/d3-scale-chromatic@3.1.0:
     resolution: {integrity: sha512-iWMJgwkK7yTRmWqRB5plb1kadXyQ5Sj8V/zYlFGMUBbIPKQScw+Dku9cAAMgJG+z5GYDoMjWGLVOvjghDEFnKQ==}
@@ -4386,7 +4391,6 @@ packages:
     resolution: {integrity: sha512-lae0iWfcDeR7qt7rA88BNiqdvPS5pFVPpo5OfjElwNaT2yyekbM0C9vK+yqBqEmHr6lDkRnYNoTBYlAgJa7a4w==}
     dependencies:
       '@types/d3-path': 2.0.4
-    dev: false
 
   /@types/d3-time-format@2.3.4:
     resolution: {integrity: sha512-xdDXbpVO74EvadI3UDxjxTdR6QIxm1FKzEA/+F8tL4GWWUg/hgvBqf6chql64U5A9ZUGWo7pEu4eNlyLwbKdhg==}

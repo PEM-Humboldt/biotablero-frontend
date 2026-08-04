@@ -25,6 +25,7 @@ export type InitiativeAditionalInfo = {
 export type InitiativeByLocation = {
   id: number;
   name: string;
+  shortName: string;
   mainLocationId: number;
   coordinate: [number, number];
   locations: LocationCompleteInfo[];

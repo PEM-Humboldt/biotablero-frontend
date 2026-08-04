@@ -175,7 +175,6 @@ export interface MonitoringResource extends HasId {
 
 // Indicadores
 // NOTE: Alias temporal
-export type ODataIndicator = ODataResponse<IndicatorMetadata>;
 
 export type ODataLog = ODataResponse<ODataLogEntryShort>;
 export type ODataInitiative = ODataResponse<ODataInitiativeShort>;
@@ -187,3 +186,4 @@ export type ODataResourceType = ODataResponse<ResourceType>;
 export type ODataMonitoringResources = ODataResponse<MonitoringResourceShort>;
 export type ODataSendedInvitations =
   ODataResponse<SendedJoinInitiativeInvitation>;
+export type ODataIndicators = ODataResponse<IndicatorMetadata>;
