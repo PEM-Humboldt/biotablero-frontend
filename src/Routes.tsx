@@ -15,7 +15,7 @@ import { InitiativesAdmin } from "pages/monitoring/outlets/InitiativesAdmin";
 import { MyProfile } from "pages/monitoring/outlets/MyProfile";
 import { TagsAdmin } from "pages/monitoring/outlets/TagsAdmin";
 import { Resources as MonitoringResources } from "pages/monitoring/outlets/Resources";
-import { Indicators as MonitoringIndicators } from "pages/monitoring/outlets/Indicators";
+import { IndicatorsSearch } from "pages/monitoring/outlets/IndicatorsSearch";
 import { Manager as ResourcesManager } from "pages/monitoring/outlets/resources/Manager";
 import { Help } from "pages/monitoring/outlets/Help";
 
@@ -63,8 +63,8 @@ export const routes = createBrowserRouter([
             Component: Initiatives,
           },
           {
-            path: "Indicadores/:indicatorId?",
-            Component: MonitoringIndicators,
+            path: "Indicadores",
+            Component: IndicatorsSearch,
           },
           {
             path: "Recursos",

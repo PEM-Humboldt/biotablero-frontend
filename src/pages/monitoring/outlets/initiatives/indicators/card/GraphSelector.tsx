@@ -3,6 +3,9 @@ import { IndicatorType } from "pages/monitoring/types/indicators";
 import { OccupationSpecies } from "pages/monitoring/outlets/initiatives/indicators/card/OccupationSpecies";
 import { DetectionProbabilityWithoutCovariables } from "pages/monitoring/outlets/initiatives/indicators/card/DetectionProbabilityWithoutCovariables";
 import { SpeciesDiversity } from "pages/monitoring/outlets/initiatives/indicators/card/SpeciesDiversity";
+import { RelativeSpeciesUseByGroup } from "pages/monitoring/outlets/initiatives/indicators/card/RelativeSpeciesUseByGroup";
+import { RelationalIntensityIndex } from "pages/monitoring/outlets/initiatives/indicators/card/RelationalIntensityIndex";
+import { CollectiveActionParticipation } from "pages/monitoring/outlets/initiatives/indicators/card/CollectiveActionParticipation";
 
 export function GraphSelector() {
   const { currentIndicator } = useIndicatorsCTX();
@@ -22,12 +25,12 @@ export function GraphSelector() {
       return <SpeciesDiversity />;
 
     case IndicatorType.RELATIVE_SPECIES_USE_BY_GROUP:
-      return <div>{JSON.stringify(currentIndicator.cleanData, null, 2)}</div>;
+      return <RelativeSpeciesUseByGroup />;
 
     case IndicatorType.RELATIONAL_INTENSITY_INDEX:
-      return <div>{JSON.stringify(currentIndicator.cleanData, null, 2)}</div>;
+      return <RelationalIntensityIndex />;
 
     case IndicatorType.COLLECTIVE_ACTION_PARTICIPATION:
-      return <div>{JSON.stringify(currentIndicator.cleanData, null, 2)}</div>;
+      return <CollectiveActionParticipation />;
   }
 }

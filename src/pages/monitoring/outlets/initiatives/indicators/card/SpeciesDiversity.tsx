@@ -2,13 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 
 import { ResponsiveLine } from "@nivo/line";
 import { hashStringToRange } from "@utils/format";
-import { cn } from "@ui/shadCN/lib/utils";
+import { GRAPHS_CONTRAST_COLOR_PALETTE } from "@config/monitoring";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { ConfidenceIntervalLayer } from "pages/monitoring/outlets/initiatives/indicators/card/utils/ConfidenceIntervalLayer";
 import type { LineData } from "pages/monitoring/types/indicators";
 import { getSeriesColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
+import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphInfoSelector";
 
 export function SpeciesDiversity() {
   const { currentIndicator } = useIndicatorsCTX();
@@ -106,65 +107,22 @@ export function SpeciesDiversity() {
 
   return (
     <>
-      <div className="p-2 shrink-0 space-y-2">
-        <div title="Selecciona un grupo">
-          <h4 className="m-0 text-base text-primary">Grupos</h4>
-          <ul className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-2 max-h-20 overflow-y-auto pr-2 scrollbar-custom">
-            {speciesList.map((specie) => {
-              const buttonColor = getSeriesColor(hashStringToRange(specie));
-              const isSelected = specie === selectedSpecie;
+      <div className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300">
+        <GraphInfoSelector
+          uiText={uiText.indicatorCard.speciesDiversity.groupSelector}
+          options={speciesList}
+          currentSelection={selectedSpecie}
+          updateCurrent={setSelectedSpecie}
+          colorFromOptionHash={true}
+          highContrast={true}
+        />
 
-              return (
-                <li key={`selectorBtn_${specie}`}>
-                  <button
-                    style={{
-                      background: buttonColor,
-                      borderColor: buttonColor,
-                    }}
-                    className={cn(
-                      "text-background min-w-[150px] w-full px-2 py-1 border rounded-lg transition-colors duration-300 text-base font-normal",
-                      isSelected
-                        ? ""
-                        : "text-foreground bg-background! hover:cursor-pointer",
-                    )}
-                    onClick={() => setSelectedSpecie(specie)}
-                    aria-pressed={isSelected}
-                    disabled={isSelected}
-                  >
-                    {specie}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-
-        <div title="Selecciona un índice">
-          <h4 className="m-0 text-base text-primary">Índices</h4>
-          <ul className="grid grid-cols-[repeat(auto-fill,minmax(160px,1fr))] gap-2 max-h-20 overflow-y-auto pr-2 scrollbar-custom">
-            {indexesList.map((index) => {
-              const isSelected = index === selectedIndex;
-
-              return (
-                <li key={`selectorBtn_${index}`}>
-                  <button
-                    className={cn(
-                      "text-background min-w-[150px] w-full px-2 py-1 border rounded-lg transition-colors duration-300 text-base font-normal",
-                      isSelected
-                        ? "text-primary-foreground bg-primary"
-                        : "text-primary bg-background hover:cursor-pointer",
-                    )}
-                    onClick={() => setSelectedIndex(index)}
-                    aria-pressed={isSelected}
-                    disabled={isSelected}
-                  >
-                    {index}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+        <GraphInfoSelector
+          uiText={uiText.indicatorCard.speciesDiversity.indexSelector}
+          options={indexesList}
+          currentSelection={selectedIndex}
+          updateCurrent={setSelectedIndex}
+        />
       </div>
 
       <div className="w-full h-full aspect-3/2">
@@ -178,10 +136,15 @@ export function SpeciesDiversity() {
             max: maxY,
           }}
           axisLeft={{
-            legend: "Spp. estimados",
+            legend: uiText.indicatorCard.speciesDiversity.leftAxisLegend,
             legendOffset: -40,
           }}
-          colors={(series) => series.color}
+          colors={(series) =>
+            getSeriesColor(
+              hashStringToRange(series.id),
+              GRAPHS_CONTRAST_COLOR_PALETTE,
+            )
+          }
           pointSize={8}
           pointColor={{ theme: "background" }}
           pointBorderWidth={2}

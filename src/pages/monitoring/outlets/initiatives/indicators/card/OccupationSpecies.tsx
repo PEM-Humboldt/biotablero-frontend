@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { ResponsiveLine } from "@nivo/line";
 
-import { INDICATORS_MAX_AMOUNT_OCUPATION_SPECIES } from "@config/monitoring";
+import {
+  GRAPHS_CONTRAST_COLOR_PALETTE,
+  INDICATOR_MAX_COUNT_OCUPATION_SPECIES,
+} from "@config/monitoring";
 import { cn } from "@ui/shadCN/lib/utils";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
@@ -18,7 +21,7 @@ export function OccupationSpecies() {
       (currentIndicator?.groups ?? []).map((group) => ({
         commonName: group.category.description,
         name: group.category.name,
-        color: getSeriesColor(group.category.id),
+        color: getSeriesColor(group.category.id, GRAPHS_CONTRAST_COLOR_PALETTE),
       })),
     [currentIndicator?.groups],
   );
@@ -36,7 +39,10 @@ export function OccupationSpecies() {
       );
 
       const color = matchedGroup
-        ? getSeriesColor(matchedGroup.category.id)
+        ? getSeriesColor(
+            matchedGroup.category.id,
+            GRAPHS_CONTRAST_COLOR_PALETTE,
+          )
         : "#FF0000";
 
       return { ...line, color };
@@ -59,7 +65,7 @@ export function OccupationSpecies() {
 
     setSelectedSpecies((oldList) => {
       const newList = [...oldList, item];
-      if (newList.length > INDICATORS_MAX_AMOUNT_OCUPATION_SPECIES) {
+      if (newList.length > INDICATOR_MAX_COUNT_OCUPATION_SPECIES) {
         newList.shift();
       }
       return newList;
@@ -74,7 +80,7 @@ export function OccupationSpecies() {
     setSelectedSpecies(() => {
       const loadSpecies: string[] = [];
       for (const specie of currentIndicator.groups) {
-        if (loadSpecies.length === INDICATORS_MAX_AMOUNT_OCUPATION_SPECIES) {
+        if (loadSpecies.length === INDICATOR_MAX_COUNT_OCUPATION_SPECIES) {
           break;
         }
 
@@ -86,16 +92,19 @@ export function OccupationSpecies() {
 
   return !currentIndicator ? null : (
     <>
-      <div className="pt-2 shrink-0">
+      <div
+        className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300"
+        title={uiText.indicatorCard.ocupationSpecies.title}
+      >
         {currentIndicator.groups.length >
-          INDICATORS_MAX_AMOUNT_OCUPATION_SPECIES && (
-          <span className="px-2 italic text-sm m-0">
+          INDICATOR_MAX_COUNT_OCUPATION_SPECIES && (
+          <span className="italic text-sm text-primary">
             {uiText.indicatorCard.ocupationSpecies.maxSelection(
-              INDICATORS_MAX_AMOUNT_OCUPATION_SPECIES,
+              INDICATOR_MAX_COUNT_OCUPATION_SPECIES,
             )}
           </span>
         )}
-        <ul className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-2 max-h-40 overflow-y-auto p-2 pt-0 scrollbar-custom">
+        <ul className="grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] gap-2">
           {speciesOptions.map((specie) => {
             const isSelected = selectedSpecies.includes(specie.name);
 

@@ -23,6 +23,7 @@ export interface IndicatorMetadata {
   id: number;
   name: string;
   initiativeId: number;
+  initiativeName?: string;
   type: indicatorDescription;
   locations: LocationCompleteInfo[];
   versions: IndicatorVersion[];
@@ -60,7 +61,7 @@ type IndicatorValue = {
  *  parent?: {id: number, name: string}
  *  los necesita 1,2,4,5,6
  */
-type IndicatorGroup = {
+export type IndicatorGroup = {
   id: number;
   category: {
     id: number;
@@ -101,15 +102,27 @@ export type LineData = {
   data: LineDataValues[];
 };
 
-export type BarDatavalues = {
-  [key: string]: string | number;
+export type BarDataValues = {
+  name: string;
+  commonName: string;
+  value: number;
   date: string;
+  parent: string;
   sortKey: number;
 };
 
-export type BarsData = {
-  keys: string[];
-  data: BarDatavalues[];
+export type BarDataKeys = {
+  date: Set<string>;
+  name: Set<string>;
+  parent: Set<string>;
+  dateSorter: Map<number, string>;
 };
 
-export type CleanDataType = { cleanData: BarsData | LineData[] };
+export type BarsData = {
+  keys: Partial<BarDataKeys>;
+  values: BarDataValues[];
+};
+
+export type CleanDataType = {
+  cleanData: BarsData | LineData[];
+};

@@ -6,6 +6,8 @@ import { monitoringAPI } from "pages/monitoring/api/core";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { Ellipsis, Search } from "lucide-react";
+import { typedMemo } from "@utils/typedMemo";
+import { useDeepStable } from "@hooks/useDeepStable";
 
 type ComboboxODataProps<T> = {
   id?: string;
@@ -235,5 +237,26 @@ export function ComboboxOData<T>({
         icon={writing ? Ellipsis : Search}
       />
     </>
+  );
+}
+
+const MemoizedComboboxOData = typedMemo(ComboboxOData);
+
+export function StableComboboxOData<T>(props: ComboboxODataProps<T>) {
+  const stableSetValue = useDeepStable(props.setValue);
+  const stableSources = useDeepStable(props.sources);
+  const stableSourcProcess = useDeepStable(props.sourceProcess);
+  const stableFixedSearchParams = useDeepStable(props.fixedSearchParams);
+  const stableUiText = useDeepStable(props.uiText);
+
+  return (
+    <MemoizedComboboxOData<T>
+      {...props}
+      setValue={stableSetValue}
+      sources={stableSources}
+      sourceProcess={stableSourcProcess}
+      fixedSearchParams={stableFixedSearchParams}
+      uiText={stableUiText}
+    />
   );
 }

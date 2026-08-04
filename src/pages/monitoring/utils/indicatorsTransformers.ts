@@ -1,6 +1,6 @@
 import type {
-  BarDatavalues,
   BarsData,
+  BarDataValues,
   IndicatorData,
   LineData,
 } from "pages/monitoring/types/indicators";
@@ -57,7 +57,7 @@ export function dataTransformLineGraph(data: IndicatorData) {
       const serie = seriesMap.get(seriesId);
       if (serie) {
         serie.data.push({
-          x: indicatorsDateFormatter(value.date, value.dateEnd),
+          x: indicatorsDateFormatter(value.date, value?.dateEnd),
           y: value.value,
           upperLimit: hasLimits ? upperBound : undefined,
           lowerLimit: hasLimits ? lowerBound : undefined,
@@ -87,28 +87,44 @@ export function dataTransformLineGraph(data: IndicatorData) {
  */
 export function dataTransformBarGraph(data: IndicatorData): BarsData {
   if (!data?.groups) {
-    return { data: [], keys: [] };
+    return { values: [], keys: {} };
   }
-  const keys = new Set<string>();
-  const dateMap = new Map<string, BarDatavalues>();
+
+  const dataByDate: Map<number, BarDataValues[]> = new Map();
+  const dataGroupsBy = {
+    date: new Set<string>(),
+    name: new Set<string>(),
+    parent: new Set<string>(),
+    dateSorter: new Map<number, string>(),
+  };
 
   data.groups.forEach((group) => {
-    const key = group.category.name;
-    keys.add(key);
-
     group.values.forEach((value) => {
-      const sortKey = new Date(value.date.year, value.date.month).getTime();
+      const key = new Date(value.date.year, value.date.month - 1).getTime();
       const date = indicatorsDateFormatter(value.date, value.dateEnd);
-      if (!dateMap.has(date)) {
-        dateMap.set(date, { date, sortKey });
-      }
+      const parentName = group.category.parent?.name ?? "";
 
-      dateMap.get(date)![key] = value.value;
+      dataGroupsBy.date.add(date);
+      dataGroupsBy.name.add(group.category.name);
+      dataGroupsBy.parent.add(parentName);
+      dataGroupsBy.dateSorter.set(key, date);
+
+      const mapInfo = dataByDate.get(key) ?? [];
+      mapInfo.push({
+        name: group.category.name,
+        commonName: group.category.description ?? "",
+        value: value.value,
+        date: date,
+        parent: parentName,
+        sortKey: key,
+      });
+
+      dataByDate.set(key, mapInfo);
     });
   });
 
   return {
-    data: Array.from(dateMap.values()).sort((a, b) => a.sortKey - b.sortKey),
-    keys: [...keys],
+    values: [...dataByDate.values()].flat(),
+    keys: dataGroupsBy,
   };
 }

@@ -2,14 +2,22 @@ import { useEffect, useMemo, useState } from "react";
 import { SearchIcon } from "lucide-react";
 
 import { ResponsiveLine } from "@nivo/line";
-import { INITIATIVES_MAP_STATS_GRAPH_COLORS } from "@config/monitoring";
+import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/monitoring";
 import { Combobox } from "@ui/ComboBox";
 import { cn } from "@ui/shadCN/lib/utils";
+import { hashStringToRange } from "@utils/format";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { ConfidenceIntervalLayer } from "pages/monitoring/outlets/initiatives/indicators/card/utils/ConfidenceIntervalLayer";
 import type { LineData } from "pages/monitoring/types/indicators";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
+import { BarsLegend } from "pages/monitoring/outlets/initiatives/indicators/card/ui/BarsLegend";
+import { getSeriesColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
+
+const customColorMap: Record<string, string> = {
+  "Probabilidad de detección": GRAPHS_EXTENDED_COLOR_PALETTE[2],
+  "Probabilidad de ocupación": GRAPHS_EXTENDED_COLOR_PALETTE[22],
+};
 
 export function DetectionProbabilityWithoutCovariables() {
   const { currentIndicator } = useIndicatorsCTX();
@@ -29,17 +37,21 @@ export function DetectionProbabilityWithoutCovariables() {
     [currentIndicator?.groups],
   );
 
-  const renderIndicatorInfo = useMemo(() => {
+  const { renderIndicatorInfo, keys } = useMemo(() => {
     if (!currentIndicator) {
-      return [];
+      return { renderIndicatorInfo: [], keys: [] };
     }
 
-    const rawSeries = (currentIndicator.cleanData ?? []) as LineData[];
+    const renderIndicatorInfo: (LineData & { id: string })[] = [];
+    const keys: string[] = [];
 
-    return rawSeries.map((serie) => ({
-      ...serie,
-      id: serie.metricName || serie.id,
-    }));
+    ((currentIndicator.cleanData ?? []) as LineData[]).forEach((serie) => {
+      const key = serie.metricName || serie.id;
+      renderIndicatorInfo.push({ ...serie, id: key });
+      keys.push(key);
+    });
+
+    return { renderIndicatorInfo, keys };
   }, [currentIndicator]);
 
   const filteredData = useMemo(
@@ -73,7 +85,7 @@ export function DetectionProbabilityWithoutCovariables() {
 
   return !currentIndicator ? null : (
     <>
-      <div className="p-2 pb-0 shrink-0 space-y-4">
+      <div className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300">
         {speciesOptions.length > 1 && (
           <Combobox
             items={speciesOptions ?? []}
@@ -107,17 +119,23 @@ export function DetectionProbabilityWithoutCovariables() {
       <div className="w-full h-full aspect-3/2">
         <ResponsiveLine
           data={filteredData}
-          margin={{ top: 20, right: 30, bottom: 65, left: 30 }}
+          margin={{ top: 20, right: 30, bottom: 30, left: 30 }}
           xScale={{ type: "point" }}
           yScale={{
             type: "linear",
             min: 0,
             max: 1,
           }}
-          colors={[
-            INITIATIVES_MAP_STATS_GRAPH_COLORS[3],
-            INITIATIVES_MAP_STATS_GRAPH_COLORS[7],
-          ]}
+          colors={(serie) =>
+            customColorMap[serie.id] ??
+            getSeriesColor(
+              hashStringToRange(
+                String(serie.id),
+                GRAPHS_EXTENDED_COLOR_PALETTE.length,
+              ),
+              GRAPHS_EXTENDED_COLOR_PALETTE,
+            )
+          }
           pointSize={10}
           useMesh={true}
           layers={[
@@ -129,19 +147,6 @@ export function DetectionProbabilityWithoutCovariables() {
             "points",
             "mesh",
             "legends",
-          ]}
-          legends={[
-            {
-              anchor: "bottom",
-              direction: "row",
-              justify: false,
-              translateX: 0,
-              translateY: 50,
-              itemWidth: 200,
-              itemHeight: 20,
-              symbolSize: 12,
-              symbolShape: "circle",
-            },
           ]}
           tooltip={({ point }) => {
             const [name] = point.seriesId.replace(/\|\|.*$/, "").split(", ");
@@ -190,6 +195,8 @@ export function DetectionProbabilityWithoutCovariables() {
           }}
         />
       </div>
+
+      <BarsLegend keys={keys} customColorMap={customColorMap} />
     </>
   );
 }
