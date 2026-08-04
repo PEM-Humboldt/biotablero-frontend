@@ -29,7 +29,6 @@ export function MonitoringEventsGraph() {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [years, setYears] = useState<number[]>([]);
-  // const [currentYearIndex, setCurrentYearIndex] = useState(0);
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [monitoringEventsData, setMonitoringEventsData] = useState<
     InitiativeMonitoringEvent[]

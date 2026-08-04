@@ -43,10 +43,10 @@ export function MapLegend({
   leastInitiativesPerDepartment: number;
   mostInitiativesPerDepartment: number;
   activeDepartments: { value: string; label: string }[];
-  tiles: keyof typeof MAP_TILES;
-  setTiles: Dispatch<SetStateAction<keyof typeof MAP_TILES>>;
-  layers: keyof typeof MAP_LAYERS | null;
-  setLayers: Dispatch<SetStateAction<keyof typeof MAP_LAYERS | null>>;
+  tiles: number;
+  setTiles: Dispatch<SetStateAction<number>>;
+  layers: number | null;
+  setLayers: Dispatch<SetStateAction<number | null>>;
 }) {
   const navigate = useNavigate();
   const [department, setDepartment] = useState<string>("");
@@ -88,13 +88,13 @@ export function MapLegend({
   return (
     <Collapsible open={expanded} onOpenChange={setExpanded}>
       <div
-        className="absolute border border-primary/50 z-10 bottom-1 right-1 lg:top-4 lg:right-14 bg-background w-70 rounded-lg shadow-md h-fit"
+        className="absolute z-10 border border-primary/50 bottom-1 right-1 lg:top-4 lg:right-14 w-70 rounded-lg overflow-hidden shadow-md h-fit"
         role="group"
         aria-label={uiText.mapLegend.labelSr}
       >
         <div
           className={cn(
-            "flex gap-2 justify-between items-center bg-primary transition-all duration-300 text-primary-foreground px-2 rounded-t-lg",
+            "flex gap-2 justify-between items-center bg-primary transition-all duration-300 text-primary-foreground px-2",
             expanded ? "" : "rounded-b-lg",
           )}
         >
@@ -134,7 +134,7 @@ export function MapLegend({
 
         <CollapsibleContent
           className={cn(
-            "p-4 space-y-4 text-sm",
+            "p-4 space-y-4 text-sm  bg-background",
             "data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up overflow-hidden",
           )}
         >
@@ -210,9 +210,7 @@ export function MapLegend({
                   {Object.entries(MAP_TILES).map(([key, value]) => (
                     <li key={`mapTile_${key}`}>
                       <Button
-                        onClick={() =>
-                          setTiles(Number(key) as keyof typeof MAP_TILES)
-                        }
+                        onClick={() => setTiles(Number(key))}
                         variant="link"
                         disabled={tiles === Number(key)}
                         className="w-40 p-0! justify-start"
@@ -242,9 +240,7 @@ export function MapLegend({
                       <Button
                         onClick={() =>
                           setLayers((oldLayer) =>
-                            oldLayer === Number(key)
-                              ? null
-                              : (Number(key) as keyof typeof MAP_LAYERS),
+                            oldLayer === Number(key) ? null : Number(key),
                           )
                         }
                         variant="link"

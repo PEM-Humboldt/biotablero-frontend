@@ -23,6 +23,7 @@ export interface IndicatorMetadata {
   id: number;
   name: string;
   initiativeId: number;
+  initiativeName?: string;
   type: indicatorDescription;
   locations: LocationCompleteInfo[];
   versions: IndicatorVersion[];
