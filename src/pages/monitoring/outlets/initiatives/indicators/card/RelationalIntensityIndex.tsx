@@ -9,7 +9,7 @@ import {
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import type { BarsData } from "pages/monitoring/types/indicators";
 import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphInfoSelector";
-import { getContrastColor } from "pages/monitoring/outlets/initiatives/indicators/card//utils/colors";
+import { getContrastColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
 
 export function RelationalIntensityIndex() {
@@ -35,6 +35,10 @@ export function RelationalIntensityIndex() {
     }
 
     for (const date in dataByDate) {
+      if (dataByDate[date].length === 0) {
+        continue;
+      }
+
       const average =
         dataByDate[date].reduce((sum, cur) => sum + cur.value, 0) /
         dataByDate[date].length;

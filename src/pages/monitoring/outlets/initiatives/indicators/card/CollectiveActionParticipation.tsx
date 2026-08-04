@@ -9,7 +9,7 @@ import type { BarsData } from "pages/monitoring/types/indicators";
 import {
   getContrastColor,
   getSeriesColor,
-} from "pages/monitoring/outlets/initiatives/indicators/card//utils/colors";
+} from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
 import { BarsLegend } from "pages/monitoring/outlets/initiatives/indicators/card/ui/BarsLegend";
 import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphInfoSelector";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
