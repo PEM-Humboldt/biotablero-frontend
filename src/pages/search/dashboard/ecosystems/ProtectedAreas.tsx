@@ -17,7 +17,9 @@ import colorPalettes from "pages/search/utils/colorPalettes";
  * @returns {number} percentage associated to each part
  */
 const getPercentage = (part: number, total: number): number =>
-  parseFloat(((part * 100) / total).toFixed(2));
+  total > 0 && Number.isFinite(part) && Number.isFinite(total)
+    ? parseFloat(((part * 100) / total).toFixed(2))
+    : 0;
 
 interface PAArea {
   area: number;
@@ -55,6 +57,8 @@ export function ProtectedAreas({
   areaIdStr,
 }: Props) {
   const paColor = matchColor("pa", true);
+  const safeAreaHa = Number.isFinite(areaHa) && areaHa > 0 ? areaHa : 0;
+  const protectedAreasPercentage = getPercentage(PATotalArea, safeAreaHa);
 
   return (
     <>
@@ -69,7 +73,7 @@ export function ProtectedAreas({
         />
       </IconTooltip>
 
-      <h5 className="pa-percentage">{`${getPercentage(PATotalArea, areaHa)} %`}</h5>
+      <h5 className="pa-percentage">{`${protectedAreasPercentage} %`}</h5>
 
       {infoOpen && (
         <ShortInfo
