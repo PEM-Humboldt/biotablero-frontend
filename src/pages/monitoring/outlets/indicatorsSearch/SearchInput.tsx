@@ -24,7 +24,7 @@ import {
 } from "@ui/shadCN/component/select";
 import { Button } from "@ui/shadCN/component/button";
 import { MONITORING_YEARS_AVAILABLE } from "@config/monitoring";
-import { uiText } from "./layout/uiText";
+import { uiText } from "pages/monitoring/outlets/indicatorsSearch/layout/uiText";
 
 export function SearchInput() {
   const { setSearchIndicators } = useIndicatorsCTX();
@@ -78,6 +78,7 @@ export function SearchInput() {
 
   useEffect(() => {
     debouncedSearch((old) => ({ ...old, filter: searchFilter }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchFilter]);
 
   const handleReset = () => {
@@ -224,7 +225,7 @@ export function SearchInput() {
                 <Select value={filterYear} onValueChange={setFilterYear}>
                   <SelectTrigger
                     id="yearFilter"
-                    className="bg-background [&_svg]:text-accent data-placeholder:text-foreground data-placeholder:texr-base"
+                    className="bg-background [&_svg]:text-accent data-placeholder:text-foreground data-placeholder:text-base"
                   >
                     <SelectValue
                       placeholder={uiText.searchInput.yearFilter.placeholder}
