@@ -62,8 +62,32 @@ export function IndicatorSection({
         />
       </View>
 
+      {section.singleMap && section.graphs[0].mapUrl && (
+        <View style={styles.chartBox} wrap={false}>
+          <View style={styles.graphStateRow}>
+            <View style={styles.graphStateItem}>
+              <Text style={styles.graphStateText}>Mapa del indicador:</Text>
+            </View>
+          </View>
+          <Image src={section.graphs[0].mapUrl} style={styles.indicatorImage} />
+        </View>
+      )}
+
       {section.graphs.map((graph) => (
         <Fragment key={graph.id}>
+          {!section.singleMap && graph.mapUrl && (
+            <View style={styles.chartBox} wrap={false}>
+              <View style={styles.graphStateRow}>
+                <View style={styles.graphStateItem}>
+                  <Text style={styles.graphStateText}>
+                    Mapa del indicador para los valores de: {graph.id}
+                  </Text>
+                </View>
+              </View>
+              <Image src={graph.mapUrl} style={styles.indicatorImage} />
+            </View>
+          )}
+
           <View style={styles.chartBox} wrap={false}>
             <View style={styles.graphStateRow}>
               <View style={styles.graphStateItem}>

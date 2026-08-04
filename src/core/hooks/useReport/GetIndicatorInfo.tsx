@@ -10,10 +10,12 @@ export function GetIndicatorInfo({
   mapUrl,
   mapElementId,
   children,
+  singleMap = true,
 }: {
   graphId: string;
   mapUrl: string | null;
   mapElementId: string | null;
+  singleMap?: boolean;
   children: ReactElement;
 }) {
   const { currentIndicator } = useIndicatorsCTX();
@@ -55,6 +57,7 @@ export function GetIndicatorInfo({
       BiologicalGroupTag: tags[3] ?? [],
       EcosystemTag: tags[4] ?? [],
       description: currentIndicator.description,
+      singleMap,
       card: {
         methodology: currentIndicator.methodology,
         interpretation: currentIndicator.interpretation,

@@ -41,6 +41,7 @@ export type IndicatorSection = {
   BiologicalGroupTag: IndicatorTag[];
   EcosystemTag: IndicatorTag[];
   graphs: GraphDTO[];
+  singleMap: boolean;
   description: string;
   card: {
     methodology: string;
