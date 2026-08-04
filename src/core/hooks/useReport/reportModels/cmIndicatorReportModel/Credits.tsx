@@ -31,9 +31,13 @@ export function Credits({ metadata }: { metadata: ReportMetadata }) {
           <Text style={styles.disclaimerLabel}>
             {documentInfo.credits.disclaimer.title}
           </Text>
-          {documentInfo.credits.disclaimer.content.split("\n").map((p) => (
-            <Text style={styles.disclaimerText}>{p}</Text>
-          ))}
+          {documentInfo.credits.disclaimer.content
+            .split("\n")
+            .map((parr, i) => (
+              <Text key={i} style={styles.disclaimerText}>
+                {parr}
+              </Text>
+            ))}
         </View>
       </View>
       <Footer metadata={metadata} />

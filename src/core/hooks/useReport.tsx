@@ -56,6 +56,7 @@ import {
 import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
 import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 import { uiText } from "@hooks/useReport/layout/uiText";
+import { StrValidator } from "@utils/strValidator";
 
 type ReportContextType = {
   isLoading: boolean;
@@ -212,7 +213,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     const newGraph: GraphDTO = {
       id: graphId,
       blobUrl: buildtGraph.graph.blobUrl,
-      userNote: userNote,
+      userNote: userNote ? StrValidator.sanitize(userNote) : undefined,
       mapUrl: newMapUrl ?? undefined,
     };
 
@@ -398,6 +399,9 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     });
   };
 
+  // WARN: En este momento la función es para previsualizar el documento
+  // generado, apenas esté listo el endpoint del back, debe ser actualizada
+  // para ser una función únicamente de descarga.
   const downloadReport = async () => {
     if (!user) {
       return;
@@ -416,6 +420,14 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       },
     };
 
+    // TODO: apenas esté listo el endpoint para enviar las estadísticas
+    // de descarga, es necesario actualizar la funcion para:
+    // 1. sanitizar la razón de descarga
+    // 2. Generar el pdf
+    // 3. crear el enlace de descarga
+    // 4. realizar la descarga automática
+    // 5. enviar la información de las estadisticas de descarga al endpoint
+    // 6. limpiar memoria
     try {
       setIsLoading(true);
       if (reportType === "InitiativeIndicator" && docContext) {
@@ -426,6 +438,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
             sections={docSections as Map<string, IndicatorSection>}
           />,
         ).toBlob();
+
         const pdfUrl = URL.createObjectURL(blob);
         window.open(pdfUrl, "_blank");
         setTimeout(() => URL.revokeObjectURL(pdfUrl), 1000);
@@ -472,7 +485,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       const newGraphs = [...sectionToWork.graphs];
       newGraphs[graphIdx] = {
         ...newGraphs[graphIdx],
-        userNote: newNote,
+        userNote: newNote ? StrValidator.sanitize(newNote) : undefined,
       };
       newSections.set(sectionId, { ...sectionToWork, graphs: newGraphs });
       return newSections;
