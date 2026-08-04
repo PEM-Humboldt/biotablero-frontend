@@ -9,8 +9,7 @@ import {
   Slogan,
   HumboldtLogo,
 } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/branding";
-import { LOCALE } from "@config/monitoring";
-import { makeLocationsString } from "@hooks/useReport/reportModels/cmIndicatorReportModel/utils/formatters";
+import { documentInfo } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/documentInfo";
 
 export function CoverPage({
   context,
@@ -21,13 +20,12 @@ export function CoverPage({
   metadata: ReportMetadata;
   indicatorsAmount: number;
 }) {
-  const locations = makeLocationsString(context.initiativeLocation);
   return (
     <Page
       size="A4"
       style={styles.coverPage}
       bookmark={{
-        title: "Reporte personalizado de Monitoreo Comunitario",
+        title: documentInfo.coverPage.bookmarkTitle,
         fit: true,
       }}
     >
@@ -36,9 +34,7 @@ export function CoverPage({
       </View>
 
       <View style={styles.coverBody}>
-        <Text style={styles.coverKicker}>
-          Reporte de indicadores · Monitoreo Comunitario
-        </Text>
+        <Text style={styles.coverKicker}>{documentInfo.coverPage.subject}</Text>
         <Text style={styles.titleGeneral}>{context.initiativeName}</Text>
         {context.initiativeShortName && (
           <Text style={styles.coverInitiative}>
@@ -46,21 +42,23 @@ export function CoverPage({
           </Text>
         )}
         <Text style={[styles.textGeneral, { marginTop: 8 }]}>
-          {locations} · Desde{" "}
-          {new Date(context.initiativeCreationDate).toLocaleDateString(LOCALE, {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
+          {documentInfo.coverPage.initiativeContext(
+            context.initiativeLocation,
+            context.initiativeCreationDate,
+          )}
         </Text>
 
         <View style={styles.coverMetaRow}>
           <View style={styles.coverMetaItem}>
-            <Text style={styles.coverMetaLabel}>Generado</Text>
+            <Text style={styles.coverMetaLabel}>
+              {documentInfo.coverPage.madeInDate}
+            </Text>
             <Text style={styles.coverMetaValue}>{metadata.creationDate}</Text>
           </View>
           <View style={styles.coverMetaItem}>
-            <Text style={styles.coverMetaLabel}>Elaborado por</Text>
+            <Text style={styles.coverMetaLabel}>
+              {documentInfo.coverPage.madeInBy}
+            </Text>
             <Text style={styles.coverMetaValue}>{metadata.madeBy.name}</Text>
             <Text style={styles.coverMetaValue}>
               <Link
@@ -72,7 +70,9 @@ export function CoverPage({
             </Text>
           </View>
           <View style={styles.coverMetaItem}>
-            <Text style={styles.coverMetaLabel}>Indicadores</Text>
+            <Text style={styles.coverMetaLabel}>
+              {documentInfo.coverPage.indicatorsAmount}
+            </Text>
             <Text style={styles.coverMetaValue}>{indicatorsAmount}</Text>
           </View>
         </View>

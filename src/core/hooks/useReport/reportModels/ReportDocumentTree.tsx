@@ -19,7 +19,7 @@ import {
 } from "@ui/shadCN/component/popover";
 import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 import TextareaAutosize from "react-textarea-autosize";
-import { INDICATOR_NOTE_MAX_LENGTH } from "@config/monitoring";
+import { REPORT_NOTE_MAX_LENGTH } from "@config/monitoring";
 import { inputWarnColor } from "@utils/ui";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -252,17 +252,17 @@ function DocEdit({
                   placeholder="Mis observaciones..."
                   value={noteText}
                   onChange={(e) => setNoteText(e.target.value)}
-                  maxLength={INDICATOR_NOTE_MAX_LENGTH}
+                  maxLength={REPORT_NOTE_MAX_LENGTH}
                 />
                 <InputGroupAddon
                   align="block-end"
                   className={`${inputWarnColor(
                     noteText,
-                    INDICATOR_NOTE_MAX_LENGTH,
+                    REPORT_NOTE_MAX_LENGTH,
                     0.95,
                   )} flex-row-reverse`}
                 >
-                  {noteText.length} / {INDICATOR_NOTE_MAX_LENGTH}
+                  {noteText.length} / {REPORT_NOTE_MAX_LENGTH}
                 </InputGroupAddon>
               </InputGroup>
 

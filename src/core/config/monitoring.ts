@@ -1,3 +1,4 @@
+import { PageProps } from "@react-pdf/renderer";
 import type { ImageMimeType } from "@appTypes/formats";
 import type { ODataParams } from "@appTypes/odata";
 import type { LatLngBoundsLiteral } from "leaflet";
@@ -221,4 +222,5 @@ export const INDICATOR_MAX_COUNT_OCUPATION_SPECIES = 3;
 export const INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY = 3;
 
 // Report
-export const INDICATOR_NOTE_MAX_LENGTH = 250;
+export const REPORT_NOTE_MAX_LENGTH = 250;
+export const REPORT_PAGE_SIZE: PageProps["size"] = "LETTER";

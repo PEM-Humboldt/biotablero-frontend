@@ -25,7 +25,7 @@ import { pdf } from "@react-pdf/renderer";
 import { AnimatePresence } from "motion/react";
 import TextareaAutosize from "react-textarea-autosize";
 
-import { INDICATOR_NOTE_MAX_LENGTH } from "@config/monitoring";
+import { REPORT_NOTE_MAX_LENGTH } from "@config/monitoring";
 import { inputWarnColor } from "@utils/ui";
 import { useUserCTX } from "@hooks/UserCTX";
 import { fetchInitiativeContext } from "@hooks/useReport/utils/fetchInitiativeContext";
@@ -55,6 +55,7 @@ import {
 
 import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
 import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
+import { uiText } from "@hooks/useReport/layout/uiText";
 
 type ReportContextType = {
   isLoading: boolean;
@@ -229,9 +230,11 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       new Map(oldSections).set(sectionId, updatedSection),
     );
 
-    toast("Agregado al reporte exitosamente", {
+    toast(uiText.context.addSectionToastSuccess.title, {
       position: "bottom-right",
-      description: `${currentSectionInfoPool.current.sectionInfo.title} se ha agregado al reporte.`,
+      description: uiText.context.addSectionToastSuccess.description(
+        currentSectionInfoPool.current.sectionInfo.title,
+      ),
       icon: <FileCheck className="size-8 text-primary" />,
       className: "px-6! gap-6! border-2! border-primary!",
       duration: 4 * 1000,
@@ -304,8 +307,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     removeElements({
       sectionId,
       toastInfo: {
-        title: "Sección eliminada",
-        description: `${sectionId} se ha eliminado del reporte.`,
+        ...uiText.context.removeSectionToastSuccess(sectionId),
         icon: FileXCorner,
       },
     });
@@ -326,8 +328,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       sectionId,
       graphId,
       toastInfo: {
-        title: "Grafica eliminada",
-        description: `${graphId} se ha eliminado del reporte.`,
+        ...uiText.context.removeGraphToastSuccess(sectionId),
         icon: ChartLine,
       },
     });
@@ -336,8 +337,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
   const removeReport = () => {
     removeElements({
       toastInfo: {
-        title: "Reporte descartado",
-        description: "El reporte ha sido descartado correctamente",
+        ...uiText.context.removeReportToastSuccess,
         icon: Shredder,
       },
     });
@@ -431,7 +431,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
         setTimeout(() => URL.revokeObjectURL(pdfUrl), 1000);
       }
     } catch (error) {
-      console.error("Error al generar el PDF:", error);
+      console.error(uiText.downloadReportError, error);
     } finally {
       setIsLoading(false);
     }
@@ -516,10 +516,10 @@ export function ReportCTX({ children }: { children: ReactNode }) {
             >
               <SheetHeader className="border-muted shrink-0">
                 <SheetTitle className="text-3xl text-primary m-0 font-normal">
-                  Estructura del reporte
+                  {uiText.editor.header.title}
                 </SheetTitle>
                 <SheetDescription className="text-base text-primary m-0 max-w-[65ch] text-balance">
-                  Este es el esquema con la información que haz añadido
+                  {uiText.editor.header.description}
                 </SheetDescription>
               </SheetHeader>
 
@@ -533,7 +533,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
                     htmlFor="whyDownload"
                     className="text-primary font-normal"
                   >
-                    ¿Cuál es el objetivo de este reporte que estás creando?
+                    {uiText.editor.footer.input.label}
                   </label>
                   <InputGroup>
                     <TextareaAutosize
@@ -541,20 +541,20 @@ export function ReportCTX({ children }: { children: ReactNode }) {
                       className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base! transition-[color,box-shadow] outline-none md:text-sm"
                       id="whyDownload"
                       name="whyDownload"
-                      placeholder="Estoy creando este reporte para..."
+                      placeholder={uiText.editor.footer.input.placeholder}
                       value={whyDownload}
                       onChange={(e) => setWhyDownload(e.target.value)}
-                      maxLength={INDICATOR_NOTE_MAX_LENGTH}
+                      maxLength={REPORT_NOTE_MAX_LENGTH}
                     />
                     <InputGroupAddon
                       align="block-end"
                       className={`${inputWarnColor(
                         whyDownload,
-                        INDICATOR_NOTE_MAX_LENGTH,
+                        REPORT_NOTE_MAX_LENGTH,
                         0.95,
                       )} flex-row-reverse`}
                     >
-                      {whyDownload.length} / {INDICATOR_NOTE_MAX_LENGTH}
+                      {whyDownload.length} / {REPORT_NOTE_MAX_LENGTH}
                     </InputGroupAddon>
                   </InputGroup>
                 </div>
@@ -569,11 +569,19 @@ export function ReportCTX({ children }: { children: ReactNode }) {
                       void downloadReport();
                       setIsEditorOpen(false);
                     }}
+                    title={uiText.editor.footer.downloadBtn.title}
+                    aria-label={uiText.editor.footer.downloadBtn.sr}
                   >
-                    Descargar
+                    {uiText.editor.footer.downloadBtn.label}
                   </Button>
                   <SheetClose asChild>
-                    <Button variant="outline_destructive">Cerrar</Button>
+                    <Button
+                      variant="outline_destructive"
+                      title={uiText.editor.footer.closeBtn.title}
+                      aria-label={uiText.editor.footer.closeBtn.sr}
+                    >
+                      {uiText.editor.footer.closeBtn.label}
+                    </Button>
                   </SheetClose>
                 </div>
               </SheetFooter>
@@ -591,7 +599,7 @@ export function useReport() {
   const context = useContext(ReportContext);
 
   if (!context) {
-    throw new Error("useReportCTX mus be within the ReportCTX");
+    throw new Error("useReportCTX must be within the ReportCTX");
   }
 
   return context;

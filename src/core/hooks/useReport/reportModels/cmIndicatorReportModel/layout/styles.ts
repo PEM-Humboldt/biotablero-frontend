@@ -274,7 +274,7 @@ export const styles = StyleSheet.create({
     letterSpacing: 1,
     marginBottom: 4,
   },
-  disclaimerText: { fontSize: 9, color: colors.textMuted, lineHeight: 1.5 },
+  disclaimerText: { fontSize: 10, color: colors.textMuted, lineHeight: 1.5 },
 
   // ---- Pie de página (fijo) ----
   footer: {

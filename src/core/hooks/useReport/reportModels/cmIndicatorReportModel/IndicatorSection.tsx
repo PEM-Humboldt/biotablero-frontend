@@ -8,8 +8,9 @@ import type {
   IndicatorTag,
   ReportMetadata,
 } from "@appTypes/report";
-import { LOCALE } from "@config/monitoring";
+import { LOCALE, REPORT_PAGE_SIZE } from "@config/monitoring";
 import { Fragment } from "react";
+import { documentInfo } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/documentInfo";
 
 export function IndicatorSection({
   section,
@@ -20,7 +21,7 @@ export function IndicatorSection({
 }) {
   return (
     <Page
-      size="A4"
+      size={REPORT_PAGE_SIZE}
       style={styles.page}
       bookmark={{ title: section.title, fit: true }}
     >
@@ -28,7 +29,9 @@ export function IndicatorSection({
 
       <View style={styles.dateRow}>
         <View style={styles.dateItem}>
-          <Text style={styles.dateLabel}>Creación</Text>
+          <Text style={styles.dateLabel}>
+            {documentInfo.indicatorSection.creationDateLabel}
+          </Text>
           <Text style={styles.dateVal}>
             {new Date(section.creationDate).toLocaleDateString(LOCALE, {
               year: "numeric",
@@ -38,7 +41,9 @@ export function IndicatorSection({
           </Text>
         </View>
         <View style={styles.dateItem}>
-          <Text style={styles.dateLabel}>Última actualización</Text>
+          <Text style={styles.dateLabel}>
+            {documentInfo.indicatorSection.lastUpdateLabel}
+          </Text>
           <Text style={styles.dateVal}>
             {new Date(section.lastUpdate).toLocaleDateString(LOCALE, {
               year: "numeric",
@@ -51,7 +56,9 @@ export function IndicatorSection({
 
       <View style={styles.dateRow}>
         <View style={styles.dateItem}>
-          <Text style={styles.dateLabel}>Enlace</Text>
+          <Text style={styles.dateLabel}>
+            {documentInfo.indicatorSection.indicatorUrlLabel}
+          </Text>
           <Link
             src={section.url}
             style={[styles.kvVal, { color: colors.coral }]}
@@ -63,12 +70,12 @@ export function IndicatorSection({
 
       <View style={{ marginBottom: 6 }}>
         <TagCategory
-          label="Ecosistemas Estratégicos"
+          label={documentInfo.indicatorSection.tagsLabel.ecosystem}
           items={section.EcosystemTag}
           type="ecosystem"
         />
         <TagCategory
-          label="Escala Biológica"
+          label={documentInfo.indicatorSection.tagsLabel.biologicalGroup}
           items={section.BiologicalGroupTag}
           type="biologicalGroup"
         />
@@ -78,7 +85,9 @@ export function IndicatorSection({
         <View style={styles.chartBox} wrap={false}>
           <View style={styles.graphStateRow}>
             <View style={styles.graphStateItem}>
-              <Text style={styles.graphStateText}>Mapa del indicador:</Text>
+              <Text style={styles.graphStateText}>
+                {documentInfo.indicatorSection.indicatorMapLabel}
+              </Text>
             </View>
           </View>
           <Image src={section.graphs[0].mapUrl} style={styles.indicatorImage} />
@@ -92,7 +101,7 @@ export function IndicatorSection({
               <View style={styles.graphStateRow}>
                 <View style={styles.graphStateItem}>
                   <Text style={styles.graphStateText}>
-                    Mapa del indicador para los valores de: {graph.id}
+                    {documentInfo.indicatorSection.grapMapLabel(graph.id)}
                   </Text>
                 </View>
               </View>
@@ -104,7 +113,7 @@ export function IndicatorSection({
             <View style={styles.graphStateRow}>
               <View style={styles.graphStateItem}>
                 <Text style={styles.graphStateText}>
-                  Gráfica del indicador para los valores de: {graph.id}
+                  {documentInfo.indicatorSection.metricsInGraphLabel(graph.id)}
                 </Text>
               </View>
             </View>
@@ -117,7 +126,9 @@ export function IndicatorSection({
           {graph.userNote && (
             <View style={styles.noteBox} wrap={false}>
               <Text style={styles.noteLabel}>
-                Anotación de {metadata.madeBy.name ?? metadata.madeBy.username}
+                {documentInfo.indicatorSection.userNoteTitleLabel(
+                  metadata.madeBy.name ?? metadata.madeBy.username,
+                )}
               </Text>
               <Text style={styles.noteText}>{graph.userNote}</Text>
             </View>
@@ -127,21 +138,25 @@ export function IndicatorSection({
 
       {section.description ? (
         <View style={styles.quoteBox} wrap={false}>
-          <Text style={styles.h4}>¿Qué dice este indicador?</Text>
+          <Text style={styles.h4}>
+            {documentInfo.indicatorSection.sectionDescriptionLabel}
+          </Text>
           <Text style={styles.quoteText}>{section.description}</Text>
         </View>
       ) : null}
 
-      <LabeledBlock label="Metodología">
+      <LabeledBlock label={documentInfo.indicatorSection.methodologyLabel}>
         {section.card.methodology}
       </LabeledBlock>
-      <LabeledBlock label="Interpretación">
+      <LabeledBlock label={documentInfo.indicatorSection.interpretationLabel}>
         {section.card.interpretation}
       </LabeledBlock>
-      <LabeledBlock label="Consideraciones">
+      <LabeledBlock label={documentInfo.indicatorSection.considerationsLabel}>
         {section.card.considerations}
       </LabeledBlock>
-      <LabeledBlock label="Autoría">{section.card.authorship}</LabeledBlock>
+      <LabeledBlock label={documentInfo.indicatorSection.authorshipLabel}>
+        {section.card.authorship}
+      </LabeledBlock>
 
       <Footer metadata={metadata} />
     </Page>

@@ -8,8 +8,8 @@ import type {
   IndicatorTag,
   ReportMetadata,
 } from "@appTypes/report";
-import { LOCALE } from "@config/monitoring";
-import { makeLocationsString } from "@hooks/useReport/reportModels/cmIndicatorReportModel/utils/formatters";
+import { REPORT_PAGE_SIZE } from "@config/monitoring";
+import { documentInfo } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/documentInfo";
 
 export function InitiativeSection({
   context,
@@ -18,15 +18,13 @@ export function InitiativeSection({
   context: IndicatorContext;
   metadata: ReportMetadata;
 }) {
-  const locations = makeLocationsString(context.initiativeLocation);
-
   return (
     <Page
-      size="A4"
+      size={REPORT_PAGE_SIZE}
       style={styles.page}
       bookmark={{ title: context.initiativeName, fit: true }}
     >
-      <Header title="Perfil de la iniciativa" />
+      <Header title={documentInfo.aboutInitiative.header} />
 
       <Text style={[styles.titleGeneral, { fontSize: 16, marginBottom: 1 }]}>
         {context.initiativeName}
@@ -48,7 +46,7 @@ export function InitiativeSection({
           <View style={styles.metricCard}>
             <View style={styles.metricCardInner}>
               <Text style={styles.metricLabel}>
-                Área bajo monitoreo comunitario
+                {documentInfo.aboutInitiative.stats.areaLabel}
               </Text>
               <Text style={styles.metricValue}>
                 {Math.round(context.initiativeStats.area)}
@@ -65,7 +63,9 @@ export function InitiativeSection({
         {context.initiativeStats?.localitiesUnderMonitoring !== undefined && (
           <View style={styles.metricCard}>
             <View style={styles.metricCardInner}>
-              <Text style={styles.metricLabel}>Municipios monitoreados</Text>
+              <Text style={styles.metricLabel}>
+                {documentInfo.aboutInitiative.stats.localitieslabel}
+              </Text>
               <Text style={styles.metricValue}>
                 {context.initiativeStats.localitiesUnderMonitoring}
               </Text>
@@ -76,7 +76,9 @@ export function InitiativeSection({
         {context.initiativeStats?.monitoringEvents !== undefined && (
           <View style={styles.metricCard}>
             <View style={styles.metricCardInner}>
-              <Text style={styles.metricLabel}>Eventos de monitoreo</Text>
+              <Text style={styles.metricLabel}>
+                {documentInfo.aboutInitiative.stats.monitoringEventslabel}
+              </Text>
               <Text style={styles.metricValue}>
                 {context.initiativeStats.monitoringEvents}
               </Text>
@@ -87,20 +89,21 @@ export function InitiativeSection({
 
       <View style={[styles.block, { marginTop: 8 }]}>
         <View style={styles.kvRow}>
-          <Text style={styles.kvKey}>Fecha de creación</Text>
-          <Text style={styles.kvVal}>
-            {new Date(context.initiativeCreationDate).toLocaleDateString(
-              LOCALE,
-              { year: "numeric", month: "long", day: "numeric" },
-            )}
+          <Text style={styles.kvKey}>
+            {documentInfo.aboutInitiative.creationDateLabel}
           </Text>
+          <Text style={styles.kvVal}>{context.initiativeCreationDate}</Text>
         </View>
         <View style={styles.kvRow}>
-          <Text style={styles.kvKey}>Ubicación</Text>
-          <Text style={styles.kvVal}>{locations}</Text>
+          <Text style={styles.kvKey}>
+            {documentInfo.aboutInitiative.locationLabel}
+          </Text>
+          <Text style={styles.kvVal}>{context.initiativeLocation}</Text>
         </View>
         <View style={styles.kvRow}>
-          <Text style={styles.kvKey}>Enlace</Text>
+          <Text style={styles.kvKey}>
+            {documentInfo.aboutInitiative.initiativeUrlLabel}
+          </Text>
           <Link
             src={context.initiativeUrl}
             style={[styles.kvVal, { color: colors.coral }]}
@@ -112,11 +115,11 @@ export function InitiativeSection({
 
       <View style={{ marginTop: 6 }}>
         <LinkList
-          title="Vínculos institucionales"
+          title={documentInfo.aboutInitiative.tagsLabel.political}
           items={context.politicalTags}
         />
         <LinkList
-          title="Vínculos con la sociedad civil"
+          title={documentInfo.aboutInitiative.tagsLabel.social}
           items={context.socialTags}
         />
       </View>
@@ -148,7 +151,7 @@ function LinkList({ title, items }: { title: string; items: IndicatorTag[] }) {
                   <>
                     <Text style={styles.vinculoName}> — </Text>
                     <Link src={item.url} style={styles.vinculoUrl}>
-                      https://{item.url}
+                      {item.url}
                     </Link>
                   </>
                 )}

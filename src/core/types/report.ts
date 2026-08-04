@@ -56,7 +56,7 @@ export type IndicatorSection = {
 export type IndicatorContext = {
   initiativeName: string;
   initiativeShortName?: string;
-  initiativeLocation: LocationCompleteInfo[];
+  initiativeLocation: string;
   initiativeCreationDate: string;
   initiativeDescription: string;
   initiativeStats?: {

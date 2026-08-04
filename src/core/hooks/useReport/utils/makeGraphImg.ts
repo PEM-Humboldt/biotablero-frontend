@@ -2,6 +2,7 @@ import type { ReactElement } from "react";
 import { domToBlob, type Options } from "modern-screenshot";
 import { createRoot } from "react-dom/client";
 import { GRAPH_ANIMATION_CONFIG } from "@config/monitoring";
+import { uiText } from "@hooks/useReport/layout/uiText";
 
 export async function makeGraphImg(
   graphComponent: ReactElement,
@@ -35,10 +36,10 @@ export async function makeGraphImg(
       errors: [],
     };
   } catch (error) {
-    console.error("Error while serializing DOM elements:", error);
+    console.error("Error while serializing graph element:", error);
     return {
       graph: null,
-      errors: ["No es posible crear el pdf del gráfico"],
+      errors: [uiText.context.utils.graphErrorSerialize],
     };
   }
 }

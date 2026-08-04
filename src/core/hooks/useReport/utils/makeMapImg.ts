@@ -1,4 +1,5 @@
 import { domToBlob, type Options } from "modern-screenshot";
+import { uiText } from "@hooks/useReport/layout/uiText";
 
 export async function makeMapImg(
   leafletElementId: string,
@@ -23,10 +24,10 @@ export async function makeMapImg(
       errors: [],
     };
   } catch (error) {
-    console.error("Error while serializing DOM elements:", error);
+    console.error("Error while serializing map element:", error);
     return {
       map: null,
-      errors: ["No es posible crear el pdf del mapa"],
+      errors: [uiText.context.utils.mapErrorSerialize],
     };
   }
 }

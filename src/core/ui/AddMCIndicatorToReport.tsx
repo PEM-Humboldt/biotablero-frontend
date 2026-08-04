@@ -22,7 +22,7 @@ import {
   PopoverTrigger,
 } from "@ui/shadCN/component/popover";
 import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
-import { INDICATOR_NOTE_MAX_LENGTH } from "@config/monitoring";
+import { REPORT_NOTE_MAX_LENGTH } from "@config/monitoring";
 import { inputWarnColor } from "@utils/ui";
 import {
   Dialog,
@@ -32,6 +32,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@ui/shadCN/component/dialog";
+import { uiText } from "@ui/addMCIndicatorToReport/layout/uiText";
 
 export function AddMCIndicatorToReport() {
   const { user } = useUserCTX();
@@ -78,13 +79,17 @@ export function AddMCIndicatorToReport() {
               size="sm"
               title={
                 !user
-                  ? "Inicia sesión para crear reportes"
-                  : `Agregar a mi reporte${withNote ? " con anotación" : ""}`
+                  ? uiText.addToReportBtn.title.notLogged
+                  : uiText.addToReportBtn.title.logged(withNote)
               }
-              aria-label="Agregar a mi reporte"
+              aria-label={
+                !user
+                  ? uiText.addToReportBtn.sr.notLogged
+                  : uiText.addToReportBtn.sr.logged(withNote)
+              }
             >
               {withNote ? <ClipboardPen /> : <ClipboardPlus />}
-              {isLoading ? "Agregando..." : "Agregar"}
+              {uiText.addToReportBtn.label(isLoading)}
             </Button>
           </PopoverTrigger>
 
@@ -98,37 +103,42 @@ export function AddMCIndicatorToReport() {
                 className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm"
                 id="description"
                 name="description"
-                placeholder="Mis observaciones..."
+                placeholder={uiText.addNotePopover.placeholder}
                 value={noteText}
                 onChange={(e) => setNoteText(e.target.value)}
-                maxLength={INDICATOR_NOTE_MAX_LENGTH}
+                maxLength={REPORT_NOTE_MAX_LENGTH}
               />
               <InputGroupAddon
                 align="block-end"
                 className={`${inputWarnColor(
                   noteText,
-                  INDICATOR_NOTE_MAX_LENGTH,
+                  REPORT_NOTE_MAX_LENGTH,
                   0.95,
                 )} flex-row-reverse`}
               >
-                {noteText.length} / {INDICATOR_NOTE_MAX_LENGTH}
+                {noteText.length} / {REPORT_NOTE_MAX_LENGTH}
               </InputGroupAddon>
             </InputGroup>
 
-            <div className="flex justify-between gap-2">
-              <Button
-                variant="outline_destructive"
-                size="sm"
-                onClick={() => setIsPopoverOpen(false)}
-              >
-                Cancelar
-              </Button>
+            <div className="flex flex-row-reverse justify-between gap-2">
               <Button
                 size="sm"
                 disabled={isLoading}
                 onClick={() => void handleConfirmNote()}
+                title={uiText.addNotePopover.addBtn.title}
+                aria-label={uiText.addNotePopover.addBtn.sr}
               >
-                {isLoading ? "Guardando..." : "Guardar"}
+                {uiText.addNotePopover.addBtn.label(isLoading)}
+              </Button>
+
+              <Button
+                variant="outline_destructive"
+                size="sm"
+                onClick={() => setIsPopoverOpen(false)}
+                title={uiText.addNotePopover.cancelBtn.title}
+                aria-label={uiText.addNotePopover.cancelBtn.sr}
+              >
+                {uiText.addNotePopover.cancelBtn.label}
               </Button>
             </div>
           </PopoverContent>
@@ -149,25 +159,29 @@ export function AddMCIndicatorToReport() {
 
             <DropdownMenuContent align="end" className="w-50">
               <DropdownMenuGroup>
-                <DropdownMenuLabel>Indicador</DropdownMenuLabel>
+                <DropdownMenuLabel>
+                  {uiText.dropdownMenu.indicatorElements.title}
+                </DropdownMenuLabel>
                 <DropdownMenuCheckboxItem
                   checked={!withNote}
                   onCheckedChange={() => setWithNote(false)}
                 >
-                  Agregar sin anotación
+                  {uiText.dropdownMenu.indicatorElements.addWithoutNoteBtn}
                 </DropdownMenuCheckboxItem>
                 <DropdownMenuCheckboxItem
                   checked={withNote}
                   onCheckedChange={() => setWithNote(true)}
                 >
-                  Agregar con anotación
+                  {uiText.dropdownMenu.indicatorElements.addWithNoteBtn}
                 </DropdownMenuCheckboxItem>
               </DropdownMenuGroup>
 
               <DropdownMenuSeparator />
 
               <DropdownMenuGroup>
-                <DropdownMenuLabel>Reporte</DropdownMenuLabel>
+                <DropdownMenuLabel>
+                  {uiText.dropdownMenu.reportElements.title}
+                </DropdownMenuLabel>
 
                 <DropdownMenuItem
                   disabled={!hasSections}
@@ -178,7 +192,7 @@ export function AddMCIndicatorToReport() {
                     toggleEditor(true);
                   }}
                 >
-                  Editar
+                  {uiText.dropdownMenu.reportElements.editBtn}
                 </DropdownMenuItem>
 
                 <DropdownMenuItem
@@ -190,7 +204,7 @@ export function AddMCIndicatorToReport() {
                     setIsDownloadDialogOpen(true);
                   }}
                 >
-                  Descargar
+                  {uiText.dropdownMenu.reportElements.downloadBtn}
                 </DropdownMenuItem>
 
                 <DropdownMenuItem
@@ -198,7 +212,7 @@ export function AddMCIndicatorToReport() {
                   className="text-accent"
                   onClick={() => removeReport()}
                 >
-                  Borrar
+                  {uiText.dropdownMenu.reportElements.deleteBtn}
                 </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
@@ -221,17 +235,16 @@ export function AddMCIndicatorToReport() {
         >
           <DialogHeader>
             <DialogTitle className="text-3xl text-primary font-normal">
-              Motivo de descarga
+              {uiText.downloadDialog.title}
             </DialogTitle>
             <DialogDescription className="text-base text-primary max-w-[65ch] text-balance">
-              Para el Instituto Humboldt es muy importante saber el uso que se
-              le va a dar a la información obtenida BioTablero.
+              {uiText.downloadDialog.description}
             </DialogDescription>
           </DialogHeader>
 
           <div>
             <label htmlFor="whyDownload" className="text-primary font-normal">
-              ¿Cuál es el objetivo de este reporte que estás creando?
+              {uiText.downloadDialog.input.label}
             </label>
             <InputGroup>
               <TextareaAutosize
@@ -239,20 +252,20 @@ export function AddMCIndicatorToReport() {
                 className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base! transition-[color,box-shadow] outline-none md:text-sm"
                 id="whyDownload"
                 name="whyDownload"
-                placeholder="Estoy creando este reporte para..."
+                placeholder={uiText.downloadDialog.input.placeholder}
                 value={whyDownload}
                 onChange={(e) => setWhyDownload(e.target.value)}
-                maxLength={INDICATOR_NOTE_MAX_LENGTH}
+                maxLength={REPORT_NOTE_MAX_LENGTH}
               />
               <InputGroupAddon
                 align="block-end"
                 className={`${inputWarnColor(
                   whyDownload,
-                  INDICATOR_NOTE_MAX_LENGTH,
+                  REPORT_NOTE_MAX_LENGTH,
                   0.95,
                 )} flex-row-reverse`}
               >
-                {whyDownload.length} / {INDICATOR_NOTE_MAX_LENGTH}
+                {whyDownload.length} / {REPORT_NOTE_MAX_LENGTH}
               </InputGroupAddon>
             </InputGroup>
           </div>
@@ -265,16 +278,20 @@ export function AddMCIndicatorToReport() {
                 setIsDownloadDialogOpen(false);
                 void downloadReport();
               }}
+              title={uiText.downloadDialog.downloadBtn.title}
+              aria-label={uiText.downloadDialog.downloadBtn.sr}
             >
-              Descargar
+              {uiText.downloadDialog.downloadBtn.label}
             </Button>
 
             <Button
               variant="outline_destructive"
               size="sm"
               onClick={() => setIsDownloadDialogOpen(false)}
+              title={uiText.downloadDialog.cancelBtn.title}
+              aria-label={uiText.downloadDialog.cancelBtn.sr}
             >
-              Cancelar
+              {uiText.downloadDialog.cancelBtn.label}
             </Button>
           </DialogFooter>
         </DialogContent>

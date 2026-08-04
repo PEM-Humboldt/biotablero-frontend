@@ -1,10 +1,12 @@
 import type { IndicatorContext, IndicatorTag } from "@appTypes/report";
+import { LOCALE } from "@config/monitoring";
 import {
   getInitiativeMonitoringEvents,
   getInitiativeStats,
 } from "pages/monitoring/api/services/initiatives";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
+import { makeLocationsString } from "@hooks/useReport/utils/formatters";
 
 type FetchIndicatorContextReturn = {
   data: IndicatorContext | null;
@@ -60,8 +62,14 @@ export async function fetchInitiativeContext(
   const contextData: IndicatorContext = {
     initiativeName: initiativeInfo.name,
     initiativeShortName: initiativeInfo.shortName,
-    initiativeLocation: initiativeInfo.locations,
-    initiativeCreationDate: initiativeInfo.creationDate,
+    initiativeLocation: makeLocationsString(initiativeInfo.locations),
+    initiativeCreationDate: new Date(
+      initiativeInfo.creationDate,
+    ).toLocaleDateString(LOCALE, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }),
     initiativeDescription: initiativeInfo.description,
     initiativeStats: {
       area: initiativeInfo.polygonArea,
