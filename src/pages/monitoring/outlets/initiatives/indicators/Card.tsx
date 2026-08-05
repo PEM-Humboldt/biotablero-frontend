@@ -1,4 +1,4 @@
-import { BadgeCheck, Calendar } from "lucide-react";
+import { BadgeCheck } from "lucide-react";
 
 import type { GetKeysWithStringValues } from "@appTypes/utils";
 import { ErrorsList } from "@ui/LabelingWithErrors";

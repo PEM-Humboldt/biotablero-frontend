@@ -1,4 +1,3 @@
-// import { uiText } from "@hooks/useReport/layout/uiText";
 import { uiText as reportInputTextUi } from "@ui/addMCIndicatorToReport/layout/uiText";
 
 export const uiText = {
