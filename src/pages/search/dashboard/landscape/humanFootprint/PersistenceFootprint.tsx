@@ -13,7 +13,7 @@ import TextBoxes from "@ui/TextBoxes";
 
 import { hfPersistence } from "pages/search/types/humanFootprint";
 import { textsObject } from "pages/search/types/texts";
-import LargeStackedBar from "@composites/charts/LargeStackedBar";
+import { LargeStackedBar } from "@composites/charts/LargeStackedBar";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { ShapeLayer } from "pages/search/types/layers";
 import { PersistenceFootprintController } from "pages/search/dashboard/landscape/humanFootprint/PersistenceFootprintController";

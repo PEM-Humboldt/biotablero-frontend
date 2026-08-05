@@ -130,6 +130,7 @@ export function CurrentFootprint() {
     hfCurrent,
     hfCurrentValue,
     hfCurrentCategory,
+    message,
     texts,
     layers,
   } = state;
@@ -288,6 +289,7 @@ export function CurrentFootprint() {
       <h6>Natural, Baja, Media, Alta y Muy Alta</h6>
 
       <LargeStackedBar
+        loadStatus={message}
         data={hfCurrent}
         labelX="Hectáreas"
         labelY="Huella Humana Actual"

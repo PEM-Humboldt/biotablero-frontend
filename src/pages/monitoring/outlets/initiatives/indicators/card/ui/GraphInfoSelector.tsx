@@ -20,9 +20,11 @@ export function GraphInfoSelector({
   highContrast = false,
 }: {
   uiText: { title: string; label: string; instruction?: string };
-  options: string[] | { title: string; subtitle?: string; color: string }[];
+  options: string[] | { title: string; subtitle?: string }[];
   currentSelection: string | string[];
-  updateCurrent: Dispatch<SetStateAction<string>> | ((select: string) => void);
+  updateCurrent:
+    | Dispatch<SetStateAction<string | string[]>>
+    | ((select: string | string[]) => void);
   singleSelect?: boolean;
   colorFromOptionHash?: boolean;
   highContrast?: boolean;
@@ -69,15 +71,20 @@ export function GraphInfoSelector({
                     : undefined
                 }
                 className={cn(
-                  "w-full h-auto min-h-9 whitespace-normal wrap-break-word py-2 px-3 text-center flex items-center justify-center gap-1.5",
+                  "w-full h-auto min-h-9 whitespace-normal wrap-break-word text-center flex items-center justify-center gap-1.5",
                   singleSelect && isSelected ? "" : "hover:cursor-pointer",
-                  "opacity-100! border! border-primary py-1! px-4!",
+                  "opacity-100! border! border-primary py-1 px-4",
                 )}
                 onClick={() => updateCurrent(title)}
                 aria-pressed={isSelected}
                 disabled={singleSelect ? isSelected : false}
               >
-                {title}
+                <div className="flex flex-col">
+                  <span>{title}</span>
+                  {isCustom && option.subtitle && (
+                    <span className="italic">{option.subtitle}</span>
+                  )}
+                </div>
                 {isSelected && <CheckIcon />}
               </Button>
             </li>

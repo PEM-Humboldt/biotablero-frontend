@@ -48,11 +48,10 @@ export function SpeciesDiversity() {
       return [];
     }
 
-    const uniqueIndex = new Set<string>();
+    const uniqueIndex = new Set<string>(
+      currentGroup.values.map((value) => value.measureUnit.name),
+    );
 
-    currentGroup.values.map((value) => {
-      uniqueIndex.add(value.measureUnit.name);
-    });
     return [...uniqueIndex];
   }, [currentIndicator?.groups, selectedSpecie]);
 

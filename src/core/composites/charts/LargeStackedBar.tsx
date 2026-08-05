@@ -27,7 +27,7 @@ const darkColors: { [key: string]: string } = {
   "#902130": "#902130",
 };
 
-export const LargeStackedBar = (props: Props) => {
+export const LargeStackedBarElement = (props: Props) => {
   const {
     data,
     labelX = "",
@@ -143,4 +143,6 @@ export const LargeStackedBar = (props: Props) => {
   );
 };
 
-export default withMessageWrapper<Props>(LargeStackedBar);
+export const LargeStackedBar = withMessageWrapper<Props>(
+  LargeStackedBarElement,
+);

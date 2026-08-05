@@ -1,17 +1,12 @@
 import type { InferX, InferY, LineCustomSvgLayerProps } from "@nivo/line";
 import { area, curveLinear } from "d3-shape";
-import type { LineData } from "pages/monitoring/types/indicators";
-
-interface CustomDatum {
-  x: string | number;
-  y: number;
-  hasLimits?: boolean;
-  lowerLimit?: number;
-  upperLimit?: number;
-}
+import type {
+  LineData,
+  LineDataValues,
+} from "pages/monitoring/types/indicators";
 
 interface ComputedPoint {
-  data: CustomDatum;
+  data: LineDataValues;
 }
 
 /**
