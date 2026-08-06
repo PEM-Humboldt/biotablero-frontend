@@ -10,6 +10,7 @@ import {
   HumboldtLogo,
 } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/branding";
 import { documentInfo } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/documentInfo";
+import { REPORT_PAGE_SIZE } from "@config/monitoring";
 
 export function CoverPage({
   context,
@@ -22,7 +23,7 @@ export function CoverPage({
 }) {
   return (
     <Page
-      size="A4"
+      size={REPORT_PAGE_SIZE}
       style={styles.coverPage}
       bookmark={{
         title: documentInfo.coverPage.bookmarkTitle,
