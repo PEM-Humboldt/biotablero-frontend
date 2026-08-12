@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ResponsiveBar } from "@nivo/bar";
 import { type AxisTickProps } from "@nivo/axes";
 
-import { darkenColor } from "@utils/colorUtils";
+import { darkenColor } from "@utils/color";
 import { formatNumber } from "@utils/format";
 import { withMessageWrapper } from "@composites/charts/withMessageWrapper";
 import { Tick } from "@ui/CssTicks";

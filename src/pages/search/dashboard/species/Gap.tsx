@@ -23,15 +23,12 @@ export type GapData = {
   bin_edges: number[];
 };
 
-const yearsAvailableMock = [2016, 2017, 2019, 2020, 2022, 2023, 2024, 2025];
-
 const GAP_GRAPH_MAX_YEARS_VISUALIZATION_AMOUTN = 5;
 const GAP_GRAPH_START_YEARS_VISUALIZATION_AMOUTN = 3;
 
 export function Gap() {
   const [group, setGroup] = useState("");
-  const [yearsAvailable, setYearsAvailable] =
-    useState<number[]>(yearsAvailableMock);
+  const [yearsAvailable, setYearsAvailable] = useState<number[]>([]);
   const [selectedYears, setSelectedYears] = useState<number[]>([]);
   const [groupData, setGroupData] = useState<
     { id: string; data: { x: number; y: number }[] }[]

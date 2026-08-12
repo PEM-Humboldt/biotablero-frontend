@@ -2,8 +2,8 @@ import { ResponsivePie } from "@nivo/pie";
 import React from "react";
 
 import { formatNumber } from "@utils/format";
-import { lightenColor, darkenColor } from "@utils/colorUtils";
-import withMessageWrapper from "@composites/charts/withMessageWrapper";
+import { lightenColor, darkenColor } from "@utils/color";
+import { withMessageWrapper } from "@composites/charts/withMessageWrapper";
 
 interface Props {
   data: Array<PieData>;
