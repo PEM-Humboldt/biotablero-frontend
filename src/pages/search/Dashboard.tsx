@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import BackIcon from "@mui/icons-material/FirstPage";
 import Ecosistemas from "@mui/icons-material/Nature";
 import Paisaje from "@mui/icons-material/FilterHdr";
