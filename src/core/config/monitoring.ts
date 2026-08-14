@@ -213,3 +213,6 @@ export const GLOSARY_FILTER_IS_AND = false;
 export const INDICATORS_PER_PAGE = 7;
 export const INDICATOR_MAX_COUNT_OCUPATION_SPECIES = 3;
 export const INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY = 3;
+
+// Help
+export const HELP_VIDEO_URL = "";
