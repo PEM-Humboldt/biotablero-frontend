@@ -1,25 +1,16 @@
-import { useEffect } from "react";
-import { useOutletContext } from "react-router";
 import { PageTitleUpdater } from "@ui/PageTitleUpdater";
-
-import type { UiManager } from "core/layout/MainLayout";
-import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
+import { parseSimpleMarkdown } from "@utils/textParser";
+import { uiText } from "pages/monitoring/outlets/help/layout/uiText";
 
 export function Help() {
-  const { layoutDispatch } = useOutletContext<UiManager>();
-
-  useEffect(() => {
-    layoutDispatch({
-      type: LayoutUpdated.HEADER_NAMES,
-      newHeader: { title: "Ayuda", subtitle: "" },
-    });
-  }, [layoutDispatch]);
-
   return (
-    <div>
+    <div className="bg-primary w-full min-h-full">
       <PageTitleUpdater title="Ayuda" />
 
-      <h3>Una pagina de ayudas por acá</h3>
+      <div>
+        <h3>{uiText.title}</h3>
+        <p>{parseSimpleMarkdown(uiText.descriptionMd)}</p>
+      </div>
     </div>
   );
 }
