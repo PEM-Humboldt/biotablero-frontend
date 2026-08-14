@@ -3,6 +3,7 @@ export const uiText = {
   descriptionMd:
     "En esta sección encontrarás respuestas claras a las preguntas más comunes sobre nuestros servicios, procesos, registro, soporte y mucho más. Consulta esta guía rápida antes de contactarnos: es probable que aquí encuentres lo que necesitas.",
 
+  faqTitle: "Preguntas frecuentes",
   faq: [
     {
       title: "Sobre el módulo",
