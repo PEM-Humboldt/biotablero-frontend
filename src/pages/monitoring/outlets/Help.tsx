@@ -17,9 +17,10 @@ import {
   InputGroupInput,
 } from "@ui/shadCN/component/input-group";
 import { SearchIcon } from "lucide-react";
+import { fuzzySearch } from "pages/monitoring/utils/search";
 
 export function Help() {
-  const [lookFor, setLookFor] = useState("");
+  const [search, setSearch] = useState("");
   const styledTexts = useMemo(
     () =>
       uiText.faq.map((category) => ({
@@ -32,7 +33,35 @@ export function Help() {
     [],
   );
 
-  const questionsSearched = styledTexts;
+  const questionsSearched = useMemo(() => {
+    const sanitizedSearch = search
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim()
+      .toLocaleLowerCase();
+
+    if (!sanitizedSearch) {
+      return styledTexts;
+    }
+
+    return styledTexts
+      .map((section) => {
+        const filteredContent = section.content.filter((question) => {
+          const sanitizedTitle = question.title
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLocaleLowerCase();
+
+          return fuzzySearch(sanitizedSearch, sanitizedTitle);
+        });
+
+        return {
+          ...section,
+          content: filteredContent,
+        };
+      })
+      .filter((section) => section.content.length > 0);
+  }, [styledTexts, search]);
 
   return (
     <div className="bg-primary w-full min-h-full">
@@ -43,16 +72,19 @@ export function Help() {
         <a href={HELP_VIDEO_URL} target="_blank">
           video tutorial
         </a>
-        <p>{parseSimpleMarkdown(uiText.descriptionMd)}</p>
+        <div>{parseSimpleMarkdown(uiText.descriptionMd)}</div>
       </div>
 
       <div>
+        <label htmlFor="search" className="sr-only">
+          Buscar por palabra clave
+        </label>
         <InputGroup>
-          <label htmlFor="search">Buscar por palabra clave</label>
           <InputGroupInput
             id="search"
-            value={lookFor}
-            onChange={(e) => setLookFor(e.target.value)}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Busca por palara clave..."
           />
           <InputGroupAddon align="inline-end">
             <SearchIcon />
