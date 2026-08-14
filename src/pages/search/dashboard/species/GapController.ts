@@ -51,7 +51,7 @@ export class GapContoller {
 
   async getGapTaxonomicGroups(): Promise<string[]> {
     // TODO: Eliminar este retorno y descomentar la función cuando el endpoint de grupos esté
-    return ["mammals", "birds", "reptiles", "amphibians", "fish", "plants"];
+    return [];
 
     // const request = SearchAPI.makeGetRequest("/metrics/recordGaps/groups");
     // const source = axios.CancelToken.source();
@@ -75,7 +75,7 @@ export class GapContoller {
   async getGapData(
     taxonomicGroup?: string,
   ): Promise<{ series: GapSerieData[]; years: number[] }> {
-    const requestKey = taxonomicGroup ?? "all";
+    const requestKey = `gaps_data-${taxonomicGroup ?? "all"}`;
 
     const { request, source } = SearchAPI.requestMetricsValues(
       "recordGaps",
@@ -87,6 +87,7 @@ export class GapContoller {
     return (
       request
         .then((res) => {
+          // TODO: borrar cuando el endpoint esté actualizado
           const pairedData = res.bin_edges.map((edge, idx) => ({
             x: Number(edge.toFixed(2)),
             y: res.frequency[idx] ?? 0,
@@ -121,6 +122,36 @@ export class GapContoller {
           this.activeRequests.delete(requestKey);
         })
     );
+  }
+
+  async getGapAverage(taxonomicGroup: string): Promise<Record<string, number>> {
+    const requestKey = `gaps_average-${taxonomicGroup ?? "all"}`;
+
+    const { request, source } = SearchAPI.requestMetricsValues(
+      "currentRecordsGaps_average",
+      this.areaId,
+      { params: taxonomicGroup ? { group: taxonomicGroup } : {} },
+    );
+    this.activeRequests.set(requestKey, source);
+
+    return request
+      .then(
+        // TODO: borrar cuando el endpoint esté actualizado
+        (res) => ({ [res.id]: Number(res.average.toFixed(2)) }),
+
+        // TODO: descomentar cuando el endpoint esté actualizado
+        // res.reduce<Record<string, number>>((all, current) => {
+        //   all[current.id] = Number(current.average.toFixed(2));
+        //   return all;
+        // }, {}),
+      )
+      .catch((err) => {
+        console.error("Error original:", err);
+        throw new Error("Error getting data");
+      })
+      .finally(() => {
+        this.activeRequests.delete("recordGaps-groups");
+      });
   }
 
   /**

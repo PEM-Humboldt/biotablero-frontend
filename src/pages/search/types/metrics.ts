@@ -43,9 +43,11 @@ export type MetricTypesMap = {
 
   // TODO: Ddescomentar cuando se actualice el endpoint
   // recordGaps: { id: string; frequency: number[]; bin_edges: number[] }[];
+  // currentRecordsGaps_average: { id: string; average: number }[];
 
   // TODO: Borrar cuando se actualice el endpoint
   recordGaps: { id: string; frequency: number[]; bin_edges: number[] };
+  currentRecordsGaps_average: { id: string; average: number };
 };
 
 export type MetricsTypes = keyof MetricTypesMap;

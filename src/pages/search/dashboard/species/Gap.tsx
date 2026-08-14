@@ -1,5 +1,5 @@
 import { ResponsiveLine } from "@nivo/line";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { getSeriesColor } from "@utils/color";
 import { cn } from "@ui/shadCN/lib/utils";
 import { Button } from "@ui/shadCN/component/button";
@@ -16,6 +16,7 @@ import {
   useSearchStateCTX,
 } from "pages/search/hooks/SearchContext";
 import { SearchUpdated } from "pages/search/hooks/SearchReducer";
+import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
 
 const customColorMap: Record<number, string> = {
   2019: "#303F8C",
@@ -41,7 +42,10 @@ export function Gap() {
   const [selectedGroup, setSelectedGroup] = useState("");
   const [yearsAvailable, setYearsAvailable] = useState<number[]>([]);
   const [selectedYears, setSelectedYears] = useState<number[]>([]);
-  const [groupData, setGroupData] = useState<
+  const [recordsGapAverage, setRecordsGapAverage] = useState<
+    Record<string, number>
+  >({});
+  const [groupSeries, setGroupSeries] = useState<
     { id: string; data: { x: number; y: number }[] }[]
   >([]);
   const { areaType, areaId } = useSearchStateCTX();
@@ -75,7 +79,10 @@ export function Gap() {
       const { series, years } =
         await controller.current.getGapData(selectedGroup);
 
-      setGroupData(series);
+      const average = await controller.current.getGapAverage(selectedGroup);
+
+      setRecordsGapAverage(average);
+      setGroupSeries(series);
       setYearsAvailable(years);
       setSelectedYears(
         years.slice(
@@ -141,8 +148,34 @@ export function Gap() {
     });
   };
 
-  const renderData = groupData.filter((g) =>
+  const renderData = groupSeries.filter((g) =>
     selectedYears.includes(Number(g.id)),
+  );
+
+  const markers = useMemo(
+    () =>
+      recordsGapAverage[lastYear] !== undefined
+        ? [
+            {
+              axis: "x" as const,
+              value: recordsGapAverage[lastYear],
+              lineStyle: {
+                stroke: GRAPHS_EXTENDED_COLOR_PALETTE[1],
+                strokeWidth: 2,
+                strokeDasharray: "6 4",
+              },
+              legend: `Promedio ${lastYear}: ${recordsGapAverage[lastYear]}`,
+              legendPosition: "top" as const,
+              legendOffsetY: 10,
+              textStyle: {
+                fill: GRAPHS_EXTENDED_COLOR_PALETTE[1],
+                fontSize: 12,
+                fontWeight: 400,
+              },
+            },
+          ]
+        : [],
+    [recordsGapAverage, lastYear],
   );
 
   return (
@@ -239,7 +272,9 @@ export function Gap() {
       <div className="w-full h-full aspect-3/2 mt-4">
         <ResponsiveLine
           data={renderData}
-          margin={{ top: 10, right: 10, bottom: 60, left: 60 }}
+          markers={markers}
+          margin={{ top: 30, right: 10, bottom: 60, left: 60 }}
+          xScale={{ type: "linear", min: "auto", max: "auto" }}
           yScale={{
             type: "linear",
             min: 0,
