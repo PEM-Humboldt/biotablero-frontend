@@ -1,5 +1,5 @@
-import { ResponsiveLine } from "@nivo/line";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { ResponsiveLine, type SliceData } from "@nivo/line";
+import { useEffect, useRef, useState } from "react";
 import { getSeriesColor } from "@utils/color";
 import { cn } from "@ui/shadCN/lib/utils";
 import { Button } from "@ui/shadCN/component/button";
@@ -17,12 +17,24 @@ import {
 } from "pages/search/hooks/SearchContext";
 import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
+import { ErrorsList } from "@ui/LabelingWithErrors";
+import TextBoxes from "@ui/TextBoxes";
+import type { textsObject } from "pages/search/types/texts";
+import { InfoIcon } from "lucide-react";
+import { IconTooltip } from "@ui/Tooltips";
+import { ShortInfo } from "@composites/ShortInfo";
+
+const GAP_GRAPH_MAX_YEARS_VISUALIZATION_AMOUTN = 5;
+const GAP_GRAPH_START_YEARS_VISUALIZATION_AMOUTN = 3;
 
 const customColorMap: Record<number, string> = {
-  2019: "#303F8C",
-  2021: "#089FA7",
-  2023: "#E69A00",
-  2025: "#B54A00",
+  2019: GRAPHS_EXTENDED_COLOR_PALETTE[8],
+  2020: GRAPHS_EXTENDED_COLOR_PALETTE[15],
+  2021: GRAPHS_EXTENDED_COLOR_PALETTE[18],
+  2022: GRAPHS_EXTENDED_COLOR_PALETTE[20],
+  2023: GRAPHS_EXTENDED_COLOR_PALETTE[23],
+  2024: GRAPHS_EXTENDED_COLOR_PALETTE[26],
+  2025: GRAPHS_EXTENDED_COLOR_PALETTE[23],
 };
 
 const speciesGroupLabels: Record<string, string> = {
@@ -34,17 +46,21 @@ const speciesGroupLabels: Record<string, string> = {
   plants: "Plantas",
 };
 
-const GAP_GRAPH_MAX_YEARS_VISUALIZATION_AMOUTN = 5;
-const GAP_GRAPH_START_YEARS_VISUALIZATION_AMOUTN = 3;
-
 export function Gap() {
+  const [isLoading, setIsLoading] = useState(0);
+  const [errors, setErrors] = useState<string[]>([]);
   const [groupsAvailable, setGroupsAvailable] = useState<string[]>([]);
   const [selectedGroup, setSelectedGroup] = useState("");
   const [yearsAvailable, setYearsAvailable] = useState<number[]>([]);
   const [selectedYears, setSelectedYears] = useState<number[]>([]);
+  const [showInfoGraph, setShowInfoGraph] = useState(true);
   const [recordsGapAverage, setRecordsGapAverage] = useState<
     Record<string, number>
   >({});
+
+  const [texts, setTexts] = useState<{ recordsGap: textsObject }>({
+    recordsGap: { info: "", cons: "", meto: "", quote: "" },
+  });
   const [groupSeries, setGroupSeries] = useState<
     { id: string; data: { x: number; y: number }[] }[]
   >([]);
@@ -52,49 +68,64 @@ export function Gap() {
   const searchDispatch = useSearchDispatchCTX();
   const controller = useRef(new GapContoller());
 
-  useEffect(() => {
-    if (!areaId || !areaType) {
-      searchDispatch({
-        type: SearchUpdated.LOADING_LAYER,
-        loadingLayer: false,
-      });
-      return;
-    }
+  const lastYear = selectedYears[selectedYears.length - 1];
 
+  if (areaType && areaId) {
     controller.current.setArea(areaType.id, areaId.id);
-  }, [areaType, areaId, searchDispatch]);
+  }
 
   useEffect(() => {
-    const fetchAvailableGroups = async () => {
-      const res = await controller.current.getGapTaxonomicGroups();
-
-      setGroupsAvailable(res);
-    };
-
-    void fetchAvailableGroups();
+    setIsLoading((old) => old + 1);
+    Promise.all([
+      controller.current.getGapTaxonomicGroups(),
+      controller.current.getGapTexts("recordsGap"),
+    ])
+      .then(([groups, textsBack]) => {
+        setGroupsAvailable(groups);
+        setTexts({ recordsGap: textsBack });
+      })
+      .catch((err) => {
+        console.error(err);
+        setErrors(["No fue posible obtener los datos del indicador"]);
+      })
+      .finally(() => {
+        setIsLoading((old) => old - 1);
+      });
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const { series, years } =
-        await controller.current.getGapData(selectedGroup);
+    setIsLoading((old) => old + 1);
+    Promise.all([
+      controller.current.getGapData(selectedGroup),
+      controller.current.getGapAverage(selectedGroup),
+    ])
+      .then(([gapData, average]) => {
+        const series = gapData?.series ?? [];
+        const years = gapData?.years ?? [];
 
-      const average = await controller.current.getGapAverage(selectedGroup);
-
-      setRecordsGapAverage(average);
-      setGroupSeries(series);
-      setYearsAvailable(years);
-      setSelectedYears(
-        years.slice(
-          -Math.min(GAP_GRAPH_START_YEARS_VISUALIZATION_AMOUTN, years.length),
-        ),
-      );
-    };
-
-    void fetchData();
+        setRecordsGapAverage(average ?? {});
+        setGroupSeries(series);
+        setYearsAvailable(years);
+        setSelectedYears(
+          years.length > 0
+            ? years.slice(
+                -Math.min(
+                  GAP_GRAPH_START_YEARS_VISUALIZATION_AMOUTN,
+                  years.length,
+                ),
+              )
+            : [],
+        );
+      })
+      .catch((err) => {
+        console.error(err);
+        setErrors(["No fue posible obtener los datos del indicador"]);
+      })
+      .finally(() => {
+        setIsLoading((old) => old - 1);
+      });
   }, [selectedGroup]);
 
-  const lastYear = selectedYears[selectedYears.length - 1];
   useEffect(() => {
     if (!lastYear) {
       return;
@@ -152,38 +183,26 @@ export function Gap() {
     selectedYears.includes(Number(g.id)),
   );
 
-  const markers = useMemo(
-    () =>
-      recordsGapAverage[lastYear] !== undefined
-        ? [
-            {
-              axis: "x" as const,
-              value: recordsGapAverage[lastYear],
-              lineStyle: {
-                stroke: GRAPHS_EXTENDED_COLOR_PALETTE[1],
-                strokeWidth: 2,
-                strokeDasharray: "6 4",
-              },
-              legend: `Promedio ${lastYear}: ${recordsGapAverage[lastYear]}`,
-              legendPosition: "top" as const,
-              legendOffsetY: 10,
-              textStyle: {
-                fill: GRAPHS_EXTENDED_COLOR_PALETTE[1],
-                fontSize: 12,
-                fontWeight: 400,
-              },
-            },
-          ]
-        : [],
-    [recordsGapAverage, lastYear],
-  );
-
   return (
-    <div className="p-4 pb-2 rounded-lg">
+    <div className="p-4 pb-2 rounded-lg [&_.textBoxes]:text-left! overflow-hidden">
       <div className="flex flex-col items-start mb-[2] gap-2">
-        <h4 className="m-0 text-accent text-base/12 font-normal">
+        <h4 className="m-0 text-accent text-xl/12 font-normal flex gap-2 items-center">
           Índice de Vacíos por Registros (IVR) por km² (2019-2025)
+          <IconTooltip title="Interpretación">
+            <InfoIcon
+              className={`metrics-info-icon${showInfoGraph ? " activeBox" : ""}`}
+              onClick={() => setShowInfoGraph((prev) => !prev)}
+            />
+          </IconTooltip>
         </h4>
+
+        {showInfoGraph && (
+          <ShortInfo
+            description={`<p>${texts.recordsGap.info}</p>`}
+            className="graphinfo2"
+            collapseButton={false}
+          />
+        )}
 
         {Object.keys(groupsAvailable).length > 1 && (
           <Select
@@ -270,93 +289,136 @@ export function Gap() {
       </div>
 
       <div className="w-full h-full aspect-3/2 mt-4">
-        <ResponsiveLine
-          data={renderData}
-          markers={markers}
-          margin={{ top: 30, right: 10, bottom: 60, left: 60 }}
-          xScale={{ type: "linear", min: "auto", max: "auto" }}
-          yScale={{
-            type: "linear",
-            min: 0,
-            max: "auto",
-            stacked: false,
-            reverse: false,
-          }}
-          curve="monotoneX"
-          axisBottom={{
-            tickSize: 5,
-            tickPadding: 5,
-            tickRotation: 0,
-            legend: "Índice de Vacíos de Registros por (IVR)",
-            legendOffset: 36,
-            legendPosition: "middle",
-          }}
-          colors={(series) =>
-            customColorMap[Number(series.id)] ??
-            getSeriesColor(Number(series.id))
-          }
-          gridYValues={5}
-          axisLeft={{
-            tickValues: 5,
-            legend: "Frecuencia de unidades de 1km²",
-            legendOffset: -50,
-            format: (value) => `${value / 1000}k`,
-          }}
-          pointSize={7}
-          pointColor="#ffffff"
-          pointBorderWidth={2}
-          pointBorderColor={{ from: "seriesColor" }}
-          pointLabelYOffset={-12}
-          enableTouchCrosshair={true}
-          useMesh={true}
-          enableSlices="x"
-          sliceTooltip={({ slice }) => {
-            return (
-              <div
-                className="bg-background p-2 shadow-lg rounded text-xs flex flex-col gap-2"
-                style={{ pointerEvents: "none" }}
-              >
-                <div className="font-normal text-foreground border-b pb-1">
-                  IVR: {slice.points[0]?.data.xFormatted}
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  {slice.points.map((point) => {
-                    const color =
-                      customColorMap[Number(point.seriesId)] ??
-                      getSeriesColor(Number(point.seriesId));
-
-                    return (
-                      <div
-                        key={point.id}
-                        className="flex items-center justify-between gap-4"
-                      >
-                        <div className="flex items-center">
-                          <span
-                            className={cn(
-                              "relative inline-block w-6 mr-1 shrink-0 rounded-sm h-0.5",
-                              "before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:w-2.5 before:h-2.5 before:rounded-full before:bg-inherit ",
-                              "after:absolute after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:w-1.5 after:h-1.5 after:rounded-full after:bg-white",
-                            )}
-                            style={{ backgroundColor: color }}
-                          />
-                          <span>{point.seriesId}</span>
-                        </div>
-                        <span className="font-normal">
-                          {point.data.yFormatted}/km²
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            );
-          }}
-        />
+        {isLoading ? (
+          <div className="errorData">Cargando datos...</div>
+        ) : (
+          <>
+            <ErrorsList errorItems={errors} />
+            <ResponsiveLine
+              data={renderData}
+              markers={markers(lastYear, recordsGapAverage)}
+              margin={{ top: 30, right: 10, bottom: 60, left: 60 }}
+              xScale={{ type: "linear", min: "auto", max: "auto" }}
+              yScale={{
+                type: "linear",
+                min: 0,
+                max: "auto",
+                stacked: false,
+                reverse: false,
+              }}
+              curve="monotoneX"
+              axisBottom={{
+                tickSize: 5,
+                tickPadding: 5,
+                tickRotation: 0,
+                legend: "Índice de Vacíos de Registros por (IVR)",
+                legendOffset: 36,
+                legendPosition: "middle",
+              }}
+              colors={(series) =>
+                customColorMap[Number(series.id)] ??
+                getSeriesColor(Number(series.id))
+              }
+              gridYValues={5}
+              axisLeft={{
+                tickValues: 5,
+                legend: "Frecuencia de unidades de 1km²",
+                legendOffset: -50,
+                format: (value) => `${value / 1000}k`,
+              }}
+              pointSize={7}
+              pointColor="#ffffff"
+              pointBorderWidth={2}
+              pointBorderColor={{ from: "seriesColor" }}
+              pointLabelYOffset={-12}
+              enableTouchCrosshair={true}
+              useMesh={true}
+              enableSlices="x"
+              sliceTooltip={SliceTooltip}
+            />
+          </>
+        )}
       </div>
       <p className="text-sm text-center">
         0 : vacío mínimo · 1 : vacíos máximo
       </p>
+
+      <TextBoxes
+        consText={texts.recordsGap.cons}
+        metoText={texts.recordsGap.meto}
+        quoteText={texts.recordsGap.quote}
+        downloadData={controller.current.getDownloadData(renderData)}
+        downloadName={`índiceVacíos_${areaType?.label}_${areaId?.name}.csv`}
+        isInfoOpen={showInfoGraph}
+        toggleInfo={() => setShowInfoGraph((prev) => !prev)}
+      />
+    </div>
+  );
+}
+
+function markers(year: number, recordsGapAverage: Record<string, number>) {
+  return [
+    {
+      axis: "x" as const,
+      value: recordsGapAverage[year],
+      lineStyle: {
+        stroke: GRAPHS_EXTENDED_COLOR_PALETTE[4],
+        strokeWidth: 2,
+        strokeDasharray: "6 4",
+      },
+      legend: `Promedio ${year}: ${recordsGapAverage[year]}`,
+      legendPosition: "top" as const,
+      legendOffsetY: 15,
+      textStyle: {
+        fill: GRAPHS_EXTENDED_COLOR_PALETTE[4],
+        fontSize: 12,
+        fontWeight: 400,
+      },
+    },
+  ];
+}
+
+function SliceTooltip({
+  slice,
+}: {
+  slice: SliceData<{ id: string; data: { x: number; y: number }[] }>;
+}) {
+  return (
+    <div
+      className="bg-background p-2 shadow-lg rounded text-xs flex flex-col gap-2"
+      style={{ pointerEvents: "none" }}
+    >
+      <div className="font-normal text-foreground border-b pb-1">
+        IVR: {slice.points[0]?.data.xFormatted}
+      </div>
+
+      <div className="flex flex-col gap-1">
+        {slice.points.map((point) => {
+          const color =
+            customColorMap[Number(point.seriesId)] ??
+            getSeriesColor(Number(point.seriesId));
+
+          return (
+            <div
+              key={point.id}
+              className="flex items-center justify-between gap-4"
+            >
+              <div className="flex items-center">
+                <span
+                  className={cn(
+                    "relative inline-block w-6 mr-1 shrink-0 rounded-sm h-0.5",
+                    "before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:w-2.5 before:h-2.5 before:rounded-full before:bg-inherit ",
+                    "after:absolute after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:w-1.5 after:h-1.5 after:rounded-full after:bg-white",
+                  )}
+                  style={{ backgroundColor: color }}
+                />
+                <span>{point.seriesId}</span>
+              </div>
+              <span className="font-normal">{point.data.yFormatted}/km²</span>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

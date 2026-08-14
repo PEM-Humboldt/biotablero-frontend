@@ -1,14 +1,13 @@
 import type { CancelTokenSource } from "axios";
 import SearchAPI from "pages/search/api/searchAPI";
 import type { GapSerieData } from "pages/search/types/species";
-// TODO: descomentar la función cuando el endpoint de grupos esté
+// TODO: descomentar la importación cuando el endpoint de grupos esté
 // import axios from "axios";
-
-// NOTE: ???
 import type { textsObject } from "pages/search/types/texts";
 import LayerAPI from "pages/search/api/layerAPI";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import type { RasterLayer } from "pages/search/types/layers";
+import BackendAPI from "pages/search/api/backendAPI";
 
 export class GapContoller {
   areaType: string = "";
@@ -30,7 +29,7 @@ export class GapContoller {
    */
   async getGapTaxonomicGroups(): Promise<string[]> {
     // TODO: Eliminar este retorno cuando el endpoint de grupos esté
-    return [];
+    return Promise.resolve([]);
 
     // TODO: descomentar la función cuando el endpoint de grupos esté
     // const request = SearchAPI.makeGetRequest("/metrics/recordGaps/groups");
@@ -151,35 +150,35 @@ export class GapContoller {
    *
    * @returns {Object} texts of forestLP section
    */
-  getGapTexts = (sectionName: string): Promise<textsObject> =>
-    BackendAPI.requestSectionTexts(sectionName)
-      .then((res) => res)
-      .catch(() => {
-        throw new Error("Error getting data");
-      });
+  async getGapTexts(sectionName: string): Promise<textsObject> {
+    // TODO: Eliminar este retornogcuando el back con los textos esté al día
+    return Promise.resolve({
+      info: "Informacion de prueba",
+      cons: "esto es cons",
+      meto: "qué carajos es meto?",
+      quote: "Pos si carenalga, Albert Einstein",
+    });
+
+    // TODO: Actualizar funcion cuando el back con los textos esté al día
+    // BackendAPI.requestSectionTexts(sectionName)
+    //   .then((res) => res)
+    //   .catch(() => {
+    //     throw new Error("Error getting data");
+    //   });
+  }
 
   /**
-   * Returns data transformed to be downloaded in the csv file
+   * Transforms the graph data into and object to for the CSV downloasd
    *
-   * @param {ForestLPExt[]} data data array for SmallStackedBars graph in forest loss persistence tab
+   * @param series - data array for recordsGaps graph
    *
-   * @returns {Object[]} persistenceData graph data transformed to be downloaded in a csv file
+   * @returns recordsGaps graph data transformed into an array to be downloaded in a csv file
    */
-  getDownloadData(data: Array<ForestLPExt>) {
-    const result: Array<{
-      period: string;
-      category: string;
-      area: number;
-      percentage: number;
-    }> = [];
-    data.forEach((period) =>
-      period.data.forEach((obj) => {
-        result.push({
-          period: period.id,
-          category: obj.label,
-          area: obj.area,
-          percentage: obj.percentage,
-        });
+  getDownloadData(series: { id: string; data: { x: number; y: number }[] }[]) {
+    const result: { period: string; edge: number; value: number }[] = [];
+    series.forEach((serie) =>
+      serie.data.forEach((point) => {
+        result.push({ period: serie.id, edge: point.x, value: point.y });
       }),
     );
     return result;
