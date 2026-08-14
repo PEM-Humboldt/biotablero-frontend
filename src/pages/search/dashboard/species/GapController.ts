@@ -1,22 +1,20 @@
-import type { polygonFeature } from "pages/search/types/dashboard";
 import type { CancelTokenSource } from "axios";
 import SearchAPI from "pages/search/api/searchAPI";
 import type { GapSerieData } from "pages/search/types/species";
-import axios from "axios";
+// TODO: descomentar la función cuando el endpoint de grupos esté
+// import axios from "axios";
 
 // NOTE: ???
 import type { textsObject } from "pages/search/types/texts";
 import LayerAPI from "pages/search/api/layerAPI";
 import { MetricsUtils } from "pages/search/utils/metrics";
-import { RasterLayer, ShapeLayer } from "pages/search/types/layers";
+import type { RasterLayer } from "pages/search/types/layers";
 
 export class GapContoller {
   areaType: string = "";
   areaId: number = 0;
   classes: string[] = ["recordGaps"];
-  // polygon: polygonFeature | null = null;
   activeRequests: Map<string, CancelTokenSource> = new Map();
-  // allClasses: Map<string, Set<string>> = new Map();
 
   constructor() {}
 
@@ -25,34 +23,16 @@ export class GapContoller {
     this.areaId = areaId;
   }
 
-  setPolygon(polygon: polygonFeature) {
-    this.polygon = polygon;
-  }
-
-  // /**
-  //  * Defines the label for a given data
-  //  * @param {string} type data identifier
-  //  *
-  //  * @returns {string} label to be used for tooltips, legends, etc.
-  //  * Max. length = 16 characters
-  //  */
-  // static getLabel = (type: string): string => {
-  //   switch (type) {
-  //     case "persistencia":
-  //       return "Persistencia";
-  //     case "perdida":
-  //       return "Pérdida";
-  //     case "no_bosque":
-  //       return "No bosque";
-  //     default:
-  //       return "";
-  //   }
-  // };
-
+  /**
+   * Fetch the available taxonomic groups for the metric
+   *
+   * @returns a Promise resolving into a list of groups
+   */
   async getGapTaxonomicGroups(): Promise<string[]> {
-    // TODO: Eliminar este retorno y descomentar la función cuando el endpoint de grupos esté
+    // TODO: Eliminar este retorno cuando el endpoint de grupos esté
     return [];
 
+    // TODO: descomentar la función cuando el endpoint de grupos esté
     // const request = SearchAPI.makeGetRequest("/metrics/recordGaps/groups");
     // const source = axios.CancelToken.source();
     // this.activeRequests.set("recordGaps-groups", source);
@@ -67,10 +47,13 @@ export class GapContoller {
     //     this.activeRequests.delete("recordGaps-groups");
     //   });
   }
+
   /**
-   * Returns gap values in a given area
+   * Fetch the gap values of the available years for a specified taxonomicGroup
    *
-   * @returns Object with forest LP data and persistence value
+   * @param taxonomicGroup - Optional. the taxonomic group used for the metric, if undefined, returns the overall value
+   *
+   * @returns a Promise resolving into an Object { series: GapSerieData[]; years: number[] }, which contains the series data, and the years in the series
    */
   async getGapData(
     taxonomicGroup?: string,
@@ -86,11 +69,11 @@ export class GapContoller {
 
     return (
       request
+        // TODO: borrar todo el then cuando el endpoint esté actualizado
         .then((res) => {
-          // TODO: borrar cuando el endpoint esté actualizado
           const pairedData = res.bin_edges.map((edge, idx) => ({
             x: Number(edge.toFixed(2)),
-            y: res.frequency[idx] ?? 0,
+            y: res.frequency[idx] ?? res.frequency[idx - 1],
           }));
 
           return {
@@ -124,6 +107,13 @@ export class GapContoller {
     );
   }
 
+  /**
+   * Fetch the gap average values of the available years for the specified taxonomicGroup
+   *
+   * @param taxonomicGroup - Optional. the taxonomic group used for the metric, if undefined, returns the overall value
+   *
+   * @returns a Promise resolving into an Object {"year": value }
+   */
   async getGapAverage(taxonomicGroup: string): Promise<Record<string, number>> {
     const requestKey = `gaps_average-${taxonomicGroup ?? "all"}`;
 
@@ -196,14 +186,17 @@ export class GapContoller {
   }
 
   /**
-   * Get the raster layers required for a Forest Loss Persistence period
+   * Gets the raster layers required for a the requested period and taxonomic group
    *
-   * @returns { Promise<Array<RasterLayer>> } layers for the categories in the indicated period
+   * @param period - the year of the metric
+   * @param taxonomicGroup - Optional. the taxonomic group used for the metric, if undefined, returns the overall value
+   *
+   * @returns a Promise resolving into RasterLayer[], for the categories in the indicated year and taxonomicgroup
    */
   async getGapLayer(
     period: string,
     taxonomicGroup?: string,
-  ): Promise<Array<RasterLayer>> {
+  ): Promise<RasterLayer[]> {
     if (this.areaId === 0) {
       throw Error("Polygon and area undefined");
     }
