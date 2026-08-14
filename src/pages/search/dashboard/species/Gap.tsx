@@ -1,7 +1,5 @@
 import { ResponsiveLine } from "@nivo/line";
-import { useEffect, useState } from "react";
-import { gapMockByGroup } from "./gapMock";
-import { data } from "react-router";
+import { useEffect, useRef, useState } from "react";
 import { getSeriesColor } from "@utils/color";
 import { cn } from "@ui/shadCN/lib/utils";
 import { Button } from "@ui/shadCN/component/button";
@@ -12,14 +10,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@ui/shadCN/component/select";
-
-type SpeciesGroup =
-  | "mammals"
-  | "birds"
-  | "reptiles"
-  | "amphibians"
-  | "fish"
-  | "plants";
+import { GapContoller } from "pages/search/dashboard/species/GapController";
+import {
+  useSearchDispatchCTX,
+  useSearchStateCTX,
+} from "pages/search/hooks/SearchContext";
+import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 
 const customColorMap: Record<number, string> = {
   2019: "#303F8C",
@@ -28,7 +24,7 @@ const customColorMap: Record<number, string> = {
   2025: "#B54A00",
 };
 
-const speciesGroupLabels: { [K in SpeciesGroup]: string } = {
+const speciesGroupLabels: Record<string, string> = {
   mammals: "Mamiferos",
   birds: "Aves",
   reptiles: "Reptiles",
@@ -37,43 +33,49 @@ const speciesGroupLabels: { [K in SpeciesGroup]: string } = {
   plants: "Plantas",
 };
 
-export type GapData = {
-  id: string | number;
-  frequency: number[];
-  bin_edges: number[];
-};
-
 const GAP_GRAPH_MAX_YEARS_VISUALIZATION_AMOUTN = 5;
 const GAP_GRAPH_START_YEARS_VISUALIZATION_AMOUTN = 3;
 
 export function Gap() {
-  const [group, setGroup] = useState("");
+  const [groupsAvailable, setGroupsAvailable] = useState<string[]>([]);
+  const [selectedGroup, setSelectedGroup] = useState("");
   const [yearsAvailable, setYearsAvailable] = useState<number[]>([]);
   const [selectedYears, setSelectedYears] = useState<number[]>([]);
   const [groupData, setGroupData] = useState<
     { id: string; data: { x: number; y: number }[] }[]
   >([]);
+  const { areaType, areaId } = useSearchStateCTX();
+  const searchDispatch = useSearchDispatchCTX();
+  const controller = useRef(new GapContoller());
+
+  useEffect(() => {
+    if (!areaId || !areaType) {
+      searchDispatch({
+        type: SearchUpdated.LOADING_LAYER,
+        loadingLayer: false,
+      });
+      return;
+    }
+
+    controller.current.setArea(areaType.id, areaId.id);
+  }, [areaType, areaId, searchDispatch]);
+
+  useEffect(() => {
+    const fetchAvailableGroups = async () => {
+      const res = await controller.current.getGapTaxonomicGroups();
+
+      setGroupsAvailable(res);
+    };
+
+    void fetchAvailableGroups();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
-      const res: GapData[] = gapMockByGroup[group === "" ? "all" : group] ?? [];
+      const { series, years } =
+        await controller.current.getGapData(selectedGroup);
 
-      const formattedData = res.reduce<
-        { id: string; data: { x: number; y: number }[] }[]
-      >((all, current) => {
-        const pairedData = current.bin_edges.map((edge, idx) => ({
-          x: edge,
-          y: current.frequency[idx] ?? 0,
-        }));
-
-        const serie = { id: String(current.id), data: pairedData };
-        all.push(serie);
-
-        return all;
-      }, []);
-      const years = [...new Set(res.map((r) => Number(r.id)).sort())];
-
-      setGroupData(formattedData);
+      setGroupData(series);
       setYearsAvailable(years);
       setSelectedYears(
         years.slice(
@@ -83,7 +85,44 @@ export function Gap() {
     };
 
     void fetchData();
-  }, [group]);
+  }, [selectedGroup]);
+
+  const lastYear = selectedYears[selectedYears.length - 1];
+  useEffect(() => {
+    if (!lastYear) {
+      return;
+    }
+    searchDispatch({
+      type: SearchUpdated.LOADING_LAYER,
+      loadingLayer: true,
+    });
+
+    controller.current
+      .getGapLayer(String(lastYear), selectedGroup)
+      .then((layersRes) => {
+        searchDispatch({
+          type: SearchUpdated.WILDCARD,
+          payload: {
+            rasterLayers: layersRes,
+            mapTitle: { name: `Vacíos para ${lastYear}` },
+          },
+        });
+      })
+      .catch((err) => {
+        if (String(err) !== "Error: request canceled") {
+          searchDispatch({
+            type: SearchUpdated.LAYER_ERROR,
+            layerError: String(err),
+          });
+        }
+      })
+      .finally(() => {
+        searchDispatch({
+          type: SearchUpdated.LOADING_LAYER,
+          loadingLayer: false,
+        });
+      });
+  }, [selectedGroup, lastYear, searchDispatch]);
 
   const handleSelectYear = (year: number) => {
     setSelectedYears((oldYears) => {
@@ -107,36 +146,32 @@ export function Gap() {
   );
 
   return (
-    <div className="p-4 pb-2 rounded-lg space-y-4">
+    <div className="p-4 pb-2 rounded-lg">
       <div className="flex flex-col items-start mb-[2] gap-2">
-        <h5
-          style={{
-            margin: 0,
-            color: "#E23E57",
-            lineHeight: 1.2,
-            fontWeight: 500,
-          }}
-        >
+        <h4 className="m-0 text-accent text-base/12 font-normal">
           Índice de Vacíos por Registros (IVR) por km² (2019-2025)
-        </h5>
+        </h4>
 
-        {Object.keys(speciesGroupLabels).length > 1 && (
-          <Select value={group} onValueChange={(val) => setGroup(val)}>
+        {Object.keys(groupsAvailable).length > 1 && (
+          <Select
+            value={selectedGroup}
+            onValueChange={(val) => setSelectedGroup(val)}
+          >
             <SelectTrigger id="gap-species-group" className="border-grey">
               <SelectValue placeholder="Grupo Taxonómico" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todos los grupos</SelectItem>
-              {Object.entries(speciesGroupLabels).map(([key, label]) => (
-                <SelectItem key={key} value={key}>
-                  {label}
+              {groupsAvailable.map((group) => (
+                <SelectItem key={`selectGroup-${group}`} value={group}>
+                  {speciesGroupLabels[group] ?? group}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         )}
 
-        {yearsAvailable.length > 1 && (
+        {yearsAvailable.length > 1 ? (
           <fieldset className="border-0 p-0 m-0">
             <legend className="sr-only">
               Selecciona los años a visualizar
@@ -181,10 +216,27 @@ export function Gap() {
                 })}
             </div>
           </fieldset>
+        ) : (
+          <div className="flex items-center">
+            <span
+              aria-hidden="true"
+              className={cn(
+                "relative inline-block w-6 mr-1 shrink-0 rounded-sm h-0.5",
+                "before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:w-2.5 before:h-2.5 before:rounded-full before:bg-inherit ",
+                "after:absolute after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:w-1.5 after:h-1.5 after:rounded-full after:bg-white",
+              )}
+              style={{
+                backgroundColor:
+                  customColorMap[yearsAvailable[0]] ??
+                  getSeriesColor(yearsAvailable[0]),
+              }}
+            />
+            <span className="text-sm">{yearsAvailable[0]}</span>
+          </div>
         )}
       </div>
 
-      <div className="w-full h-full aspect-3/2">
+      <div className="w-full h-full aspect-3/2 mt-4">
         <ResponsiveLine
           data={renderData}
           margin={{ top: 10, right: 10, bottom: 60, left: 60 }}
@@ -267,7 +319,6 @@ export function Gap() {
           }}
         />
       </div>
-
       <p className="text-sm text-center">
         0 : vacío mínimo · 1 : vacíos máximo
       </p>

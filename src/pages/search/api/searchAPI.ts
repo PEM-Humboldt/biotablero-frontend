@@ -113,11 +113,13 @@ class SearchAPI {
     itemId: string,
     class_id: string,
     polygonId: number,
+    options?: AxiosRequestConfig,
   ): RasterAPIObject {
     const source = axios.CancelToken.source();
     return {
       request: SearchAPI.makeGetRequest(
         `metrics/${metricId}/layer?item_id=${itemId}&polygon_id=${polygonId}&class_id=${class_id}`,
+        options,
       ),
       source: source,
     };
