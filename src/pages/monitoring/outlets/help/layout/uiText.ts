@@ -4,10 +4,16 @@ export const uiText = {
     "En esta sección encontrarás respuestas claras a las preguntas más comunes sobre nuestros servicios, procesos, registro, soporte y mucho más. Consulta esta guía rápida antes de contactarnos: es probable que aquí encuentres lo que necesitas.",
 
   faqTitle: "Preguntas frecuentes",
+  video: { title: "Ir al video tutorial" },
+  search: {
+    barSr: "Buscar por palabra clave",
+    placeholder: "Busca por palabra clave...",
+    cleanBtn: { title: "Reiniciar", sr: "Reiniciar la búsqueda" },
+  },
   faq: [
     {
       title: "Sobre el módulo",
-      cotent: [
+      content: [
         {
           title: "¿Qué es el módulo de monitoreo comunitario de BioTablero?",
           descriptionMd:
@@ -27,7 +33,7 @@ export const uiText = {
     },
     {
       title: "Cuentas y acceso",
-      cotent: [
+      content: [
         {
           title: "¿Cómo creo una cuenta en BioTablero?",
           descriptionMd:
@@ -55,7 +61,7 @@ export const uiText = {
     },
     {
       title: "Iniciativas y roles",
-      cotent: [
+      content: [
         {
           title:
             "¿Qué roles existen dentro de una iniciativa y en qué se diferencian?",
@@ -93,7 +99,7 @@ _ **Colaborador:** participa activamente en el monitoreo y puede aportar informa
     },
     {
       title: "Mapa y estadísticas",
-      cotent: [
+      content: [
         {
           title: "¿Qué tipos de mapa base puedo usar?",
           descriptionMd: `Puedes elegir entre tres mapas base, en este orden:
@@ -116,7 +122,7 @@ _ **Colaborador:** participa activamente en el monitoreo y puede aportar informa
     },
     {
       title: "Mi perfil",
-      cotent: [
+      content: [
         {
           title: "¿Qué información se muestra en «Mi perfil»?",
           descriptionMd:
@@ -142,7 +148,7 @@ _ **Colaborador:** participa activamente en el monitoreo y puede aportar informa
     },
     {
       title: "Recursos",
-      cotent: [
+      content: [
         {
           title: "¿Qué es la sección de Recursos?",
           descriptionMd:
@@ -164,7 +170,7 @@ _ **Colaborador:** participa activamente en el monitoreo y puede aportar informa
     },
     {
       title: "Otras dudas",
-      cotent: [
+      content: [
         {
           title:
             "Tengo un problema técnico o una duda que no está aquí, ¿a quién escribo?",

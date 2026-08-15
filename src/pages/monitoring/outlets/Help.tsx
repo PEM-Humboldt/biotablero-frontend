@@ -1,28 +1,34 @@
+import { useEffect, useMemo, useState } from "react";
+import { PlayIcon, SearchIcon, Trash2 } from "lucide-react";
+
 import { PageTitleUpdater } from "@ui/PageTitleUpdater";
 import { parseSimpleMarkdown } from "@utils/textParser";
-import { uiText } from "pages/monitoring/outlets/help/layout/uiText";
 import bgPrimary from "@assets/bg1Help.png";
 import bgDecoration from "@assets/bg2Help.png";
-import { HELP_YOUTUBE_VIDEO_ID } from "@config/monitoring";
+import { HELP_YOUTUBE_VIDEO_URL } from "@config/monitoring";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@ui/shadCN/component/accordion";
-import { useEffect, useMemo, useState } from "react";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@ui/shadCN/component/input-group";
-import { PlayIcon, SearchIcon } from "lucide-react";
+import { cn } from "@ui/shadCN/lib/utils";
+import { Button } from "@ui/shadCN/component/button";
+
 import { fuzzySearch } from "pages/monitoring/utils/search";
 import {
+  getCleanYoutubeId,
   getYoutubeVideoMetadata,
   type YoutubeVideoMetadata,
 } from "pages/monitoring/api/services/youtube";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import { StrValidator } from "@utils/strValidator";
+import { uiText } from "pages/monitoring/outlets/help/layout/uiText";
 
 export function Help() {
   const [search, setSearch] = useState("");
@@ -30,7 +36,9 @@ export function Help() {
 
   useEffect(() => {
     async function fetchVideoInfo() {
-      const res = await getYoutubeVideoMetadata(HELP_YOUTUBE_VIDEO_ID);
+      const res = await getYoutubeVideoMetadata(
+        getCleanYoutubeId(HELP_YOUTUBE_VIDEO_URL),
+      );
 
       if (isMonitoringAPIError(res)) {
         setVideoInfo(null);
@@ -44,9 +52,9 @@ export function Help() {
 
   const styledTexts = useMemo(
     () =>
-      uiText.faq.map((category) => ({
-        title: category.title,
-        content: category.cotent.map((question) => ({
+      uiText.faq.map((category, i) => ({
+        title: `${i + 1}. ${category.title}`,
+        content: category.content.map((question) => ({
           title: question.title,
           description: parseSimpleMarkdown(question.descriptionMd),
         })),
@@ -55,11 +63,7 @@ export function Help() {
   );
 
   const questionsSearched = useMemo(() => {
-    const sanitizedSearch = search
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .trim()
-      .toLocaleLowerCase();
+    const sanitizedSearch = StrValidator.normalize(search);
 
     if (!sanitizedSearch) {
       return styledTexts;
@@ -68,10 +72,7 @@ export function Help() {
     return styledTexts
       .map((section) => {
         const filteredContent = section.content.filter((question) => {
-          const sanitizedTitle = question.title
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .toLocaleLowerCase();
+          const sanitizedTitle = StrValidator.normalize(question.title);
 
           return fuzzySearch(sanitizedSearch, sanitizedTitle);
         });
@@ -86,7 +87,12 @@ export function Help() {
 
   return (
     <div
-      className="w-full min-h-full bg-(image:--bg-mobile) lg:bg-(image:--bg-desktop) bg-no-repeat p-8 flex flex-col gap-8"
+      className={cn(
+        "w-full min-h-full bg-(image:--bg-mobile) lg:bg-(image:--bg-desktop) bg-no-repeat",
+        "grid grid-cols-1 gap-10 p-4 [&_p]:max-w-[65ch]!",
+        "lg:p-12 lg:items-center lg:grid-cols-2",
+        "xl:grid-cols-[minmax(0,600px)_minmax(0,800px)] xl:justify-center xl:gap-[5%]",
+      )}
       style={
         {
           "--bg-mobile": `url(${bgDecoration})`,
@@ -99,7 +105,7 @@ export function Help() {
     >
       <PageTitleUpdater title="Ayuda" />
 
-      <div className="space-y-4">
+      <div className="space-y-4 bg-background/70 p-4 backdrop-blur rounded-lg">
         <h3 className="text-primary text-3xl font-normal">{uiText.title}</h3>
         <div className="max-w-65ch">
           {parseSimpleMarkdown(uiText.descriptionMd)}
@@ -108,7 +114,7 @@ export function Help() {
           <figure
             key={video.url}
             className="group relative rounded overflow-hidden outline outline-primary/50 hover:outline-primary hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-in-out"
-            title="Video tutorial"
+            title={uiText.video.title}
           >
             <a
               href={video.url}
@@ -137,30 +143,46 @@ export function Help() {
         )}
       </div>
 
-      <div className="">
+      <div className="space-y-2 bg-background p-4 shadow-2xl rounded-lg">
         <h3 className="text-primary text-3xl font-normal">{uiText.faqTitle}</h3>
         <label htmlFor="search" className="sr-only">
-          Buscar por palabra clave
+          {uiText.search.barSr}
         </label>
-        <InputGroup className="mb-4">
-          <InputGroupInput
-            id="search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Busca por palara clave..."
-          />
-          <InputGroupAddon align="inline-end">
-            <SearchIcon />
-          </InputGroupAddon>
-        </InputGroup>
+        <div className="flex gap-2">
+          <InputGroup className="mb-4">
+            <InputGroupInput
+              id="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={uiText.search.placeholder}
+            />
+            <InputGroupAddon align="inline-end">
+              <SearchIcon />
+            </InputGroupAddon>
+          </InputGroup>
+          <Button
+            variant="outline"
+            disabled={search.length === 0}
+            title={uiText.search.cleanBtn.title}
+            aria-label={uiText.search.cleanBtn.sr}
+          >
+            <Trash2 />
+          </Button>
+        </div>
 
-        <Accordion type="multiple" className="space-y-2">
+        <Accordion
+          type="multiple"
+          className="rounded-lg! border border-primary/30 overflow-hidden"
+        >
           {questionsSearched.map((section) => (
             <AccordionItem
               key={`qSection_${section.title}`}
               value={section.title}
+              className="rounded-none border-t outline-none first:border-t-0 border-primary/30"
             >
-              <AccordionTrigger>{section.title}</AccordionTrigger>
+              <AccordionTrigger className="rounded-none bg-background">
+                {section.title}
+              </AccordionTrigger>
               <AccordionContent>
                 <Accordion type="single" collapsible>
                   {section.content.map((question) => (
@@ -172,7 +194,7 @@ export function Help() {
                       <AccordionTrigger className="bg-transparent! text-primary! hover:bg-transparent! hover:text-accent! data-[state=open]:bg-transparent! data-[state=open]:text-primary! px-0">
                         {question.title}
                       </AccordionTrigger>
-                      <AccordionContent className="">
+                      <AccordionContent className="pb-4">
                         {question.description}
                       </AccordionContent>
                     </AccordionItem>

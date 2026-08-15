@@ -73,7 +73,7 @@ export const getYoutubeVideoMetadata = async (
       message: "Request cancelled",
       data: [
         {
-          msg: "URL o id del video incorrectos, se espera una URL de youtube o el ID de 11 caracteres",
+          msg: "Id del video incorrecta",
         },
       ],
     };
