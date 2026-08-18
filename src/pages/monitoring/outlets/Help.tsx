@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { PlayIcon, SearchIcon, Trash2 } from "lucide-react";
+import { PlayIcon, RotateCcw, SearchIcon } from "lucide-react";
 
 import { PageTitleUpdater } from "@ui/PageTitleUpdater";
 import { parseSimpleMarkdown } from "@utils/textParser";
@@ -166,7 +166,7 @@ export function Help() {
             title={uiText.search.cleanBtn.title}
             aria-label={uiText.search.cleanBtn.sr}
           >
-            <Trash2 />
+            <RotateCcw />
           </Button>
         </div>
 
