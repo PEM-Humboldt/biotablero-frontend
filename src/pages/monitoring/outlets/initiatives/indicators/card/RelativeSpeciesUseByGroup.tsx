@@ -31,7 +31,7 @@ export function RelativeSpeciesUseByGroup() {
     }
 
     const keys = new Set<string>();
-    const dataByDate: Record<string, Record<string, number | string>> = {};
+    const dataByDate: Map<string, Record<string, number | string>> = new Map();
 
     for (const value of data.values) {
       if (value.parent !== selectedParent) {
@@ -40,16 +40,34 @@ export function RelativeSpeciesUseByGroup() {
 
       keys.add(value.name);
 
-      if (!dataByDate[value.date]) {
-        dataByDate[value.date] = { date: value.date };
+      let current = dataByDate.get(value.date);
+      if (!current) {
+        current = { date: value.date, total: 0 };
       }
 
-      dataByDate[value.date][value.name] = value.value;
+      current = {
+        ...current,
+        [value.name]: value.value,
+        total: (current.total as number) + value.value,
+      };
+      dataByDate.set(value.date, current);
     }
+
+    dataByDate.forEach((data) => {
+      const total = data.total as number;
+
+      if (total > 0) {
+        for (const key of keys) {
+          if (typeof data[key] === "number") {
+            data[key] = (data[key] * 100) / total;
+          }
+        }
+      }
+    });
 
     return {
       displayKeys: [...keys],
-      displayData: Object.values(dataByDate),
+      displayData: [...dataByDate.values()],
     };
   }, [data, selectedParent]);
 
@@ -60,7 +78,11 @@ export function RelativeSpeciesUseByGroup() {
           uiText={uiText.indicatorCard.relativeSpeciesUseByGroup.selector}
           options={groupsList}
           currentSelection={selectedParent}
-          updateCurrent={setSelectedParent}
+          updateCurrent={(val: string | string[]) => {
+            if (typeof val === "string") {
+              setSelectedParent(val);
+            }
+          }}
         />
       </div>
 
@@ -99,7 +121,7 @@ export function RelativeSpeciesUseByGroup() {
           labelSkipWidth={12}
           labelSkipHeight={12}
           labelTextColor={(bar) => getContrastColor(bar.color)}
-          valueFormat={(v) => `${Number(v.toFixed(1))}%`}
+          valueFormat={(v) => `${Number(v.toFixed(2))}%`}
           tooltip={(bar) => {
             return (
               <div
@@ -114,7 +136,9 @@ export function RelativeSpeciesUseByGroup() {
                     />
                     {bar.id}
                   </span>
-                  <span className="text-lg font-normal">{bar.value}%</span>
+                  <span className="text-lg font-normal">
+                    {Number(bar.value.toFixed(3))}%
+                  </span>
                   <span className="italic">{bar.indexValue}</span>
                 </div>
               </div>
