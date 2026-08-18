@@ -12,7 +12,7 @@ export function BarsLegend({
 }) {
   return (
     <ul className="flex flex-wrap justify-end gap-4 text-sm p-4">
-      {keys.map((key) => {
+      {[...new Set(keys)].map((key) => {
         const color =
           customColorMap?.[key] ??
           getSeriesColor(

@@ -5,7 +5,6 @@ import {
   useEffect,
   useContext,
   useRef,
-  useCallback,
   type SetStateAction,
   type Dispatch,
 } from "react";
@@ -23,6 +22,7 @@ import {
   getIndicatorData,
   getIndicatorMetadata,
   getIndicators,
+  getIndicatorsByInitiative,
 } from "pages/monitoring/api/services/indicators";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { INDICATORS_PER_PAGE } from "@config/monitoring";
