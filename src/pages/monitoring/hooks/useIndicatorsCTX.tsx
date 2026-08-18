@@ -125,7 +125,15 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
       setIsLoading(true);
       setErrors([]);
 
-      const metadata = await getIndicatorMetadata(Number(currentIndicatorId));
+      const data = await getIndicatorData(Number(currentIndicatorId));
+      if (isMonitoringAPIError(data)) {
+        setIsLoading(false);
+        setCurrentIndicator(null);
+        setErrors(data.data.map((err) => err.msg));
+        return;
+      }
+
+      const metadata = await getIndicatorMetadata(data.indicatorId);
       if (isMonitoringAPIError(metadata)) {
         setIsLoading(false);
         setCurrentIndicator(null);
@@ -137,14 +145,6 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
         void navigate(
           `/Monitoreo/Iniciativas/${metadata.initiativeId}/Indicadores/${currentIndicatorId}`,
         );
-        return;
-      }
-
-      const data = await getIndicatorData(Number(currentIndicatorId));
-      if (isMonitoringAPIError(data)) {
-        setIsLoading(false);
-        setCurrentIndicator(null);
-        setErrors(data.data.map((err) => err.msg));
         return;
       }
 
