@@ -224,3 +224,4 @@ export const INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY = 3;
 // Report
 export const REPORT_NOTE_MAX_LENGTH = 250;
 export const REPORT_PAGE_SIZE: PageProps["size"] = "LETTER";
+export const REPORT_DOWNLOAD_NAME_PREFIX = "Biotablero_reporte";

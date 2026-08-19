@@ -25,7 +25,10 @@ import { pdf } from "@react-pdf/renderer";
 import { AnimatePresence } from "motion/react";
 import TextareaAutosize from "react-textarea-autosize";
 
-import { REPORT_NOTE_MAX_LENGTH } from "@config/monitoring";
+import {
+  REPORT_DOWNLOAD_NAME_PREFIX,
+  REPORT_NOTE_MAX_LENGTH,
+} from "@config/monitoring";
 import { inputWarnColor } from "@utils/ui";
 import { useUserCTX } from "@hooks/UserCTX";
 import { fetchInitiativeContext } from "@hooks/useReport/utils/fetchInitiativeContext";
@@ -57,6 +60,7 @@ import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
 import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 import { uiText } from "@hooks/useReport/layout/uiText";
 import { StrValidator } from "@utils/strValidator";
+import { sendReportDownloadReason } from "pages/monitoring/api/services/report";
 
 type ReportContextType = {
   isLoading: boolean;
@@ -403,7 +407,8 @@ export function ReportCTX({ children }: { children: ReactNode }) {
   // generado, apenas esté listo el endpoint del back, debe ser actualizada
   // para ser una función únicamente de descarga.
   const downloadReport = async () => {
-    if (!user) {
+    const whyDownloadSanitized = StrValidator.sanitize(whyDownload);
+    if (!user || !whyDownloadSanitized) {
       return;
     }
 
@@ -422,27 +427,54 @@ export function ReportCTX({ children }: { children: ReactNode }) {
 
     // TODO: apenas esté listo el endpoint para enviar las estadísticas
     // de descarga, es necesario actualizar la funcion para:
-    // 1. sanitizar la razón de descarga
-    // 2. Generar el pdf
-    // 3. crear el enlace de descarga
-    // 4. realizar la descarga automática
     // 5. enviar la información de las estadisticas de descarga al endpoint
     // 6. limpiar memoria
     try {
-      setIsLoading(true);
-      if (reportType === "InitiativeIndicator" && docContext) {
-        const blob = await pdf(
-          <CMIndicatorReportModel
-            metadata={docMetadata}
-            context={docContext as IndicatorContext}
-            sections={docSections as Map<string, IndicatorSection>}
-          />,
-        ).toBlob();
-
-        const pdfUrl = URL.createObjectURL(blob);
-        window.open(pdfUrl, "_blank");
-        setTimeout(() => URL.revokeObjectURL(pdfUrl), 1000);
+      if (!docContext) {
+        return;
       }
+      setIsLoading(true);
+
+      // TODO: el siguiente segmento debe ser adecuado para cuando
+      // mas secciones de biotablero requieran reportes.
+      // let blob: Blob;
+      // let fileName: string;
+      // esta condicion es para indicadores de iniciativa
+      // if (reportType === "InitiativeIndicator") ...
+      const blob = await pdf(
+        <CMIndicatorReportModel
+          metadata={docMetadata}
+          context={docContext as IndicatorContext}
+          sections={docSections as Map<string, IndicatorSection>}
+        />,
+      ).toBlob();
+      const fileName = `${REPORT_DOWNLOAD_NAME_PREFIX}_${docMetadata.creationDate}.pdf`;
+      // TODO: fin del segmento
+
+      const pdfUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = pdfUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+
+      void sendReportDownloadReason(
+        whyDownloadSanitized,
+        JSON.stringify(
+          {
+            name: `${user.firstName} ${user.lastName}`,
+            organization: user.organization,
+          },
+          null,
+          2,
+        ),
+      );
+
+      setTimeout(() => URL.revokeObjectURL(pdfUrl), 1000);
+
+      setReportDownloaded(true);
     } catch (error) {
       console.error(uiText.downloadReportError, error);
     } finally {
