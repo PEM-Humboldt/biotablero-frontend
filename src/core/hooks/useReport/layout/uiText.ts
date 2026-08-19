@@ -47,7 +47,7 @@ export const uiText = {
     title: "¿Deseas salir de la página?",
     description:
       "Tienes un reporte generado sin descargar. Si sales ahora, perderás los cambios.",
-    cancel: "Permanecer en indicadores",
+    cancel: "Permanecer en la página",
     confirm: "Salir de todas formas",
   },
 };
