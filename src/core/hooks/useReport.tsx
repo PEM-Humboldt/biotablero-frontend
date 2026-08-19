@@ -20,7 +20,7 @@ import {
   useState,
 } from "react";
 import workerUrl from "modern-screenshot/worker?url";
-import { useLocation } from "react-router";
+import { useBlocker, useLocation } from "react-router";
 import { pdf } from "@react-pdf/renderer";
 import { AnimatePresence } from "motion/react";
 import TextareaAutosize from "react-textarea-autosize";
@@ -55,6 +55,16 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@ui/shadCN/component/sheet";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@ui/shadCN/component/alert-dialog";
 
 import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
 import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
@@ -231,6 +241,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       ],
     };
 
+    setReportDownloaded(false);
     setDocSections((oldSections) =>
       new Map(oldSections).set(sectionId, updatedSection),
     );
@@ -261,9 +272,11 @@ export function ReportCTX({ children }: { children: ReactNode }) {
           for (const section of oldSections.values()) {
             section.graphs.forEach(revokeGraphUrls);
           }
+          setReportDownloaded(true);
           return new Map();
         }
 
+        setReportDownloaded(false);
         const updatedSections = new Map(oldSections);
         const sectionToWork = updatedSections.get(sectionId);
         if (!sectionToWork) {
@@ -353,8 +366,9 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     sectionId: string,
     graphStateId?: string,
   ) => {
-    const shift = direction === "prev" ? -1 : 1;
+    setReportDownloaded(false);
 
+    const shift = direction === "prev" ? -1 : 1;
     setDocSections((oldSections) => {
       if (graphStateId) {
         const section = oldSections.get(sectionId);
@@ -403,9 +417,6 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     });
   };
 
-  // WARN: En este momento la función es para previsualizar el documento
-  // generado, apenas esté listo el endpoint del back, debe ser actualizada
-  // para ser una función únicamente de descarga.
   const downloadReport = async () => {
     const whyDownloadSanitized = StrValidator.sanitize(whyDownload);
     if (!user || !whyDownloadSanitized) {
@@ -425,10 +436,6 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       },
     };
 
-    // TODO: apenas esté listo el endpoint para enviar las estadísticas
-    // de descarga, es necesario actualizar la funcion para:
-    // 5. enviar la información de las estadisticas de descarga al endpoint
-    // 6. limpiar memoria
     try {
       if (!docContext) {
         return;
@@ -492,9 +499,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     );
   };
 
-  useEffect(() => {
-    setReportDownloaded(false);
-  }, [docSections]);
+  useEffect(() => {}, [docSections]);
 
   useEffect(() => {
     return () => {
@@ -523,6 +528,25 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       return newSections;
     });
   };
+
+  const blocker = useBlocker(
+    !reportDownloaded
+      ? ({ currentLocation, nextLocation }) => {
+          const currentPath = currentLocation.pathname
+            .split("/")
+            .filter(Boolean)
+            .slice(0, -1)
+            .join("/");
+          const nextPath = nextLocation.pathname
+            .split("/")
+            .filter(Boolean)
+            .slice(0, -1)
+            .join("/");
+
+          return currentPath !== nextPath;
+        }
+      : false,
+  );
 
   return (
     <ReportContext.Provider
@@ -636,6 +660,25 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       </Sheet>
 
       {children}
+
+      <AlertDialog open={blocker.state === "blocked"}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{uiText.leaveAlert.title}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {uiText.leaveAlert.description}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => blocker.reset?.()}>
+              {uiText.leaveAlert.cancel}
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={() => blocker.proceed?.()}>
+              {uiText.leaveAlert.confirm}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </ReportContext.Provider>
   );
 }
