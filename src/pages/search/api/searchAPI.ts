@@ -103,25 +103,30 @@ class SearchAPI {
   /**
    * Get metrics layers
    * @param metricId Metric identifier
-   * @param itemId Item identifier
+   * @param item_id Item identifier
    * @param category Category identifier
-   * @param polygonId Polygon identifier
+   * @param polygon_id Polygon identifier
    * @returns URL with layer image
    */
   static requestMetricsLayer(
     metricId: MetricsTypes,
-    itemId: string,
+    item_id: string,
     class_id: string,
-    polygonId: number,
-    options?: AxiosRequestConfig,
+    polygon_id: number,
+    group?: string,
   ): RasterAPIObject {
     const source = axios.CancelToken.source();
+
     return {
-      request: SearchAPI.makeGetRequest(
-        `metrics/${metricId}/layer?item_id=${itemId}&polygon_id=${polygonId}&class_id=${class_id}`,
-        options,
-      ),
-      source: source,
+      request: SearchAPI.makeGetRequest(`metrics/${metricId}/layer`, {
+        params: {
+          item_id,
+          polygon_id,
+          class_id,
+          ...(group && { group }),
+        },
+      }) as Promise<{ layer: string }>,
+      source,
     };
   }
 

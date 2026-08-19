@@ -142,7 +142,7 @@ export function Gap() {
           type: SearchUpdated.WILDCARD,
           payload: {
             rasterLayers: layersRes,
-            mapTitle: { name: `Vacíos para ${lastYear}` },
+            mapTitle: { name: `Vacíos · ${lastYear}` },
           },
         });
       })
@@ -288,7 +288,7 @@ export function Gap() {
         )}
       </div>
 
-      <div className="w-full h-full aspect-3/2 mt-4">
+      <div className="w-full h-full aspect-video mt-4">
         {isLoading ? (
           <div className="errorData">Cargando datos...</div>
         ) : (
@@ -357,10 +357,16 @@ export function Gap() {
 }
 
 function markers(year: number, recordsGapAverage: Record<string, number>) {
+  const value = recordsGapAverage[year];
+
+  if (typeof value !== "number" || isNaN(value)) {
+    return [];
+  }
+
   return [
     {
       axis: "x" as const,
-      value: recordsGapAverage[year],
+      value: value,
       lineStyle: {
         stroke: GRAPHS_EXTENDED_COLOR_PALETTE[4],
         strokeWidth: 2,

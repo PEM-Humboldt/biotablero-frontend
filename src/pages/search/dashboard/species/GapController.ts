@@ -208,7 +208,7 @@ export class GapContoller {
         period,
         classId,
         this.areaId,
-        { params: taxonomicGroup ? { group: taxonomicGroup } : {} },
+        taxonomicGroup,
       );
       requests.push(request);
       this.activeRequests.set(classId, source);
