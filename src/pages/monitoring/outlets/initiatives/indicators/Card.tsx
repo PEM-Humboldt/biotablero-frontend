@@ -31,8 +31,6 @@ export function Card() {
     return all;
   }, []);
 
-  console.log(currentIndicator?.description);
-
   return (
     <main className="flex-3 bg-[#f5f5f5]">
       <ErrorsList
