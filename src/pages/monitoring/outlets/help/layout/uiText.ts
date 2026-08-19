@@ -67,7 +67,7 @@ export const uiText = {
             "¿Qué roles existen dentro de una iniciativa y en qué se diferencian?",
           descriptionMd: `Existen tres roles, mutuamente excluyentes dentro de una misma iniciativa:
 - **Líder:** administra la iniciativa (gestión de líderes, colaboradores, observadores, información general e invitaciones).
-_ **Colaborador:** participa activamente en el monitoreo y puede aportar información y recursos.
+- **Colaborador:** participa activamente en el monitoreo y puede aportar información y recursos.
 - **Observador:** puede consultar toda la información de la iniciativa, incluidos datos sensibles, pero no puede interactuar ni agregar contenido. Recibe las notificaciones de la iniciativa.`,
         },
         {
@@ -86,9 +86,9 @@ _ **Colaborador:** participa activamente en el monitoreo y puede aportar informa
             "Debes tener una cuenta creada, ir al perfil de la iniciativa correspondiente y hacer clic en el botón «Unirse» para enviar tu solicitud de participación. La solicitud queda sujeta a revisión antes de confirmarse tu ingreso.",
         },
         {
-          title: "soy líder, ¿qué puedo gestionar de mi iniciativa?",
+          title: "Soy líder, ¿qué puedo gestionar de mi iniciativa?",
           descriptionMd:
-            "desde la vista de gestión de la iniciativa puedes administrar líderes, colaboradores, observadores, la información general de la iniciativa e invitar nuevas personas. el líder también recibe los correos de contacto dirigidos a la iniciativa; por eso se recomienda usar, para la cuenta de la iniciativa, un correo institucional o compartido —no uno personal— que se mantenga estable en el tiempo, incluso si cambian las personas responsables.",
+            "Desde la vista de gestión de la iniciativa puedes administrar líderes, colaboradores, observadores, la información general de la iniciativa e invitar nuevas personas. el Líder también recibe los correos de contacto dirigidos a la iniciativa; por eso se recomienda usar, para la cuenta de la iniciativa, un correo institucional o compartido —no uno personal— que se mantenga estable en el tiempo, incluso si cambian las personas responsables.",
         },
         {
           title: "¿Qué se ve dentro del perfil de una iniciativa?",
