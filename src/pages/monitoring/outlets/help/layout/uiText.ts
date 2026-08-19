@@ -88,7 +88,7 @@ export const uiText = {
         {
           title: "Soy líder, ¿qué puedo gestionar de mi iniciativa?",
           descriptionMd:
-            "Desde la vista de gestión de la iniciativa puedes administrar líderes, colaboradores, observadores, la información general de la iniciativa e invitar nuevas personas. el Líder también recibe los correos de contacto dirigidos a la iniciativa; por eso se recomienda usar, para la cuenta de la iniciativa, un correo institucional o compartido —no uno personal— que se mantenga estable en el tiempo, incluso si cambian las personas responsables.",
+            "Desde la vista de gestión de la iniciativa puedes administrar líderes, colaboradores, observadores, la información general de la iniciativa e invitar nuevas personas. El líder también recibe los correos de contacto dirigidos a la iniciativa; por eso se recomienda usar, para la cuenta de la iniciativa, un correo institucional o compartido —no uno personal— que se mantenga estable en el tiempo, incluso si cambian las personas responsables.",
         },
         {
           title: "¿Qué se ve dentro del perfil de una iniciativa?",
