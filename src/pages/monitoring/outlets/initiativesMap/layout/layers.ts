@@ -7,7 +7,12 @@ import forestBtn from "@assets/mapButtons/bosques.png";
 import waterResourcesBtn from "@assets/mapButtons/fuentesHidricas.png";
 import roadsBtn from "@assets/mapButtons/vias.png";
 
-export const MAP_TILES = [
+export const MAP_TILES: {
+  label: string;
+  attribution: string;
+  url: string;
+  uiThumbs: { button: string; selection: string };
+}[] = [
   {
     label: "Político",
     attribution:
@@ -31,7 +36,13 @@ export const MAP_TILES = [
   },
 ] as const;
 
-export const MAP_LAYERS = [
+export const MAP_LAYERS: {
+  label: string;
+  attribution: string;
+  url: string;
+  layers: string;
+  buttonBkg: string;
+}[] = [
   {
     label: "Páramos",
     attribution: "",
@@ -61,4 +72,4 @@ export const MAP_LAYERS = [
     layers: "pnn:runap",
     buttonBkg: roadsBtn,
   },
-] as const;
+];

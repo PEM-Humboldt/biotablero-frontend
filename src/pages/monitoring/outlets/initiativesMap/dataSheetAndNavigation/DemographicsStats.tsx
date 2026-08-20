@@ -45,7 +45,7 @@ export function DemographicsStats() {
         bottomAxisLabel="Personas"
       />
 
-      <p className="text-sm text-balance text-right mb-0 mt-4">
+      <p className="text-sm text-balance text-center mb-0 mt-4">
         {uiText.stats.demographic.postText}
       </p>
     </>
