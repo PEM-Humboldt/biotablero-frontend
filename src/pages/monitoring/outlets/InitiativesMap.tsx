@@ -10,10 +10,6 @@ import type {
 
 import { ErrorsList } from "@ui/LabelingWithErrors";
 
-import type {
-  MAP_LAYERS,
-  MAP_TILES,
-} from "pages/monitoring/outlets/initiativesMap/layout/layers";
 import type { DeptProperties } from "pages/monitoring/outlets/initiativesMap/types/mapFeatures";
 import { type InitiativeByLocation } from "pages/monitoring/types/initiative";
 import { getGeoJsonMap } from "pages/monitoring/api/services/location";
@@ -31,6 +27,7 @@ export function InitiativesMap() {
 
   const [nation, setNation] = useState<FeatureCollection | null>(null);
   const [initiatives, setInitiatives] = useState<InitiativeByLocation[]>([]);
+  const [showDepartments, setShowDepartments] = useState(true);
 
   useEffect(() => {
     const fetchMapInfo = async () => {
@@ -139,7 +136,7 @@ export function InitiativesMap() {
         layer={layer}
         nation={nation}
         initiatives={initiatives}
-        activeFeatures={activeFeatures}
+        activeFeatures={showDepartments ? activeFeatures : []}
         leastInitiativesPerDepartment={leastInitiativesPerDepartment}
         mostInitiativesPerDepartment={mostInitiativesPerDepartment}
       />
@@ -152,6 +149,8 @@ export function InitiativesMap() {
         setTiles={setTiles}
         layers={layer}
         setLayers={setLayer}
+        showDepartments={showDepartments}
+        setShowDepartments={setShowDepartments}
       />
     </div>
   );
