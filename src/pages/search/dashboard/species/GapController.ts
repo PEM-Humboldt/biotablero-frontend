@@ -153,10 +153,10 @@ export class GapContoller {
   async getGapTexts(sectionName: string): Promise<textsObject> {
     // TODO: Eliminar este retornogcuando el back con los textos esté al día
     return Promise.resolve({
-      info: "Informacion de prueba",
-      cons: "esto es cons",
-      meto: "qué carajos es meto?",
-      quote: "Pos si carenalga, Albert Einstein",
+      info: "",
+      cons: "",
+      meto: "",
+      quote: "",
     });
 
     // TODO: Actualizar funcion cuando el back con los textos esté al día

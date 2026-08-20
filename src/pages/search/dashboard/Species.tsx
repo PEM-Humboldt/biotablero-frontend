@@ -71,7 +71,7 @@ export function Species() {
       classNameDefault="m0b"
       classNameSelected="m0b selector-expanded"
       handleChange={handleAccordionChange}
-      level="2"
+      level="1"
     />
   );
 }
