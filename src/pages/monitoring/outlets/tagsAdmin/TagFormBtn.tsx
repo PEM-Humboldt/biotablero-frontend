@@ -13,7 +13,11 @@ import type {
 import { tagValidations } from "pages/monitoring/outlets/tagsAdmin/utils/formClientValidations";
 import { makeInitialInfo } from "pages/monitoring/outlets/tagsAdmin/utils/formObjectUpdate";
 import { StrValidator } from "@utils/strValidator";
-import { TAG_NAME_MAX_LENGTH, TAG_URL_MAX_LENGTH } from "@config/monitoring";
+import {
+  TAG_FULLNAME_MAX_LENGTH,
+  TAG_NAME_MAX_LENGTH,
+  TAG_URL_MAX_LENGTH,
+} from "@config/monitoring";
 import { ErrorsList, LabelAndErrors } from "@ui/LabelingWithErrors";
 import {
   InputGroup,
@@ -153,6 +157,18 @@ export function TagFormButton({
       },
     );
 
+  const fullNameOnBlur = () =>
+    validateField(
+      "fullName",
+      new StrValidator(formData.name)
+        .isRequired()
+        .sanitize()
+        .hasLengthLessOrEqualThan(TAG_FULLNAME_MAX_LENGTH),
+      (val) => {
+        setFormData((old) => ({ ...old, name: val }));
+      },
+    );
+
   const urlOnBlur = () =>
     validateField(
       "url",
@@ -172,6 +188,7 @@ export function TagFormButton({
 
     categoryOnBlur();
     nameOnBlur();
+    fullNameOnBlur();
     urlOnBlur();
 
     const validations = tagId
@@ -187,7 +204,8 @@ export function TagFormButton({
 
     const payload: TagDataForm = {
       name: formData.name,
-      url: formData.url?.trim() || undefined,
+      url: formData.url,
+      fullName: formData.fullName,
       category: (!tagId ? formData.category : {}) as TagCategory,
     };
 
@@ -358,10 +376,48 @@ export function TagFormButton({
                   maxLength={TAG_NAME_MAX_LENGTH}
                 />
                 <InputGroupAddon
-                  align="block-end"
+                  align="inline-end"
                   className={`${inputWarnColor(formData.name, TAG_NAME_MAX_LENGTH, 0.95)} flex-row-reverse`}
                 >
                   {inputLengthCount(formData.name, TAG_NAME_MAX_LENGTH)}
+                </InputGroupAddon>
+              </InputGroup>
+            </div>
+
+            <div>
+              <LabelAndErrors
+                htmlFor="fullName"
+                errID="errors_fullName"
+                validationErrors={errors.fullName ?? []}
+                className="mb-1 text-sm font-medium"
+              >
+                {uiText.form.fullNameLabel}
+              </LabelAndErrors>
+              <InputGroup>
+                <InputGroupInput
+                  id="url"
+                  type="text"
+                  placeholder={uiText.form.placeholders.tagLongName}
+                  value={formData.fullName ?? ""}
+                  onChange={(e) =>
+                    setFormData((old) => ({ ...old, fullName: e.target.value }))
+                  }
+                  onBlur={urlOnBlur}
+                  disabled={isLoading}
+                  aria-invalid={errors.fullName !== undefined}
+                  aria-describedby={
+                    errors.fullName ? "errors_fullName" : undefined
+                  }
+                  maxLength={TAG_FULLNAME_MAX_LENGTH}
+                />
+                <InputGroupAddon
+                  align="inline-end"
+                  className={`${inputWarnColor(formData.url ?? "", TAG_FULLNAME_MAX_LENGTH, 0.95)} flex-row-reverse`}
+                >
+                  {inputLengthCount(
+                    formData.url ?? "",
+                    TAG_FULLNAME_MAX_LENGTH,
+                  )}
                 </InputGroupAddon>
               </InputGroup>
             </div>
@@ -391,7 +447,7 @@ export function TagFormButton({
                   maxLength={TAG_URL_MAX_LENGTH}
                 />
                 <InputGroupAddon
-                  align="block-end"
+                  align="inline-end"
                   className={`${inputWarnColor(formData.url ?? "", TAG_URL_MAX_LENGTH, 0.95)} flex-row-reverse`}
                 >
                   {inputLengthCount(formData.url ?? "", TAG_URL_MAX_LENGTH)}

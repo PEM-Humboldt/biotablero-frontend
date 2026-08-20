@@ -42,8 +42,11 @@ export const uiText = {
     selectCategoryLabel: "Seleccione la categoría",
     defaultCategoryTitle: "-- Elige una categoría --",
     category: "Categoría",
-    nameLabel: "Nombre de la etiqueta",
-    urlLabel: "URL de la etiqueta (opcional)",
+    nameLabel:
+      "Nombre corto para la etiqueta (en caso de tener una abreviación usar acá)",
+    fullNameLabel:
+      "Nombre completo de la etiqueta (usar sólo si se usó el nombre corto)",
+    urlLabel: "URL de la etiqueta",
 
     validation: {
       categoryIdRequired: "Se requiere seleccionar una categoría",
@@ -52,8 +55,10 @@ export const uiText = {
     },
 
     placeholders: {
-      tagName: "Nombre de la etiqueta",
+      tagName: "Nombre de la etiqueta o la abreviación",
       tagUrl: "https://ejemplo.co",
+      tagLongName:
+        "Un nombre muy largo para la etiqueta, suele ser el nombre de una organizacion",
     },
   },
 

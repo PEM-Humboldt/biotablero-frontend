@@ -81,7 +81,9 @@ function ODataTableRow<T extends HasId>({
       return col.processValue(value);
     }
 
-    return typeof value === "object" ? JSON.stringify(value) : String(value);
+    return typeof value === "object"
+      ? JSON.stringify(value)
+      : String(value ?? "");
   };
 
   return (

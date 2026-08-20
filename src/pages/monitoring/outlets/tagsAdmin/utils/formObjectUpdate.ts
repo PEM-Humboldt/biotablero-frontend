@@ -4,6 +4,7 @@ export function makeInitialInfo(): TagDataForm {
   return {
     name: "",
     url: "",
+    fullName: "",
     category: {
       id: 0,
       name: "",

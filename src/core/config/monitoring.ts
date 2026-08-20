@@ -74,7 +74,7 @@ export const LOG_RECORDS_PER_PAGE = 20; // registrys on the logs summary
 export const INITIATIVES_PER_PAGE = 10; // Initiatives on the admin panel
 
 export const INITIAVIVE_NAME_MAX_LENGTH = 100;
-export const INITIAVIVE_SHORTNAME_MAX_LENGTH = 120;
+export const INITIAVIVE_SHORTNAME_MAX_LENGTH = 40;
 export const INITIAVIVE_DESCRIPTION_MAX_LENGTH = 1000;
 export const INITIAVIVE_OBJECTIVE_MAX_LENGTH = 1000;
 export const INITIAVIVE_INFLUENCE_MAX_LENGTH = 1000;
@@ -185,7 +185,8 @@ export const TAG_COLORS = [
 ];
 
 // Tag admin
-export const TAG_NAME_MAX_LENGTH = 100;
+export const TAG_NAME_MAX_LENGTH = 40;
+export const TAG_FULLNAME_MAX_LENGTH = 120;
 export const TAG_URL_MAX_LENGTH = 150;
 export const TAG_RECORDS_PER_PAGE = 20;
 

@@ -273,12 +273,7 @@
 
         /* NOTE: Col nombre */
         &:nth-child(2) {
-          @apply w-[25%];
-        }
-
-        /* NOTE: Col url */
-        &:nth-child(3) {
-          @apply w-[40%];
+          @apply w-[15%];
         }
 
         /* NOTE: Col acción */

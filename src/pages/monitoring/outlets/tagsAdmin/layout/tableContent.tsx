@@ -2,7 +2,7 @@ import type { ODataColumn } from "@appTypes/odata";
 import type { ODataTag } from "pages/monitoring/types/odataResponse";
 import { TagTableButtons } from "pages/monitoring/outlets/tagsAdmin/TagTableBtns";
 import type { ApiRequestError } from "@appTypes/api";
-import type { TagDataForm } from "pages/monitoring/types/tagData";
+import type { TagCategory, TagDataForm } from "pages/monitoring/types/tagData";
 
 export const getTableContent = (
   onActionSuccess: () => void,
@@ -13,6 +13,7 @@ export const getTableContent = (
 ): ODataColumn<ODataTag>[] => [
   { name: "Categoría", source: "categoryName", type: "text", sortBy: true },
   { name: "Nombre", source: "name", type: "text", sortBy: true },
+  { name: "Nombre completo", source: "fullName", type: "text" },
   { name: "Url", source: "url", type: "text" },
   {
     name: "Acciones",
