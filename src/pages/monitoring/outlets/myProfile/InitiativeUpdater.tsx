@@ -84,10 +84,6 @@ export function InitiativeUpdater() {
     [initiativeUsers],
   );
 
-  console.log("1", initiativeUsersByRole[RoleInInitiative["LEADER"]]);
-  console.log("2", initiativeUsersByRole[1]);
-  console.log("3", typeof RoleInInitiative["LEADER"]);
-
   return (
     <>
       <PageTitleUpdater
