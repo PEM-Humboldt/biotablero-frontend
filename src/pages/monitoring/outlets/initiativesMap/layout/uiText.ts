@@ -106,6 +106,14 @@ export const uiText = {
       trigger: "Selecciona un departamento",
       inputPlaceholder: "",
     },
+    showDepartmentsBtn: {
+      label: (enable: boolean) =>
+        enable ? "División política" : "División política",
+      title: (enable: boolean) =>
+        enable ? "Mostrar división política" : "Ocultar división política",
+      sr: (enable: boolean) =>
+        enable ? "Mostrar división política" : "Ocultar división política",
+    },
     legends: {
       initiative: "Iniciativas",
       nearByInitiatives: "Iniciativas cercanas",

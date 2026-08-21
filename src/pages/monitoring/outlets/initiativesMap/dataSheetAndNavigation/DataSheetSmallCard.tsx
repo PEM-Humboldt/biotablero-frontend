@@ -5,6 +5,7 @@ import { cn } from "@ui/shadCN/lib/utils";
 import { Button } from "@ui/shadCN/component/button";
 import type { LucideIcon } from "lucide-react";
 import { TAG_COLORS } from "@config/monitoring";
+import type { IndicatorVersion } from "pages/monitoring/types/indicators";
 
 export function DataSheetSmallCard({
   title,
@@ -16,7 +17,7 @@ export function DataSheetSmallCard({
   title: string;
   tags?: Omit<ODataTag, "categoryName">[];
   location?: string;
-  bottonLeftInfo?: Date | string;
+  bottonLeftInfo?: Date | IndicatorVersion;
   link: {
     href: string;
     label?: string;
@@ -72,10 +73,21 @@ export function DataSheetSmallCard({
       <div className="px-2 flex justify-between items-center *:text-sm *:m-0">
         {bottonLeftInfo instanceof Date ? (
           <time dateTime={bottonLeftInfo.toISOString().split("T")[0]}>
-            {bottonLeftInfo.toLocaleDateString()}
+            Desde {bottonLeftInfo.toLocaleDateString()}
           </time>
         ) : (
-          <span>{bottonLeftInfo}</span>
+          bottonLeftInfo?.creationDate && (
+            <time
+              dateTime={
+                new Date(bottonLeftInfo.creationDate)
+                  .toISOString()
+                  .split("T")[0]
+              }
+            >
+              Actualizado el{" "}
+              {new Date(bottonLeftInfo.creationDate).toLocaleDateString()}
+            </time>
+          )
         )}
 
         <Button variant="ghost-clean" size="sm" className="px-0! mx-0" asChild>

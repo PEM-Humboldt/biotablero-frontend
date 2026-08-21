@@ -210,7 +210,9 @@ export function CardsAttachment() {
                         key={`indicatorsSmallCard_${indicator.id}`}
                         title={indicator.type.name}
                         tags={indicator.tags.map((t) => t.tag)}
-                        bottonLeftInfo={`Version: ${indicator.versions[0].version}`}
+                        bottonLeftInfo={
+                          indicator.versions[indicator.versions.length - 1]
+                        }
                         link={{
                           href: `/Monitoreo/Iniciativas/${indicator.initiativeId}/Indicadores/${indicator.id}`,
                           icon: ChevronRight,
