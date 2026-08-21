@@ -18,6 +18,7 @@ import { Resources as MonitoringResources } from "pages/monitoring/outlets/Resou
 import { IndicatorsSearch } from "pages/monitoring/outlets/IndicatorsSearch";
 import { Manager as ResourcesManager } from "pages/monitoring/outlets/resources/Manager";
 import { Help } from "pages/monitoring/outlets/Help";
+import { ToS } from "pages/TOS";
 
 export const routes = createBrowserRouter([
   {
@@ -142,6 +143,10 @@ export const routes = createBrowserRouter([
       {
         path: "Portafolios",
         Component: Portfolio,
+      },
+      {
+        path: "TerminosCondiciones",
+        Component: ToS,
       },
     ],
   },

@@ -1,8 +1,11 @@
+import { Link } from "react-router";
+
 import type { Collaborators } from "@appTypes/layout";
 import { collaboratorsIcons } from "@assets/dictionaries/collaboratorsIcons";
-import { uiText } from "core/layout/mainLayout/footer/layout/uiText";
 import { Button } from "@ui/shadCN/component/button";
 import { cn } from "@ui/shadCN/lib/utils";
+
+import { uiText } from "core/layout/mainLayout/footer/layout/uiText";
 
 interface FooterProps {
   logos: Set<Collaborators>;
@@ -57,7 +60,7 @@ export function Footer({ logos, className }: FooterProps) {
                   <img
                     src={collaboratorsIcons[collaborator].img}
                     alt={collaborator}
-                    className="object-contain object-center w-14 h-8 md:w-18 md:h-12 "
+                    className="object-contain object-center w-14 h-8 md:w-18 md:h-12"
                   />
                 </a>
               ))}
@@ -80,6 +83,14 @@ export function Footer({ logos, className }: FooterProps) {
           >
             {uiText.uiTxt.links.contact}
           </a>
+          <Button
+            title={uiText.citationTooltip}
+            variant="link"
+            className="text-accent text-sm"
+            asChild
+          >
+            <Link to="TerminosCondiciones">Términos y condiciones</Link>
+          </Button>
         </div>
       </div>
     </footer>
