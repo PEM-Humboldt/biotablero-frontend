@@ -26,7 +26,6 @@ import { makeSearchResourcesComponents } from "pages/monitoring/outlets/resource
 import { ResourceCard } from "pages/monitoring/outlets/resources/ResourceCard";
 import { CurrentResource } from "pages/monitoring/outlets/resources/CurrentResource";
 import { uiText } from "pages/monitoring/outlets/resources/layout/uiText";
-import { divIcon } from "leaflet";
 
 export function Resources() {
   const { resourceId } = useParams();

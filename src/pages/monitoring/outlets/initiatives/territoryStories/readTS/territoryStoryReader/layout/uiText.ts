@@ -51,6 +51,6 @@ export const uiText = {
 
   storiesList: {
     loading: "Cargando los relatos...",
-    noStories: "No se encontraron relatos que conincidan con tu búsqueda",
+    noStories: "No hay historias disponibles",
   },
 };
