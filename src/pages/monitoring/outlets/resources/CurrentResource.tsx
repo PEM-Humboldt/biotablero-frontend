@@ -19,6 +19,10 @@ import { TagsRender } from "pages/monitoring/ui/TagsRender";
 import { LikeResourceButton } from "pages/monitoring/outlets/resources/ui/LikeResourseButton";
 import { uiText } from "pages/monitoring/outlets/resources/layout/uiText";
 
+type UnifiedAttachment = ResourceAttachment & {
+  type: "file" | "link";
+};
+
 export function CurrentResource({
   resource,
   updateResource,
@@ -43,23 +47,19 @@ export function CurrentResource({
     return all;
   }, {});
 
-  const hasFiles = resource.files.length > 0;
-  const hasLinks = resource.links.length > 0;
-  const listsCount = [hasFiles, hasLinks].filter(Boolean).length;
-
-  const widthClass = {
-    0: "lg:w-1/2",
-    1: "lg:w-[75%]",
-    2: "lg:w-full",
-  }[listsCount as 0 | 1 | 2];
+  const attachments: UnifiedAttachment[] = [
+    ...(resource.files ?? []).map((file) => ({
+      ...file,
+      type: "file" as const,
+    })),
+    ...(resource.links ?? []).map((link) => ({
+      ...link,
+      type: "link" as const,
+    })),
+  ];
 
   return (
-    <article
-      className={cn(
-        "relative w-full p-8 bg-background border-2 border-primary rounded-4xl shadow-xl mb-4",
-        widthClass,
-      )}
-    >
+    <article className="relative w-full p-8 bg-background border-2 border-primary rounded-xl shadow-xl mb-4 lg:w-[75%]">
       <header>
         <div className="flex gap-2 justify-between">
           <h3 className="text-primary text-5xl mb-0">{resource.name}</h3>
@@ -84,7 +84,7 @@ export function CurrentResource({
           <span className="italic">{resource.initiative?.name ?? ""}</span>
         </div>
 
-        <div className="absolute top-0 right-8 bg-primary text-primary-foreground text-sm px-2 rounded-b">
+        <div className="absolute top-0 right-4 bg-primary text-primary-foreground text-sm font-normal px-2 rounded-b">
           <span className="sr-only">
             {uiText.resourcePublicationDatePrefixSr}
           </span>
@@ -108,45 +108,36 @@ export function CurrentResource({
       <div className="flex flex-wrap w-full gap-4 [&_h4]:text-primary [&_h4]:italic [&_h4]:mb-0">
         <div className="flex-2 min-w-[350px]">
           <h4>{uiText.resourceDesciptionTitle}</h4>
-          <p className="text-lg">{resource.description}</p>
+          <p className="text-lg max-w-[65ch]">{resource.description}</p>
         </div>
 
         <ResourceAttachments
-          type="files"
           title={uiText.attachmentsTitle.files}
-          attachments={resource.files}
-          className="flex-1 min-w-[350px]"
-        />
-
-        <ResourceAttachments
-          type="links"
-          title={uiText.attachmentsTitle.files}
-          attachments={resource.links}
+          attachments={attachments}
           className="flex-1 min-w-[350px]"
         />
       </div>
+
       <LikeResourceButton resource={resource} updateResorce={updateResource} />
     </article>
   );
 }
 
 function ResourceAttachments({
-  type,
   title,
   attachments,
   className,
 }: {
-  type: "files" | "links";
   title: string;
-  attachments: ResourceAttachment[];
+  attachments: UnifiedAttachment[];
   className?: string;
 }) {
   if (!attachments || attachments.length === 0) {
     return null;
   }
 
-  const icon = (url: string) => {
-    if (type === "links") {
+  const getAttachmentIcon = (att: UnifiedAttachment) => {
+    if (att.type === "link") {
       return ExternalLink;
     }
 
@@ -157,7 +148,7 @@ function ResourceAttachments({
       csv: FileSpreadsheet,
     };
 
-    const fileExtension = url.split(".").pop()?.toLowerCase() || "";
+    const fileExtension = att.url.split(".").pop()?.toLowerCase() || "";
     return icons[fileExtension] ?? FileIcon;
   };
 
@@ -166,15 +157,16 @@ function ResourceAttachments({
       <h4>{title}</h4>
       <ul className="space-y-1">
         {attachments.map((att, i) => {
-          const Icon = icon(att.url);
-          const isLink = type === "links";
-          const extension =
-            type === "files" ? att.url.split(".").pop()?.toLowerCase() : "";
+          const Icon = getAttachmentIcon(att);
+          const isLink = att.type === "link";
+          const extension = !isLink
+            ? att.url.split(".").pop()?.toUpperCase()
+            : "";
           const cleanName = `${att.name.replace(/\s+/g, "_")}.${extension}`;
 
           return (
             <li
-              key={`resource_${type}_${att.id}`}
+              key={`resource_${att.type}_${att.id}`}
               className={cn(
                 "relative group flex gap-2 items-center justify-between hover:bg-accent/10 px-4 rounded-lg py-1",
                 i % 2 ? "bg-muted/50" : "",
@@ -182,7 +174,7 @@ function ResourceAttachments({
             >
               <div className="group-hover:underline">{att.name}</div>
               <div className="flex gap-1 items-center text-accent text-sm font-normal">
-                <span>{isLink ? "Visitar" : "Descargar"}</span>
+                <span>{isLink ? "Visitar" : `Descargar ${extension}`}</span>
                 <Icon size={18} />
               </div>
 
