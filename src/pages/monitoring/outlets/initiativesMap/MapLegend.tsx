@@ -164,15 +164,23 @@ export function MapLegend({
             )}
 
             <Button
-              variant="outline"
-              className="w-full border-input mt-2 text-left justify-start font-light text-sm"
-              size="sm"
+              variant={showDepartments ? "outline" : "outline_destructive"}
+              className={cn(
+                "w-full mt-2 text-left justify-start font-light text-sm",
+                showDepartments ? "border-input" : "border-accent",
+              )}
               onClick={() => setShowDepartments((show) => !show)}
+              title={uiText.mapLegend.showDepartmentsBtn.title(showDepartments)}
+              aria-label={uiText.mapLegend.showDepartmentsBtn.sr(
+                showDepartments,
+              )}
             >
-              {showDepartments ? <EyeIcon /> : <EyeClosed />}
-              {showDepartments
-                ? "Ocultar departamentos"
-                : "Mostrar departamentos"}
+              {showDepartments ? (
+                <EyeIcon strokeWidth={1.5} />
+              ) : (
+                <EyeClosed strokeWidth={1.5} />
+              )}
+              {uiText.mapLegend.showDepartmentsBtn.label(showDepartments)}
             </Button>
           </div>
 

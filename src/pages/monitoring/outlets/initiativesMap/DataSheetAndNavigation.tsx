@@ -151,7 +151,7 @@ export function DataSheetAndNavigation({
 
         <div className="bg-background flex flex-col items-start border border-primary/50 border-t-0 rounded-b-lg p-2">
           <div
-            className="text-xl w-full px-2 m-0 border-b border-b-muted"
+            className="text-xl font-normal w-full px-2 m-0 pb-2 border-b border-b-muted"
             aria-hidden="true"
           >
             {statsScope}
