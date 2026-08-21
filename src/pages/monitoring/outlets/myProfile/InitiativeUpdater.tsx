@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import {
@@ -68,6 +68,26 @@ export function InitiativeUpdater() {
       (initiative) => initiative.id === Number(selectedId),
     )[0] || null;
 
+  const initiativeUsersByRole = useMemo(
+    () =>
+      initiativeUsers.reduce<
+        Partial<Record<RoleInInitiative, UserInInitiativeCompleteInfo[]>>
+      >((all, user) => {
+        const roleId = user.level.id;
+        if (all[roleId] === undefined) {
+          all[roleId] = [] as UserInInitiativeCompleteInfo[];
+        }
+        all[roleId].push(user);
+
+        return all;
+      }, {}),
+    [initiativeUsers],
+  );
+
+  console.log("1", initiativeUsersByRole[RoleInInitiative["LEADER"]]);
+  console.log("2", initiativeUsersByRole[1]);
+  console.log("3", typeof RoleInInitiative["LEADER"]);
+
   return (
     <>
       <PageTitleUpdater
@@ -116,7 +136,7 @@ export function InitiativeUpdater() {
               </TabsTrigger>
 
               <TabsTrigger value="joinRequests" className="tabs-trigger">
-                Solicitudes de ingreso
+                {uiText.tabsLabels.joinRequests.label}
               </TabsTrigger>
 
               <TabsTrigger value="invitation" className="tabs-trigger">
@@ -131,7 +151,7 @@ export function InitiativeUpdater() {
                 className="tabs-content"
               >
                 <UsersListForManagement
-                  users={initiativeUsers}
+                  users={initiativeUsersByRole}
                   inRole={
                     RoleInInitiative[tab.value as keyof typeof RoleInInitiative]
                   }

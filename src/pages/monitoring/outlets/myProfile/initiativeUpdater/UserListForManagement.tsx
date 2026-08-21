@@ -32,27 +32,15 @@ export function UsersListForManagement({
   inRole,
   updater,
 }: {
-  users: UserInInitiativeCompleteInfo[];
+  users: Partial<Record<RoleInInitiative, UserInInitiativeCompleteInfo[]>>;
   inRole: RoleInInitiative;
   updater: () => Promise<void>;
 }) {
-  const usersByRole = users.reduce<
-    Partial<Record<RoleInInitiative, UserInInitiativeCompleteInfo[]>>
-  >((all, user) => {
-    const roleId = user.level.id;
-    if (all[roleId] === undefined) {
-      all[roleId] = [] as UserInInitiativeCompleteInfo[];
-    }
-    all[roleId].push(user);
-
-    return all;
-  }, {});
-
-  const usersInRole = usersByRole[inRole] ?? 0;
+  const usersInRole = users[inRole] ?? [];
 
   return (
     <div>
-      {usersInRole === 0 ? (
+      {usersInRole.length === 0 ? (
         <div className="text-2xl text-foreground text-center p-8">
           {uiText.tabsContent.usersManagement.noUsers}
         </div>
@@ -68,25 +56,31 @@ export function UsersListForManagement({
                 className="flex gap-4 hover:bg-background py-2 px-4 items-center rounded-lg hover:outline hover:shadow-lg hover:outline-primary/50"
               >
                 <div className="flex-1 flex gap-4 items-center">
-                  <img
-                    src={user.externalData.picture}
-                    alt=""
-                    className="w-12 h-12 rounded-full"
-                  />
-                  <span>{user.externalData.fullName}</span>
+                  {user?.externalData?.picture && (
+                    <img
+                      src={user.externalData.picture}
+                      alt=""
+                      className="w-12 h-12 rounded-full"
+                    />
+                  )}
 
-                  <Button variant="ghost" asChild>
-                    <a
-                      href={`mailto:${user.externalData.email}`}
-                      aria-label={
-                        uiText.tabsContent.usersManagement.actions.contactBtn.sr
-                      }
-                    >
-                      {uiText.tabsContent.usersManagement.actions.contactBtn
-                        .label ?? ""}
-                      <MailsIcon aria-hidden="true" />
-                    </a>
-                  </Button>
+                  <span>{user?.externalData?.fullName ?? user.userName}</span>
+
+                  {user?.externalData?.email && (
+                    <Button variant="ghost" asChild>
+                      <a
+                        href={`mailto:${user.externalData.email}`}
+                        aria-label={
+                          uiText.tabsContent.usersManagement.actions.contactBtn
+                            .sr
+                        }
+                      >
+                        {uiText.tabsContent.usersManagement.actions.contactBtn
+                          .label ?? ""}
+                        <MailsIcon aria-hidden="true" />
+                      </a>
+                    </Button>
+                  )}
                 </div>
                 <time
                   title={uiText.tabsContent.usersManagement.joiningDate.title}
@@ -101,7 +95,7 @@ export function UsersListForManagement({
                 <ActionsToUserByRole
                   user={user}
                   role={inRole}
-                  usersByRole={usersByRole}
+                  usersByRole={users}
                   updater={updater}
                 />
               </li>

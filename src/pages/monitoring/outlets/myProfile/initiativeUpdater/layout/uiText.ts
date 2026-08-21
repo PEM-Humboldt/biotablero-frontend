@@ -44,10 +44,11 @@ export const uiText = {
   tabsLabels: {
     usersManagement: [
       { label: "Gestión de líderes", value: "LEADER" },
-      { label: "Gestión de participantes", value: "USER" },
-      { label: "Gestión de observadores", value: "VIEWER" },
+      { label: "Gestión de participantes", value: "COLLABORATOR" },
+      { label: "Gestión de observadores", value: "READER" },
     ],
     initiativeManagement: { label: "Gestión de la iniciativa" },
+    joinRequests: { label: "Solicitudes de ingreso" },
     initiativeInvitation: { label: "Invitaciones" },
   },
 
