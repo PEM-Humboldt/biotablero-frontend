@@ -16,7 +16,11 @@ export function DemographicsStats() {
     useState<keyof DemographicStatsType>("gender");
   const currentData = stats?.[designation];
 
-  return (
+  return Object.keys(stats ?? []).length === 0 ? (
+    <div className="bg-primary/10 p-4 rounded-lg">
+      {uiText.stats.demographic.noStats}
+    </div>
+  ) : (
     <>
       <ErrorsList
         errorItems={errors}
