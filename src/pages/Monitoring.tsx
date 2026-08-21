@@ -18,7 +18,7 @@ export function Monitoring() {
       type: LayoutUpdated.CHANGE_SECTION,
       sectionData: {
         moduleInfo: { name: "Monitoreo Comunitario", icon: "monitoring" },
-        logos: new Set(),
+        logos: new Set(["monitoreoAmazonia", "fondoParaLaVida", "minAmbiente"]),
       },
     });
   }, [layoutDispatch]);
