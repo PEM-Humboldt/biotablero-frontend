@@ -46,12 +46,12 @@ export function RelatedInitiatives() {
           className="size-[34px] -translate-y-1 text-accent min-w-10"
           strokeWidth={1.5}
         />
-        <div className="pb-2 lg:pb-4">
+        <div className="pb-2 lg:pb-4 w-full">
           <h4 className="text-3xl font-bold">
             {uiText.profile.relatedInitiatives.title}
           </h4>
 
-          <ul className="flex gap-2 lg:gap-4">
+          <ul className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-2 lg:gap-4 w-full">
             {initiatives.map((initiative) => {
               const initiativeResume =
                 initiative.description.length > 100
