@@ -32,7 +32,7 @@ export function ResourceCard({
   return (
     <div
       className={cn(
-        "isolate flex flex-col gap-4 justify-between relative overflow-hidden shadow-xl transition-all border border-transparent rounded-2xl p-4 pb-3 lg:p-6 lg:pb-4",
+        "isolate flex flex-col gap-4 justify-between relative overflow-hidden shadow-xl transition-all border border-transparent rounded-xl p-4 pb-3 lg:p-6 lg:pb-4",
         "hover:scale-107 hover:shadow-sm hover:border-primary",
         resourceId && Number(resourceId) === resource.id
           ? "bg-primary/10 hover:scale-100 hover:border-transparent hover:shadow-xl"
@@ -53,7 +53,7 @@ export function ResourceCard({
         <time
           dateTime={isoDate}
           aria-label={`${uiText.resourcePublicationDatePrefixSr}${renderDate}`}
-          className="absolute top-0 right-6 bg-primary text-primary-foreground text-sm px-2 rounded-b"
+          className="absolute top-0 right-4 bg-primary text-primary-foreground text-sm px-2 rounded-b font-normal"
         >
           {renderDate}
         </time>

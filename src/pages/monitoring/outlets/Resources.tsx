@@ -26,6 +26,7 @@ import { makeSearchResourcesComponents } from "pages/monitoring/outlets/resource
 import { ResourceCard } from "pages/monitoring/outlets/resources/ResourceCard";
 import { CurrentResource } from "pages/monitoring/outlets/resources/CurrentResource";
 import { uiText } from "pages/monitoring/outlets/resources/layout/uiText";
+import { divIcon } from "leaflet";
 
 export function Resources() {
   const { resourceId } = useParams();
@@ -74,8 +75,6 @@ export function Resources() {
   }, []);
 
   const fetchCurrentResource = useCallback(async () => {
-    setCurrentResource(null);
-
     if (!resourceId) {
       return;
     }
@@ -109,7 +108,6 @@ export function Resources() {
       return;
     }
 
-    setResources([]);
     const fetchResources = async () => {
       setErrors([]);
       setIsLoading((prvLoads) => prvLoads + 1);
@@ -124,6 +122,7 @@ export function Resources() {
 
       setIsLoading((prvLoads) => prvLoads - 1);
       if (isMonitoringAPIError(res)) {
+        setResources([]);
         setErrors(res.data.map((err) => err.msg));
         return;
       }
@@ -201,11 +200,11 @@ export function Resources() {
         </div>
 
         {searchBarComponents && (
-          <div className="w-full max-w-[800px] text-primary bg-muted px-4 py-2 mt-4 rounded-lg">
+          <div className="w-full lg:w-[75%] text-primary-foreground bg-primary px-4 py-2 mt-4 rounded-lg">
             <ODataSearchBar
               components={searchBarComponents}
               setSearchParams={setSearchParams}
-              className="[&_select]:bg-background flex-wrap! p-0 mb-1 font-normal"
+              className="[&_input]:text-foreground [&_select]:bg-background [&_select]:text-foreground flex-wrap! p-0 mb-1 font-normal"
               filterInjection={filtersInjected}
               reset={uiText.searchBar.reset}
             />
@@ -224,7 +223,7 @@ export function Resources() {
           closeCurrentResource={handleCloseCurrentResource}
         />
 
-        {resources.length > 0 && (
+        {resources.length > 0 ? (
           <section className="w-full">
             <h3 className="sr-only">{uiText.smallCard.title}</h3>
             <ul className="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-8">
@@ -233,6 +232,8 @@ export function Resources() {
               ))}
             </ul>
           </section>
+        ) : (
+          <div>No hay recursos</div>
         )}
 
         <TablePager
