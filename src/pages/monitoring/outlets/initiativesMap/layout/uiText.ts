@@ -72,6 +72,7 @@ export const uiText = {
       noItems: "No hay ecosistemas estratégicos asociados",
     },
     demographic: {
+      noStats: "No se encontraron estadísticas asociadas al área visualizada",
       postText:
         "Estas cifras muestran la composición de los colaboradores inscritos según su propia designación.",
     },
