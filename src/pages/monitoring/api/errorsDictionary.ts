@@ -23,6 +23,7 @@ export const apiErrorCategory: Record<string, string> = {
   STO: "Historias del territorio",
   SVI: "Videos de historias del territorio",
   USR: "Usuarios",
+  IND: "Indicadores",
 };
 
 export const apiErrorMsg: Record<string, string> = {
@@ -35,6 +36,7 @@ export const apiErrorMsg: Record<string, string> = {
   SYS_007: "Error de base de datos",
   SYS_008: "Filtro inválido",
   SYS_009: "Límite de filas excedido",
+  SYS_010: "Longitud de texto inválida",
   FIL_001: "El archivo está vacío",
   FIL_002: "Formato de archivo inválido",
   FIL_003: "Error al procesar el archivo",
@@ -52,6 +54,8 @@ export const apiErrorMsg: Record<string, string> = {
   INI_010: "Objeto JSON inválido",
   INI_011: "El tipo de GeoJSON debe ser 'Polygon'",
   INI_012: "Tipo de imagen inválido",
+  INI_013: "Iniciativa deshabilitada",
+  INI_014: "Ubicación del polígono inválida",
   ICO_001: "Ya existe un contacto con el mismo correo electrónico y/o teléfono",
   ILO_001: "La ubicación ya pertenece a la iniciativa",
   ILO_002: "La localidad solo está disponible para municipios",
@@ -62,11 +66,14 @@ export const apiErrorMsg: Record<string, string> = {
   IJI_001: "Se requiere al menos un invitado",
   IJI_002: "Hay correos electrónicos duplicados",
   IJI_003:
-    "Uno o más usuarios con los correos ingresados ya están en el sistema",
+    "Uno o más usuarios con los correos ingresados ya están en la iniciativa",
   IJI_004: "Fallo al enviar los correos electrónicos",
+  IJI_005:
+    "Uno o más usuarios con los correos ingresados ya tienen una invitación",
   IJR_001: "El nivel de usuario debe ser 'Miembro' o 'Lector'",
   IJR_002: "Hay una o más solicitudes de unión pendientes",
   IJR_003: "La solicitud de unión ya ha sido revisada",
+  IJR_004: "El usuario no pertenece a la iniciativa",
   RES_001: "Recurso no encontrado",
   RES_002: "Ya existe un recurso con el mismo nombre",
   RTY_001: "Tipo de recurso no encontrado",
@@ -87,4 +94,19 @@ export const apiErrorMsg: Record<string, string> = {
   SVI_001: "Ya existe un video con la misma URL",
   SVI_002: "La URL del video no existe",
   USR_001: "El usuario es inválido o no existe",
+  IND_001: "El indicador especificado no existe",
+  IND_002: "Solo se requiere un indicador",
+  IND_003: "Grupo superior no encontrado",
+  IND_004: "El grupo y la descripción son obligatorios",
+  IND_005: "Se requiere el intervalo de confianza",
+  IND_006: "Intervalo de confianza inválido",
+  IND_007: "Tipo de indicador inválido",
+  IND_008: "Unidad de medida inválida",
+  IND_009: "Ubicación no encontrada",
+  IND_010: "Se requiere fecha final",
+  IND_011: "No se requiere fecha final",
+  IND_012: "Rango de fechas inválido",
+  IND_013: "Categoría no encontrada",
+  IND_014:
+    "El indicador actual no tiene los datos geográficos suministrados en la hoja de cálculo",
 };
