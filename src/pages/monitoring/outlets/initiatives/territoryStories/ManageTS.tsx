@@ -92,7 +92,7 @@ export function ManageTS({ moveToPanel: _ }: PanelComponentProp) {
 
   return (
     <>
-      <TSSearchBar className="p-8 pt-2 " />
+      <TSSearchBar className="p-8 pt-2 my-4" />
 
       {isLoading ? (
         <div className="bg-primary/10 p-8 mx-4 rounded-lg border border-primary text-4xl text-primary text-center">

@@ -16,8 +16,8 @@ import monitoringResourcesBg from "core/assets/MonitoringResourcesBG.jpg";
 
 export function TSAside() {
   return (
-    <aside className="py-8 px-4 xl:px-8">
-      <div className="sticky top-8 space-y-8">
+    <aside className="py-4 px-4 xl:px-8">
+      <div className="sticky top-8">
         <TSRecommendations />
         <OtherMonitoringResources />
       </div>
@@ -68,50 +68,58 @@ function TSRecommendations() {
     void fetchStories();
   }, [initiativeId]);
 
-  return isLoading ? (
-    <div className="bg-muted text-lg text-primary border border-primary p-4">
-      Cargando...
-    </div>
-  ) : (
-    <div className="flex flex-col gap-2">
-      <h3 className="text-primary text-lg font-normal m-0">Otros relatos</h3>
-      <ErrorsList
-        errorItems={errors}
-        className="bg-accent/10 border border-accent rounded-lg p-4"
-      />
-      {randomStories.map((story) => {
-        const featuredImg = getFeaturedImage(story);
-        return (
-          <article
-            key={story.id}
-            className="border-b border-b-grey last:border-none flex gap-2 pt-2 pb-4"
-          >
-            <img
-              src={featuredImg.url}
-              alt={featuredImg.alt}
-              className="h-25 w-20 rounded object-cover"
-            />
-            <div className="w-full flex flex-col justify-between">
-              <h4>{story.title}</h4>
-              <div className="w-full flex justify-between items-center">
-                <StoryTimestamp
-                  story={story}
-                  className="text-sm text-primary"
-                />
+  if (isLoading) {
+    return (
+      <div className="bg-muted text-lg text-primary border border-primary p-4">
+        Cargando...
+      </div>
+    );
+  }
 
-                <Button variant="ghost-clean" asChild>
-                  <Link to={`${baseUrl}${story.id}`}>
-                    Leer <span className="sr-only">el relato</span>
-                    <CirclePlus className="size-6" aria-hidden="true" />
-                  </Link>
-                </Button>
+  return randomStories.length > 0 ? (
+    <div className="flex flex-col gap-2 mb-8">
+      <div className="flex flex-col gap-2 mb-8">
+        <h3 className="text-primary text-lg font-normal m-0">
+          Relatos de otras iniciativas
+        </h3>
+        <ErrorsList
+          errorItems={errors}
+          className="bg-accent/10 border border-accent rounded-lg p-4"
+        />
+        {randomStories.map((story) => {
+          const featuredImg = getFeaturedImage(story);
+          return (
+            <article
+              key={story.id}
+              className="border-b border-b-grey last:border-none flex gap-2 pt-2 pb-4"
+            >
+              <img
+                src={featuredImg.url}
+                alt={featuredImg.alt}
+                className="h-25 w-20 rounded object-cover"
+              />
+              <div className="w-full flex flex-col justify-between">
+                <h4>{story.title}</h4>
+                <div className="w-full flex justify-between items-center">
+                  <StoryTimestamp
+                    story={story}
+                    className="text-sm text-primary"
+                  />
+
+                  <Button variant="ghost-clean" asChild>
+                    <Link to={`${baseUrl}${story.id}`}>
+                      Leer <span className="sr-only">el relato</span>
+                      <CirclePlus className="size-6" aria-hidden="true" />
+                    </Link>
+                  </Button>
+                </div>
               </div>
-            </div>
-          </article>
-        );
-      })}
+            </article>
+          );
+        })}
+      </div>
     </div>
-  );
+  ) : null;
 }
 
 function OtherMonitoringResources() {

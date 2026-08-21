@@ -328,7 +328,7 @@ export function CreateEditTSForm({
       key={formKey}
       onSubmit={(e) => void handleSubmit(e)}
       onReset={(e) => void handleReset(e)}
-      className="w-full flex flex-col gap-3 lg:gap-6 p-8 pt-2"
+      className="w-full flex flex-col gap-3 my-4 lg:gap-6 p-8 pt-2"
     >
       {territoryStoryId === undefined && (
         <h3 className="text-primary">{uiText.create}</h3>
