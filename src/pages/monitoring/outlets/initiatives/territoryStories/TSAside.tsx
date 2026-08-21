@@ -70,7 +70,7 @@ function TSRecommendations() {
 
   if (isLoading) {
     return (
-      <div className="bg-muted text-lg text-primary border border-primary p-4">
+      <div className="bg-muted text-lg text-primary border border-primary p-4 rounded-lg my-4">
         Cargando...
       </div>
     );
