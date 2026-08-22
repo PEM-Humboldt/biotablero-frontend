@@ -1,9 +1,10 @@
-import { PageProps } from "@react-pdf/renderer";
+import type { PageProps } from "@react-pdf/renderer";
 import type { ImageMimeType } from "@appTypes/formats";
 import type { ODataParams } from "@appTypes/odata";
 import type { LatLngBoundsLiteral } from "leaflet";
 
 // DEFINICIONES GENERALES
+export const SUPPORT_EMAIL = "biotablero@humboldt.org.co";
 export const LOCALE = "es-ES";
 export const COUNTRY_BOUNDS: LatLngBoundsLiteral = [
   [-4.2316872, -82.1243666],
