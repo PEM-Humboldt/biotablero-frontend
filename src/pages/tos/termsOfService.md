@@ -1,57 +1,13 @@
-# TÉRMINOS Y CONDICIONES DE USO DE PRUEBA
+**INSTITUTO DE INVESTIGACIÓN DE RECURSOS BIOLÓGICOS ALEXANDER VON HUMBOLDT,** con NIT. 820.000.142-2 corporación civil sin ánimo de lucro, sometida a las reglas del derecho privado, creada por el artículo 19 de la Ley 99 de 1993 (en adelante, el Instituto). En cumplimiento de su misión, lidera la plataforma BioTablero reúne herramientas web para consultar cifras e indicadores y facilitar la toma de decisiones sobre biodiversidad, llevando a autoridades ambientales y empresas privadas síntesis de la información existente, actualizada y confiable en un contexto regional y nacional. Para ello, diferentes usuarios ingresan información para ser procesada, almacenada y compartida.
 
-**Última actualización:** 21 de agosto de 2026
+Conforme lo anterior, el(los) autor(es) de los datos e información declara(n) que conoce(n), acepta(n) y autoriza(n):
 
-Bienvenido al Portal de Consultas de Biodiversidad y Medio Ambiente (en adelante, "el Sitio"). Al acceder, navegar o utilizar este Sitio, usted (en adelante, "el Usuario") acepta estar sujeto a los presentes Términos y Condiciones de Uso. Si no está de acuerdo con alguno de los términos, deberá abstenerse de utilizar el Sitio.
-
-## 1. NATURALEZA Y PROPÓSITO DEL SITIO
-
-El Sitio es una plataforma de acceso público y/o restringido dedicada a la divulgación, consulta, análisis y visualización de datos de biodiversidad, indicadores ambientales, iniciativas de monitoreo y recursos técnicos y normativos.
-
-## 2. USO DE LA INFORMACIÓN Y PROPIEDAD INTELECTUAL
-
-### 2.1. Propiedad y Licencia de Datos
-
-* Toda la información recopilada en el Sitio (incluyendo registros de especies, mapas, indicadores, reportes y bases de datos) proviene de fuentes oficiales, redes de monitoreo participativo e investigaciones científicas.
-* Salvo que se indique explícitamente lo contrario, los datos se comparten bajo licencias abiertas (como *Creative Commons CC BY 4.0*), lo que permite su uso, distribución y adaptación, siempre y cuando se **cite adecuadamente la fuente original**.
-
-### 2.2. Citación Obligatoria
-
-Al utilizar datos, gráficos o informes obtenidos en este Sitio para publicaciones académicas, reportes técnicos o proyectos comerciales, el Usuario se compromete a otorgar el crédito correspondiente según la sintaxis de citación sugerida en cada sección del Sitio.
-
-## 3. LIMITACIÓN DE RESPONSABILIDAD (DISCLAIMER)
-
-### 3.1. Precisión y Actualización de Datos
-
-* Si bien realizamos esfuerzos continuos por validar la calidad de la información, el Sitio **no garantiza la precisión absoluta, exhaustividad o vigencia en tiempo real** de los datos mostrados.
-* La información ambiental y taxonómica puede estar sujeta a revisiones, sesgos de muestreo o cambios metodológicos.
-
-### 3.2. Uso para la Toma de Decisiones
-
-La información provista en el Sitio es de carácter referencial e informativo. **No constituye asesoría legal, peritaje ambiental oficial ni reemplaza los estudios de impacto ambiental formales** exigidos por las autoridades reguladoras competentes. El Sitio no se hace responsable por decisiones operativas, financieras o legales tomadas a partir de la consulta de los datos.
-
-### 3.3. Disponibilidad del Servicio
-
-El Sitio no garantiza el funcionamiento ininterrumpido o libre de errores del sistema, y se reserva el derecho de suspender o modificar el servicio por mantenimiento o actualización sin previo aviso.
-
-## 4. CUENTAS DE USUARIO Y CONDUCTA
-
-Para acceder a ciertos módulos (como la carga de iniciativas, administración de etiquetas o consulta de registros de auditoría/logs):
-
-1. **Credenciales:** El Usuario es responsable de mantener la confidencialidad de sus credenciales de acceso.
-2. **Uso Indebido:** Queda estrictamente prohibido:
-   * Extraer datos de forma masiva mediante *scrapers* o bots que afecten el rendimiento de los servidores sin autorización previa.
-   * Modificar, dañar o falsificar registros de biodiversidad o datos ambientales.
-   * Intentar vulnerar las medidas de seguridad del Sitio.
-
-## 5. ENLACES A TERCEROS
-
-El Sitio puede contener enlaces a portales científicos, bases de datos internacionales o repositorios externos. El Sitio no ejerce control ni asume responsabilidad alguna sobre las políticas, privacidad o contenidos de dichos sitios web.
-
-## 6. MODIFICACIONES A LOS TÉRMINOS
-
-Nos reservamos el derecho de modificar estos Términos y Condiciones en cualquier momento. Los cambios surtirán efecto a partir de su publicación en este enlace. El uso continuado del Sitio tras la publicación de los cambios implica la aceptación de los mismos.
-
-## 7. CONTACTO Y SOPORTE
-
-Para consultas relacionadas con estos Términos y Condiciones, reporte de inconsistencias en los datos o solicitudes de uso especial, puede comunicarse a través de la sección de **Ayudas** del Sitio o enviar un correo electrónico a `soporte@biodiversidad.org`.
+1. El(los) autor(es) autoriza(n) de manera expresa al INSTITUTO DE INVESTIGACIÓN DE RECURSOS BIOLÓGICOS ALEXANDER VON HUMBOLDT, para almacenar, recolectar, gestionar, y/o analizar los datos suministrados mediante el presente formulario, incluyendo, cuando aplique, los nombres, correos electrónicos y teléfonos corporativos de los empleados de la entidad que represente(n). Dichos datos podrán ser incorporados en los sistemas que el Instituto disponga; con la finalidad de ser utilizados para el desarrollo de la gestión administrativa interna, prestación de servicios, invitación a eventos y/o cursos de capacitación, entre otros. El(los) autor(es) declara(n) haber sido informado(s) de su derecho a conocer, actualizar, rectificar y/o revocar la autorización para el tratamiento de los datos en cualquier momento de forma gratuita, por medio de los canales para la atención de consultas que se encuentran en la Política de Tratamiento de Datos. [http://humboldt.org.co/images/documentos/pdf/documentos/agr-gt-pl-02-poltica-tratamiento-de-datos-personales.pdf](http://humboldt.org.co/images/documentos/pdf/documentos/agr-gt-pl-02-poltica-tratamiento-de-datos-personales.pdf)
+2. Transferencia internacional y datos de terceros  
+Al suministrar los datos e información recolectada, da su consentimiento para el uso, almacenamiento, gestión y comunicación pública. Además, autoriza  que estos puedan ser tratados por terceros, siempre y cuando se dé el reconocimiento y los créditos respectivos.
+3. Derechos del Titular  
+Conocer, actualizar, rectificar, solicitar prueba de la autorización, ser informado del uso dado, revocar la autorización y/o suprimir sus datos, y acceder gratuitamente a ellos, a través de los canales indicados por BioTablero.
+4. Derechos de autor sobre la información y obras aportadas  
+Los derechos morales (autoría, paternidad) son perpetuos, inalienables e irrenunciables; el Instituto dará el crédito correspondiente. El Autor otorga al Instituto una licencia no exclusiva, gratuita e irrevocable durante su vigencia, para reproducir, transformar, distribuir y comunicar públicamente la información/obra en BioTablero, con alcance nacional e internacional y por el término de vigencia de los derechos patrimoniales de autor o mientras opere la plataforma (art. 183, Ley 23/1982). Esta licencia no cubre la producción futura general del Autor ni modalidades de explotación desconocidas a la fecha. Al extinguirse los derechos patrimoniales u operar el dominio público, la licencia cesa, sin perjuicio de los derechos morales.
+5. Garantías, responsabilidad y disposiciones finales  
+El Autor declara ser el titular de la información/obra aportada (o contar con autorización de su titular), que es original, no vulnera derechos de terceros y no afecta la honra o el buen nombre de nadie; en caso contrario, mantendrá indemne al Instituto. El Instituto podrá actualizar este documento avisando por los canales indicados. Rige la ley colombiana; las controversias se resolverán primero por arreglo directo (30 días) y luego ante la jurisdicción ordinaria. La invalidez de una cláusula no afecta las demás.
