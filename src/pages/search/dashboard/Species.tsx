@@ -1,25 +1,16 @@
-import { useEffect } from "react";
+import { useState } from "react";
 
 import Accordion from "pages/search/Accordion";
 // import Richness from "pages/search/dashboard/species/Richness";
 import { Gap } from "pages/search/dashboard/species/Gap";
-import {
-  useSearchDispatchCTX,
-  useSearchStateCTX,
-} from "pages/search/hooks/SearchContext";
-import { useState } from "react";
+import { useSearchDispatchCTX } from "pages/search/hooks/SearchContext";
 import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 
 export function Species() {
-  const { areaType } = useSearchStateCTX();
   const searchDispatch = useSearchDispatchCTX();
 
   const [visible, setVisible] = useState("gap");
   const [childMap, setChildMap] = useState({ gap: "gap" });
-
-  useEffect(() => {
-    setVisible(areaType?.id === "gap" ? "gap" : "gap");
-  }, [areaType]);
 
   const handleAccordionChange = (level: string, tabLayerId: string) => {
     searchDispatch({ type: SearchUpdated.CLEAR_LAYERS });

@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@ui/shadCN/component/select";
-import { GapContoller } from "pages/search/dashboard/species/GapController";
+import { GapController } from "pages/search/dashboard/species/GapController";
 import {
   useSearchDispatchCTX,
   useSearchStateCTX,
@@ -66,7 +66,7 @@ export function Gap() {
   >([]);
   const { areaType, areaId } = useSearchStateCTX();
   const searchDispatch = useSearchDispatchCTX();
-  const controller = useRef(new GapContoller());
+  const controller = useRef(new GapController());
 
   const lastYear = selectedYears[selectedYears.length - 1];
 

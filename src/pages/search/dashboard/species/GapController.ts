@@ -9,7 +9,7 @@ import { MetricsUtils } from "pages/search/utils/metrics";
 import type { RasterLayer } from "pages/search/types/layers";
 import BackendAPI from "pages/search/api/backendAPI";
 
-export class GapContoller {
+export class GapController {
   areaType: string = "";
   areaId: number = 0;
   classes: string[] = ["recordGaps"];
@@ -139,7 +139,7 @@ export class GapContoller {
         throw new Error("Error getting data");
       })
       .finally(() => {
-        this.activeRequests.delete("recordGaps-groups");
+        this.activeRequests.delete(requestKey);
       });
   }
 
@@ -168,7 +168,7 @@ export class GapContoller {
   }
 
   /**
-   * Transforms the graph data into and object to for the CSV downloasd
+   * Transforms the graph data into an object to for the CSV download
    *
    * @param series - data array for recordsGaps graph
    *
@@ -185,7 +185,7 @@ export class GapContoller {
   }
 
   /**
-   * Gets the raster layers required for a the requested period and taxonomic group
+   * Gets the raster layers required for the requested period and taxonomic group
    *
    * @param period - the year of the metric
    * @param taxonomicGroup - Optional. the taxonomic group used for the metric, if undefined, returns the overall value
@@ -236,7 +236,7 @@ export class GapContoller {
       this.activeRequests.delete(layerObj.layer);
     });
 
-    if (res.some((result) => typeof result === "string")) {
+    if (layersRequests.some((result) => typeof result === "string")) {
       throw new Error("request canceled");
     }
 
