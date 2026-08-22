@@ -45,27 +45,26 @@ export function Card() {
             : uiText.indicatorCard.noSelection}
         </div>
       ) : (
-        <>
+        <div className="max-w-[1400px] mx-auto">
           <header className="bg-primary mx-4 mt-2 p-4 flex gap-2 rounded-lg">
             {isLoading && (
               <Spinner className="text-primary-foreground size-8 self-center" />
             )}
 
             <h3 className="m-0 flex flex-col flex-wrap flex-1 text-primary-foreground font-normal">
-              <span> {currentIndicator.name}</span>
+              <span>{currentIndicator.type.name}</span>
 
-              <span className="text-base italic">
-                {currentIndicator.type.name}
+              <span className="text-base italic" title="Etiquetas">
+                {currentIndicator.tags.map((t) => t.tag.name).join(" - ")}
               </span>
             </h3>
 
             <time
               dateTime={new Date(currentIndicator.creationDate).toISOString()}
-              className="text-primary-foreground border border-accent-foreground/20 rounded self-start px-2 py-1"
+              className="text-primary-foreground border border-accent-foreground/20 rounded self-start px-2 py-1 italic text-sm font-normal"
             >
-              {new Date(currentIndicator.creationDate).toLocaleDateString(
-                LOCALE,
-                { day: "numeric", month: "long", year: "numeric" },
+              {uiText.indicatorCard.titleBar.lastUpdate(
+                currentIndicator.creationDate,
               )}
             </time>
           </header>
@@ -133,7 +132,7 @@ export function Card() {
               </Tabs>
             </div>
           )}
-        </>
+        </div>
       )}
     </main>
   );

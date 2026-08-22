@@ -111,17 +111,22 @@ export function CollectiveActionParticipation() {
           uiText={uiText.indicatorCard.collectiveActionParticipation.selector}
           options={groups}
           currentSelection={currentGroup}
-          updateCurrent={setCurrentGroup}
+          updateCurrent={(val: string | string[]) => {
+            if (typeof val === "string") {
+              setCurrentGroup(val);
+            }
+          }}
         />
       </div>
 
-      <div className="w-full h-full aspect-3/2">
+      <div className="w-full h-full aspect-video">
         <ResponsiveBar
           data={displayData}
           keys={displayKeys}
           indexBy="date"
           layout="horizontal"
           margin={{ top: 0, right: 10, bottom: 30, left: 150 }}
+          padding={0.4}
           valueScale={{ type: "linear", min: 0, max: 100 }}
           indexScale={{ type: "band", round: true }}
           enableGridX={true}

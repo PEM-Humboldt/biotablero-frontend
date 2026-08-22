@@ -86,14 +86,14 @@ export function RelativeSpeciesUseByGroup() {
         />
       </div>
 
-      <div className="w-full h-full aspect-3/2">
+      <div className="w-full h-full aspect-video">
         <ResponsiveBar
           data={displayData}
           keys={displayKeys}
           indexBy="date"
           layout="horizontal"
           margin={{ top: 0, right: 30, bottom: 30, left: 120 }}
-          padding={0.1}
+          padding={0.4}
           colors={(bar) =>
             getSeriesColor(
               hashStringToRange(

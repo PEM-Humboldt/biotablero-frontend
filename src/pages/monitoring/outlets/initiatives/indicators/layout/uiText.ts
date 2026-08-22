@@ -1,3 +1,4 @@
+import { LOCALE } from "@config/monitoring";
 import {
   Network,
   BookOpenCheck,
@@ -47,6 +48,11 @@ export const uiText = {
   indicatorCard: {
     noSelection: "Selecciona un indicador",
     noIndicators: "Esta iniciativa todavía no tiene indicadores asociados",
+    titleBar: {
+      tagsTitle: "Etiquetas",
+      lastUpdate: (dateString: string) =>
+        `Actualizado el ${new Date(dateString).toLocaleDateString(LOCALE)}`,
+    },
 
     tabs: [
       {

@@ -135,7 +135,7 @@ export function OccupationSpecies() {
         </ul>
       </div>
 
-      <div className="w-full h-full aspect-3/2">
+      <div className="w-full h-full aspect-video">
         <ResponsiveLine
           data={filteredIndicator}
           margin={{ top: 20, right: 30, bottom: 30, left: 30 }}
