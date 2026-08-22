@@ -47,9 +47,9 @@ export function Card() {
               <span className="text-base italic">
                 {currentIndicator.type.name}
               </span>
-            </h3>
 
-            <AddMCIndicatorToReport />
+              <AddMCIndicatorToReport />
+            </h3>
 
             <time
               dateTime={new Date(currentIndicator.creationDate).toISOString()}

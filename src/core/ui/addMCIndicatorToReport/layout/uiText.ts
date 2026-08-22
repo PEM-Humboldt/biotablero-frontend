@@ -2,19 +2,19 @@ export const uiText = {
   addToReportBtn: {
     title: {
       notLogged: "Inicia sesión para crear reportes",
-      logged: (withNote: boolean) =>
-        withNote
-          ? `Hacer anotacion y agregar a mi reporte`
-          : "Agregar a mi reporte",
+      logged: `Hacer anotacion y agregar a mi reporte`,
     },
     sr: {
       notLogged: "Inicia sesión para crear reportes",
-      logged: (withNote: boolean) =>
-        withNote
-          ? `Hacer anotacion y agregar a mi reporte`
-          : "Agregar a mi reporte",
+      logged: `Hacer anotacion y agregar a mi reporte`,
     },
-    label: (isLoading: boolean) => (isLoading ? "Agregando..." : "Agregar"),
+    label: (isLoading: boolean) =>
+      isLoading ? "Agregando..." : "Agregar a mi reporte",
+  },
+  editReportBtn: {
+    title: "Abrir panel de edicion",
+    sr: "Abrir panel para editar y descargar mi reporte",
+    label: "Editar",
   },
 
   addNotePopover: {
@@ -28,20 +28,6 @@ export const uiText = {
       title: "Cancelar",
       sr: "Cancelar y cerrar",
       label: "Cancelar",
-    },
-  },
-
-  dropdownMenu: {
-    indicatorElements: {
-      title: "Indicador",
-      addWithoutNoteBtn: "Agregar",
-      addWithNoteBtn: "Agregar con anotación",
-    },
-    reportElements: {
-      title: "Reporte",
-      editBtn: "Editar",
-      downloadBtn: "Descargar",
-      deleteBtn: "Borrar",
     },
   },
 

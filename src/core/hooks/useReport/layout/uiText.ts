@@ -36,9 +36,14 @@ export const uiText = {
       input: reportInputTextUi.downloadDialog.input,
       downloadBtn: reportInputTextUi.downloadDialog.downloadBtn,
       closeBtn: {
-        title: "Cerrar",
+        title: "Cerrar editor",
         sr: "Cerrar editor",
-        label: "Cerrar editor",
+        label: "Cerrar",
+      },
+      deleteBtn: {
+        title: "Borrar el reporte",
+        sr: "Borrar el reporte",
+        label: "Borrar",
       },
     },
   },
