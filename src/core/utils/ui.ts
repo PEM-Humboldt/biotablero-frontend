@@ -1,3 +1,5 @@
+import { imagesBank } from "@assets/dictionaries/randomImagesBank";
+
 export const inputLengthCount = (
   currentString: string,
   maxLength: number,
@@ -21,3 +23,9 @@ export const inputWarnColor = (
     ? "text-accent"
     : "text-primary";
 };
+
+export function getRandomImageURL() {
+  const seed = Math.floor(Math.random() * imagesBank.length);
+
+  return imagesBank[seed];
+}

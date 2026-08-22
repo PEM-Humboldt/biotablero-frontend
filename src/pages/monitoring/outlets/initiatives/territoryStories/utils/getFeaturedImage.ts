@@ -1,16 +1,13 @@
-import type { TerritoryStoryShort } from "pages/monitoring/types/odataResponse";
+import { getRandomImageURL } from "@utils/ui";
 
-export function getRandomImageURL() {
-  const seed = Math.floor(Math.random() * 100);
-  return `https://picsum.photos/seed/${seed}/1200/800`;
-}
+import type { TerritoryStoryShort } from "pages/monitoring/types/odataResponse";
 
 export function getFeaturedImage(territoryStory: TerritoryStoryShort): {
   url: string;
   alt: string;
 } {
   if (!territoryStory.images || territoryStory.images.length === 0) {
-    return { url: getRandomImageURL(), alt: "Imagen random" };
+    return getRandomImageURL();
   }
 
   const images = territoryStory.images;
