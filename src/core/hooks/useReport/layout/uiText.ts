@@ -17,7 +17,7 @@ export const uiText = {
       description: `${sectionName} se ha eliminado del reporte.`,
     }),
     removeGraphToastSuccess: (graphId: string) => ({
-      title: "Grafica eliminada",
+      title: "Gráfica eliminada",
       description: `${graphId} se ha eliminado del reporte.`,
     }),
     utils: {
@@ -30,7 +30,7 @@ export const uiText = {
     header: {
       title: "Editor de reportes",
       description:
-        "Este es el esquema actual del reporte con la información que haz añadido, acá puedes cambiar el orden de las secciones las gráficas, agregar o, eliminar notas, gráficas y secciones.",
+        "Este es el esquema actual del reporte con la información que has añadido, acá puedes cambiar el orden de las secciones y las gráficas, agregar o eliminar notas, gráficas y secciones.",
     },
     footer: {
       input: reportInputTextUi.downloadDialog.input,

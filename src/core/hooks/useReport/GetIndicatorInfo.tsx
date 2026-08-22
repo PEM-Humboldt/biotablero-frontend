@@ -6,7 +6,7 @@ import type { IndicatorSection, IndicatorTag } from "@appTypes/report";
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 
 export function GetIndicatorInfo({
-  graphId: graphId,
+  graphId,
   mapUrl,
   mapElementId,
   children,

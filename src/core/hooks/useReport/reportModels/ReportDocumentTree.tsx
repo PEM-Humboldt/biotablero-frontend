@@ -198,7 +198,7 @@ function DocEdit({
         {mapUrl && (
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="outline" size="sm" title="Vista previa gráfica">
+              <Button variant="outline" size="sm" title="Vista previa del mapa">
                 <MapIcon />
               </Button>
             </PopoverTrigger>
@@ -233,7 +233,7 @@ function DocEdit({
                 variant="outline"
                 size="sm"
                 title={userNote ? "Actualizar nota" : "Agregar nota"}
-                aria-label="Agregar a mi reporte"
+                aria-label={userNote ? "Actualizar nota" : "Agregar nota"}
               >
                 <SquarePen />
               </Button>
