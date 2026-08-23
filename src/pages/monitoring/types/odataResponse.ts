@@ -78,13 +78,20 @@ export interface ODataInitiativeUserRequest extends HasId {
 }
 
 // NOTE: Usuarios
-interface ODataUser extends HasId {
+export interface ODataUser {
+  id: "91276d6f-3c12-4aad-9f09-7864518f4f40";
   email: string;
   emailVerified: boolean;
   username: string;
   firstName: string;
   lastName: string;
   fullName: string;
+
+  phone?: "3055555555";
+  picture?: "https://ui-avatars.com/api/?name=Initiative+Leader+Example&background=random";
+  organization?: "Empresa privada";
+  selfRecognition?: "Indígena";
+  gender?: "Masculino";
 }
 
 export interface TerritoryStoryShort extends HasId {
