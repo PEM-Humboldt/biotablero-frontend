@@ -57,9 +57,7 @@ export const documentInfo = {
     contact: "Contacto",
     disclaimer: {
       title: "Aviso legal",
-      content: `Este reporte fue generado automáticamente desde el Módulo de Monitoreo Comunitario de BioTablero a partir de la información aportada por la iniciativa y validada por el Instituto de Investigación de Recursos Biológicos Alexander von Humboldt.
-
-	  Las cifras corresponden a la fecha de generación y pueden actualizarse. Los datos de monitoreo comunitario reflejan el conocimiento del territorio de las comunidades participantes y no sustituyen estudios formales de abundancia poblacional. El uso, reproducción o cita de esta información debe reconocer a la iniciativa autora y al Instituto Humboldt. BioTablero — biotablero.humboldt.org.co`,
+      content: `Este reporte fue generado automáticamente desde el Módulo de Monitoreo Comunitario de BioTablero a partir de la información aportada por la iniciativa y validada por el Instituto de Investigación de Recursos Biológicos Alexander von Humboldt. Las cifras corresponden a la fecha de generación y pueden actualizarse. Los datos de monitoreo comunitario reflejan el conocimiento del territorio de las comunidades participantes. El uso, reproducción o cita de esta información debe reconocer a la iniciativa autora y al Instituto Humboldt. BioTablero — biotablero.humboldt.org.co`,
     },
   },
 };
