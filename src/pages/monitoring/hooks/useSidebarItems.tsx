@@ -78,7 +78,7 @@ export function useSidebarItems() {
       },
 
       // NOTE: items para usuarios registrados en biotablero
-      ...(user
+      ...(user && !user.roles.includes(RoleInMonitoring.ADMIN)
         ? [
             {
               label: "Mi Perfil",
