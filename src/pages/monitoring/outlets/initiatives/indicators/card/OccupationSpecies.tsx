@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { ResponsiveLine } from "@nivo/line";
 
+import { GRAPHS_CONTRAST_COLOR_PALETTE } from "@config/color";
 import {
   GRAPH_ANIMATION_CONFIG,
-  GRAPHS_CONTRAST_COLOR_PALETTE,
   INDICATOR_MAX_COUNT_OCUPATION_SPECIES,
 } from "@config/monitoring";
 import { cn } from "@ui/shadCN/lib/utils";

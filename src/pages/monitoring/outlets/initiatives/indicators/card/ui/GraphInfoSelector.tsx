@@ -8,7 +8,7 @@ import {
   getContrastColor,
   getSeriesColor,
 } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
-import { GRAPHS_CONTRAST_COLOR_PALETTE } from "@config/monitoring";
+import { GRAPHS_CONTRAST_COLOR_PALETTE } from "@config/color";
 
 export function GraphInfoSelector({
   uiText,

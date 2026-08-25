@@ -1,8 +1,11 @@
 import { toast } from "sonner";
 import {
   ChartLine,
+  CircleSlash,
   FileCheck,
+  FileDown,
   FileXCorner,
+  FileXIcon,
   type LucideIcon,
   Shredder,
 } from "lucide-react";
@@ -35,6 +38,7 @@ import { CMIndicatorReportModel } from "@hooks/useReport/reportModels/CMIndicato
 import { LOCALE } from "@config/monitoring";
 import { ReportDocumentTree } from "@hooks/useReport/reportModels/ReportDocumentTree";
 import { Button } from "@ui/shadCN/component/button";
+import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import type {
   SearchSection,
   IndicatorContext,
@@ -585,17 +589,30 @@ export function ReportCTX({ children }: { children: ReactNode }) {
                     title={uiText.editor.footer.downloadBtn.title}
                     aria-label={uiText.editor.footer.downloadBtn.sr}
                   >
+                    <FileDown />
                     {uiText.editor.footer.downloadBtn.label}
                   </Button>
-                  <SheetClose asChild>
+                  <ButtonGroup>
+                    <SheetClose asChild>
+                      <Button
+                        variant="outline_destructive"
+                        title={uiText.editor.footer.closeBtn.title}
+                        aria-label={uiText.editor.footer.closeBtn.sr}
+                      >
+                        <CircleSlash />
+                        {uiText.editor.footer.closeBtn.label}
+                      </Button>
+                    </SheetClose>
                     <Button
                       variant="outline_destructive"
-                      title={uiText.editor.footer.closeBtn.title}
-                      aria-label={uiText.editor.footer.closeBtn.sr}
+                      disabled={docSections.size === 0}
+                      title={uiText.editor.footer.deleteBtn.title}
+                      aria-label={uiText.editor.footer.deleteBtn.sr}
                     >
-                      {uiText.editor.footer.closeBtn.label}
+                      <FileXIcon />
+                      {uiText.editor.footer.deleteBtn.label}
                     </Button>
-                  </SheetClose>
+                  </ButtonGroup>
                 </div>
               </SheetFooter>
             </SheetContent>
