@@ -55,7 +55,7 @@ export const uiText = {
           title:
             "¿Cómo protegemos el acceso a la cuenta compartida de la iniciativa?",
           descriptionMd:
-            "Se recomienda guardar los datos de acceso en un lugar seguro y compartirlo solo con quienes efectivamente suben recursos o gestionan la cuenta, no compartir la contraseña por WhatsApp o correo, cambiarla si alguien con acceso deja la iniciativa, y activar la verificación en dos pasos únicamente si hay acceso constante a un celular con señal.",
+            "Se recomienda guardar los datos de acceso en un lugar seguro y compartir solo con quienes efectivamente suben recursos o gestionan la cuenta, no compartir la contraseña por WhatsApp o correo, cambiarla si alguien con acceso deja la iniciativa, y activar la verificación en dos pasos únicamente si hay acceso constante a un celular con señal.",
         },
       ],
     },
@@ -88,12 +88,12 @@ export const uiText = {
         {
           title: "Soy líder, ¿qué puedo gestionar de mi iniciativa?",
           descriptionMd:
-            "Desde la vista de gestión de la iniciativa puedes administrar líderes, colaboradores, observadores, la información general de la iniciativa e invitar nuevas personas. el Líder también recibe los correos de contacto dirigidos a la iniciativa; por eso se recomienda usar, para la cuenta de la iniciativa, un correo institucional o compartido —no uno personal— que se mantenga estable en el tiempo, incluso si cambian las personas responsables.",
+            "Desde la vista de gestión de la iniciativa puedes administrar líderes, colaboradores, observadores, la información general de la iniciativa e invitar nuevas personas. El líder también recibe los correos de contacto dirigidos a la iniciativa; por eso se recomienda usar, para la cuenta de la iniciativa, un correo institucional o compartido —no uno personal— que se mantenga estable en el tiempo, incluso si cambian las personas responsables.",
         },
         {
           title: "¿Qué se ve dentro del perfil de una iniciativa?",
           descriptionMd:
-            "El perfil de una iniciativa muestra su información general, los indicadores de la iniciativa (puedes seleccionar cuáles incluir para descargar un reporte en PDF), las historias del territorio compartidas —con fotos y videos, hasta un máximo de 5 archivos, tamaño 1mb— y el listado de colaboradores.",
+            "El perfil de una iniciativa muestra su información general, los indicadores de la iniciativa (puedes seleccionar cuáles incluir para descargar un reporte en PDF), las historias del territorio compartidas —con fotos y videos, hasta un máximo de 5 archivos, tamaño 1MB— y el listado de colaboradores.",
         },
       ],
     },
