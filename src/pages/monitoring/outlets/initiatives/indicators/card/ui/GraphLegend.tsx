@@ -1,4 +1,4 @@
-import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/monitoring";
+import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
 import { cn } from "@ui/shadCN/lib/utils";
 import { hashStringToRange } from "@utils/format";
 

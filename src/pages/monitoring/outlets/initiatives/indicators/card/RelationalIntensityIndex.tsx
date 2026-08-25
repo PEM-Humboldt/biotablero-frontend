@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { type BarDatum, ResponsiveBar } from "@nivo/bar";
+import { GRAPHS_GRADIENT_COLOR_PALETTE } from "@config/color";
 import {
   INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY,
-  GRAPHS_GRADIENT_COLOR_PALETTE,
   GRAPH_ANIMATION_CONFIG,
 } from "@config/monitoring";
 import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";

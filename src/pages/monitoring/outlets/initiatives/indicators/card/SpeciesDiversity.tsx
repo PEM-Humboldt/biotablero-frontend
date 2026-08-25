@@ -2,10 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 
 import { ResponsiveLine } from "@nivo/line";
 import { hashStringToRange } from "@utils/format";
-import {
-  GRAPH_ANIMATION_CONFIG,
-  GRAPHS_CONTRAST_COLOR_PALETTE,
-} from "@config/monitoring";
+import { GRAPHS_CONTRAST_COLOR_PALETTE } from "@config/color";
+import { GRAPH_ANIMATION_CONFIG } from "@config/monitoring";
 import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";

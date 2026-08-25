@@ -9,10 +9,8 @@ import {
   SelectValue,
 } from "@ui/shadCN/component/select";
 import { ResponsiveBar } from "@nivo/bar";
-import {
-  GRAPHS_GRADIENT_COLOR_PALETTE,
-  INITIATIVE_MONITORING_EVENTS_HORIZONTAL_TICS,
-} from "@config/monitoring";
+import { GRAPHS_GRADIENT_COLOR_PALETTE } from "@config/color";
+import { INITIATIVE_MONITORING_EVENTS_HORIZONTAL_TICS } from "@config/monitoring";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { Spinner } from "@ui/shadCN/component/spinner";
 

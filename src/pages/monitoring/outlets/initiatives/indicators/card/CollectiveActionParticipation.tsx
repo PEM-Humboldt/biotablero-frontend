@@ -1,10 +1,8 @@
 import { useMemo, useState } from "react";
 
 import { hashStringToRange } from "@utils/format";
-import {
-  GRAPH_ANIMATION_CONFIG,
-  GRAPHS_EXTENDED_COLOR_PALETTE,
-} from "@config/monitoring";
+import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
+import { GRAPH_ANIMATION_CONFIG } from "@config/monitoring";
 import { ResponsiveBar } from "@nivo/bar";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";

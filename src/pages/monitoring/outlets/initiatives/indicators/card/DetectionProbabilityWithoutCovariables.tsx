@@ -2,10 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { SearchIcon } from "lucide-react";
 
 import { ResponsiveLine } from "@nivo/line";
-import {
-  GRAPH_ANIMATION_CONFIG,
-  GRAPHS_EXTENDED_COLOR_PALETTE,
-} from "@config/monitoring";
+import { GRAPH_ANIMATION_CONFIG } from "@config/monitoring";
+import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
 import { Combobox } from "@ui/ComboBox";
 import { cn } from "@ui/shadCN/lib/utils";
 import { hashStringToRange } from "@utils/format";
