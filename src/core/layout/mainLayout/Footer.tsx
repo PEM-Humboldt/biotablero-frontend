@@ -84,7 +84,7 @@ export function Footer({ logos, className }: FooterProps) {
             {uiText.uiTxt.links.contact}
           </a>
           <Button
-            title={uiText.citationTooltip}
+            title={uiText.tosTooltip}
             variant="link"
             className="text-accent text-sm"
             asChild
