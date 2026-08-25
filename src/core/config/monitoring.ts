@@ -1,3 +1,4 @@
+import { PageProps } from "@react-pdf/renderer";
 import type { ImageMimeType } from "@appTypes/formats";
 import type { ODataParams } from "@appTypes/odata";
 import type { LatLngBoundsLiteral } from "leaflet";
@@ -64,6 +65,12 @@ export const GRAPHS_GRADIENT_COLOR_PALETTE = [
   GRAPHS_EXTENDED_COLOR_PALETTE[21], // #f25e50
   GRAPHS_EXTENDED_COLOR_PALETTE[22], // #e84a5f
 ];
+export const GRAPH_ANIMATION_CONFIG = {
+  duration: 300,
+  // NOTE: EaseInOut Cuadratica
+  easing: (t: number) =>
+    t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2,
+};
 
 export const MONITORING_YEARS_AVAILABLE = [2024, 2025, 2026];
 
@@ -213,3 +220,7 @@ export const GLOSARY_FILTER_IS_AND = false;
 export const INDICATORS_PER_PAGE = 7;
 export const INDICATOR_MAX_COUNT_OCUPATION_SPECIES = 3;
 export const INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY = 3;
+
+// Report
+export const REPORT_NOTE_MAX_LENGTH = 250;
+export const REPORT_PAGE_SIZE: PageProps["size"] = "LETTER";

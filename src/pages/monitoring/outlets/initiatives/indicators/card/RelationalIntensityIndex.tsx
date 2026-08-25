@@ -4,7 +4,9 @@ import { type BarDatum, ResponsiveBar } from "@nivo/bar";
 import {
   INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY,
   GRAPHS_GRADIENT_COLOR_PALETTE,
+  GRAPH_ANIMATION_CONFIG,
 } from "@config/monitoring";
+import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import type { BarsData } from "pages/monitoring/types/indicators";
@@ -99,107 +101,117 @@ export function RelationalIntensityIndex() {
         />
       </div>
 
-      <div className="flex w-full h-full aspect-3/2">
-        <div className="w-[150px]">
-          <ResponsiveBar
-            data={
-              dataByDate[allDates[0]].map((d) => ({
-                ...d,
-                value: null,
-              })) as unknown as BarDatum[]
-            }
-            indexBy="actor"
-            layout="horizontal"
-            margin={{ top: 0, right: 0, bottom: 60, left: 150 }}
-            padding={0.4}
-            valueScale={{ type: "linear", min: -1.0, max: 1.0 }}
-            indexScale={{ type: "band", round: true }}
-            colors="transparent"
-            axisTop={null}
-            axisRight={null}
-            axisBottom={null}
-            axisLeft={{
-              tickSize: 0,
-              tickPadding: 10,
-              tickRotation: 0,
-            }}
-            enableGridX={false}
-            enableGridY={false}
-          />
-        </div>
-
-        {selectedDates.toReversed().map((date) => (
-          <div
-            key={`indicatorSection_${date}`}
-            className="flex-1 hover:bg-grey-light rounded"
-          >
-            <ResponsiveBar
-              data={dataByDate[date]}
-              keys={["value"]}
-              indexBy="actor"
-              layout="horizontal"
-              margin={{ top: 0, right: 10, bottom: 60, left: 10 }}
-              padding={0.2}
-              valueScale={{ type: "linear", min: -1.0, max: 1.0 }}
-              indexScale={{ type: "band", round: true }}
-              colors={(bar) => {
-                if (
-                  bar.indexValue ===
-                  uiText.indicatorCard.relationalIntensityIndex.averageLabel
-                ) {
-                  return GRAPHS_GRADIENT_COLOR_PALETTE[0];
+      <GetIndicatorInfo
+        graphId={selectedDates.toReversed().join(", ")}
+        mapElementId={null}
+        mapUrl={null}
+      >
+        <>
+          <div className="flex w-full h-full aspect-3/2">
+            <div className="w-[150px]">
+              <ResponsiveBar
+                data={
+                  dataByDate[allDates[0]].map((d) => ({
+                    ...d,
+                    value: null,
+                  })) as unknown as BarDatum[]
                 }
-                return bar.value! >= 0
-                  ? GRAPHS_GRADIENT_COLOR_PALETTE[5]
-                  : GRAPHS_GRADIENT_COLOR_PALETTE[9];
-              }}
-              axisTop={null}
-              axisRight={null}
-              axisLeft={null}
-              enableGridX={true}
-              enableGridY={true}
-              theme={{ grid: { line: { strokeDasharray: "1 1" } } }}
-              axisBottom={{
-                tickValues: [-1.0, -0.5, 0, 0.5, 1.0],
-                legend: date,
-                legendPosition: "middle",
-                legendOffset: 40,
-              }}
-              labelSkipWidth={20}
-              labelTextColor={(label) => getContrastColor(label.color)}
-              markers={[
-                {
-                  axis: "x",
-                  value: 0,
-                  lineStyle: { stroke: "#64748b", strokeWidth: 1 },
-                },
-              ]}
-              tooltip={({ value, indexValue, color }) => {
-                return (
-                  <div
-                    className="bg-background px-4 py-2 shadow-md rounded flex flex-col items-center"
-                    style={{ pointerEvents: "none", whiteSpace: "nowrap" }}
-                  >
-                    <div className="flex flex-col text-center text-sm mb-1 *:m-0!">
-                      <span className="font-normal">
-                        <span
-                          className="inline-block w-3 h-3 mr-1 rounded-full"
-                          style={{ backgroundColor: color }}
-                        />
-                        {indexValue}
-                      </span>
-                      <span className="text-lg font-normal">{value}</span>
-                    </div>
-                  </div>
-                );
-              }}
-            />
+                motionConfig={GRAPH_ANIMATION_CONFIG}
+                indexBy="actor"
+                layout="horizontal"
+                margin={{ top: 0, right: 0, bottom: 60, left: 160 }}
+                padding={0.4}
+                valueScale={{ type: "linear", min: -1.0, max: 1.0 }}
+                indexScale={{ type: "band", round: true }}
+                colors="transparent"
+                axisTop={null}
+                axisRight={null}
+                axisBottom={null}
+                axisLeft={{
+                  tickSize: 0,
+                  tickPadding: 10,
+                  tickRotation: 0,
+                }}
+                enableGridX={false}
+                enableGridY={false}
+              />
+            </div>
+
+            {selectedDates.toReversed().map((date) => (
+              <div
+                key={`indicatorSection_${date}`}
+                className="flex-1 hover:bg-grey-light rounded"
+              >
+                <ResponsiveBar
+                  data={dataByDate[date]}
+                  keys={["value"]}
+                  indexBy="actor"
+                  layout="horizontal"
+                  margin={{ top: 0, right: 10, bottom: 60, left: 10 }}
+                  padding={0.2}
+                  valueScale={{ type: "linear", min: -1.0, max: 1.0 }}
+                  indexScale={{ type: "band", round: true }}
+                  motionConfig={GRAPH_ANIMATION_CONFIG}
+                  colors={(bar) => {
+                    if (
+                      bar.indexValue ===
+                      uiText.indicatorCard.relationalIntensityIndex.averageLabel
+                    ) {
+                      return GRAPHS_GRADIENT_COLOR_PALETTE[0];
+                    }
+                    return bar.value! >= 0
+                      ? GRAPHS_GRADIENT_COLOR_PALETTE[5]
+                      : GRAPHS_GRADIENT_COLOR_PALETTE[9];
+                  }}
+                  axisTop={null}
+                  axisRight={null}
+                  axisLeft={null}
+                  enableGridX={true}
+                  enableGridY={true}
+                  theme={{ grid: { line: { strokeDasharray: "1 1" } } }}
+                  axisBottom={{
+                    tickValues: [-1.0, -0.5, 0, 0.5, 1.0],
+                    legend: date,
+                    legendPosition: "middle",
+                    legendOffset: 40,
+                  }}
+                  labelSkipWidth={20}
+                  labelTextColor={(label) => getContrastColor(label.color)}
+                  markers={[
+                    {
+                      axis: "x",
+                      value: 0,
+                      lineStyle: { stroke: "#64748b", strokeWidth: 1 },
+                    },
+                  ]}
+                  tooltip={({ value, indexValue, color }) => {
+                    return (
+                      <div
+                        className="bg-background px-4 py-2 shadow-md rounded flex flex-col items-center"
+                        style={{ pointerEvents: "none", whiteSpace: "nowrap" }}
+                      >
+                        <div className="flex flex-col text-center text-sm mb-1 *:m-0!">
+                          <span className="font-normal">
+                            <span
+                              className="inline-block w-3 h-3 mr-1 rounded-full"
+                              style={{ backgroundColor: color }}
+                            />
+                            {indexValue}
+                          </span>
+                          <span className="text-lg font-normal">{value}</span>
+                        </div>
+                      </div>
+                    );
+                  }}
+                />
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <p className="text-sm italic m-0 text-center">
-        {uiText.indicatorCard.relationalIntensityIndex.bottomLegend}
-      </p>
+          <p className="text-sm italic mb-4 text-center">
+            {uiText.indicatorCard.relationalIntensityIndex.bottomLegend}
+          </p>
+        </>
+      </GetIndicatorInfo>
     </>
   );
 }
