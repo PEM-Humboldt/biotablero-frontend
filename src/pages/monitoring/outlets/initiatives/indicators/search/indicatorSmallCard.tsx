@@ -10,6 +10,7 @@ import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { TagsRender } from "pages/monitoring/ui/TagsRender";
 import type { IndicatorMetadata } from "pages/monitoring/types/indicators";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
+import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
 
 export function IndicatorSmallCard({
   indicator,
@@ -19,18 +20,19 @@ export function IndicatorSmallCard({
   const { currentIndicator } = useIndicatorsCTX();
   const isCurrent = currentIndicator && indicator.id === currentIndicator.id;
 
-  const tagsGrouped = useMemo(
-    () =>
-      (indicator.tags || []).reduce<Record<number, string[]>>((all, tag) => {
-        if (!all[tag.tag.id]) {
-          all[tag.tag.id] = [];
-        }
-        all[tag.tag.id].push(tag.tag.name);
+  const tagsGrouped = (indicator.tags || []).reduce<
+    Record<number, { group: string; tags: string[] }>
+  >((all, tag) => {
+    if (!all[tag.tag.category.id]) {
+      all[tag.tag.category.id] = {
+        group: translateTagCategory(tag.tag.category.name),
+        tags: [],
+      };
+    }
+    all[tag.tag.category.id].tags.push(tag.tag.name);
 
-        return all;
-      }, {}),
-    [indicator.tags],
-  );
+    return all;
+  }, {});
 
   const { since, until } = useMemo(
     () =>
@@ -67,15 +69,15 @@ export function IndicatorSmallCard({
     >
       <h4 className="mb-1">{indicator.name}</h4>
       <div className="flex flex-wrap m-1 ml-0 gap-2">
-        {Object.values(tagsGrouped).map((group, i) => {
+        {Object.values(tagsGrouped).map((tags, i) => {
           const colorValues = TAG_COLORS[i % TAG_COLORS.length];
           const colorSet = `${colorValues.bg} ${colorValues.fg}`;
 
           return (
             <TagsRender
-              key={`tags_${indicator.id}_${group[i]}_${i}`}
-              tags={group}
-              srTitle=""
+              key={`tags_${tags.group}_${i}`}
+              tags={tags.tags}
+              srTitle={tags.group}
               className={cn(colorSet, "font-normal")}
             />
           );
