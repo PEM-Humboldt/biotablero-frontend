@@ -1,4 +1,4 @@
-import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/monitoring";
+import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
 import { hashStringToRange } from "@utils/format";
 
 import { getSeriesColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";

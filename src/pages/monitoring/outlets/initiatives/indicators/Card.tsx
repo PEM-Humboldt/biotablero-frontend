@@ -14,6 +14,7 @@ import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import type { IndicatorMetadata } from "pages/monitoring/types/indicators";
 import { GraphSelector } from "pages/monitoring/outlets/initiatives/indicators/card/GraphSelector";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
+import { AddMCIndicatorToReport } from "@ui/AddMCIndicatorToReport";
 
 export function Card() {
   const { indicators, currentIndicator, isLoading, errors } =
@@ -57,6 +58,8 @@ export function Card() {
               <span className="text-base italic" title="Etiquetas">
                 {currentIndicator.tags.map((t) => t.tag.name).join(" - ")}
               </span>
+
+              <AddMCIndicatorToReport />
             </h3>
 
             <time

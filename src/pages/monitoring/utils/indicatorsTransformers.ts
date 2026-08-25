@@ -26,7 +26,7 @@ export function dataTransformLineGraph(data: IndicatorData) {
   data.groups.forEach((group) => {
     group.values.forEach((value) => {
       const metricName = value.measureUnit?.name
-        ? ` || ${value.measureUnit.name}`
+        ? `, ${value.measureUnit.name}`
         : "";
       const seriesDescription = group.category?.description
         ? `, ${group.category.description}`

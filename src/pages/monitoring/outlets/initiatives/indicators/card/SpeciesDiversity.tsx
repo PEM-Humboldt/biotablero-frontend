@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 
 import { ResponsiveLine } from "@nivo/line";
 import { hashStringToRange } from "@utils/format";
-import { GRAPHS_CONTRAST_COLOR_PALETTE } from "@config/monitoring";
+import { GRAPHS_CONTRAST_COLOR_PALETTE } from "@config/color";
+import { GRAPH_ANIMATION_CONFIG } from "@config/monitoring";
+import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { ConfidenceIntervalLayer } from "pages/monitoring/outlets/initiatives/indicators/card/utils/ConfidenceIntervalLayer";
@@ -10,6 +12,7 @@ import type { LineData } from "pages/monitoring/types/indicators";
 import { getSeriesColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
 import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphInfoSelector";
+import { GraphLegend } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphLegend";
 
 export function SpeciesDiversity() {
   const { currentIndicator } = useIndicatorsCTX();
@@ -65,7 +68,7 @@ export function SpeciesDiversity() {
   }, [indexesList]);
 
   const { filteredData, minY, maxY } = useMemo<{
-    filteredData: (LineData & { color: string })[];
+    filteredData: LineData[];
     minY: number | "auto";
     maxY: number | "auto";
   }>(() => {
@@ -82,8 +85,7 @@ export function SpeciesDiversity() {
           return acc;
         }
 
-        const color = getSeriesColor(hashStringToRange(data.scientificName));
-        acc.filteredData.push({ ...data, color });
+        acc.filteredData.push(data);
         acc.minYvalue =
           Math.min(...data.data.map((d) => d.lowerLimit ?? d.y)) - 1;
         acc.maxYvalue =
@@ -92,7 +94,7 @@ export function SpeciesDiversity() {
         return acc;
       },
       {
-        filteredData: [] as (LineData & { color: string })[],
+        filteredData: [] as LineData[],
         minYvalue: Infinity,
         maxYvalue: -Infinity,
       },
@@ -125,93 +127,109 @@ export function SpeciesDiversity() {
         />
       </div>
 
-      <div className="w-full h-full aspect-3/2">
-        <ResponsiveLine
-          data={filteredData}
-          margin={{ top: 20, right: 30, bottom: 30, left: 60 }}
-          xScale={{ type: "point" }}
-          yScale={{
-            type: "linear",
-            min: minY,
-            max: maxY,
-          }}
-          axisLeft={{
-            legend: uiText.indicatorCard.speciesDiversity.leftAxisLegend,
-            legendOffset: -40,
-          }}
-          colors={(series) =>
-            getSeriesColor(
-              hashStringToRange(series.id),
-              GRAPHS_CONTRAST_COLOR_PALETTE,
-            )
-          }
-          pointSize={8}
-          pointColor={{ theme: "background" }}
-          pointBorderWidth={2}
-          pointBorderColor={{ from: "serieColor" }}
-          useMesh={true}
-          layers={[
-            "grid",
-            "markers",
-            "axes",
-            "areas",
-            ConfidenceIntervalLayer,
-            "crosshair",
-            "lines",
-            "points",
-            "slices",
-            "mesh",
-          ]}
-          tooltip={({ point }) => {
-            const [name, description] = point.seriesId
-              .split("||")
-              .map((l) => l.trim());
+      <GetIndicatorInfo
+        graphId={`${selectedSpecie}, ${selectedIndex}`}
+        mapElementId={null}
+        mapUrl={null}
+      >
+        <>
+          <div className="w-full h-full aspect-3/2">
+            <ResponsiveLine
+              data={filteredData}
+              margin={{ top: 20, right: 30, bottom: 30, left: 60 }}
+              xScale={{ type: "point" }}
+              yScale={{
+                type: "linear",
+                min: minY,
+                max: maxY,
+              }}
+              axisLeft={{
+                legend: uiText.indicatorCard.speciesDiversity.leftAxisLegend,
+                legendOffset: -40,
+              }}
+              motionConfig={GRAPH_ANIMATION_CONFIG}
+              colors={(series) =>
+                getSeriesColor(
+                  hashStringToRange(series.scientificName),
+                  GRAPHS_CONTRAST_COLOR_PALETTE,
+                )
+              }
+              pointSize={8}
+              pointColor={{ theme: "background" }}
+              pointBorderWidth={2}
+              pointBorderColor={{ from: "serieColor" }}
+              useMesh={true}
+              layers={[
+                "grid",
+                "markers",
+                "axes",
+                "areas",
+                ConfidenceIntervalLayer,
+                "crosshair",
+                "lines",
+                "points",
+                "slices",
+                "mesh",
+              ]}
+              tooltip={({ point }) => {
+                const [name, description] = point.seriesId
+                  .split(", ")
+                  .map((l) => l.trim());
 
-            const data = point.data.y;
-            const date = point.data.x;
+                const data = point.data.y;
+                const date = point.data.x;
 
-            return (
-              <div
-                className="bg-background px-4 py-2 shadow-md rounded flex flex-col items-center"
-                style={{ pointerEvents: "none", whiteSpace: "nowrap" }}
-              >
-                <div className="flex flex-col text-center text-sm mb-1 *:m-0!">
-                  <span className="font-normal">
-                    <span
-                      className="inline-block w-3 h-3 mr-1 rounded-full"
-                      style={{ backgroundColor: point.seriesColor }}
-                    />
-                    {name}
-                  </span>
-                  <span className="italic">
-                    {description} - {date}
-                  </span>
-                </div>
-                <table className="space-x-1 [&_td]:px-2 [&_tr_td]:first:text-right">
-                  <tbody>
-                    <tr>
-                      <td>
-                        {uiText.indicatorCard.rangedTooltip.upperLimitTitle}
-                      </td>
-                      <td>{point.data?.upperLimit ?? data}</td>
-                    </tr>
-                    <tr>
-                      <td>{uiText.indicatorCard.rangedTooltip.valueTitle}</td>
-                      <td>{data}</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        {uiText.indicatorCard.rangedTooltip.lowerLimitTitle}
-                      </td>
-                      <td>{point.data?.lowerLimit ?? data}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            );
-          }}
-        />
-      </div>
+                return (
+                  <div
+                    className="bg-background px-4 py-2 shadow-md rounded flex flex-col items-center"
+                    style={{ pointerEvents: "none", whiteSpace: "nowrap" }}
+                  >
+                    <div className="flex flex-col text-center text-sm mb-1 *:m-0!">
+                      <span className="font-normal">
+                        <span
+                          className="inline-block w-3 h-3 mr-1 rounded-full"
+                          style={{ backgroundColor: point.seriesColor }}
+                        />
+                        {name}
+                      </span>
+                      <span className="italic">
+                        {description} - {date}
+                      </span>
+                    </div>
+                    <table className="space-x-1 [&_td]:px-2 [&_tr_td]:first:text-right">
+                      <tbody>
+                        <tr>
+                          <td>
+                            {uiText.indicatorCard.rangedTooltip.upperLimitTitle}
+                          </td>
+                          <td>{point.data?.upperLimit ?? data}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            {uiText.indicatorCard.rangedTooltip.valueTitle}
+                          </td>
+                          <td>{data}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            {uiText.indicatorCard.rangedTooltip.lowerLimitTitle}
+                          </td>
+                          <td>{point.data?.lowerLimit ?? data}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                );
+              }}
+            />
+          </div>
+          <GraphLegend
+            keys={filteredData.map((f) => f.id)}
+            customColorList={GRAPHS_CONTRAST_COLOR_PALETTE}
+            isBar={false}
+          />
+        </>
+      </GetIndicatorInfo>
     </>
   );
 }

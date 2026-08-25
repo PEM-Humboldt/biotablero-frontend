@@ -54,6 +54,10 @@ export const uiText = {
         `Actualizado el ${new Date(dateString).toLocaleDateString(LOCALE)}`,
     },
 
+    header: {
+      lastUpdate: "última actualización del indicador",
+    },
+
     tabs: [
       {
         key: "methodology",

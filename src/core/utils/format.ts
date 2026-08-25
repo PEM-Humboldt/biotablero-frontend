@@ -11,7 +11,7 @@ export function formatNumber(value: string | number, decimals: number) {
 }
 
 /*
- * Transforms fast any string to a number within a range from 0 to a fixed number and consistent number
+ * Transforms fast any string to a number within a range from 0 to a fixed and consistent number
  */
 export function hashStringToRange(str: string, range: number = 10): number {
   let hash = 5381;
