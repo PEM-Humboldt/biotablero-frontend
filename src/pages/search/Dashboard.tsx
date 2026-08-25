@@ -1,13 +1,11 @@
-import { useEffect, useState } from "react";
 import BackIcon from "@mui/icons-material/FirstPage";
 import Ecosistemas from "@mui/icons-material/Nature";
 import Paisaje from "@mui/icons-material/FilterHdr";
-// NOTE: No consumido en esta implementación
-// import Especies from "@mui/icons-material/FilterVintage";
+import Especies from "@mui/icons-material/FilterVintage";
 
 import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
 import Landscape from "pages/search/dashboard/Landscape";
-import Species from "pages/search/dashboard/Species";
+import { Species } from "pages/search/dashboard/Species";
 import { Ecosystems } from "pages/search/dashboard/Ecosystems";
 import { formatNumber } from "@utils/format";
 import TabContainer from "@ui/TabContainer";
@@ -18,8 +16,6 @@ type DashboardProps = {
 
 export function Dashboard({ goBackClick: handlerGoBack }: DashboardProps) {
   const { areaHa } = useSearchStateCTX();
-
-  //TODO: Habilitar las secciones comentadas cuando se conecte el nuevo backend de consultas
 
   return (
     <div className="informer">
@@ -39,7 +35,7 @@ export function Dashboard({ goBackClick: handlerGoBack }: DashboardProps) {
         titles={[
           { label: "Ecosistemas", icon: <Ecosistemas /> },
           { label: "Paisaje", icon: <Paisaje /> },
-          // { label: "Especies", icon: <Especies />, showTab: false },
+          { label: "Especies", icon: <Especies /> },
         ]}
       >
         <div>

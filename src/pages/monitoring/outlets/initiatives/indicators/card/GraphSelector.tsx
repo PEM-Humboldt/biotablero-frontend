@@ -6,9 +6,21 @@ import { SpeciesDiversity } from "pages/monitoring/outlets/initiatives/indicator
 import { RelativeSpeciesUseByGroup } from "pages/monitoring/outlets/initiatives/indicators/card/RelativeSpeciesUseByGroup";
 import { RelationalIntensityIndex } from "pages/monitoring/outlets/initiatives/indicators/card/RelationalIntensityIndex";
 import { CollectiveActionParticipation } from "pages/monitoring/outlets/initiatives/indicators/card/CollectiveActionParticipation";
+import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
+import { useReport } from "@hooks/useReport";
+import { useEffect } from "react";
 
 export function GraphSelector() {
   const { currentIndicator } = useIndicatorsCTX();
+  const { initiativeInfo } = useInitiativeCTX();
+  const { reportContextResolver } = useReport();
+
+  useEffect(() => {
+    if (!initiativeInfo) {
+      return;
+    }
+    reportContextResolver(initiativeInfo);
+  }, [initiativeInfo, reportContextResolver]);
 
   if (!currentIndicator) {
     return null;

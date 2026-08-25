@@ -48,6 +48,10 @@ export const uiText = {
     noSelection: "Selecciona un indicador",
     noIndicators: "Esta iniciativa todavía no tiene indicadores asociados",
 
+    header: {
+      lastUpdate: "última actualización del indicador",
+    },
+
     tabs: [
       {
         key: "methodology",

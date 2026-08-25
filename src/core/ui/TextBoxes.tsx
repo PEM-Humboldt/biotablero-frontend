@@ -20,6 +20,7 @@ interface TextBoxProps {
 
 type boxValues = "meto" | "cons" | "quote" | null;
 
+// TODO: Actualizar los íconos al nuevo look&feel
 function TextBoxes({
   downloadData,
   downloadName,

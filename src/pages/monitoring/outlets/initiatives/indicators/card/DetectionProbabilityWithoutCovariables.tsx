@@ -2,16 +2,18 @@ import { useEffect, useMemo, useState } from "react";
 import { SearchIcon } from "lucide-react";
 
 import { ResponsiveLine } from "@nivo/line";
-import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/monitoring";
+import { GRAPH_ANIMATION_CONFIG } from "@config/monitoring";
+import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
 import { Combobox } from "@ui/ComboBox";
 import { cn } from "@ui/shadCN/lib/utils";
 import { hashStringToRange } from "@utils/format";
+import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { ConfidenceIntervalLayer } from "pages/monitoring/outlets/initiatives/indicators/card/utils/ConfidenceIntervalLayer";
 import type { LineData } from "pages/monitoring/types/indicators";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
-import { BarsLegend } from "pages/monitoring/outlets/initiatives/indicators/card/ui/BarsLegend";
+import { GraphLegend } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphLegend";
 import { getSeriesColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
 
 const customColorMap: Record<string, string> = {
@@ -116,87 +118,106 @@ export function DetectionProbabilityWithoutCovariables() {
         </h4>
       </div>
 
-      <div className="w-full h-full aspect-3/2">
-        <ResponsiveLine
-          data={filteredData}
-          margin={{ top: 20, right: 30, bottom: 30, left: 30 }}
-          xScale={{ type: "point" }}
-          yScale={{
-            type: "linear",
-            min: 0,
-            max: 1,
-          }}
-          colors={(serie) =>
-            customColorMap[serie.id] ??
-            getSeriesColor(
-              hashStringToRange(
-                String(serie.id),
-                GRAPHS_EXTENDED_COLOR_PALETTE.length,
-              ),
-              GRAPHS_EXTENDED_COLOR_PALETTE,
-            )
-          }
-          pointSize={10}
-          useMesh={true}
-          layers={[
-            "grid",
-            "axes",
-            ConfidenceIntervalLayer,
-            "crosshair",
-            "lines",
-            "points",
-            "mesh",
-            "legends",
-          ]}
-          tooltip={({ point }) => {
-            const [name] = point.seriesId.replace(/\|\|.*$/, "").split(", ");
+      <GetIndicatorInfo
+        graphId={
+          selectedSpecieTitle.commonName
+            ? `${selectedSpecieTitle.commonName}, ${selectedSpecieTitle.name}`
+            : (selectedSpecieTitle.name ?? "")
+        }
+        mapUrl={null}
+        mapElementId={null}
+      >
+        <>
+          <div className="w-full h-full aspect-3/2">
+            <ResponsiveLine
+              data={filteredData}
+              margin={{ top: 20, right: 30, bottom: 30, left: 30 }}
+              xScale={{ type: "point" }}
+              yScale={{
+                type: "linear",
+                min: 0,
+                max: 1,
+              }}
+              motionConfig={GRAPH_ANIMATION_CONFIG}
+              colors={(serie) =>
+                customColorMap[serie.id] ??
+                getSeriesColor(
+                  hashStringToRange(
+                    String(serie.id),
+                    GRAPHS_EXTENDED_COLOR_PALETTE.length,
+                  ),
+                  GRAPHS_EXTENDED_COLOR_PALETTE,
+                )
+              }
+              pointSize={10}
+              useMesh={true}
+              layers={[
+                "grid",
+                "axes",
+                ConfidenceIntervalLayer,
+                "crosshair",
+                "lines",
+                "points",
+                "mesh",
+                "legends",
+              ]}
+              tooltip={({ point }) => {
+                const [name] = point.seriesId
+                  .replace(/\|\|.*$/, "")
+                  .split(", ");
 
-            const data = point.data.y;
-            const date = point.data.x;
+                const data = point.data.y;
+                const date = point.data.x;
 
-            return (
-              <div
-                className="bg-background px-4 py-2 shadow-md rounded flex flex-col items-center"
-                style={{ pointerEvents: "none", whiteSpace: "nowrap" }}
-              >
-                <div className="flex flex-col text-center text-sm mb-1 *:m-0!">
-                  <span className="font-normal">
-                    <span
-                      className="inline-block w-3 h-3 mr-1 rounded-full"
-                      style={{ backgroundColor: point.seriesColor }}
-                    />
-                    {name}
-                  </span>
-                  <span className="italic">{date}</span>
-                </div>
+                return (
+                  <div
+                    className="bg-background px-4 py-2 shadow-md rounded flex flex-col items-center"
+                    style={{ pointerEvents: "none", whiteSpace: "nowrap" }}
+                  >
+                    <div className="flex flex-col text-center text-sm mb-1 *:m-0!">
+                      <span className="font-normal">
+                        <span
+                          className="inline-block w-3 h-3 mr-1 rounded-full"
+                          style={{ backgroundColor: point.seriesColor }}
+                        />
+                        {name}
+                      </span>
+                      <span className="italic">{date}</span>
+                    </div>
 
-                <table className="space-x-1 [&_td]:px-2 [&_tr_td]:first:text-right">
-                  <tbody>
-                    <tr>
-                      <td>
-                        {uiText.indicatorCard.rangedTooltip.upperLimitTitle}
-                      </td>
-                      <td>{point.data?.upperLimit ?? data}</td>
-                    </tr>
-                    <tr>
-                      <td>Índice</td>
-                      <td>{data}</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        {uiText.indicatorCard.rangedTooltip.lowerLimitTitle}
-                      </td>
-                      <td>{point.data?.lowerLimit ?? data}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            );
-          }}
-        />
-      </div>
+                    <table className="space-x-1 [&_td]:px-2 [&_tr_td]:first:text-right">
+                      <tbody>
+                        <tr>
+                          <td>
+                            {uiText.indicatorCard.rangedTooltip.upperLimitTitle}
+                          </td>
+                          <td>{point.data?.upperLimit ?? data}</td>
+                        </tr>
+                        <tr>
+                          <td>Índice</td>
+                          <td>{data}</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            {uiText.indicatorCard.rangedTooltip.lowerLimitTitle}
+                          </td>
+                          <td>{point.data?.lowerLimit ?? data}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                );
+              }}
+            />
+          </div>
 
-      <BarsLegend keys={keys} customColorMap={customColorMap} />
+          <GraphLegend
+            keys={keys}
+            customColorMap={customColorMap}
+            isBar={false}
+          />
+        </>
+      </GetIndicatorInfo>
     </>
   );
 }

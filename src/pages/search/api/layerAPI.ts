@@ -13,6 +13,7 @@ class LayerAPI {
       request: axios
         .get(response.layer, {
           responseType: "blob",
+          cancelToken: source.token,
         })
         .then((res) => res.data)
         .catch((error) => {

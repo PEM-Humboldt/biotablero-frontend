@@ -1,76 +1,27 @@
+import { type PageProps } from "@react-pdf/renderer";
 import type { ImageMimeType } from "@appTypes/formats";
 import type { ODataParams } from "@appTypes/odata";
 import type { LatLngBoundsLiteral } from "leaflet";
+import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
 
-// DEFINICIONES GENERALES
+// DEFINICIONES GENERALES LOCALE
 export const LOCALE = "es-ES";
 export const COUNTRY_BOUNDS: LatLngBoundsLiteral = [
   [-4.2316872, -82.1243666],
   [16.0571269, -66.85119073],
 ];
-export const GRAPHS_EXTENDED_COLOR_PALETTE = [
-  "#2e2d62",
-  "#3d4469",
-  "#315d90",
-  "#3975a7",
-  "#428ebd",
-  "#4ca8d3",
-  "#62c2cb",
-  "#239498",
-  "#115f69",
-  "#5fa896",
-  "#99d3ba",
-  "#c1e7d2",
-  "#FDEBC4",
-  "#e6cd98",
-  "#f1cd73",
-  "#e89c1e",
-  "#e5a85c",
-  "#ed9054",
-  "#f2784f",
-  "#c85728",
-  "#9a3811",
-  "#f25e50",
-  "#e84a5f",
-  "#d63550",
-  "#F1A49E",
-  "#d980a3",
-  "#B079A8",
-  "#8a5d8f",
-  "#5e3a6e",
-  "#423258",
-];
-export const GRAPHS_CONTRAST_COLOR_PALETTE = [
-  GRAPHS_EXTENDED_COLOR_PALETTE[0], // #2e2d62
-  GRAPHS_EXTENDED_COLOR_PALETTE[2], // #315d90
-  GRAPHS_EXTENDED_COLOR_PALETTE[7], // #239498
-  GRAPHS_EXTENDED_COLOR_PALETTE[8], // #115f69
-  GRAPHS_EXTENDED_COLOR_PALETTE[15], // #e89c1e
-  GRAPHS_EXTENDED_COLOR_PALETTE[18], // #f2784f
-  GRAPHS_EXTENDED_COLOR_PALETTE[20], // #9a3811
-  GRAPHS_EXTENDED_COLOR_PALETTE[23], // #d63550
-  GRAPHS_EXTENDED_COLOR_PALETTE[26], // #B079A8
-  GRAPHS_EXTENDED_COLOR_PALETTE[29], // #423258
-];
-export const GRAPHS_GRADIENT_COLOR_PALETTE = [
-  GRAPHS_EXTENDED_COLOR_PALETTE[1], // #3d4469
-  GRAPHS_EXTENDED_COLOR_PALETTE[2], // #315d90
-  GRAPHS_EXTENDED_COLOR_PALETTE[3], // #3975a7
-  GRAPHS_EXTENDED_COLOR_PALETTE[4], // #428ebd
-  GRAPHS_EXTENDED_COLOR_PALETTE[5], // #4ca8d3
-  GRAPHS_EXTENDED_COLOR_PALETTE[16], // #e5a85c
-  GRAPHS_EXTENDED_COLOR_PALETTE[17], // #ed9054
-  GRAPHS_EXTENDED_COLOR_PALETTE[18], // #f2784f
-  GRAPHS_EXTENDED_COLOR_PALETTE[21], // #f25e50
-  GRAPHS_EXTENDED_COLOR_PALETTE[22], // #e84a5f
-];
-
-export const MONITORING_YEARS_AVAILABLE = [2024, 2025, 2026];
+export const GRAPH_ANIMATION_CONFIG = {
+  duration: 300,
+  // NOTE: EaseInOut Cuadratica
+  easing: (t: number) =>
+    t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2,
+};
 
 // Logs
 export const LOG_RECORDS_PER_PAGE = 20; // registrys on the logs summary
 
 // Initiative description and properties
+export const MONITORING_YEARS_AVAILABLE = [2024, 2025, 2026];
 export const INITIATIVES_PER_PAGE = 10; // Initiatives on the admin panel
 
 export const INITIAVIVE_NAME_MAX_LENGTH = 100;
@@ -216,3 +167,7 @@ export const INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY = 3;
 
 // Help
 export const HELP_YOUTUBE_VIDEO_URL = "www.youtube.com/watch?v=arZZw8NyPq8";
+
+// Report
+export const REPORT_NOTE_MAX_LENGTH = 250;
+export const REPORT_PAGE_SIZE: PageProps["size"] = "LETTER";

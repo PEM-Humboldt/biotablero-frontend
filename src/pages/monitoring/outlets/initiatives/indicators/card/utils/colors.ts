@@ -1,4 +1,4 @@
-import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/monitoring";
+import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
 
 /**
  * Calculates and returns a color from a provided palette based on a unique series identifier, and ensures that the same ID will always resolve to the same color.

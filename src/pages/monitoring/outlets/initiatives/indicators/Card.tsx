@@ -15,6 +15,7 @@ import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import type { IndicatorMetadata } from "pages/monitoring/types/indicators";
 import { GraphSelector } from "pages/monitoring/outlets/initiatives/indicators/card/GraphSelector";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
+import { AddMCIndicatorToReport } from "@ui/AddMCIndicatorToReport";
 
 export function Card() {
   const { indicators, currentIndicator, isLoading, errors } =
@@ -35,7 +36,7 @@ export function Card() {
         </div>
       ) : (
         <>
-          <header className="bg-primary mx-4 mt-2 p-4 flex gap-2 rounded-lg">
+          <header className="bg-primary mx-4 mt-2 p-4 flex items-start gap-2 rounded-lg">
             {isLoading && (
               <Spinner className="text-primary-foreground size-8 self-center" />
             )}
@@ -46,11 +47,14 @@ export function Card() {
               <span className="text-base italic">
                 {currentIndicator.type.name}
               </span>
+
+              <AddMCIndicatorToReport />
             </h3>
 
             <time
               dateTime={new Date(currentIndicator.creationDate).toISOString()}
-              className="text-primary-foreground border border-accent-foreground/20 rounded self-start px-2 py-1"
+              className="text-primary-foreground text-sm! border border-accent-foreground/20 rounded px-2 py-1 h-8"
+              title={uiText.indicatorCard.header.lastUpdate}
             >
               {new Date(currentIndicator.creationDate).toLocaleDateString(
                 LOCALE,
