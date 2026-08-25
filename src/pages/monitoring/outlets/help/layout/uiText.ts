@@ -55,7 +55,7 @@ export const uiText = {
           title:
             "¿Cómo protegemos el acceso a la cuenta compartida de la iniciativa?",
           descriptionMd:
-            "Se recomienda guardar los datos de acceso en un lugar seguro y compartirlo solo con quienes efectivamente suben recursos o gestionan la cuenta, no compartir la contraseña por WhatsApp o correo, cambiarla si alguien con acceso deja la iniciativa, y activar la verificación en dos pasos únicamente si hay acceso constante a un celular con señal.",
+            "Se recomienda guardar los datos de acceso en un lugar seguro y compartir solo con quienes efectivamente suben recursos o gestionan la cuenta, no compartir la contraseña por WhatsApp o correo, cambiarla si alguien con acceso deja la iniciativa, y activar la verificación en dos pasos únicamente si hay acceso constante a un celular con señal.",
         },
       ],
     },
@@ -93,7 +93,7 @@ export const uiText = {
         {
           title: "¿Qué se ve dentro del perfil de una iniciativa?",
           descriptionMd:
-            "El perfil de una iniciativa muestra su información general, los indicadores de la iniciativa (puedes seleccionar cuáles incluir para descargar un reporte en PDF), las historias del territorio compartidas —con fotos y videos, hasta un máximo de 5 archivos, tamaño 1mb— y el listado de colaboradores.",
+            "El perfil de una iniciativa muestra su información general, los indicadores de la iniciativa (puedes seleccionar cuáles incluir para descargar un reporte en PDF), las historias del territorio compartidas —con fotos y videos, hasta un máximo de 5 archivos, tamaño 1MB— y el listado de colaboradores.",
         },
       ],
     },
