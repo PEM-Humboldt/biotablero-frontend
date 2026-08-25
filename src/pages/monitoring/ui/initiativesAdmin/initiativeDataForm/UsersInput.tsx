@@ -5,7 +5,6 @@ import { INITIATIVE_DISPLAY_LEADERS_SEARCH } from "@config/monitoring";
 
 import type { ItemEditorProps } from "pages/monitoring/types/initiativeData";
 import type { UserItem } from "pages/monitoring/types/catalog";
-import { userLevels } from "pages/monitoring/utils/manageUsers";
 import { InputListActionButtons } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/InputListActionButtons";
 import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 import { StableComboboxOData } from "@ui/ComboboxOData";
@@ -77,9 +76,9 @@ export function UsersInput<T extends UserItem>({
           maxItems={INITIATIVE_DISPLAY_LEADERS_SEARCH}
           shownItems={6}
           uiText={{
-            itemNotFound: "No se encontraron iniciativas",
-            trigger: "Filtrar por iniciativa",
-            inputPlaceholder: "Buscar la iniciativa",
+            itemNotFound: "No se encontraron usuarios",
+            trigger: "Filtrar por nombre de usuario",
+            inputPlaceholder: "Buscar el usuario",
           }}
           className="[&_svg]:text-accent"
           aria-invalid={inputErr.leaders !== undefined}

@@ -264,7 +264,7 @@
 
       & td,
       & th {
-        @apply px-3 py-1;
+        @apply px-3 py-1 truncate;
 
         /* NOTE: Col categoría */
         &:first-child {
@@ -273,7 +273,12 @@
 
         /* NOTE: Col nombre */
         &:nth-child(2) {
-          @apply w-[15%];
+          @apply w-[20%];
+        }
+
+        /* NOTE: Col nombre largo*/
+        &:nth-child(3) {
+          @apply w-[30%];
         }
 
         /* NOTE: Col acción */

@@ -69,7 +69,7 @@ function ODataTableRow<T extends HasId>({
   cols: ODataColumn<T>[];
   row: T;
 }) {
-  const logDataString = (col: ODataColumn<T>, row: T) => {
+  const tableCellData = (col: ODataColumn<T>, row: T) => {
     const value = row[col.source];
 
     if (col.type === "action") {
@@ -88,9 +88,17 @@ function ODataTableRow<T extends HasId>({
 
   return (
     <tr>
-      {cols.map((col, i) => (
-        <td key={`${row.id}_${i}`}>{logDataString(col, row)}</td>
-      ))}
+      {cols.map((col, i) => {
+        const renderData = tableCellData(col, row);
+        return (
+          <td
+            key={`${row.id}_${i}`}
+            title={typeof renderData === "string" ? renderData : ""}
+          >
+            {renderData}
+          </td>
+        );
+      })}
     </tr>
   );
 }
