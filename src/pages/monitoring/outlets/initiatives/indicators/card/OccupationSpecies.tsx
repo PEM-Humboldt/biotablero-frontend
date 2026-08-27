@@ -150,7 +150,7 @@ export function OccupationSpecies() {
         mapUrl={null}
       >
         <>
-          <div className="w-full h-full aspect-3/2">
+          <div className="w-full h-full aspect-video">
             <ResponsiveLine
               data={filteredIndicator}
               margin={{ top: 20, right: 30, bottom: 30, left: 30 }}
@@ -158,7 +158,6 @@ export function OccupationSpecies() {
               yScale={{ type: "linear", min: 0, max: 100 }}
               axisBottom={{ tickSize: 5, legendPosition: "middle" }}
               axisLeft={{ tickSize: 5, legendPosition: "middle" }}
-              motionConfig={GRAPH_ANIMATION_CONFIG}
               colors={(series) => series.color}
               pointSize={10}
               useMesh={true}

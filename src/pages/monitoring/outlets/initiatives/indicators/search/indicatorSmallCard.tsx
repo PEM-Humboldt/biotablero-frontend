@@ -17,7 +17,8 @@ export function IndicatorSmallCard({
   indicator: IndicatorMetadata;
 }) {
   const { currentIndicator } = useIndicatorsCTX();
-  const isCurrent = currentIndicator && indicator.id === currentIndicator.id;
+  const isCurrent =
+    currentIndicator && indicator.id === currentIndicator.indicatorId;
 
   const tagsGrouped = useMemo(
     () =>
@@ -148,7 +149,7 @@ export function IndicatorSmallCard({
                       {date.toLocaleDateString(LOCALE)}
                     </time>
                   </div>
-                  {!isCurrent && (
+                  {!(isCurrent && currentIndicator.version === v.version) && (
                     <Button variant="ghost-clean" className="px-1!" asChild>
                       <Link
                         to={`/Monitoreo/Iniciativas/${indicator.initiativeId}/Indicadores/${v.id}`}
