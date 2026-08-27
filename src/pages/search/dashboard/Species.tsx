@@ -1,13 +1,18 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import Accordion from "pages/search/Accordion";
+import {
+  useSearchDispatchCTX,
+  useSearchStateCTX,
+} from "pages/search/hooks/SearchContext";
+import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 // import Richness from "pages/search/dashboard/species/Richness";
 import { Gap } from "pages/search/dashboard/species/Gap";
-import { useSearchDispatchCTX } from "pages/search/hooks/SearchContext";
-import { SearchUpdated } from "pages/search/hooks/SearchReducer";
+import { ObservedRichness } from "pages/search/dashboard/species/ObservedRichness";
 
 export function Species() {
   const searchDispatch = useSearchDispatchCTX();
+  const { areaType } = useSearchStateCTX();
 
   const [visible, setVisible] = useState("gap");
   const [childMap, setChildMap] = useState({ gap: "gap" });
@@ -50,10 +55,35 @@ export function Species() {
         openTab: childMap.gap,
       },
     },
+    {
+      label: {
+        id: "observedRichness",
+        name: "Riqueza observada",
+      },
+      component: ObservedRichness,
+      componentProps: {
+        handleAccordionChange: handleAccordionChange,
+        openTab: childMap.gap,
+      },
+    },
   ];
 
+  const componentsAvailable = useMemo(() => {
+    if (!areaType) {
+      return [];
+    }
+
+    switch (areaType.id) {
+      case "states":
+      case "basinSubzones":
+      case "ea":
+      default:
+        return ["gap", "observedRichness"];
+    }
+  }, [areaType]);
+
   const componentsArray = availableComponents.filter((f) =>
-    visible.includes(f.label.id),
+    componentsAvailable.includes(f.label.id),
   );
 
   return (
@@ -62,7 +92,7 @@ export function Species() {
       classNameDefault="m0b"
       classNameSelected="m0b selector-expanded"
       handleChange={handleAccordionChange}
-      level="1"
+      level="2"
     />
   );
 }
