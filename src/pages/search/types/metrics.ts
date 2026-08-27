@@ -44,6 +44,16 @@ export type MetricTypesMap = {
   // TODO: Ddescomentar cuando se actualice el endpoint
   // recordGaps: { id: string; frequency: number[]; bin_edges: number[] }[];
   // currentRecordsGaps_average: { id: string; average: number }[];
+  statsOnSpecies: {
+    total: number;
+    threatened_total: number;
+    threatened_cr: number;
+    threatened_en: number;
+    threatened_vu: number;
+    invasive: number;
+    endemic: number;
+    endemic_threatened: number;
+  };
 
   // TODO: Borrar cuando se actualice el endpoint
   recordGaps: { id: string; frequency: number[]; bin_edges: number[] };
