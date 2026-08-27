@@ -62,7 +62,7 @@ export function Collaborators() {
                 className="p-2 lg:p-6 rounded-lg shadow space-y-4 outline outline-transparent hover:outline-primary transition-colors duration-300"
               >
                 <div className="flex gap-2 items-center">
-                  {collaborator.externalData.picture && (
+                  {collaborator?.externalData?.picture && (
                     <img
                       src={collaborator.externalData.picture}
                       alt=""
@@ -71,7 +71,7 @@ export function Collaborators() {
                   )}
                   <div>
                     <h4 className="m-0">
-                      {collaborator.externalData.fullName ??
+                      {collaborator?.externalData?.fullName ??
                         collaborator.userName}
                     </h4>
                     <div className="italic text-grey-dark/80 text-sm font-normal">

@@ -171,3 +171,4 @@ export const HELP_YOUTUBE_VIDEO_URL = "www.youtube.com/watch?v=arZZw8NyPq8";
 // Report
 export const REPORT_NOTE_MAX_LENGTH = 250;
 export const REPORT_PAGE_SIZE: PageProps["size"] = "LETTER";
+export const REPORT_DOWNLOAD_NAME_PREFIX = "Biotablero_reporte";
