@@ -38,7 +38,7 @@ export class ObservedRichnessController {
    */
   async getTaxonomicGroups(): Promise<string[]> {
     // TODO: Eliminar este retorno cuando el endpoint de grupos esté
-    return Promise.resolve([]);
+    return Promise.resolve(["aves", "mamiferos"]);
 
     // TODO: descomentar la función cuando el endpoint de grupos esté
     // const request = SearchAPI.makeGetRequest("/metrics/recordGaps/groups");
@@ -68,7 +68,6 @@ export class ObservedRichnessController {
     taxonomicGroup?: string,
   ): Promise<ObservedRichnessDataType> {
     const requestKey = `gaps_data-${taxonomicGroup ?? "all"}`;
-
     const { request, source } = SearchAPI.requestMetricsValues(
       "statsOnSpecies",
       areaId,

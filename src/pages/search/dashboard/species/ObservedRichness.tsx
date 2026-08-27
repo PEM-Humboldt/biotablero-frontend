@@ -58,6 +58,8 @@ export function ObservedRichness() {
 
   useEffect(() => {
     setIsLoading((old) => old + 1);
+    setErrors([]);
+
     Promise.all([
       controller.current.getTaxonomicGroups(),
       controller.current.getTexts("statsOnSpecies"),
@@ -77,9 +79,15 @@ export function ObservedRichness() {
 
   useEffect(() => {
     setIsLoading((old) => old + 1);
+    setErrors([]);
+
     Promise.all([
-      controller.current.getCurrentData(selectedGroup),
-      controller.current.getContextData(selectedGroup),
+      controller.current.getCurrentData(
+        selectedGroup === "all" ? undefined : selectedGroup,
+      ),
+      controller.current.getContextData(
+        selectedGroup === "all" ? undefined : selectedGroup,
+      ),
     ])
       .then(([current, context]) => {
         setRenderData({ current, context });
