@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
   Select,
@@ -22,10 +22,14 @@ import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
 import type { textsObject } from "pages/search/types/texts";
 import { speciesGroupLabels } from "pages/search/dashboard/species/commonDictionaries";
 import { CircleAlert, LayersIcon, LeafIcon, MapPin } from "lucide-react";
-import { ResponsiveBar } from "@nivo/bar";
 import { LOCALE } from "@config/monitoring";
 import { cn } from "@ui/shadCN/lib/utils";
 import { GraphLegend } from "@ui/GraphLegend";
+import {
+  SmallBars,
+  type SmallBarsData,
+  type SmallBarTooltip,
+} from "@composites/charts/SmallBars";
 
 const OBSERVED_RICHNESS_GRAPH_KEYS = ["CR", "EN", "VU"];
 const customColorMap: Record<string, string> = {
@@ -81,13 +85,14 @@ export function ObservedRichness() {
     setIsLoading((old) => old + 1);
     setErrors([]);
 
+    const groupFilter =
+      selectedGroup === "all" || selectedGroup === ""
+        ? undefined
+        : selectedGroup;
+
     Promise.all([
-      controller.current.getCurrentData(
-        selectedGroup === "all" ? undefined : selectedGroup,
-      ),
-      controller.current.getContextData(
-        selectedGroup === "all" ? undefined : selectedGroup,
-      ),
+      controller.current.getCurrentData(groupFilter),
+      controller.current.getContextData(groupFilter),
     ])
       .then(([current, context]) => {
         setRenderData({ current, context });
@@ -146,7 +151,10 @@ export function ObservedRichness() {
         ) : (
           <>
             <ObservedRichnessTable data={renderData.current} />
-            <ObservedRichnessTable data={renderData.context} isContext={true} />
+            <ObservedRichnessTable
+              data={renderData.context}
+              isNational={true}
+            />
           </>
         )}
       </div>
@@ -164,48 +172,91 @@ export function ObservedRichness() {
   );
 }
 
+function buildSmallBarsData(data: ObservedRichnessDataType): {
+  barsData: SmallBarsData[];
+  tooltips: SmallBarTooltip[];
+} {
+  const totalThreatened = data.threatenedTotal || 1;
+
+  const crPercentage = (data.barValues.CR / totalThreatened) * 100;
+  const enPercentage = (data.barValues.EN / totalThreatened) * 100;
+  const vuPercentage = (data.barValues.VU / totalThreatened) * 100;
+
+  const barsData = [
+    {
+      group: "amenazadas",
+      data: [
+        { category: "CR", value: crPercentage },
+        { category: "EN", value: enPercentage },
+        { category: "VU", value: vuPercentage },
+      ],
+    },
+  ];
+
+  const tooltips: SmallBarTooltip[] = OBSERVED_RICHNESS_GRAPH_KEYS.map(
+    (key) => {
+      const rawVal = data.barValues[key as keyof typeof data.barValues] ?? 0;
+      const percentageMap: Record<string, number> = {
+        CR: crPercentage,
+        EN: enPercentage,
+        VU: vuPercentage,
+      };
+
+      const pctVal = percentageMap[key] ?? 0;
+
+      return {
+        category: key,
+        group: "amenazadas",
+        tooltipContent: [
+          `${key}: ${rawVal.toLocaleString(LOCALE)} especies`,
+          `(${Number(pctVal.toFixed(2))}%)`,
+        ],
+      };
+    },
+  );
+
+  return { barsData, tooltips };
+}
+
 function ObservedRichnessTable({
   data,
-  isContext = false,
+  isNational = false,
 }: {
   data: ObservedRichnessDataType | null;
-  isContext?: boolean;
+  isNational?: boolean;
 }) {
   const { areaId } = useSearchStateCTX();
+
+  const { barsData, tooltips } = useMemo(() => {
+    if (!data) {
+      return { barsData: [], tooltips: [] };
+    }
+    return buildSmallBarsData(data);
+  }, [data]);
+
   if (!data) {
     return null;
   }
-
-  const totalThreatened = data.threatenedTotal || 1;
-  const chartData = [
-    {
-      CR: (data.barValues.CR / totalThreatened) * 100,
-      EN: (data.barValues.EN / totalThreatened) * 100,
-      VU: (data.barValues.VU / totalThreatened) * 100,
-      rawCR: data.barValues.CR,
-      rawEN: data.barValues.EN,
-      rawVU: data.barValues.VU,
-    },
-  ];
 
   return (
     <div className="mb-4 border-b border-grey">
       <address className="flex gap-1 items-center text-sm text-grey-dark font-normal not-italic uppercase my-2">
         <MapPin size={16} />
-        {isContext ? "Colombia" : areaId?.name}
+        {isNational ? "Colombia" : areaId?.name}
       </address>
 
       <ul
         className={cn(
           "flex flex-wrap gap-2",
-          "*:flex-1 *:first:flex-none *:border *:border-grey *:p-2 *:rounded-lg",
-          "[&_li>span:first-child]:text-[#888] [&_li>span:first-child]:text-sm [&_li>span:first-child]:font-normal [&_li>span:first-child]:flex [&_li>span:first-child]:gap-1 [&_li>span:first-child]:items-center",
+          "*:first:flex-none *:border *:border-grey *:p-2 *:rounded-lg *:grow",
+          "[&_li>span:first-child]:text-[#888] [&_li>span:first-child]:text-sm [&_li>span:first-child]:font-normal [&_li>span:first-child]:flex [&_li>span:first-child]:gap-1 [&_li>span:first-child]:items-baseline",
+          "[&_li_svg]:shrink-0 [&_li_svg]:translate-y-0.5",
         )}
       >
         <li
           className={cn(
             "w-full",
-            isContext ? "flex gap-2 justify-between" : "",
+            isNational ? "flex gap-2 justify-between" : "",
           )}
           title={"Total especies observadas"}
         >
@@ -213,7 +264,7 @@ function ObservedRichnessTable({
             <LeafIcon size={14} /> Total especies observadas
           </span>
           <span
-            className={cn("font-black", isContext ? "text-lg" : "text-4xl")}
+            className={cn("font-black", isNational ? "text-lg" : "text-4xl")}
           >
             {data.total.toLocaleString(LOCALE)}
           </span>
@@ -223,7 +274,7 @@ function ObservedRichnessTable({
             <MapPin size={14} /> Endémicas
           </span>
           <span
-            className={cn("font-black", isContext ? "text-base" : "text-xl")}
+            className={cn("font-black", isNational ? "text-base" : "text-xl")}
           >
             {data.endemic}
           </span>
@@ -233,17 +284,17 @@ function ObservedRichnessTable({
             <CircleAlert size={14} /> Amenazadas
           </span>
           <span
-            className={cn("font-black", isContext ? "text-base" : "text-xl")}
+            className={cn("font-black", isNational ? "text-base" : "text-xl")}
           >
             {data.threatenedTotal}
           </span>
         </li>
         <li title={"Endémicas amenazadas"}>
           <span>
-            <CircleAlert size={14} /> Endém. amenz.
+            <CircleAlert size={14} /> Endémicas amenazadas
           </span>
           <span
-            className={cn("font-black", isContext ? "text-base" : "text-xl")}
+            className={cn("font-black", isNational ? "text-base" : "text-xl")}
           >
             {data.endemicThreatened}
           </span>
@@ -253,7 +304,7 @@ function ObservedRichnessTable({
             <LayersIcon size={14} /> Invasoras
           </span>
           <span
-            className={cn("font-black", isContext ? "text-base" : "text-xl")}
+            className={cn("font-black", isNational ? "text-base" : "text-xl")}
           >
             {data.invasive}
           </span>
@@ -267,23 +318,23 @@ function ObservedRichnessTable({
             {data.threatenedTotal.toLocaleString(LOCALE)}
           </span>
         </span>
-        <div className="h-6 w-full rounded-lg overflow-hidden">
-          <ResponsiveBar
-            data={chartData}
+
+        <div className="w-full">
+          <SmallBars
+            loadStatus={null}
+            data={barsData}
             keys={OBSERVED_RICHNESS_GRAPH_KEYS}
-            layout="horizontal"
+            tooltips={tooltips}
+            height={48}
             margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
-            padding={0}
-            colors={({ id }) => customColorMap[id as string] ?? "#FF0000"}
-            valueScale={{ type: "linear", min: 0, max: 100 }}
-            enableGridY={false}
-            enableGridX={false}
-            axisLeft={null}
-            axisBottom={null}
-            enableLabel={false}
-            isInteractive={false}
+            colors={(key) => customColorMap[key] ?? "#FF0000"}
+            maxValue={100}
+            axisY={{ enabled: false, legend: "" }}
+            axisX={{ enabled: false, legend: "" }}
+            onClickHandler={() => {}}
           />
         </div>
+
         <GraphLegend
           keys={OBSERVED_RICHNESS_GRAPH_KEYS}
           customColorMap={customColorMap}

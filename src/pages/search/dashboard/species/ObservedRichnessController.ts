@@ -15,7 +15,7 @@ export type ObservedRichnessDataType = {
   };
 };
 
-const CONTEXT_AREA_ID_VALUE = 1;
+const NATIONAL_AREA_ID_VALUE = 1;
 
 export class ObservedRichnessController {
   areaType: string = "";
@@ -118,7 +118,7 @@ export class ObservedRichnessController {
    * @returns a Promise resolving into a ObservedRichnessDataType
    */
   async getContextData(taxonomicGroup?: string) {
-    return this.getData(CONTEXT_AREA_ID_VALUE, taxonomicGroup);
+    return this.getData(NATIONAL_AREA_ID_VALUE, taxonomicGroup);
   }
 
   /**
