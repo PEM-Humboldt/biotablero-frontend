@@ -128,7 +128,7 @@ export function DetectionProbabilityWithoutCovariables() {
         mapElementId={null}
       >
         <>
-          <div className="w-full h-full aspect-3/2">
+          <div className="w-full h-full aspect-video">
             <ResponsiveLine
               data={filteredData}
               margin={{ top: 20, right: 30, bottom: 30, left: 30 }}
@@ -138,7 +138,6 @@ export function DetectionProbabilityWithoutCovariables() {
                 min: 0,
                 max: 1,
               }}
-              motionConfig={GRAPH_ANIMATION_CONFIG}
               colors={(serie) =>
                 customColorMap[serie.id] ??
                 getSeriesColor(

@@ -97,7 +97,11 @@ export function RelationalIntensityIndex() {
           options={allDates.toReversed()}
           currentSelection={selectedDates}
           singleSelect={false}
-          updateCurrent={handleSelect}
+          updateCurrent={(val: string | string[]) => {
+            if (typeof val === "string") {
+              handleSelect(val);
+            }
+          }}
         />
       </div>
 
@@ -107,7 +111,7 @@ export function RelationalIntensityIndex() {
         mapUrl={null}
       >
         <>
-          <div className="flex w-full h-full aspect-3/2">
+          <div className="flex w-full h-full aspect-video">
             <div className="w-[150px]">
               <ResponsiveBar
                 data={
@@ -116,10 +120,9 @@ export function RelationalIntensityIndex() {
                     value: null,
                   })) as unknown as BarDatum[]
                 }
-                motionConfig={GRAPH_ANIMATION_CONFIG}
                 indexBy="actor"
                 layout="horizontal"
-                margin={{ top: 0, right: 0, bottom: 60, left: 160 }}
+                margin={{ top: 0, right: 0, bottom: 60, left: 150 }}
                 padding={0.4}
                 valueScale={{ type: "linear", min: -1.0, max: 1.0 }}
                 indexScale={{ type: "band", round: true }}
@@ -148,10 +151,9 @@ export function RelationalIntensityIndex() {
                   indexBy="actor"
                   layout="horizontal"
                   margin={{ top: 0, right: 10, bottom: 60, left: 10 }}
-                  padding={0.2}
+                  padding={0.4}
                   valueScale={{ type: "linear", min: -1.0, max: 1.0 }}
                   indexScale={{ type: "band", round: true }}
-                  motionConfig={GRAPH_ANIMATION_CONFIG}
                   colors={(bar) => {
                     if (
                       bar.indexValue ===

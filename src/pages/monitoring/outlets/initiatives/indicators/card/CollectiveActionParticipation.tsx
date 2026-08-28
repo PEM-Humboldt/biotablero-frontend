@@ -113,7 +113,11 @@ export function CollectiveActionParticipation() {
           uiText={uiText.indicatorCard.collectiveActionParticipation.selector}
           options={groups}
           currentSelection={currentGroup}
-          updateCurrent={setCurrentGroup}
+          updateCurrent={(val: string | string[]) => {
+            if (typeof val === "string") {
+              setCurrentGroup(val);
+            }
+          }}
         />
       </div>
 
@@ -129,14 +133,13 @@ export function CollectiveActionParticipation() {
               keys={displayKeys}
               indexBy="date"
               layout="horizontal"
-              motionConfig={GRAPH_ANIMATION_CONFIG}
-              margin={{ top: 0, right: 20, bottom: 30, left: 150 }}
+              margin={{ top: 0, right: 10, bottom: 30, left: 150 }}
+              padding={0.4}
               valueScale={{ type: "linear", min: 0, max: 100 }}
               indexScale={{ type: "band", round: true }}
               enableGridX={true}
               enableGridY={false}
               theme={{ grid: { line: { strokeDasharray: "1 1" } } }}
-              padding={0.5}
               axisBottom={{
                 tickValues: [0, 20, 40, 60, 80, 100],
                 format: (v) => `${v}%`,

@@ -77,11 +77,11 @@ export interface IndicatorData {
   indicatorId: number;
   creationDate: string;
   version: number;
-  description: string;
-  methodology: string;
-  interpretation: string;
-  considerations: string;
-  authorship: string;
+  description?: string;
+  methodology?: string;
+  interpretation?: string;
+  considerations?: string;
+  authorship?: string;
   groups: IndicatorGroup[];
 }
 
