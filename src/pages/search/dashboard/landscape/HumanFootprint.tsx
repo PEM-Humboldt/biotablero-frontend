@@ -33,11 +33,11 @@ const HumanFootprint: React.FC<componentProps> = (props) => {
           "Representa la persistencia desde el origen del muestreo hasta el periodo actual, producto de análisis de huella humana en el tiempo y en esta área de consulta",
       },
       component: PersistenceFooprint,
-    },
+    },*/
     {
       label: {
         id: "hfTimeline",
-        name: "Histórico y Ecosistémas estratégicos (EE)",
+        name: "Histórico y Ecosistemas estratégicos (EE)",
         collapsed: openTab !== "hfTimeline",
         expandIcon: <AddIcon />,
         detailId: "Huella humana a través del tiempo en el área",
@@ -45,7 +45,7 @@ const HumanFootprint: React.FC<componentProps> = (props) => {
           "Representa diferentes análisis de huella humana en esta área de consulta",
       },
       component: TimelineFootprint,
-    },*/
+    },
   ];
   return (
     <div style={{ width: "100%" }}>

@@ -20,6 +20,12 @@ export type MetricTypesMap = {
     "Natural" | "Baja" | "Media" | "Alta" | "Muy Alta"
   >;
   currentHF_average: MetricDataStructure<"id", "average">;
+  timelineHF: Array<
+    MetricDataStructure<"id", "poligono" | "paramo" | "bosqueSeco" | "humedal">
+  >;
+  hfPersistence: Array<
+    MetricDataStructure<"id", "area" | "percentage" | "key">
+  >;
   paramo: MetricDataStructure<"id", "paramo">;
   tropicalDryForest: MetricDataStructure<"id", "bosqueSeco">;
   wetland: MetricDataStructure<"id", "humedal">;

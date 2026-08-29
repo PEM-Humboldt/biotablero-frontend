@@ -27,10 +27,10 @@ export interface hfPersistence {
   percentage: number;
 }
 
-export interface hfTimeline {
-  key: (typeof timelineHFKeys)[number];
-  data: Array<{
-    x: (typeof timelineHFYears)[number];
-    y: number;
-  }>;
+export interface timelineHF {
+  id: string;
+  poligono: number;
+  paramo: number;
+  bosqueSeco: number;
+  humedal: number;
 }
