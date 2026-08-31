@@ -26,5 +26,5 @@ interface UserInInitiativeOpenIdInfo {
 
 export interface UserInInitiativeCompleteInfo
   extends UserInInitiativeBasicInfo {
-  externalData: UserInInitiativeOpenIdInfo;
+  externalData?: Partial<UserInInitiativeOpenIdInfo>;
 }

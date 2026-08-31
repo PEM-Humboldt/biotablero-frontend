@@ -11,43 +11,22 @@ export const tosTexts = {
     cancel: "Cancelar",
   },
   tos: `
-# Términos y Condiciones: Carga de Información por Terceros
+**INSTITUTO DE INVESTIGACIÓN DE RECURSOS BIOLÓGICOS ALEXANDER VON HUMBOLDT,** con NIT. 820.000.142-2 corporación civil sin ánimo de lucro, sometida a las reglas del derecho privado, creada por el artículo 19 de la Ley 99 de 1993 (en adelante, el Instituto). En cumplimiento de su misión, lidera la plataforma BioTablero reúne herramientas web para consultar cifras e indicadores y facilitar la toma de decisiones sobre biodiversidad, llevando a autoridades ambientales y empresas privadas síntesis de la información existente, actualizada y confiable en un contexto regional y nacional. Para ello, diferentes usuarios ingresan información para ser procesada, almacenada y compartida.
 
-## 1. Aceptación de los Términos
-Al cargar, publicar o transmitir cualquier tipo de contenido (documentos, imágenes, enlaces, datos) en esta plataforma, usted declara ser mayor de edad y acepta cumplir íntegramente con las disposiciones aquí establecidas.
+Conforme lo anterior, el(los) autor(es) de los datos e información declara(n) que conoce(n), acepta(n) y autoriza(n):
 
-## 2. Propiedad y Licencia de Contenido
-* **Propiedad:** Usted conserva todos los derechos de propiedad intelectual sobre el contenido que cargue.
-* **Licencia de uso:** Al subir información, usted otorga a la plataforma una licencia gratuita, no exclusiva y de alcance mundial para almacenar, mostrar y distribuir dicho material con fines informativos y de consulta comunitaria.
-* **Garantía de Autoría:** Usted garantiza que posee los derechos necesarios sobre el contenido o que tiene la autorización expresa de los titulares de los derechos para su difusión.
+1. El(los) autor(es) autoriza(n) de manera expresa al INSTITUTO DE INVESTIGACIÓN DE RECURSOS BIOLÓGICOS ALEXANDER VON HUMBOLDT, para almacenar, recolectar, gestionar, y/o analizar los datos suministrados mediante el presente formulario, incluyendo, cuando aplique, los nombres, correos electrónicos y teléfonos corporativos de los empleados de la entidad que represente(n). Dichos datos podrán ser incorporados en los sistemas que el Instituto disponga; con la finalidad de ser utilizados para el desarrollo de la gestión administrativa interna, prestación de servicios, invitación a eventos y/o cursos de capacitación, entre otros. El(los) autor(es) declara(n) haber sido informado(s) de su derecho a conocer, actualizar, rectificar y/o revocar la autorización para el tratamiento de los datos en cualquier momento de forma gratuita, por medio de los canales para la atención de consultas que se encuentran en la Política de Tratamiento de Datos. [http://humboldt.org.co/images/documentos/pdf/documentos/agr-gt-pl-02-poltica-tratamiento-de-datos-personales.pdf](http://humboldt.org.co/images/documentos/pdf/documentos/agr-gt-pl-02-poltica-tratamiento-de-datos-personales.pdf)
+2. Transferencia internacional y datos de terceros  
+Al suministrar los datos e información recolectada, da su consentimiento para el uso, almacenamiento, gestión y comunicación pública. Además, autoriza  que estos puedan ser tratados por terceros, siempre y cuando se dé el reconocimiento y los créditos respectivos.
+3. Derechos del Titular  
+Conocer, actualizar, rectificar, solicitar prueba de la autorización, ser informado del uso dado, revocar la autorización y/o suprimir sus datos, y acceder gratuitamente a ellos, a través de los canales indicados por BioTablero.
+4. Derechos de autor sobre la información y obras aportadas  
+Los derechos morales (autoría, paternidad) son perpetuos, inalienables e irrenunciables; el Instituto dará el crédito correspondiente. El Autor otorga al Instituto una licencia no exclusiva, gratuita e irrevocable durante su vigencia, para reproducir, transformar, distribuir y comunicar públicamente la información/obra en BioTablero, con alcance nacional e internacional y por el término de vigencia de los derechos patrimoniales de autor o mientras opere la plataforma (art. 183, Ley 23/1982). Esta licencia no cubre la producción futura general del Autor ni modalidades de explotación desconocidas a la fecha. Al extinguirse los derechos patrimoniales u operar el dominio público, la licencia cesa, sin perjuicio de los derechos morales.
+5. Garantías, responsabilidad y disposiciones finales  
+El Autor declara ser el titular de la información/obra aportada (o contar con autorización de su titular), que es original, no vulnera derechos de terceros y no afecta la honra o el buen nombre de nadie; en caso contrario, mantendrá indemne al Instituto. El Instituto podrá actualizar este documento avisando por los canales indicados. Rige la ley colombiana; las controversias se resolverán primero por arreglo directo (30 días) y luego ante la jurisdicción ordinaria. La invalidez de una cláusula no afecta las demás.
 
-## 3. Responsabilidad del Contenido
-Usted es el único responsable de la exactitud, legalidad y veracidad de la información cargada. La plataforma no se hace responsable por:
-* Errores técnicos en los manuales o guías.
-* Consecuencias derivadas del uso de la información por parte de otros usuarios.
-* Violaciones de propiedad intelectual cometidas por el tercero que realiza la carga.
+## Declaración de aceptación
 
-## 4. Restricciones de Carga
-Queda estrictamente prohibido subir material que:
-* Sea ilegal, difamatorio, obsceno o discriminatorio.
-* Contenga virus, malware o cualquier código malicioso.
-* Viole la privacidad de terceros (especialmente datos sensibles de miembros de la comunidad).
-* Tenga fines estrictamente comerciales o publicitarios ajenos al objeto de la plataforma.
-
-## 5. Moderación y Eliminación
-La plataforma se reserva el derecho de:
-* Revisar el contenido antes o después de su publicación.
-* Eliminar sin previo aviso cualquier material que infrinja estos términos o que se considere irrelevante para los objetivos del sitio.
-* Suspender la cuenta del usuario en caso de reincidencia en faltas.
-
-## 6. Protección de Datos Personales
-Cualquier dato personal incluido en la carga de información será tratado conforme a nuestra **Política de Privacidad**. Se recomienda anonimizar datos sensibles en las plantillas o informes antes de su carga.
-
-## 7. Indemnización
-Usted se compromete a indemnizar y mantener indemne a la plataforma ante cualquier reclamación, pérdida o gasto (incluyendo honorarios legales) que surja del incumplimiento de estas condiciones o del uso indebido de la información cargada.
-
----
-
-> **Nota:** ESTE ES UN DUMMY
-  `,
+**Al aceptar declaro haber leído y comprendido este documento y, de forma libre, previa, expresa e informada.**
+`,
 };

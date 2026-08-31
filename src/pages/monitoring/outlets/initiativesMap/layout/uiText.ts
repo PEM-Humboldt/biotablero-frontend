@@ -72,6 +72,7 @@ export const uiText = {
       noItems: "No hay ecosistemas estratégicos asociados",
     },
     demographic: {
+      noStats: "No se encontraron estadísticas asociadas al área visualizada",
       postText:
         "Estas cifras muestran la composición de los colaboradores inscritos según su propia designación.",
     },
@@ -105,6 +106,14 @@ export const uiText = {
       itemNotFound: "",
       trigger: "Selecciona un departamento",
       inputPlaceholder: "",
+    },
+    showDepartmentsBtn: {
+      label: (enable: boolean) =>
+        enable ? "División política" : "División política",
+      title: (enable: boolean) =>
+        enable ? "Mostrar división política" : "Ocultar división política",
+      sr: (enable: boolean) =>
+        enable ? "Mostrar división política" : "Ocultar división política",
     },
     legends: {
       initiative: "Iniciativas",

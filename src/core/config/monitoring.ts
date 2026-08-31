@@ -4,7 +4,8 @@ import type { ODataParams } from "@appTypes/odata";
 import type { LatLngBoundsLiteral } from "leaflet";
 import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
 
-// DEFINICIONES GENERALES LOCALE
+// DEFINICIONES GENERALES
+export const SUPPORT_EMAIL = "biotablero@humboldt.org.co";
 export const LOCALE = "es-ES";
 export const COUNTRY_BOUNDS: LatLngBoundsLiteral = [
   [-4.2316872, -82.1243666],

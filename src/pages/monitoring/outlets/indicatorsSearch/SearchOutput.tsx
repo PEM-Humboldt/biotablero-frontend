@@ -127,10 +127,9 @@ export function SearchOutput() {
               key={`indicator_card${indicator.id}`}
               className="relative flex flex-col gap-4 bg-background shadow-2xl outline outline-transparent hover:outline-primary rounded-xl overflow-hidden transition-colors duration-300"
             >
-              <div className="relative mx-2 p-2">
+              <div className="relative mx-2 p-4">
                 <div className="pt-8">
-                  <h4 className="text-xl m-0">{indicator.name}</h4>
-                  <div className="text-sm/4 mb-0">{indicator.type.name}</div>
+                  <h4 className="text-xl m-0">{indicator.type.name}</h4>
                 </div>
 
                 <time
@@ -151,14 +150,14 @@ export function SearchOutput() {
               <div className="px-4">
                 <div
                   title={uiText.searchOutput.card.initiative}
-                  className="text-base/4 font-normal mb-0"
+                  className="text-base/4 font-normal mb-0 px-2"
                 >
                   {indicator?.initiativeName ??
                     `id: ${indicator.initiativeId}, Nombre de la iniciativa`}
                 </div>
                 <div
                   title={uiText.searchOutput.card.location}
-                  className="text-sm italic mb-4"
+                  className="text-sm italic mb-4 px-2"
                 >
                   {initiativeLocations !== ""
                     ? initiativeLocations

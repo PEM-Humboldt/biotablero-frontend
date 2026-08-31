@@ -50,41 +50,41 @@ export function Collaborators() {
           {collaborators.map((collaborator) => {
             const joinDate = new Date(
               collaborator.creationDate,
-            ).toLocaleDateString(LOCALE, {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            });
+            ).toLocaleDateString(LOCALE);
 
             return (
               <li
                 key={`collaboratorCard_${collaborator.userName}`}
-                className="p-2 lg:p-6 rounded-lg shadow space-y-4 outline outline-transparent hover:outline-primary transition-colors duration-300"
+                className="flex gap-4 items-start p-2 lg:p-4 rounded-lg shadow space-y-4 outline outline-transparent hover:outline-primary transition-colors duration-300"
               >
-                <div className="flex gap-2 items-center">
-                  {collaborator?.externalData?.picture && (
-                    <img
-                      src={collaborator.externalData.picture}
-                      alt=""
-                      className="rounded-full aspect-square w-14 outline outline-primary"
-                    />
-                  )}
-                  <div>
+                {collaborator?.externalData?.picture && (
+                  <img
+                    src={collaborator.externalData.picture}
+                    alt=""
+                    className="shrink-0 rounded-full aspect-square w-20 outline outline-primary"
+                  />
+                )}
+                <div>
+                  <div className="h-20 flex flex-col justify-center">
                     <h4 className="m-0">
                       {collaborator?.externalData?.fullName ??
                         collaborator.userName}
                     </h4>
                     <div className="italic text-grey-dark/80 text-sm font-normal">
-                      {uiText.collaborators.joininInfo(
-                        joinDate,
-                        roleDictionaryTranslation[collaborator.level.id] ?? "",
-                      )}
+                      {roleDictionaryTranslation[collaborator.level.id]}
                     </div>
                   </div>
+
+                  {collaborator.focusArea && (
+                    <p className="mb-3 m-0 text-pretty text-base/5">
+                      {collaborator.focusArea}
+                    </p>
+                  )}
+
+                  <div className="text-grey-dark/80 text-sm">
+                    {uiText.collaborators.joininInfo(joinDate)}
+                  </div>
                 </div>
-                {collaborator.focusArea && (
-                  <p className="m-0 text-pretty">{collaborator.focusArea}</p>
-                )}
               </li>
             );
           })}

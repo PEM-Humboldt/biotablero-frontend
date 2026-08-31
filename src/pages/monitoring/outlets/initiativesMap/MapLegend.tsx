@@ -28,7 +28,15 @@ import {
   CollapsibleTrigger,
 } from "@ui/shadCN/component/collapsible";
 import { Button } from "@ui/shadCN/component/button";
-import { Check, ChevronDown, Expand, Layers, Minimize2 } from "lucide-react";
+import {
+  Check,
+  ChevronDown,
+  Expand,
+  EyeClosed,
+  EyeIcon,
+  Layers,
+  Minimize2,
+} from "lucide-react";
 import { cn } from "@ui/shadCN/lib/utils";
 
 export function MapLegend({
@@ -39,6 +47,8 @@ export function MapLegend({
   setTiles,
   layers,
   setLayers,
+  showDepartments,
+  setShowDepartments,
 }: {
   leastInitiativesPerDepartment: number;
   mostInitiativesPerDepartment: number;
@@ -47,6 +57,8 @@ export function MapLegend({
   setTiles: Dispatch<SetStateAction<number>>;
   layers: number | null;
   setLayers: Dispatch<SetStateAction<number | null>>;
+  showDepartments: boolean;
+  setShowDepartments: Dispatch<SetStateAction<boolean>>;
 }) {
   const navigate = useNavigate();
   const [department, setDepartment] = useState<string>("");
@@ -150,6 +162,26 @@ export function MapLegend({
                 className="pointer-events-auto mt-2"
               />
             )}
+
+            <Button
+              variant={showDepartments ? "outline" : "outline_destructive"}
+              className={cn(
+                "w-full mt-2 text-left justify-start font-light text-sm",
+                showDepartments ? "border-input" : "border-accent",
+              )}
+              onClick={() => setShowDepartments((show) => !show)}
+              title={uiText.mapLegend.showDepartmentsBtn.title(showDepartments)}
+              aria-label={uiText.mapLegend.showDepartmentsBtn.sr(
+                showDepartments,
+              )}
+            >
+              {showDepartments ? (
+                <EyeIcon strokeWidth={1.5} />
+              ) : (
+                <EyeClosed strokeWidth={1.5} />
+              )}
+              {uiText.mapLegend.showDepartmentsBtn.label(showDepartments)}
+            </Button>
           </div>
 
           <hr className="border-muted" />
@@ -165,16 +197,18 @@ export function MapLegend({
               </div>
               <span>{uiText.mapLegend.legends.nearByInitiatives}</span>
             </li>
-            <li className="flex flex-col">
-              <span>{uiText.mapLegend.legends.initiativesPerDepartment}</span>
-              <div className="border-l border-r border-foreground/40">
-                <div className="h-6 w-full " style={gradientStyle} />
-                <div className="flex justify-between px-1 text-foreground/80">
-                  <span>{leastInitiativesPerDepartment}</span>
-                  <span>{mostInitiativesPerDepartment}</span>
+            {showDepartments && (
+              <li className="flex flex-col">
+                <span>{uiText.mapLegend.legends.initiativesPerDepartment}</span>
+                <div className="border-l border-r border-foreground/40">
+                  <div className="h-6 w-full " style={gradientStyle} />
+                  <div className="flex justify-between px-1 text-foreground/80">
+                    <span>{leastInitiativesPerDepartment}</span>
+                    <span>{mostInitiativesPerDepartment}</span>
+                  </div>
                 </div>
-              </div>
-            </li>
+              </li>
+            )}
           </ul>
 
           <label htmlFor="layerSelector" className="sr-only">
@@ -184,16 +218,16 @@ export function MapLegend({
           <Popover>
             <PopoverTrigger asChild>
               <Button
-                className="group w-full bg-cover bg-center justify-between outline outline-transparent hover:outline-2 outline-offset-2 hover:outline-primary bg-blend-luminosity"
+                className="group relative w-full justify-between outline outline-transparent hover:outline-2 outline-offset-2 hover:outline-primary overflow-hidden before:absolute before:inset-0 before:z-0 before:bg-cover before:bg-center before:bg-blend-luminosity before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 before:bg-primary before:bg-(image:--bg-thumb)"
                 style={{
-                  backgroundImage: `url("${MAP_TILES[tiles].uiThumbs.selection}")`,
+                  ["--bg-thumb" as string]: `url("${MAP_TILES[tiles].uiThumbs.selection}")`,
                 }}
               >
-                <div className="flex gap-2 items-center">
+                <div className="relative z-10 flex gap-2 items-center">
                   <Layers /> {uiText.mapLegend.layerSelector.title}
                 </div>
                 <ChevronDown
-                  className="relative top-px ml-2 size-5 transition duration-300 group-data-[state=open]:rotate-180"
+                  className="relative z-10 ml-2 size-5 transition duration-300 group-data-[state=open]:rotate-180"
                   aria-hidden="true"
                 />
               </Button>

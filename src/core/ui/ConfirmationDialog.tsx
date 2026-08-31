@@ -63,7 +63,7 @@ export function ConfirmationDialog({
           </DialogDescription>
         </DialogHeader>
         {texts.dialog.longMarkdown && (
-          <div className="-mx-4 no-scrollbar max-h-[50vh] overflow-y-auto px-4">
+          <div className="markdown-renderer *:text-pretty -mx-4 no-scrollbar max-h-[50vh] overflow-y-auto px-4">
             {parseSimpleMarkdown(texts.dialog.longMarkdown, {
               headingsOffset: 2,
             })}

@@ -16,7 +16,11 @@ export function DemographicsStats() {
     useState<keyof DemographicStatsType>("gender");
   const currentData = stats?.[designation];
 
-  return (
+  return Object.keys(stats ?? []).length === 0 ? (
+    <div className="bg-primary/10 p-4 rounded-lg">
+      {uiText.stats.demographic.noStats}
+    </div>
+  ) : (
     <>
       <ErrorsList
         errorItems={errors}
@@ -45,7 +49,7 @@ export function DemographicsStats() {
         bottomAxisLabel="Personas"
       />
 
-      <p className="text-sm text-balance text-right mb-0 mt-4">
+      <p className="text-sm text-balance text-center mb-0 mt-4">
         {uiText.stats.demographic.postText}
       </p>
     </>

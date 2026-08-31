@@ -45,7 +45,7 @@ export function BasicInfo() {
 
       <div className="flex flex-col mb-4 text-grey-dark">
         <div title={uiText.profile.basicInfo.usersTitle}>{initiativeUsers}</div>
-        <div>
+        <div className="flex flex-col">
           <time
             title={uiText.profile.basicInfo.creationDateTitle}
             dateTime={datetime}
@@ -53,7 +53,6 @@ export function BasicInfo() {
             {uiText.profile.basicInfo.datePrefix}
             {renderDate}
           </time>
-          {uiText.profile.basicInfo.dateLocationSeparator}
           <address title="Ubicación" className="not-italic inline">
             {initiativeLocations}
           </address>

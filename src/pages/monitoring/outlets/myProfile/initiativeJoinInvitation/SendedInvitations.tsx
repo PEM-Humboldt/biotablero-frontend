@@ -55,18 +55,26 @@ export function SendedInvitations({
   ) : (
     <>
       <ErrorsList errorItems={errors} />
-      <ODataTable
-        cols={sendedInvitationsTableStructure}
-        values={sendedInvitations}
-        className="table-invitations"
-      />
-      <TablePager
-        currentPage={currentPage}
-        recordsAvailable={totalRecords.current}
-        onPageChange={setCurrentPage}
-        paginated={3}
-        recordsPerPage={INITIATIVE_INVITATIONS_SEND_PER_PAGE}
-      />
+      {sendedInvitations.length > 0 ? (
+        <ODataTable
+          cols={sendedInvitationsTableStructure}
+          values={sendedInvitations}
+          className="table-invitations"
+        />
+      ) : (
+        <>
+          <div className="bg-background p-4 border border-primary rounded-lg">
+            No se han enviado invitaciones
+          </div>
+          <TablePager
+            currentPage={currentPage}
+            recordsAvailable={totalRecords.current}
+            onPageChange={setCurrentPage}
+            paginated={3}
+            recordsPerPage={INITIATIVE_INVITATIONS_SEND_PER_PAGE}
+          />
+        </>
+      )}
     </>
   );
 }

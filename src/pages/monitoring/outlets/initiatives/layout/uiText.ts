@@ -4,10 +4,9 @@ export const uiText = {
       usersTitle: "Participantes de la iniciativa",
       usersSeparator: ", ",
       creationDateTitle: "Fecha de registro",
-      datePrefix: "Desde: ",
-      dateLocationSeparator: " // ",
+      datePrefix: "Desde ",
       locationsTitle: "Donde trabaja la iniciativa",
-      locationSeparator: " | ",
+      locationSeparator: " || ",
     },
 
     stats: {
@@ -27,16 +26,18 @@ export const uiText = {
     monitoringEventsGraph: {
       noEvents:
         "La iniciativa todavía no tiene eventos de monitoreo registrados",
-      title: (year: number) => `Eventos de monitoreo ${year}`,
+      title: (year: number | null) =>
+        year ? `Eventos de monitoreo ${year}` : "Eventos de monitoreo por año",
       selectYear: {
         sr: "Selecciona un año",
         title: "Selecciona un año",
         placeholder: "Selecciona un año",
+        allYears: "Todos los años",
       },
     },
 
     relatedInitiatives: {
-      title: "Iniciativas Relacionadas",
+      title: "Otras iniciativas",
       goToBtn: {
         label: "Ir a la iniciativa",
         sr: "Ir a la iniciativa",
@@ -51,6 +52,6 @@ export const uiText = {
       "Los participantes del monitoreo comunitario combinan conocimiento local con apoyo técnico e institucional. Involucra líderes, voluntarios y grupos sociales que aportan su experiencia territorial, así como instituciones locales que facilitan recursos. También participan ONGs, universidades y entidades especializadas con metodologías y capacitación. La articulación de todos garantiza un monitoreo integral, participativo y útil para la toma de decisiones colectivas.",
     noCollaborators:
       "No es posible mostrar a las y los colaboradores en este momento",
-    joininInfo: (fromDate: string, role: string) => `${role} desde ${fromDate}`,
+    joininInfo: (fromDate: string) => `En la iniciativa desde el ${fromDate}`,
   },
 };

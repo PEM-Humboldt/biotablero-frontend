@@ -57,9 +57,7 @@ export function MonitoringEventsGraph() {
         .map((year) => year.groupNumber);
 
       setYears(sortedYears);
-      if (sortedYears.length > 0) {
-        setSelectedYear(sortedYears[0]);
-      }
+      setMonitoringEventsData(availableYears);
     };
 
     void fetchYearsAvailable();
@@ -67,14 +65,10 @@ export function MonitoringEventsGraph() {
 
   const fetchMonitoringEvents = useCallback(
     async (year?: InitiativeMonitoringEvent["groupNumber"]) => {
-      if (!initiativeId || !year) {
-        return;
-      }
-
       setIsLoading(true);
       const monitoringEvent = await getInitiativeMonitoringEvents(
         Number(initiativeId),
-        year,
+        year ?? undefined,
       );
 
       setIsLoading(false);
@@ -90,9 +84,7 @@ export function MonitoringEventsGraph() {
   );
 
   useEffect(() => {
-    if (selectedYear !== null) {
-      void fetchMonitoringEvents(selectedYear);
-    }
+    void fetchMonitoringEvents(selectedYear || undefined);
   }, [fetchMonitoringEvents, selectedYear]);
 
   const formattedData = useMemo(() => {
@@ -133,42 +125,44 @@ export function MonitoringEventsGraph() {
           <div className="flex gap-2 justify-between items-center">
             <div className="flex gap-2 items-center">
               <h4 className="m-0">
-                {uiText.profile.monitoringEventsGraph.title(selectedYear ?? 0)}
+                {uiText.profile.monitoringEventsGraph.title(selectedYear)}
               </h4>
               {isLoading && <Spinner />}
             </div>
 
-            {years.length > 1 && (
-              <Select
-                value={String(selectedYear)}
-                onValueChange={(value) => setSelectedYear(Number(value))}
-                disabled={years.length === 0}
-                aria-label={uiText.profile.monitoringEventsGraph.selectYear.sr}
+            <Select
+              value={selectedYear !== null ? String(selectedYear) : "all"}
+              onValueChange={(value) =>
+                setSelectedYear(value === "all" ? null : Number(value))
+              }
+              disabled={years.length === 0}
+              aria-label={uiText.profile.monitoringEventsGraph.selectYear.sr}
+            >
+              <SelectTrigger
+                className="w-fit gap-2"
+                title={uiText.profile.monitoringEventsGraph.selectYear.title}
               >
-                <SelectTrigger
-                  className="w-fit gap-2"
-                  title={uiText.profile.monitoringEventsGraph.selectYear.title}
-                >
-                  <SelectValue
-                    placeholder={
-                      uiText.profile.monitoringEventsGraph.selectYear
-                        .placeholder
-                    }
-                  />
-                </SelectTrigger>
+                <SelectValue
+                  placeholder={
+                    uiText.profile.monitoringEventsGraph.selectYear.placeholder
+                  }
+                />
+              </SelectTrigger>
 
-                <SelectContent>
-                  {years.map((year) => (
-                    <SelectItem
-                      key={`monitoringEventYear_${year}`}
-                      value={String(year)}
-                    >
-                      {year}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
+              <SelectContent>
+                <SelectItem value="all">
+                  {uiText.profile.monitoringEventsGraph.selectYear.allYears}
+                </SelectItem>
+                {years.map((year) => (
+                  <SelectItem
+                    key={`monitoringEventYear_${year}`}
+                    value={String(year)}
+                  >
+                    {year}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="h-[200px]">
@@ -177,7 +171,7 @@ export function MonitoringEventsGraph() {
               indexBy="groupName"
               keys={["value"]}
               groupMode="grouped"
-              margin={{ top: 10, right: 10, bottom: 30, left: 30 }}
+              margin={{ top: 10, right: 10, bottom: 30, left: 40 }}
               padding={0.1}
               colors={GRAPHS_GRADIENT_COLOR_PALETTE[1]}
               labelSkipWidth={12}

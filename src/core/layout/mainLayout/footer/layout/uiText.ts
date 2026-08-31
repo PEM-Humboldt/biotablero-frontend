@@ -18,6 +18,7 @@ export const uiText = {
   },
   citationClipboard:
     "Instituto de Investigación de Recursos Biológicos Alexander von Humboldt. (2019). BioTablero, cifras e indicadores sobre biodiversidad. biotablero.humboldt.org",
+  tosTooltip: "Ver términos y condiciones",
   citationTooltip:
     'La siguiente citación será copiada al portapapeles: "Instituto de Investigación de Recursos Biológicos Alexander von Humboldt. (2019). BioTablero, cifras e indicadores sobre biodiversidad. biotablero.humboldt.org"',
 };
