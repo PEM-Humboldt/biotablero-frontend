@@ -25,11 +25,9 @@ import { CircleAlert, LayersIcon, LeafIcon, MapPin } from "lucide-react";
 import { LOCALE } from "@config/monitoring";
 import { cn } from "@ui/shadCN/lib/utils";
 import { GraphLegend } from "@ui/GraphLegend";
-import {
-  SmallBars,
-  type SmallBarsData,
-  type SmallBarTooltip,
-} from "@composites/charts/SmallBars";
+import SmallStackedBar, {
+  type SmallStackedBarData,
+} from "@composites/charts/SmallStackedBar";
 
 const OBSERVED_RICHNESS_GRAPH_KEYS = ["CR", "EN", "VU"];
 const customColorMap: Record<string, string> = {
@@ -92,7 +90,7 @@ export function ObservedRichness() {
 
     Promise.all([
       controller.current.getCurrentData(groupFilter),
-      controller.current.getContextData(groupFilter),
+      controller.current.getNationalData(groupFilter),
     ])
       .then(([current, context]) => {
         setRenderData({ current, context });
@@ -172,50 +170,21 @@ export function ObservedRichness() {
   );
 }
 
-function buildSmallBarsData(data: ObservedRichnessDataType): {
-  barsData: SmallBarsData[];
-  tooltips: SmallBarTooltip[];
-} {
+function buildSmallStackedBarData(
+  data: ObservedRichnessDataType,
+): SmallStackedBarData[] {
   const totalThreatened = data.threatenedTotal || 1;
 
-  const crPercentage = (data.barValues.CR / totalThreatened) * 100;
-  const enPercentage = (data.barValues.EN / totalThreatened) * 100;
-  const vuPercentage = (data.barValues.VU / totalThreatened) * 100;
+  return OBSERVED_RICHNESS_GRAPH_KEYS.map((key) => {
+    const rawVal = data.barValues[key as keyof typeof data.barValues] ?? 0;
 
-  const barsData = [
-    {
-      group: "amenazadas",
-      data: [
-        { category: "CR", value: crPercentage },
-        { category: "EN", value: enPercentage },
-        { category: "VU", value: vuPercentage },
-      ],
-    },
-  ];
-
-  const tooltips: SmallBarTooltip[] = OBSERVED_RICHNESS_GRAPH_KEYS.map(
-    (key) => {
-      const rawVal = data.barValues[key as keyof typeof data.barValues] ?? 0;
-      const percentageMap: Record<string, number> = {
-        CR: crPercentage,
-        EN: enPercentage,
-        VU: vuPercentage,
-      };
-
-      const pctVal = percentageMap[key] ?? 0;
-
-      return {
-        category: key,
-        group: "amenazadas",
-        tooltipContent: [
-          `${key}: ${rawVal.toLocaleString(LOCALE)} especies`,
-          `(${Number(pctVal.toFixed(2))}%)`,
-        ],
-      };
-    },
-  );
-
-  return { barsData, tooltips };
+    return {
+      key,
+      label: `${key}:${rawVal.toLocaleString(LOCALE)}`,
+      area: rawVal,
+      percentage: (rawVal / totalThreatened) * 100,
+    };
+  });
 }
 
 function ObservedRichnessTable({
@@ -227,18 +196,14 @@ function ObservedRichnessTable({
 }) {
   const { areaId } = useSearchStateCTX();
 
-  const { barsData, tooltips } = useMemo(() => {
+  const stackedData = useMemo(() => {
     if (!data) {
-      return { barsData: [], tooltips: [] };
+      return [];
     }
-    return buildSmallBarsData(data);
+    return buildSmallStackedBarData(data);
   }, [data]);
 
-  if (!data) {
-    return null;
-  }
-
-  return (
+  return !data ? null : (
     <div className="mb-4 border-b border-grey">
       <address className="flex gap-1 items-center text-sm text-grey-dark font-normal not-italic uppercase my-2">
         <MapPin size={16} />
@@ -320,18 +285,15 @@ function ObservedRichnessTable({
         </span>
 
         <div className="w-full">
-          <SmallBars
+          <SmallStackedBar
             loadStatus={null}
-            data={barsData}
-            keys={OBSERVED_RICHNESS_GRAPH_KEYS}
-            tooltips={tooltips}
-            height={48}
-            margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
+            data={stackedData}
+            height={24}
+            units="especies"
             colors={(key) => customColorMap[key] ?? "#FF0000"}
-            maxValue={100}
-            axisY={{ enabled: false, legend: "" }}
-            axisX={{ enabled: false, legend: "" }}
-            onClickHandler={() => {}}
+            padding={0}
+            margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
+            forceFullPercent={true}
           />
         </div>
 

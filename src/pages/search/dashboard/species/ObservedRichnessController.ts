@@ -118,13 +118,13 @@ export class ObservedRichnessController {
   }
 
   /**
-   * Fetch the observed richness values for a specified taxonomicGroup of the context area
+   * Fetch the observed richness values for a specified taxonomicGroup from the national area
    *
    * @param taxonomicGroup - Optional. the taxonomic group used for the metric, if undefined, returns the overall value
    *
    * @returns a Promise resolving into a ObservedRichnessDataType
    */
-  async getContextData(taxonomicGroup?: string) {
+  async getNationalData(taxonomicGroup?: string) {
     return this.getData(NATIONAL_AREA_ID_VALUE, taxonomicGroup);
   }
 

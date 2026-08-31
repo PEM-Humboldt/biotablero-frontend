@@ -79,6 +79,7 @@ export function Coverage({
               matchColor("coverage")(key) || colorPalettes.default[0]
             }
             onClickGraphHandler={onCoverageClick}
+            forceFullPercent={true}
           />
         </div>
       </div>
