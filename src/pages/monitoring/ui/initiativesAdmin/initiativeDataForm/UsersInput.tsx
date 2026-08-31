@@ -1,19 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 
-import { Combobox } from "@ui/ComboBox";
 import { LabelAndErrors } from "@ui/LabelingWithErrors";
 import { INITIATIVE_DISPLAY_LEADERS_SEARCH } from "@config/monitoring";
 
 import type { ItemEditorProps } from "pages/monitoring/types/initiativeData";
 import type { UserItem } from "pages/monitoring/types/catalog";
-import { getUsers } from "pages/monitoring/api/services/user";
-import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import {
-  normalizeUsersFromOData,
-  userLevels,
-} from "pages/monitoring/utils/manageUsers";
 import { InputListActionButtons } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/InputListActionButtons";
 import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
+import { StableComboboxOData } from "@ui/ComboboxOData";
+import type { ODataUser } from "pages/monitoring/types/odataResponse";
 
 export function UsersInput<T extends UserItem>({
   selectedItems,
@@ -22,57 +17,17 @@ export function UsersInput<T extends UserItem>({
   discard,
   disabled = false,
 }: ItemEditorProps<T>) {
-  const [allUsers, setAllUsers] = useState<Partial<UserItem>[]>([]);
   const [user, setUser] = useState<string>("");
   const [inputErr, setInputErr] = useState<{ [key: string]: string[] }>({});
 
-  useEffect(() => {
-    const getUsersInfo = async () => {
-      const users = await getUsers();
-
-      if (isMonitoringAPIError(users)) {
-        setAllUsers([]);
-        return;
-      }
-
-      const usersInfo = normalizeUsersFromOData(users);
-      setAllUsers(usersInfo);
-    };
-
-    void getUsersInfo();
-  }, []);
-
-  useEffect(() => {
-    setUser(update !== null ? update.userName : "");
-  }, [update]);
-
-  const usersAvailable = useMemo((): Partial<UserItem>[] => {
-    if (selectedItems === undefined || !Array.isArray(selectedItems)) {
-      return allUsers;
-    }
-    const selectedUsers = new Set(
-      selectedItems.map((u: UserItem) => u.userName),
-    );
-    return allUsers.filter(
-      (u: Partial<UserItem>) => !selectedUsers.has(u.userName!),
-    );
-  }, [selectedItems, allUsers]);
-
-  const handleSave = async () => {
+  const handleSave = () => {
     if (!user) {
       return;
     }
 
-    const usersCredentials = await userLevels();
-    if (usersCredentials.length === 0) {
-      setInputErr({ leaders: ["No fue posible asignar el rol del lider"] });
-      return;
-    }
-
-    const adminCredentials = usersCredentials[0];
     const newUser = {
       userName: user,
-      level: adminCredentials,
+      level: { id: 1, name: "Leader" },
     } as UserItem;
 
     setter(newUser as T);
@@ -89,6 +44,10 @@ export function UsersInput<T extends UserItem>({
     setInputErr({});
   };
 
+  const usersFilter = selectedItems
+    ? `not (username in (${selectedItems.map((u) => `'${u.userName}'`).join(", ")}))`
+    : undefined;
+
   return (
     <div className="form-input-list">
       <div>
@@ -101,20 +60,27 @@ export function UsersInput<T extends UserItem>({
             {uiText.initiative.module.users.field.username.label}
           </span>
         </LabelAndErrors>
-        <Combobox
+        <StableComboboxOData<ODataUser>
           id="leaders"
-          items={usersAvailable}
-          maxItems={INITIATIVE_DISPLAY_LEADERS_SEARCH}
           value={user}
           setValue={setUser}
-          keys={{ forLabel: "userName" }}
+          endpoint="User"
+          sources={["username", "fullName"]}
+          sourceProcess={(items) =>
+            items.map((i) => ({
+              value: i.username,
+              label: `${i.fullName} (${i.username})`,
+            }))
+          }
+          fixedFilter={usersFilter}
+          maxItems={INITIATIVE_DISPLAY_LEADERS_SEARCH}
+          shownItems={6}
           uiText={{
-            itemNotFound:
-              uiText.initiative.module.users.field.username.notFound,
-            trigger: uiText.initiative.module.users.field.username.trigger,
-            inputPlaceholder:
-              uiText.initiative.module.users.field.username.placeholder,
+            itemNotFound: "No se encontraron usuarios",
+            trigger: "Filtrar por nombre de usuario",
+            inputPlaceholder: "Buscar el usuario",
           }}
+          className="[&_svg]:text-accent"
           aria-invalid={inputErr.leaders !== undefined}
           aria-describedby={inputErr.leaders ? "errors_leaders" : undefined}
         />

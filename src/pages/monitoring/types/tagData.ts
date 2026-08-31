@@ -7,6 +7,7 @@ export type TagCategory = {
 
 export type TagDataForm = {
   name: string;
+  fullName?: string;
   url?: string;
   category: TagCategory;
 };
@@ -17,6 +18,7 @@ export type ErrorFields<T> = { [K in keyof T]?: string[] };
 export type TagDataFormErr = {
   root: string[];
   name: string[];
+  fullName: string[];
   url: string[];
   category: string[];
 };

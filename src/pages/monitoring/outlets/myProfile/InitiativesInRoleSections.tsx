@@ -5,13 +5,13 @@ import { LinkIcon, NotebookPen } from "lucide-react";
 import { useUserCTX } from "@hooks/UserCTX";
 import { Button } from "@ui/shadCN/component/button";
 import { cn } from "@ui/shadCN/lib/utils";
+import { getRandomImageURL } from "@utils/ui";
 
 import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
 import { type RoleInInitiative } from "pages/monitoring/types/catalog";
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
 import { LeaveInitiativeBtn } from "pages/monitoring/outlets/myProfile/initiativesInRoleSections/LeaveInitiativeBtn";
 import { InitiativeFocusAreaForm } from "pages/monitoring/outlets/myProfile/initiativesInRoleSections/InitiativeFocusAreaForm";
-import { getRandomImageURL } from "pages/monitoring/outlets/initiatives/territoryStories/utils/getFeaturedImage";
 import { sectionsInfo } from "pages/monitoring/outlets/myProfile/layout/sectionsInfo";
 import { uiText } from "pages/monitoring/outlets/myProfile/layout/uiText";
 
@@ -113,7 +113,7 @@ function InitiativeFocusArea({
     >
       {showPicture && (
         <img
-          src={initiative.imageUrl ?? getRandomImageURL()}
+          src={initiative.imageUrl ?? getRandomImageURL().url}
           alt=""
           className="object-cover flex-1 min-w-0"
         />

@@ -53,11 +53,19 @@ export function TagsAdmin() {
   const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
 
   const tagCreateAction = (tag: TagDataForm) => {
-    return addTag(tag);
+    return addTag({
+      ...tag,
+      url: tag.url || undefined,
+      fullName: tag.fullName || undefined,
+    });
   };
 
   const tagEditAction = (id: number, tag: TagDataForm) => {
-    return updateTag(id, tag);
+    return updateTag(id, {
+      ...tag,
+      url: tag.url || undefined,
+      fullName: tag.fullName || undefined,
+    });
   };
 
   const fetchTagCategories = async () => {

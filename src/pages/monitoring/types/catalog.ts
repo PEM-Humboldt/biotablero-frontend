@@ -19,7 +19,6 @@ export type SidebarItem = {
   label: string;
   description: string;
   icon: LucideIcon;
-  role: RoleInInitiative | RoleInMonitoring;
   group: number;
 } & ({ linkTo: string } | { action: () => void; isActive: boolean });
 

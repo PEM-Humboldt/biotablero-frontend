@@ -79,7 +79,7 @@ export function MapLegend({
     const pathParams = department
       ? `/Departamento/${department}${inInitiative}`
       : "";
-    void navigate(`/Monitoreo${pathParams}`);
+    void navigate(`/Monitoreo${pathParams}`, { replace: true });
   }, [department, initiativeId, navigate]);
 
   const gradientStyle = useMemo(() => {

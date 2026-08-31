@@ -225,9 +225,9 @@ export function MapFinder({
       )}
 
       {isLoading && (
-        <div className="absolute inset-0 z-1000 bg-primary/50 backdrop-blur-[5px] flex flex-col items-center justify-center gap-2">
-          <Spinner className="size-10 text-primary-foreground" />
-          <span className="text-primary-foreground text-2xl font-normal">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-1000 border border-primary rounded-lg flex gap-2 items-center bg-background/70 backdrop-blur-sm p-4 ">
+          <Spinner className="size-6 text-primary" />
+          <span className="text-primary text-lg font-normal">
             Cargando capa geográfica...
           </span>
         </div>

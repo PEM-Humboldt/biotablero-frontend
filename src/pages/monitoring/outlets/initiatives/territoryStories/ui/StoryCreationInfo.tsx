@@ -1,5 +1,6 @@
 import { LOCALE } from "@config/monitoring";
 import { cn } from "@ui/shadCN/lib/utils";
+import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 
 import type { TerritoryStoryShort } from "pages/monitoring/types/odataResponse";
 
@@ -44,8 +45,7 @@ export function StoryTimestamp({
   );
 }
 
-// TODO: Cuando se realice la implementación con el sistema de usuarios
-// hay que actualizar el cómo se muestra la data de quien escribió esto
+// TODO: Cuando esté disponible la actualización del endpoint, hay que agregar la imagen de quien escribió esto
 export function StoryCreator({
   story,
   className,
@@ -54,12 +54,10 @@ export function StoryCreator({
   className?: string;
 }) {
   return (
-    <div className={cn("flex gap-2 items-center", className)}>
-      <img
-        src="https://picsum.photos/200/200"
-        alt=""
-        className="aspect-square max-h-8 rounded-full"
-      />
+    <div
+      title={`Escrito por ${story.authorUserName}`}
+      className={cn("flex gap-2 items-center", className)}
+    >
       {story.authorUserName}
     </div>
   );
