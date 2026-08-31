@@ -4,7 +4,7 @@ export type MetricDataStructure<
 > = {
   [K in MetricLabelKey]: string;
 } & {
-  [K in MetricValueKeys]: number;
+  [K in MetricValueKeys]: number | string;
 };
 
 export type MetricTypesMap = {
@@ -39,7 +39,9 @@ export type MetricTypesMap = {
   protectedAreas_paramo: MetricDataStructure<"id", string>;
   protectedAreas_tropicalDryForest: MetricDataStructure<"id", string>;
   protectedAreas_wetland: MetricDataStructure<"id", string>;
-  dpc: Array<MetricDataStructure<"id" | "name" | "key", "area" | "value">>;
+  dpc: Array<
+    MetricDataStructure<"id", "dpc" | "pa_id" | "pa_name" | "category">
+  >;
 
   // TODO: Ddescomentar cuando se actualice el endpoint
   // recordGaps: { id: string; frequency: number[]; bin_edges: number[] }[];

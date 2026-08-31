@@ -7,7 +7,7 @@ export interface ShapeAPIObject {
 }
 
 export interface RasterAPIObject {
-  request: Promise<{ layer: string }>;
+  request: Promise<{ layer: string; bbox?: [number, number, number, number] }>;
   source: CancelTokenSource;
 }
 

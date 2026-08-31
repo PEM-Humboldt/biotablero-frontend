@@ -3,18 +3,17 @@ import { DPC } from "pages/search/types/connectivity";
 import { formatNumber } from "@utils/format";
 import { type SmallBarTooltip } from "@composites/charts/SmallBars";
 import SearchAPI from "pages/search/api/searchAPI";
-import BackendAPI from "pages/search/api/backendAPI";
-import {
-  ShapeLayer,
-  ConnectivityFeaturePropierties,
-} from "pages/search/types/layers";
+import { RasterLayer } from "pages/search/types/layers";
 import { matchColor } from "pages/search/utils/matchColor";
-import { ShapeAPIObject } from "pages/search/types/api";
 import { CancelTokenSource } from "axios";
 import { MetricTypesMap } from "pages/search/types/metrics";
 import { DPCCategoryType } from "pages/search/types/connectivity";
+import LayerAPI from "pages/search/api/layerAPI";
+import { MetricsUtils } from "pages/search/utils/metrics";
 
 type DpcGraphData = ReturnType<CurrentPAConnectivityController["getGraphData"]>;
+
+const ASSOCIATED_COLLECTION = "AreasProtegidas";
 
 export class CurrentPAConnectivityController {
   areaType: string = "";
@@ -133,94 +132,75 @@ export class CurrentPAConnectivityController {
   }
 
   /**
-   * Get shape layers in GeoJSON format for a connectivity component
+   * Get the layers associated to the current area
    *
-   * @returns { Promise<ShapeLayer> } object with the parameters of the layer
+   * @returns { Promise<Array<RasterLayer>> } layer data
    */
-  getLayer = async (): Promise<ShapeLayer> => {
-    const layerId = "currentPAConn";
+  getPALayers = async (): Promise<Array<RasterLayer>> => {
+    const requests: Array<
+      Promise<{ layer: string; bbox?: [number, number, number, number] }>
+    > = [];
 
-    const reqPromise: ShapeAPIObject = BackendAPI.requestDPCLayer(
-      this.areaType ?? "",
-      this.areaId ?? "",
+    const collectionList = await SearchAPI.reqestCollections();
+    const collectionObj = collectionList.find(
+      (coll) => coll.name === ASSOCIATED_COLLECTION,
     );
 
-    const onEachFeature = (feature: GeoJSON.Feature, layer: L.Layer) => {
-      layer.on({
-        mouseover: (event) => this.highlightShapeFeature(event),
-        mouseout: (event) => this.resetShapeHighlight(event),
-      });
-    };
+    if (!collectionObj) {
+      throw new Error("Layers not found");
+    }
 
-    const { request, source } = reqPromise;
-    this.activeRequests.set(layerId, source);
-    const res = await request;
-    this.activeRequests.delete(layerId);
-
-    const layerData = {
-      id: layerId,
-      paneLevel: 1,
-      json: res,
-      onEachFeature: onEachFeature,
-      layerStyle: this.setLayerStyle(),
-    };
-
-    return layerData;
-  };
-
-  /**
-   * Highlight and set the tooltip
-   *
-   * @param {L.LeafletMouseEvent} event objet
-   *
-   */
-  highlightShapeFeature = (event: L.LeafletMouseEvent) => {
-    const feature = event.target;
-    const optionsTooltip = { sticky: true };
-
-    feature
-      .bindTooltip(
-        `<b>${feature.feature.properties.name}:</b>
-          <br>dPC ${formatNumber(feature.feature.properties.value, 2)}
-          <br>${formatNumber(feature.feature.properties.area, 0)} ha`,
-        optionsTooltip,
-      )
-      .openTooltip();
-
-    feature.setStyle({
-      fillOpacity: 1,
+    this.dpcData.forEach(({ pa_id: paId }) => {
+      const { request, source } = SearchAPI.requestCollectionLayer(
+        collectionObj?.id,
+        paId,
+      );
+      requests.push(request);
+      this.activeRequests.set(`${paId}`, source);
     });
-  };
 
-  /**
-   * Reset the feature style
-   *
-   * @param {L.LeafletMouseEvent} event objet
-   *
-   */
-  resetShapeHighlight = (event: L.LeafletMouseEvent) => {
-    const feature = event.target;
-    feature.setStyle({ fillOpacity: 0.6 });
-    feature.closePopup();
-  };
+    const res = await Promise.all(requests);
 
-  /**
-   * Set the features style, applying an specific Highlight if neccesary
-   *
-   * @param {string} selectedKey Id of the feature to highlight.
-   *
-   * @returns {Function} function receiving a geoJsonFeature as required by leaflet
-   */
-  setLayerStyle =
-    (selectedKey = "") =>
-    (feature?: { properties: ConnectivityFeaturePropierties }) => {
-      const color = matchColor("dpc")(feature?.properties.dpc_cat);
-      return {
-        stroke: false,
-        fillColor: (color ?? undefined) as string | undefined,
-        fillOpacity: feature?.properties.id === selectedKey ? 1 : 0.6,
-      };
-    };
+    this.dpcData.forEach(({ pa_id: paId }) => {
+      this.activeRequests.delete(`${paId}`);
+    });
+
+    if (res.some((result) => typeof result === "string")) {
+      throw new Error("request canceled");
+    }
+    const layersRequests: Array<Promise<Blob>> = [];
+    res.forEach((layerObj) => {
+      const { request, source } = LayerAPI.getLayerData(layerObj);
+      layersRequests.push(request);
+      this.activeRequests.set(layerObj.layer, source);
+    });
+
+    const layerResponses = await Promise.all(layersRequests);
+    res.forEach((layerObj) => {
+      this.activeRequests.delete(layerObj.layer);
+    });
+
+    if (res.some((result) => typeof result === "string")) {
+      throw new Error("request canceled");
+    }
+
+    const layersBase64Promises: Array<Promise<string>> = [];
+
+    layerResponses.forEach((response) => {
+      const layerBase64 = MetricsUtils.blobToBase64(response);
+      layersBase64Promises.push(layerBase64);
+    });
+
+    const layersBase64 = await Promise.all(layersBase64Promises);
+
+    return this.dpcData.map(({ pa_id: paId }, index) => ({
+      id: `${paId}`,
+      data: layersBase64[index],
+      selected: false,
+      paneLevel: 2,
+      bbox: res[index].bbox,
+    }));
+  };
 
   /**
    * Send the cancel signal to all active requests and remove them from the map

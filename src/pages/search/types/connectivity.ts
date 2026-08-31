@@ -10,6 +10,7 @@ export const DPCKeys = [
   "bajo",
   "muy_bajo",
 ] as const;
+export type DPCCategoryType = (typeof DPCKeys)[number];
 export const timelinePAConnKeys = ["prot", "prot_conn"] as const;
 export const currentSEPAConnKeys = [
   "prot_conn",
@@ -26,10 +27,10 @@ export interface currentPAConn {
 
 export interface DPC {
   id: string;
-  name: string;
-  key: (typeof DPCKeys)[number];
-  area: number;
-  value: number;
+  dpc: number;
+  pa_id: number;
+  pa_name: string;
+  category: DPCCategoryType;
 }
 
 export interface timeLinePAConnValues {

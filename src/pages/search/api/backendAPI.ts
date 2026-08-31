@@ -4,23 +4,15 @@ import { cfData } from "pages/search/types/compensationFactor";
 import {
   currentPAConn,
   currentSEPAConn,
-  DPC,
   timelinePAConn,
 } from "pages/search/types/connectivity";
-import { hfPersistence, hfTimeline } from "pages/search/types/humanFootprint";
+import { hfPersistence } from "pages/search/types/humanFootprint";
 import {
   helperText,
   textResponse,
   textsObject,
 } from "pages/search/types/texts";
-import { SEPAData, seDetails } from "pages/search/types/ecosystems";
-import {
-  concentration,
-  gaps,
-  NOSNational,
-  NOSThresholds,
-  numberOfSpecies,
-} from "pages/search/types/richness";
+import { concentration, gaps } from "pages/search/types/richness";
 import {
   portfoliosByTarget,
   targetOrPortfolio,

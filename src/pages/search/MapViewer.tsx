@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { LatLngBoundsExpression, LatLngBoundsLiteral, Map } from "leaflet";
+import type { LatLngBoundsExpression, Map } from "leaflet";
 import {
   ImageOverlay,
   MapContainer,
@@ -167,11 +167,18 @@ export function MapViewer({
               if (layer.opacity) {
                 opacity = layer.opacity;
               }
+              let layerBounds = bounds;
+              if (layer.bbox) {
+                layerBounds = [
+                  [layer.bbox[1], layer.bbox[0]],
+                  [layer.bbox[3], layer.bbox[2]],
+                ];
+              }
               return (
                 <ImageOverlay
                   key={`${layer.id}-${layer.data}`}
                   url={layer.data}
-                  bounds={bounds}
+                  bounds={layerBounds}
                   opacity={opacity}
                 />
               );

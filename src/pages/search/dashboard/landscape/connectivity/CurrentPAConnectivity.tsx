@@ -24,6 +24,7 @@ import {
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CurrentPAConnectivityController } from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivityController";
 import colorPalettes from "pages/search/utils/colorPalettes";
+import { RasterLayer } from "pages/search/types/layers";
 
 const legendDPCCategories = {
   muy_bajo: "Muy bajo",
@@ -50,6 +51,7 @@ interface CurrentPAConnState {
   texts: {
     paConnDPC: textsObject;
   };
+  layers: RasterLayer[];
 }
 
 type DpcPayload = {
@@ -66,7 +68,8 @@ type Action =
   | { type: "SET_SHOW_LOWEST"; payload: boolean }
   | { type: "DPC_SUCCEEDED"; payload: DpcPayload }
   | { type: "DPC_FAILED" }
-  | { type: "SET_TEXTS"; payload: textsObject };
+  | { type: "SET_TEXTS"; payload: textsObject }
+  | { type: "PA_LAYERS_SUCCEEDED"; payload: RasterLayer[] };
 
 const initialState: CurrentPAConnState = {
   infoShown: new Set(["dpc"]),
@@ -83,6 +86,7 @@ const initialState: CurrentPAConnState = {
   texts: {
     paConnDPC: { info: "", cons: "", meto: "", quote: "" },
   },
+  layers: [],
 };
 
 function reducer(
@@ -116,6 +120,11 @@ function reducer(
       };
     case "SET_TEXTS":
       return { ...state, texts: { paConnDPC: action.payload } };
+    case "PA_LAYERS_SUCCEEDED":
+      return {
+        ...state,
+        layers: action.payload,
+      };
     default:
       return state;
   }
@@ -123,7 +132,15 @@ function reducer(
 
 function CurrentPAConnectivity(_: Props) {
   const context = useContext(SearchLegacyCTX) as LegacyContextValues;
-  const { areaType, areaId } = context;
+  const {
+    areaType,
+    areaId,
+    setLoadingLayer,
+    setShowAreaLayer,
+    setRasterLayers,
+    setLayerError,
+    setMapTitle,
+  } = context;
 
   const controllerRef = useRef(new CurrentPAConnectivityController());
   const controller = controllerRef.current;
@@ -132,17 +149,38 @@ function CurrentPAConnectivity(_: Props) {
 
   useEffect(() => {
     if (!areaType || !areaId) {
+      setLoadingLayer(false);
       return () => {
         controller.cancelActiveRequests();
       };
     }
     controller.setArea(areaType.id, areaId.id);
-
+    setLoadingLayer(true);
     dispatch({ type: "SET_SHOW_LOWEST", payload: showLowestDpc });
 
     controller
       .loadSortedDpcData(false)
       .then((result) => {
+        controller
+          .getPALayers()
+          .then((layersRes) => {
+            dispatch({
+              type: "PA_LAYERS_SUCCEEDED",
+              payload: layersRes,
+            });
+            setRasterLayers(layersRes);
+            setShowAreaLayer(true);
+            setLoadingLayer(false);
+            setMapTitle({
+              name: "Conectividad de áreas protegidas",
+            });
+          })
+          .catch((e) => {
+            if (e.toString() !== "Error: request canceled") {
+              setLayerError(e.toString());
+            }
+            setLoadingLayer(false);
+          });
         dispatch({ type: "DPC_SUCCEEDED", payload: result });
       })
       .catch((error) => {
