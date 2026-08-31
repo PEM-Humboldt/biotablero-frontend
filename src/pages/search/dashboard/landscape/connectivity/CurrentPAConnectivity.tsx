@@ -5,7 +5,10 @@ import { PointFilledLegend } from "@ui/CssLegends";
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
 import { Button } from "@ui/shadCN/component/button";
-import { useSearchLegacyCTX } from "pages/search/hooks/SearchContext";
+import {
+  LegacyContextValues,
+  SearchLegacyCTX,
+} from "pages/search/hooks/SearchContext";
 
 import BackendAPI from "pages/search/api/backendAPI";
 import { matchColor } from "pages/search/utils/matchColor";
@@ -119,18 +122,26 @@ function reducer(
 }
 
 function CurrentPAConnectivity(_: Props) {
-  const { areaType, areaId } = useSearchLegacyCTX();
+  const context = useContext(SearchLegacyCTX) as LegacyContextValues;
+  const { areaType, areaId } = context;
 
   const controllerRef = useRef(new CurrentPAConnectivityController());
   const controller = controllerRef.current;
 
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const loadDpcData = (showLowestDpc: boolean) => {
+  useEffect(() => {
+    if (!areaType || !areaId) {
+      return () => {
+        controller.cancelActiveRequests();
+      };
+    }
+    controller.setArea(areaType.id, areaId.id);
+
     dispatch({ type: "SET_SHOW_LOWEST", payload: showLowestDpc });
 
     controller
-      .getDpcData(showLowestDpc)
+      .loadSortedDpcData(false)
       .then((result) => {
         dispatch({ type: "DPC_SUCCEEDED", payload: result });
       })
@@ -138,19 +149,6 @@ function CurrentPAConnectivity(_: Props) {
         if (error?.message === "request canceled") return;
         dispatch({ type: "DPC_FAILED" });
       });
-  };
-
-  useEffect(() => {
-    if (!areaType || !areaId) {
-      return;
-    }
-
-    const areaTypeId = areaType.id;
-    const areaIdId = areaId.id.toString();
-
-    controller.setArea(areaTypeId, areaIdId);
-
-    loadDpcData(false);
 
     BackendAPI.requestSectionTexts("paConnDPC")
       .then((res) => {
@@ -173,7 +171,16 @@ function CurrentPAConnectivity(_: Props) {
   };
 
   const toggleDpcMode = () => {
-    loadDpcData(!state.showLowestDpc);
+    controller
+      .loadSortedDpcData(!state.showLowestDpc)
+      .then((result) => {
+        dispatch({ type: "SET_SHOW_LOWEST", payload: !showLowestDpc });
+        dispatch({ type: "DPC_SUCCEEDED", payload: result });
+      })
+      .catch((error) => {
+        if (error?.message === "request canceled") return;
+        dispatch({ type: "DPC_FAILED" });
+      });
   };
 
   const { dpcData, showLowestDpc, infoShown, messages, texts, graphData } =
