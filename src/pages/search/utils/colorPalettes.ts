@@ -63,7 +63,7 @@ export default {
   forestIntegrity: [],
   SciHf: ["#003d59", "#0d6870", "#60bbd4", "#f1bd7f", "#da8634", "#ab5727"],
   currentPAConn: ["#92ab85", "#a57660", "#b9c9cf"],
-  dpc: ["#c3374d", "#ea5948", "#eabc47", "#a4c051", "#51b4c1"],
+  dpc: ["#c3374d", "#ea5948", "#eabc47", "#318c66", "#51b4c1"],
   timelinePAConn: ["#00A292", "#008273", "#92ab85", "#768a6b"],
   richnessNos: [
     "#fc6467",
