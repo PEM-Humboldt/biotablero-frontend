@@ -164,9 +164,9 @@ export function MapViewer({
           {rasterLayers
             .filter((l) => l.paneLevel === panelLevel)
             .map((layer) => {
-              let opacity = layer.selected ? 1 : 0.7;
-              if (layer.opacity) {
-                opacity = layer.opacity;
+              let opacity = layer.opacity ?? 0.7;
+              if (layer.selected) {
+                opacity = 1;
               }
               let layerBounds = bounds;
               if (layer.bbox) {

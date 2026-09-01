@@ -193,8 +193,8 @@ export class CurrentPAConnectivityController {
 
     const layersBase64 = await Promise.all(layersBase64Promises);
 
-    return this.dpcData.map(({ pa_id: paId, category }, index) => ({
-      id: `${paId}`,
+    return this.dpcData.map(({ id, category }, index) => ({
+      id,
       data: layersBase64[index],
       selected: false,
       paneLevel: 2,

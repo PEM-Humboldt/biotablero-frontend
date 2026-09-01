@@ -221,6 +221,16 @@ function CurrentPAConnectivity(_: Props) {
       });
   };
 
+  const clickOnDPCGraph = (dpcId: string, category: string) => {
+    const { layers } = state;
+    setRasterLayers(
+      layers.map((layer) => ({
+        ...layer,
+        selected: layer.id === dpcId,
+      })),
+    );
+  };
+
   const { dpcData, showLowestDpc, infoShown, messages, texts, graphData } =
     state;
   const areaTypeId = areaType!.id;
@@ -276,7 +286,7 @@ function CurrentPAConnectivity(_: Props) {
               colors={(key: string) =>
                 matchColor("dpc")(key) || colorPalettes.default[0]
               }
-              onClickHandler={() => {}}
+              onClickHandler={clickOnDPCGraph}
               animate={false}
               margin={{
                 bottom: 50,
