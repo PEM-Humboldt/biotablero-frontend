@@ -9,14 +9,20 @@ export function GraphLegend({
   customColorMap,
   customColorList,
   isBar = true,
+  renderValues,
+  className,
 }: {
   keys: string[];
   customColorMap?: Record<string, string>;
   customColorList?: string[];
   isBar?: boolean;
+  renderValues?: Record<string, number>;
+  className?: string;
 }) {
   return (
-    <ul className="flex flex-wrap justify-end gap-4 text-sm p-4">
+    <ul
+      className={cn("flex flex-wrap justify-end gap-4 text-sm p-4", className)}
+    >
       {keys.map((key) => {
         const color =
           customColorMap?.[key] ??
@@ -39,7 +45,12 @@ export function GraphLegend({
               )}
               style={{ backgroundColor: color }}
             />
-            <span>{key}</span>
+            <span>
+              {key}
+              {renderValues && renderValues[key]
+                ? ` · ${renderValues[key]}`
+                : ""}
+            </span>
           </li>
         );
       })}

@@ -23,6 +23,7 @@ import type { textsObject } from "pages/search/types/texts";
 import InfoIcon from "@mui/icons-material/Info";
 import { IconTooltip } from "@ui/Tooltips";
 import { ShortInfo } from "@composites/ShortInfo";
+import { speciesGroupLabels } from "pages/search/dashboard/species/commonDictionaries";
 
 const GAP_GRAPH_MAX_YEARS_VISUALIZATION_AMOUTN = 5;
 const GAP_GRAPH_START_YEARS_VISUALIZATION_AMOUTN = 3;
@@ -35,15 +36,6 @@ const customColorMap: Record<number, string> = {
   2023: GRAPHS_EXTENDED_COLOR_PALETTE[23],
   2024: GRAPHS_EXTENDED_COLOR_PALETTE[26],
   2025: GRAPHS_EXTENDED_COLOR_PALETTE[23],
-};
-
-const speciesGroupLabels: Record<string, string> = {
-  mammals: "Mamiferos",
-  birds: "Aves",
-  reptiles: "Reptiles",
-  amphibians: "Anfibios",
-  fish: "Peces",
-  plants: "Plantas",
 };
 
 export function Gap() {

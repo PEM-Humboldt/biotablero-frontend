@@ -11,6 +11,9 @@ interface Props {
   units?: string;
   onClickGraphHandler?: (key: string) => void;
   scaleType?: "linear" | "symlog";
+  margin?: { top: number; right: number; bottom: number; left: number };
+  padding?: number;
+  forceFullPercent?: boolean;
 }
 
 export interface SmallStackedBarData {
@@ -20,7 +23,27 @@ export interface SmallStackedBarData {
   label: string;
 }
 
-const SmallStackedBar = (props: Props) => {
+/**
+ * Renders a compact horizontal stacked bar chart to display segment distributions.
+ *
+ * @param props - The component props.
+ * @param props.data - An array of `SmallStackedBarData` objects containing keys, labels, absolute values (`area`), and ratios (`percentage`).
+ * @param props.colors - A function returning the CSS color string corresponding to a segment key (`(key: string) => string`).
+ * @param props.height - Optional pixel height for the chart container. Defaults to `30`.
+ * @param props.units - Optional measurement unit string displayed next to the absolute value in the tooltip. Defaults to `"ha"`.
+ * @param props.forceFullPercent - Optional flag to control visual scaling. When `true`, segments scale to fill 100% of the bar, when `false`, segments scale by absolute value. Defaults to `false`. Do not use when working with `symlog`.
+ * @param props.scaleType - Optional numerical scale type (`"linear"` | `"symlog"`).
+ * @param props.onClickGraphHandler - Optional callback function triggered when clicking a bar segment, receiving the segment `id`.
+ * @param props.margin - Optional outer margins for the rendered chart canvas. Defaults to `{ top: 0, right: 5, bottom: 0, left: 5 }`.
+ * @param props.padding - Optional bar padding ratio within the canvas. Defaults to `0.19`.
+ *
+ * @returns A responsive stacked bar chart and optional log scale note.
+ *
+ * @remarks
+ * - Internal data transformation formats values for Nivo's `ResponsiveBar` rendering while retaining unscaled absolute and percentage values for tooltips.
+ * - Displays interactive tooltips with formatted absolute numbers and percentage values for non-"NA" segments.
+ */
+function SmallStackedBar(props: Props) {
   const {
     data,
     height = 30,
@@ -28,59 +51,56 @@ const SmallStackedBar = (props: Props) => {
     units = "ha",
     onClickGraphHandler,
     scaleType = "linear",
+    margin = {
+      top: 0,
+      right: 5,
+      bottom: 0,
+      left: 5,
+    },
+    padding = 0.19,
+    forceFullPercent = false,
   } = props;
 
-  /**
-   * Transform data structure to be passed to component as a prop
-   *
-   * @param {array} rawData raw data from RestAPI
-   * @returns {array} transformed data ready to be used by graph component
-   */
   const transformData = (rawData: Array<SmallStackedBarData>) => {
     const transformedData: Record<string, string | number> = {
       key: "key",
     };
+
     rawData.forEach((item) => {
-      transformedData[item.key] = Number(item.area || item.percentage);
+      const rawArea = item.area ?? 0;
+      const pct = item.percentage ?? 0;
+
+      transformedData[item.key] = forceFullPercent ? pct : rawArea;
+
+      transformedData[`${item.key}Area`] = rawArea;
+      transformedData[`${item.key}Percentage`] = pct;
       transformedData[`${item.key}Color`] = colors(item.key);
       transformedData[`${item.key}Label`] = item.label;
-      if (item.percentage) {
-        transformedData[`${item.key}Percentage`] = Number(item.percentage);
-      }
     });
+
     return [transformedData];
   };
 
-  /**
-   * Get keys to be passed to component as a prop
-   *
-   * @returns {array} ids of each bar
-   */
   const keys = data.map((item) => String(item.key));
 
-  /**
-   * Get tooltip for graph component according to id of bar
-   *
-   * @param {string} id id for each bar
-   * @param {Object} allData transformed data with all information needed
-   *
-   * @returns {object} tooltip for component
-   */
   const getToolTip = (
     id: string | number,
     allData: Record<string, string | number>,
     color: string,
   ) => {
     if (id !== "NA") {
+      const realArea = Number(allData[`${id}Area`] ?? 0);
+      const pctValue = Number(allData[`${id}Percentage`] ?? 0);
+
       return (
         <div className="tooltip-graph-container">
           <strong style={{ color }}>
             {id !== "undefined" ? allData[`${id}Label`] : ""}
           </strong>
           <div>
-            {`${formatNumber(allData[id], 0)} ${units}`}
+            {`${formatNumber(realArea, 0)} ${units}`}
             <br />
-            {`${formatNumber(Number(allData[`${id}Percentage`]) * 100, 0)}%`}
+            {`${formatNumber(pctValue, 0)}%`}
           </div>
         </div>
       );
@@ -96,13 +116,8 @@ const SmallStackedBar = (props: Props) => {
           keys={keys}
           indexBy="key"
           layout="horizontal"
-          margin={{
-            top: 0,
-            right: 5,
-            bottom: 0,
-            left: 5,
-          }}
-          padding={0.19}
+          margin={margin}
+          padding={padding}
           borderColor={{ from: "color", modifiers: [["darker", 1.6]] }}
           colors={({ id, data: allData }) => String(allData[`${id}Color`])}
           enableGridY={false}
@@ -125,6 +140,6 @@ const SmallStackedBar = (props: Props) => {
       )}
     </>
   );
-};
+}
 
 export default withMessageWrapper<Props>(SmallStackedBar);
