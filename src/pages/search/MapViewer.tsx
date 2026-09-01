@@ -20,6 +20,7 @@ import "leaflet/dist/leaflet.css";
 import { useUserCTX } from "@hooks/UserCTX";
 import { COLOMBIA_BOUNDS } from "pages/utils/settings";
 import { OnLoadingModal } from "@ui/OnLoadingModal";
+import { CssMaskRasterOverlay } from "./mapViewer/CssMaskRasterOverlay";
 
 const config = {
   params: {
@@ -174,7 +175,14 @@ export function MapViewer({
                   [layer.bbox[3], layer.bbox[2]],
                 ];
               }
-              return (
+              return layer.color ? (
+                <CssMaskRasterOverlay
+                  source={layer.data}
+                  bounds={layerBounds}
+                  opacity={opacity}
+                  color={layer.color}
+                />
+              ) : (
                 <ImageOverlay
                   key={`${layer.id}-${layer.data}`}
                   url={layer.data}

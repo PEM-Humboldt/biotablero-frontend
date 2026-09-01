@@ -16,6 +16,7 @@ export interface RasterLayer {
   opacity?: number;
   selected?: boolean;
   bbox?: [number, number, number, number];
+  color?: string;
 }
 
 export interface ConnectivityFeaturePropierties {
