@@ -23,6 +23,26 @@ export interface SmallStackedBarData {
   label: string;
 }
 
+/**
+ * Renders a compact horizontal stacked bar chart to display segment distributions.
+ *
+ * @param props - The component props.
+ * @param props.data - An array of `SmallStackedBarData` objects containing keys, labels, absolute values (`area`), and ratios (`percentage`).
+ * @param props.colors - A function returning the CSS color string corresponding to a segment key (`(key: string) => string`).
+ * @param props.height - Optional pixel height for the chart container. Defaults to `30`.
+ * @param props.units - Optional measurement unit string displayed next to the absolute value in the tooltip. Defaults to `"ha"`.
+ * @param props.forceFullPercent - Optional flag to control visual scaling. When `true`, segments scale to fill 100% of the bar, when `false`, segments scale by absolute value. Defaults to `false`. Do not use when working with `symlog`.
+ * @param props.scaleType - Optional numerical scale type (`"linear"` | `"symlog"`).
+ * @param props.onClickGraphHandler - Optional callback function triggered when clicking a bar segment, receiving the segment `id`.
+ * @param props.margin - Optional outer margins for the rendered chart canvas. Defaults to `{ top: 0, right: 5, bottom: 0, left: 5 }`.
+ * @param props.padding - Optional bar padding ratio within the canvas. Defaults to `0.19`.
+ *
+ * @returns A responsive stacked bar chart and optional log scale note.
+ *
+ * @remarks
+ * - Internal data transformation formats values for Nivo's `ResponsiveBar` rendering while retaining unscaled absolute and percentage values for tooltips.
+ * - Displays interactive tooltips with formatted absolute numbers and percentage values for non-"NA" segments.
+ */
 function SmallStackedBar(props: Props) {
   const {
     data,
