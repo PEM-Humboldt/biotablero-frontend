@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import L, { type LatLngBoundsExpression } from "leaflet";
+import L, {
+  type LatLngBoundsExpression,
+  type LatLngBoundsLiteral,
+} from "leaflet";
 import { useMap } from "react-leaflet";
 
 type CssMaskRasterOverlayProps = {
@@ -33,7 +36,10 @@ export function CssMaskRasterOverlay({
 
   useEffect(() => {
     const updatePosition = () => {
-      const layerBounds = L.latLngBounds(bounds);
+      const layerBounds =
+        bounds instanceof L.LatLngBounds
+          ? bounds
+          : L.latLngBounds(bounds as LatLngBoundsLiteral);
       const northWest = map.latLngToLayerPoint(layerBounds.getNorthWest());
       const southEast = map.latLngToLayerPoint(layerBounds.getSouthEast());
 
@@ -60,6 +66,7 @@ export function CssMaskRasterOverlay({
   return (
     <div
       aria-hidden="true"
+      className="leaflet-image-layer"
       style={{
         position: "absolute",
         left: style.left,
