@@ -195,13 +195,14 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
         }));
       });
 
-    BackendAPI.requestSectionTexts("paConnSE")
-      .then((res) => {
-        if (this.mounted) {
-          this.setState({ texts: { paConnSE: res } });
-        }
-      })
-      .catch(() => {});
+    // TODO: Actualizar textos de acuerdo a nuevo endpoint en searchAPI
+    // BackendAPI.requestSectionTexts("paConnSE")
+    //   .then((res) => {
+    //     if (this.mounted) {
+    //       this.setState({ texts: { paConnSE: res } });
+    //     }
+    //   })
+    //   .catch(() => {});
 
     setLoadingLayer(true);
     setMapTitle({ name: "" });

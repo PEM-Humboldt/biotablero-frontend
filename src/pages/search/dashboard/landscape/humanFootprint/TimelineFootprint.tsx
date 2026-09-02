@@ -151,17 +151,18 @@ class TimelineFootprint extends React.Component<Props, State> {
         this.setState({ message: "no-data" });
       });
 
-    BackendAPI.requestSectionTexts("hfTimeline")
-      .then((res) => {
-        if (this.mounted) {
-          this.setState({ texts: { hfTimeline: res } });
-        }
-      })
-      .catch(() => {
-        this.setState({
-          texts: { hfTimeline: { info: "", cons: "", meto: "", quote: "" } },
-        });
-      });
+    // TODO: Actualizar textos de acuerdo a nuevo endpoint en searchAPI
+    // BackendAPI.requestSectionTexts("hfTimeline")
+    //   .then((res) => {
+    //     if (this.mounted) {
+    //       this.setState({ texts: { hfTimeline: res } });
+    //     }
+    //   })
+    //   .catch(() => {
+    //     this.setState({
+    //       texts: { hfTimeline: { info: "", cons: "", meto: "", quote: "" } },
+    //     });
+    //   });
 
     setLoadingLayer(true);
 

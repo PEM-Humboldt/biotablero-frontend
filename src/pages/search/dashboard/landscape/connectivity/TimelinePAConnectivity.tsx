@@ -106,13 +106,14 @@ class TimelinePAConnectivity extends React.Component<
         this.setState({ message: "no-data" });
       });
 
-    BackendAPI.requestSectionTexts("paConnTimeline")
-      .then((res: textsObject) => {
-        if (this.mounted) {
-          this.setState({ texts: { paConnTimeline: res } });
-        }
-      })
-      .catch(() => {});
+    // TODO: Actualizar textos de acuerdo a nuevo endpoint en searchAPI
+    // BackendAPI.requestSectionTexts("paConnTimeline")
+    //   .then((res: textsObject) => {
+    //     if (this.mounted) {
+    //       this.setState({ texts: { paConnTimeline: res } });
+    //     }
+    //   })
+    //   .catch(() => {});
 
     setLoadingLayer(true);
     setMapTitle({ name: "" });

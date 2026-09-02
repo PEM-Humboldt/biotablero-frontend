@@ -164,24 +164,25 @@ class CompensationFactor extends React.Component<
         }));
       });
 
-    ["cf", "biomes", "bioticRegions"].forEach((item) => {
-      BackendAPI.requestSectionTexts(item)
-        .then((res) => {
-          if (this.mounted) {
-            this.setState((prevState) => ({
-              texts: { ...prevState.texts, [item]: res },
-            }));
-          }
-        })
-        .catch(() => {
-          this.setState((prevState) => ({
-            texts: {
-              ...prevState.texts,
-              [item]: { info: "", cons: "", meto: "", quote: "" },
-            },
-          }));
-        });
-    });
+    // TODO: Actualizar textos de acuerdo a nuevo endpoint en searchAPI
+    // ["cf", "biomes", "bioticRegions"].forEach((item) => {
+    //   BackendAPI.requestSectionTexts(item)
+    //     .then((res) => {
+    //       if (this.mounted) {
+    //         this.setState((prevState) => ({
+    //           texts: { ...prevState.texts, [item]: res },
+    //         }));
+    //       }
+    //     })
+    //     .catch(() => {
+    //       this.setState((prevState) => ({
+    //         texts: {
+    //           ...prevState.texts,
+    //           [item]: { info: "", cons: "", meto: "", quote: "" },
+    //         },
+    //       }));
+    //     });
+    // });
 
     setLoadingLayer(true);
 

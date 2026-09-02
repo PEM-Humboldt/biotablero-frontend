@@ -91,17 +91,18 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
         this.setState({ message: "no-data" });
       });
 
-    BackendAPI.requestSectionTexts("hfPersistence")
-      .then((res) => {
-        if (this.mounted) {
-          this.setState({ texts: { hfPersistence: res } });
-        }
-      })
-      .catch(() => {
-        this.setState({
-          texts: { hfPersistence: { info: "", cons: "", meto: "", quote: "" } },
-        });
-      });
+    // TODO: Actualizar textos de acuerdo a nuevo endpoint en searchAPI
+      // BackendAPI.requestSectionTexts("hfPersistence")
+    //   .then((res) => {
+    //     if (this.mounted) {
+    //       this.setState({ texts: { hfPersistence: res } });
+    //     }
+    //   })
+    //   .catch(() => {
+    //     this.setState({
+    //       texts: { hfPersistence: { info: "", cons: "", meto: "", quote: "" } },
+    //     });
+    //   });
 
     setLoadingLayer(true);
 

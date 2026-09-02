@@ -205,13 +205,14 @@ class ForestIntegrity extends React.Component<Props, FIState> {
         this.setState({ loading: "no-data" });
       });
 
-    BackendAPI.requestSectionTexts("forestSCIHF")
-      .then((res) => {
-        if (this.mounted) {
-          this.setState({ texts: { forestSCIHF: res } });
-        }
-      })
-      .catch(() => {});
+    // TODO: Actualizar textos de acuerdo a nuevo endpoint en searchAPI
+    // BackendAPI.requestSectionTexts("forestSCIHF")
+    //   .then((res) => {
+    //     if (this.mounted) {
+    //       this.setState({ texts: { forestSCIHF: res } });
+    //     }
+    //   })
+    //   .catch(() => {});
 
     setLoadingLayer(true);
 
