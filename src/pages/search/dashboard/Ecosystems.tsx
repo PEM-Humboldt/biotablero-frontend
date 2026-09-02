@@ -43,11 +43,10 @@ type EcosystemsState = {
   };
 
   texts: {
-     coverage: textsObject;
-     protectedAreas: textsObject;
-     paramo: textsObject;
+    coverage: textsObject;
+    protectedAreas: textsObject;
+    paramo: textsObject;
   };
-
 };
 
 type TextSection = keyof EcosystemsState["texts"];
@@ -71,9 +70,9 @@ const initialState: EcosystemsState = {
   },
 
   texts: {
-     coverage: { info: "", cons: "", meto: "", quote: "", helper: "" },
-     protectedAreas: { info: "", cons: "", meto: "", quote: ""},
-     paramo: { info: "", cons: "", meto: "", quote: ""},
+    coverage: { info: "", cons: "", meto: "", quote: "", helper: "" },
+    protectedAreas: { info: "", cons: "", meto: "", quote: "" },
+    paramo: { info: "", cons: "", meto: "", quote: "" },
   },
 };
 
@@ -89,8 +88,7 @@ type EcosystemsAction =
   | {
       type: "SET_TEXTS";
       payload: { section: keyof EcosystemsState["texts"]; value: textsObject };
-    }
-    ;
+    };
 
 const isNoProtected = (value: string) =>
   value
@@ -288,7 +286,11 @@ export function Ecosystems() {
         dispatch({ type: "PROTECTED_AREAS_VALUES_FAILED" });
       });
 
-    const TEXT_SECTIONS: TextSection[] = ["coverage", "protectedAreas", "paramo"];
+    const TEXT_SECTIONS: TextSection[] = [
+      "coverage",
+      "protectedAreas",
+      "paramo",
+    ];
 
     TEXT_SECTIONS.forEach((section) => {
       SearchAPI.requestMetricsInfo(section)

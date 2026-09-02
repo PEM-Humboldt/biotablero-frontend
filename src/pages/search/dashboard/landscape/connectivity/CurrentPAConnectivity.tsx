@@ -191,7 +191,7 @@ function CurrentPAConnectivity(_: Props) {
         if (error?.message === "request canceled") return;
         dispatch({ type: "DPC_FAILED" });
       });
-    
+
     SearchAPI.requestMetricsInfo("dpc")
       .then((res) => {
         const value = mapMetricInfoToTexts(res);

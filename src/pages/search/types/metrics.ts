@@ -72,4 +72,3 @@ export interface MetricInfoResponse {
   type: "info" | "cons" | "quote" | "meto" | "helper";
   description: string;
 }
-
