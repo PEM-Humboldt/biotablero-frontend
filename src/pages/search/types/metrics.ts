@@ -68,3 +68,8 @@ export type MetricTypesMap = {
 };
 
 export type MetricsTypes = keyof MetricTypesMap;
+export interface MetricInfoResponse {
+  type: "info" | "cons" | "quote" | "meto" | "helper";
+  description: string;
+}
+
