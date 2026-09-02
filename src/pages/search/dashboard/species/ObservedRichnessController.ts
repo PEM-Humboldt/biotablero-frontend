@@ -1,6 +1,8 @@
 import type { CancelTokenSource } from "axios";
 import SearchAPI from "pages/search/api/searchAPI";
+import { MetricsTypes } from "pages/search/types/metrics";
 import type { textsObject } from "pages/search/types/texts";
+import { mapMetricInfoToTexts } from "pages/search/utils/texts";
 
 export type ObservedRichnessDataType = {
   total: number;
@@ -129,28 +131,18 @@ export class ObservedRichnessController {
   }
 
   /**
-   * Returns texts for the observed richness section
+   * Returns texts for the observed richness metric
    *
-   * @param {String} sectionName section name
+   * @param {MetricsTypes} metric metric identifier
    *
-   * @returns {Object} texts of forestLP section
+   * @returns {Promise<textsObject>} texts of observed richness metric
    */
-  async getTexts(sectionName: string): Promise<textsObject> {
-    // TODO: Eliminar este retorno cuando el back con los textos esté al día y actualizar el método
-    return Promise.resolve({
-      info: "",
-      cons: "",
-      meto: "",
-      quote: "",
-    });
-
-    // TODO: Actualizar funcion cuando el back con los textos esté al día
-    // BackendAPI.requestSectionTexts(sectionName)
-    //   .then((res) => res)
-    //   .catch(() => {
-    //     throw new Error("Error getting data");
-    //   });
-  }
+  getTexts = (metric: MetricsTypes): Promise<textsObject> =>
+    SearchAPI.requestMetricsInfo(metric)
+      .then((res) => mapMetricInfoToTexts(res))
+      .catch(() => {
+        throw new Error("Error getting data");
+      });
 
   /**
    * Transforms the graph data into an object to for the CSV download
