@@ -10,7 +10,6 @@ import {
   SearchLegacyCTX,
 } from "pages/search/hooks/SearchContext";
 
-import BackendAPI from "pages/search/api/backendAPI";
 import { matchColor } from "pages/search/utils/matchColor";
 import TextBoxes from "@ui/TextBoxes";
 
@@ -25,6 +24,8 @@ import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CurrentPAConnectivityController } from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivityController";
 import colorPalettes from "pages/search/utils/colorPalettes";
 import { RasterLayer } from "pages/search/types/layers";
+import { mapMetricInfoToTexts } from "pages/search/utils/texts";
+import SearchAPI from "pages/search/api/searchAPI";
 
 const legendDPCCategories = {
   muy_bajo: "Muy bajo",
@@ -190,10 +191,14 @@ function CurrentPAConnectivity(_: Props) {
         if (error?.message === "request canceled") return;
         dispatch({ type: "DPC_FAILED" });
       });
-
-    BackendAPI.requestSectionTexts("paConnDPC")
+    
+    SearchAPI.requestMetricsInfo("dpc")
       .then((res) => {
-        dispatch({ type: "SET_TEXTS", payload: res });
+        const value = mapMetricInfoToTexts(res);
+        dispatch({
+          type: "SET_TEXTS",
+          payload: value,
+        });
       })
       .catch(() => {
         dispatch({
