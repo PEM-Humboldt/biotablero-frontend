@@ -10,7 +10,6 @@ import {
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
 import { matchColor } from "pages/search/utils/matchColor";
-import BackendAPI from "pages/search/api/backendAPI";
 import TextBoxes from "@ui/TextBoxes";
 
 import {
@@ -24,6 +23,8 @@ import { RasterLayer } from "pages/search/types/layers";
 import { textsObject } from "pages/search/types/texts";
 import colorPalettes from "pages/search/utils/colorPalettes";
 import { formatNumber } from "@utils/format";
+import SearchAPI from "pages/search/api/searchAPI";
+import { mapMetricInfoToTexts } from "pages/search/utils/texts";
 
 interface State {
   showInfoGraph: boolean;
@@ -205,12 +206,13 @@ export function CurrentFootprint() {
         setLoadingLayer(false);
       });
 
-    BackendAPI.requestSectionTexts("hfCurrent")
+    SearchAPI.requestMetricsInfo("currentHF")
       .then((res) => {
         if (!isCurrent) return;
+        const value = mapMetricInfoToTexts(res);
         dispatch({
           type: "SET_TEXTS",
-          payload: res,
+          payload: value,
         });
       })
       .catch(() => {
