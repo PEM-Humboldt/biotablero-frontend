@@ -1,16 +1,10 @@
+import { MetricTypesMap } from "pages/search/types/metrics";
+
 export const currentPAConnKeys = [
   "prot_conn",
   "prot_unconn",
   "unprot",
 ] as const;
-export const DPCKeys = [
-  "muy_alto",
-  "alto",
-  "medio",
-  "bajo",
-  "muy_bajo",
-] as const;
-export type DPCCategoryType = (typeof DPCKeys)[number];
 export const timelinePAConnKeys = ["prot", "prot_conn"] as const;
 export const currentSEPAConnKeys = [
   "prot_conn",
@@ -25,13 +19,7 @@ export interface currentPAConn {
   percentage: number;
 }
 
-export interface DPC {
-  id: string;
-  dpc: number;
-  pa_id: number;
-  pa_name: string;
-  category: DPCCategoryType;
-}
+export type DPC = MetricTypesMap["dpc"][0];
 
 export interface timeLinePAConnValues {
   x: string;

@@ -7,7 +7,6 @@ import { RasterLayer } from "pages/search/types/layers";
 import { matchColor } from "pages/search/utils/matchColor";
 import { CancelTokenSource } from "axios";
 import { MetricTypesMap } from "pages/search/types/metrics";
-import { DPCCategoryType } from "pages/search/types/connectivity";
 import LayerAPI from "pages/search/api/layerAPI";
 import { MetricsUtils } from "pages/search/utils/metrics";
 
@@ -86,7 +85,7 @@ export class CurrentPAConnectivityController {
         dpc: Number(item.dpc),
         pa_id: Number(item.pa_id),
         pa_name: String(item.pa_name),
-        category: item.category as DPCCategoryType,
+        category: item.category,
       }))
       .filter((item) => item.dpc > 0);
 
