@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { RequestAPIObject, RasterAPIObject } from "pages/search/types/api";
 import { AreaIdBasic, AreaType, AreaId } from "pages/search/types/dashboard";
-import { MetricTypesMap, MetricsTypes } from "pages/search/types/metrics";
+import { MetricInfoResponse, MetricTypesMap, MetricsTypes } from "pages/search/types/metrics";
 import * as geojson from "geojson";
 
 class SearchAPI {
@@ -129,6 +129,17 @@ class SearchAPI {
       }) as Promise<{ layer: string }>,
       source,
     };
+  }
+
+  /**
+   * Get the list of metrics info for a given metric
+   *
+   * @param metricId Metric identifier
+   *
+   * @return {Promise<Array<MetricInfoResponse>>} array of metrics info
+   */
+  static requestMetricsInfo(metricId: MetricsTypes): Promise<Array<MetricInfoResponse>> {
+    return SearchAPI.makeGetRequest(`metrics/${metricId}/info`);
   }
 
   /** *********** */
