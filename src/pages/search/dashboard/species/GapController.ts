@@ -7,7 +7,8 @@ import type { textsObject } from "pages/search/types/texts";
 import LayerAPI from "pages/search/api/layerAPI";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import type { RasterLayer } from "pages/search/types/layers";
-import BackendAPI from "pages/search/api/backendAPI";
+import { MetricsTypes } from "pages/search/types/metrics";
+import { mapMetricInfoToTexts } from "pages/search/utils/texts";
 
 export class GapController {
   areaType: string = "";
@@ -144,28 +145,18 @@ export class GapController {
   }
 
   /**
-   * Returns texts for the Gap section
+   * Returns texts for the Gap metric
    *
-   * @param {String} sectionName section name
+   * @param {MetricsTypes} metric metric identifier
    *
-   * @returns {Object} texts of forestLP section
+   * @returns {Promise<textsObject>} texts of Gap metric
    */
-  async getGapTexts(sectionName: string): Promise<textsObject> {
-    // TODO: Eliminar este retornogcuando el back con los textos esté al día
-    return Promise.resolve({
-      info: "",
-      cons: "",
-      meto: "",
-      quote: "",
-    });
-
-    // TODO: Actualizar funcion cuando el back con los textos esté al día
-    // BackendAPI.requestSectionTexts(sectionName)
-    //   .then((res) => res)
-    //   .catch(() => {
-    //     throw new Error("Error getting data");
-    //   });
-  }
+  getGapTexts = (metric: MetricsTypes): Promise<textsObject> =>
+    SearchAPI.requestMetricsInfo(metric)
+      .then((res) => mapMetricInfoToTexts(res))
+      .catch(() => {
+        throw new Error("Error getting data");
+      });
 
   /**
    * Transforms the graph data into an object to for the CSV download
