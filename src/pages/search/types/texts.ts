@@ -1,12 +1,7 @@
-export interface textsObject {
-  info: string;
-  meto: string;
-  cons: string;
-  quote: string;
-}
-
-export interface helperText {
-  helper: string;
-}
-
-export type textResponse = textsObject | helperText;
+export type textsObject = { 
+    info: string;
+    cons: string; 
+    meto: string; 
+    quote: string; 
+    helper?: string 
+};
