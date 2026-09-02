@@ -2,7 +2,6 @@ import {
   SmallBarsData,
   SmallBarsDataDetails,
 } from "@composites/charts/SmallBars";
-import BackendAPI from "pages/search/api/backendAPI";
 import SearchAPI from "pages/search/api/searchAPI";
 import LayerAPI from "pages/search/api/layerAPI";
 import { ForestLPExt } from "pages/search/types/forest";
@@ -13,7 +12,8 @@ import { polygonFeature } from "pages/search/types/dashboard";
 import { RasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
 import { MetricsUtils } from "pages/search/utils/metrics";
-import { MetricTypesMap } from "pages/search/types/metrics";
+import { MetricsTypes, MetricTypesMap } from "pages/search/types/metrics";
+import { mapMetricInfoToTexts } from "pages/search/utils/texts";
 
 interface ForestLPData {
   forestLP: Array<ForestLPExt>;
@@ -169,15 +169,15 @@ export class ForestLossPersistenceController {
   }
 
   /**
-   * Returns texts of the forestLP section
+   * Returns texts of the forestLP metric
    *
-   * @param {String} sectionName section name
+   * @param {MetricsTypes} metricId Metric identifier
    *
-   * @returns {Object} texts of forestLP section
+   * @returns {Promise<textsObject>} texts of forestLP metric
    */
-  getForestLPTexts = (sectionName: string): Promise<textsObject> =>
-    BackendAPI.requestSectionTexts(sectionName)
-      .then((res) => res)
+  getForestLPTexts = (metric: MetricsTypes): Promise<textsObject> =>
+    SearchAPI.requestMetricsInfo(metric)
+      .then((res) => mapMetricInfoToTexts(res))
       .catch(() => {
         throw new Error("Error getting data");
       });
