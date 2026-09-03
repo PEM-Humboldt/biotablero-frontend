@@ -37,8 +37,6 @@ const DPCCats = (
   Object.keys(legendDPCCategories) as Array<keyof typeof legendDPCCategories>
 ).reverse();
 
-interface Props {}
-
 interface CurrentPAConnState {
   infoShown: Set<string>;
   dpcData: Array<DPC>;
@@ -133,7 +131,7 @@ function reducer(
   }
 }
 
-function CurrentPAConnectivity(_: Props) {
+function CurrentPAConnectivity() {
   const context = useContext(SearchLegacyCTX) as LegacyContextValues;
   const {
     areaType,
