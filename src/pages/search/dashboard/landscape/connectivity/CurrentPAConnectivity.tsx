@@ -13,7 +13,7 @@ import {
 import { matchColor } from "pages/search/utils/matchColor";
 import TextBoxes from "@ui/TextBoxes";
 
-import { DPC } from "pages/search/types/connectivity";
+import { DPC, DPCKeys } from "pages/search/types/connectivity";
 import { textsObject } from "pages/search/types/texts";
 import {
   SmallBars,
@@ -24,8 +24,6 @@ import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CurrentPAConnectivityController } from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivityController";
 import colorPalettes from "pages/search/utils/colorPalettes";
 import { RasterLayer } from "pages/search/types/layers";
-import { mapMetricInfoToTexts } from "pages/search/utils/texts";
-import SearchAPI from "pages/search/api/searchAPI";
 
 const legendDPCCategories = {
   muy_bajo: "Muy bajo",
