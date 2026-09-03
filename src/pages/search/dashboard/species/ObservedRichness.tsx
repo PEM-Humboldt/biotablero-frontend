@@ -28,6 +28,7 @@ import { GraphLegend } from "@ui/GraphLegend";
 import SmallStackedBar, {
   type SmallStackedBarData,
 } from "@composites/charts/SmallStackedBar";
+import { getMetricTexts } from "pages/search/utils/texts";
 
 const OBSERVED_RICHNESS_GRAPH_KEYS = ["CR", "EN", "VU"];
 const customColorMap: Record<string, string> = {
@@ -64,7 +65,7 @@ export function ObservedRichness() {
 
     Promise.all([
       controller.current.getTaxonomicGroups(),
-      controller.current.getTexts("statsOnSpecies"),
+      getMetricTexts("statsOnSpecies"),
     ])
       .then(([groups, texts]) => {
         setGroupsAvailable(groups);

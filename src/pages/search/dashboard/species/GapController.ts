@@ -3,12 +3,9 @@ import SearchAPI from "pages/search/api/searchAPI";
 import type { GapSerieData } from "pages/search/types/species";
 // TODO: descomentar la importación cuando el endpoint de grupos esté
 // import axios from "axios";
-import type { textsObject } from "pages/search/types/texts";
 import LayerAPI from "pages/search/api/layerAPI";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import type { RasterLayer } from "pages/search/types/layers";
-import { MetricsTypes } from "pages/search/types/metrics";
-import { getMetricTexts } from "pages/search/utils/texts";
 
 export class GapController {
   areaType: string = "";
@@ -143,16 +140,6 @@ export class GapController {
         this.activeRequests.delete(requestKey);
       });
   }
-
-  /**
-   * Returns texts for the metric
-   *
-   * @param {MetricsTypes} metric metric identifier
-   *
-   * @returns {Promise<textsObject>} texts of the metric
-   */
-  getTexts = (metric: MetricsTypes): Promise<textsObject> =>
-    getMetricTexts(metric);
 
   /**
    * Transforms the graph data into an object to for the CSV download

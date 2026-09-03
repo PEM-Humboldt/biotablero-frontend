@@ -2,12 +2,10 @@ import { RasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
 
 import { LargeStackedBarData } from "@composites/charts/LargeStackedBar";
-import { MetricsTypes, MetricTypesMap } from "pages/search/types/metrics";
+import { MetricTypesMap } from "pages/search/types/metrics";
 import SearchAPI from "pages/search/api/searchAPI";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import LayerAPI from "pages/search/api/layerAPI";
-import { textsObject } from "pages/search/types/texts";
-import { getMetricTexts } from "pages/search/utils/texts";
 
 type HFCategory = keyof Omit<MetricTypesMap["currentHF"], "id">;
 
@@ -171,16 +169,6 @@ export class CurrentFootprintController {
     }
     throw Error("Polygon and area undefined");
   };
-
-  /**
-   * Returns texts of the metric
-   *
-   * @param {MetricsTypes} metricId Metric identifier
-   *
-   * @returns {Promise<textsObject>} texts of the metric
-   */
-  getTexts = (metric: MetricsTypes): Promise<textsObject> =>
-    getMetricTexts(metric);
 
   /**
    * Send the cancel signal to all active requests and remove them from the map

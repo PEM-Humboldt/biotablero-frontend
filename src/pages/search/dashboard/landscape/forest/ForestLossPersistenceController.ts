@@ -5,15 +5,13 @@ import {
 import SearchAPI from "pages/search/api/searchAPI";
 import LayerAPI from "pages/search/api/layerAPI";
 import { ForestLPExt } from "pages/search/types/forest";
-import { textsObject } from "pages/search/types/texts";
 import { formatNumber } from "@utils/format";
 import { type SmallBarTooltip } from "@composites/charts/SmallBars";
 import { polygonFeature } from "pages/search/types/dashboard";
 import { RasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
 import { MetricsUtils } from "pages/search/utils/metrics";
-import { MetricsTypes, MetricTypesMap } from "pages/search/types/metrics";
-import { getMetricTexts } from "pages/search/utils/texts";
+import { MetricTypesMap } from "pages/search/types/metrics";
 
 interface ForestLPData {
   forestLP: Array<ForestLPExt>;
@@ -167,16 +165,6 @@ export class ForestLossPersistenceController {
 
     return { transformedData, keys: Array.from(categories), tooltips };
   }
-
-  /**
-   * Returns texts of the metric
-   *
-   * @param {MetricsTypes} metricId Metric identifier
-   *
-   * @returns {Promise<textsObject>} texts of the metric
-   */
-  getTexts = (metric: MetricsTypes): Promise<textsObject> =>
-    getMetricTexts(metric);
 
   /**
    * Returns data transformed to be downloaded in the csv file

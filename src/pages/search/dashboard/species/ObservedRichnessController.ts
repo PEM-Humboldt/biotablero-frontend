@@ -1,8 +1,5 @@
 import type { CancelTokenSource } from "axios";
 import SearchAPI from "pages/search/api/searchAPI";
-import { MetricsTypes } from "pages/search/types/metrics";
-import type { textsObject } from "pages/search/types/texts";
-import { getMetricTexts } from "pages/search/utils/texts";
 
 export type ObservedRichnessDataType = {
   total: number;
@@ -129,16 +126,6 @@ export class ObservedRichnessController {
   async getNationalData(taxonomicGroup?: string) {
     return this.getData(NATIONAL_AREA_ID_VALUE, taxonomicGroup);
   }
-
-  /**
-   * Returns texts for the metric
-   *
-   * @param {MetricsTypes} metric metric identifier
-   *
-   * @returns {Promise<textsObject>} texts of the metric
-   */
-  getTexts = (metric: MetricsTypes): Promise<textsObject> =>
-    getMetricTexts(metric);
 
   /**
    * Transforms the graph data into an object to for the CSV download

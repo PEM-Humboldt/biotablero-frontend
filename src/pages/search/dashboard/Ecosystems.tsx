@@ -16,6 +16,7 @@ import { StrategicEcosystems } from "pages/search/dashboard/ecosystems/Strategic
 import { SmallStackedBarData } from "@composites/charts/SmallStackedBar";
 
 import { textsObject } from "pages/search/types/texts";
+import { getMetricTexts } from "pages/search/utils/texts";
 
 type EcosystemsState = {
   showInfoMain: boolean;
@@ -291,8 +292,7 @@ export function Ecosystems() {
     ];
 
     TEXT_SECTIONS.forEach((section) => {
-      controller
-        .getTexts(section)
+      getMetricTexts(section)
         .then((res) => {
           dispatch({
             type: "SET_TEXTS",

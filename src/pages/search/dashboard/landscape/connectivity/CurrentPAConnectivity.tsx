@@ -15,6 +15,7 @@ import TextBoxes from "@ui/TextBoxes";
 
 import { DPC } from "pages/search/types/connectivity";
 import { textsObject } from "pages/search/types/texts";
+import { getMetricTexts } from "pages/search/utils/texts";
 import {
   SmallBars,
   SmallBarsData,
@@ -190,8 +191,7 @@ function CurrentPAConnectivity(_: Props) {
         dispatch({ type: "DPC_FAILED" });
       });
 
-    controller
-      .getTexts("dpc")
+    getMetricTexts("dpc")
       .then((res) => {
         dispatch({
           type: "SET_TEXTS",

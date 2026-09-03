@@ -6,11 +6,9 @@ import SearchAPI from "pages/search/api/searchAPI";
 import { RasterLayer } from "pages/search/types/layers";
 import { matchColor } from "pages/search/utils/matchColor";
 import { CancelTokenSource } from "axios";
-import { MetricsTypes, MetricTypesMap } from "pages/search/types/metrics";
+import { MetricTypesMap } from "pages/search/types/metrics";
 import LayerAPI from "pages/search/api/layerAPI";
 import { MetricsUtils } from "pages/search/utils/metrics";
-import { getMetricTexts } from "pages/search/utils/texts";
-import { textsObject } from "pages/search/types/texts";
 
 type DpcGraphData = ReturnType<CurrentPAConnectivityController["getGraphData"]>;
 
@@ -131,16 +129,6 @@ export class CurrentPAConnectivityController {
 
     return { transformedData, keys: Array.from(categories), tooltips };
   }
-
-  /**
-   * Returns texts of the the metric
-   *
-   * @param {MetricsTypes} metricId Metric identifier
-   *
-   * @returns {Promise<textsObject>} texts of the metric
-   */
-  getTexts = (metric: MetricsTypes): Promise<textsObject> =>
-    getMetricTexts(metric);
 
   /**
    * Get the layers associated to the current area

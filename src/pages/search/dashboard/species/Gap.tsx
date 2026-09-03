@@ -24,6 +24,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import { IconTooltip } from "@ui/Tooltips";
 import { ShortInfo } from "@composites/ShortInfo";
 import { speciesGroupLabels } from "pages/search/dashboard/species/commonDictionaries";
+import { getMetricTexts } from "pages/search/utils/texts";
 
 const GAP_GRAPH_MAX_YEARS_VISUALIZATION_AMOUTN = 5;
 const GAP_GRAPH_START_YEARS_VISUALIZATION_AMOUTN = 3;
@@ -70,7 +71,7 @@ export function Gap() {
     setIsLoading((old) => old + 1);
     Promise.all([
       controller.current.getGapTaxonomicGroups(),
-      controller.current.getTexts("recordGaps"),
+      getMetricTexts("recordGaps"),
     ])
       .then(([groups, texts]) => {
         setGroupsAvailable(groups);
