@@ -2,7 +2,7 @@ import type { CancelTokenSource } from "axios";
 import SearchAPI from "pages/search/api/searchAPI";
 import { MetricsTypes } from "pages/search/types/metrics";
 import type { textsObject } from "pages/search/types/texts";
-import { mapMetricInfoToTexts } from "pages/search/utils/texts";
+import { getMetricTexts } from "pages/search/utils/texts";
 
 export type ObservedRichnessDataType = {
   total: number;
@@ -131,18 +131,14 @@ export class ObservedRichnessController {
   }
 
   /**
-   * Returns texts for the observed richness metric
+   * Returns texts for the metric
    *
    * @param {MetricsTypes} metric metric identifier
    *
-   * @returns {Promise<textsObject>} texts of observed richness metric
+   * @returns {Promise<textsObject>} texts of the metric
    */
   getTexts = (metric: MetricsTypes): Promise<textsObject> =>
-    SearchAPI.requestMetricsInfo(metric)
-      .then((res) => mapMetricInfoToTexts(res))
-      .catch(() => {
-        throw new Error("Error getting data");
-      });
+    getMetricTexts(metric);
 
   /**
    * Transforms the graph data into an object to for the CSV download

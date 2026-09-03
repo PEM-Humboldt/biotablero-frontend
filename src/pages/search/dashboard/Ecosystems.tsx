@@ -6,7 +6,6 @@ import { IconTooltip } from "@ui/Tooltips";
 
 import { useSearchLegacyCTX } from "pages/search/hooks/SearchContext";
 
-import SearchAPI from "pages/search/api/searchAPI";
 import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { EcosystemsController } from "pages/search/dashboard/EcosystemsController";
 import { RasterLayer } from "pages/search/types/layers";
@@ -17,7 +16,6 @@ import { StrategicEcosystems } from "pages/search/dashboard/ecosystems/Strategic
 import { SmallStackedBarData } from "@composites/charts/SmallStackedBar";
 
 import { textsObject } from "pages/search/types/texts";
-import { mapMetricInfoToTexts } from "pages/search/utils/texts";
 
 type EcosystemsState = {
   showInfoMain: boolean;
@@ -293,12 +291,12 @@ export function Ecosystems() {
     ];
 
     TEXT_SECTIONS.forEach((section) => {
-      SearchAPI.requestMetricsInfo(section)
+      controller
+        .getTexts(section)
         .then((res) => {
-          const value = mapMetricInfoToTexts(res);
           dispatch({
             type: "SET_TEXTS",
-            payload: { section, value },
+            payload: { section, value: res },
           });
         })
         .catch(() => {
@@ -311,6 +309,26 @@ export function Ecosystems() {
           });
         });
     });
+
+    // TEXT_SECTIONS.forEach((section) => {
+    //   SearchAPI.requestMetricsInfo(section)
+    //     .then((res) => {
+    //       const value = mapMetricInfoToTexts(res);
+    //       dispatch({
+    //         type: "SET_TEXTS",
+    //         payload: { section, value },
+    //       });
+    //     })
+    //     .catch(() => {
+    //       dispatch({
+    //         type: "SET_TEXTS",
+    //         payload: {
+    //           section,
+    //           value: { info: "", cons: "", meto: "", quote: "", helper: "" },
+    //         },
+    //       });
+    //     });
+    // });
 
     return () => {
       isCurrent = false;

@@ -192,12 +192,12 @@ function CurrentPAConnectivity(_: Props) {
         dispatch({ type: "DPC_FAILED" });
       });
 
-    SearchAPI.requestMetricsInfo("dpc")
+    controller
+      .getTexts("dpc")
       .then((res) => {
-        const value = mapMetricInfoToTexts(res);
         dispatch({
           type: "SET_TEXTS",
-          payload: value,
+          payload: res,
         });
       })
       .catch(() => {
@@ -206,6 +206,21 @@ function CurrentPAConnectivity(_: Props) {
           payload: { info: "", cons: "", meto: "", quote: "" },
         });
       });
+
+    // SearchAPI.requestMetricsInfo("dpc")
+    //   .then((res) => {
+    //     const value = mapMetricInfoToTexts(res);
+    //     dispatch({
+    //       type: "SET_TEXTS",
+    //       payload: value,
+    //     });
+    //   })
+    //   .catch(() => {
+    //     dispatch({
+    //       type: "SET_TEXTS",
+    //       payload: { info: "", cons: "", meto: "", quote: "" },
+    //     });
+    //   });
 
     return () => {
       controller.cancelActiveRequests();

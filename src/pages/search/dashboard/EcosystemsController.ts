@@ -5,6 +5,9 @@ import { CancelTokenSource } from "axios";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import { transformCoverageValues } from "pages/search/dashboard/ecosystems/transformData";
 import { SmallStackedBarData } from "@composites/charts/SmallStackedBar";
+import { getMetricTexts } from "../utils/texts";
+import { textsObject } from "../types/texts";
+import { MetricsTypes } from "../types/metrics";
 
 /**
  * Controller for Ecosystems Component
@@ -180,6 +183,16 @@ export class EcosystemsController {
     }
     throw Error("Polygon and area undefined");
   }
+
+  /**
+   * Returns texts of the metric
+   *
+   * @param {MetricsTypes} metricId Metric identifier
+   *
+   * @returns {Promise<textsObject>} texts of the metric
+   */
+  getTexts = (metric: MetricsTypes): Promise<textsObject> =>
+    getMetricTexts(metric);
 
   /**
    * Cancel all active requests and remove them from the map

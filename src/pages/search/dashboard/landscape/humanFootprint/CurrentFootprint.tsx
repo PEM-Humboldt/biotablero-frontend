@@ -23,8 +23,6 @@ import { RasterLayer } from "pages/search/types/layers";
 import { textsObject } from "pages/search/types/texts";
 import colorPalettes from "pages/search/utils/colorPalettes";
 import { formatNumber } from "@utils/format";
-import SearchAPI from "pages/search/api/searchAPI";
-import { mapMetricInfoToTexts } from "pages/search/utils/texts";
 
 interface State {
   showInfoGraph: boolean;
@@ -206,13 +204,13 @@ export function CurrentFootprint() {
         setLoadingLayer(false);
       });
 
-    SearchAPI.requestMetricsInfo("currentHF")
+    controller
+      .getTexts("currentHF")
       .then((res) => {
         if (!isCurrent) return;
-        const value = mapMetricInfoToTexts(res);
         dispatch({
           type: "SET_TEXTS",
-          payload: value,
+          payload: res,
         });
       })
       .catch(() => {
@@ -222,6 +220,23 @@ export function CurrentFootprint() {
           payload: { info: "", cons: "", meto: "", quote: "" },
         });
       });
+
+    // SearchAPI.requestMetricsInfo("currentHF")
+    //   .then((res) => {
+    //     if (!isCurrent) return;
+    //     const value = mapMetricInfoToTexts(res);
+    //     dispatch({
+    //       type: "SET_TEXTS",
+    //       payload: value,
+    //     });
+    //   })
+    //   .catch(() => {
+    //     if (!isCurrent) return;
+    //     dispatch({
+    //       type: "SET_TEXTS",
+    //       payload: { info: "", cons: "", meto: "", quote: "" },
+    //     });
+    //   });
 
     return () => {
       isCurrent = false;

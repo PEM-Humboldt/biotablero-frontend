@@ -13,7 +13,7 @@ import { RasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import { MetricsTypes, MetricTypesMap } from "pages/search/types/metrics";
-import { mapMetricInfoToTexts } from "pages/search/utils/texts";
+import { getMetricTexts } from "pages/search/utils/texts";
 
 interface ForestLPData {
   forestLP: Array<ForestLPExt>;
@@ -169,18 +169,14 @@ export class ForestLossPersistenceController {
   }
 
   /**
-   * Returns texts of the forestLP metric
+   * Returns texts of the metric
    *
    * @param {MetricsTypes} metricId Metric identifier
    *
-   * @returns {Promise<textsObject>} texts of forestLP metric
+   * @returns {Promise<textsObject>} texts of the metric
    */
-  getForestLPTexts = (metric: MetricsTypes): Promise<textsObject> =>
-    SearchAPI.requestMetricsInfo(metric)
-      .then((res) => mapMetricInfoToTexts(res))
-      .catch(() => {
-        throw new Error("Error getting data");
-      });
+  getTexts = (metric: MetricsTypes): Promise<textsObject> =>
+    getMetricTexts(metric);
 
   /**
    * Returns data transformed to be downloaded in the csv file

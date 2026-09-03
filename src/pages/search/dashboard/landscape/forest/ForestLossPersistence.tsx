@@ -108,7 +108,7 @@ export default function () {
       });
 
     controller
-      .getForestLPTexts("lossPersistence")
+      .getTexts("lossPersistence")
       .then((res) => {
         if (!isCurrent) return;
         setTexts({ forestLP: res });

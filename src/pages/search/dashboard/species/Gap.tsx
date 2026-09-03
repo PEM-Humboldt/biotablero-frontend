@@ -70,11 +70,11 @@ export function Gap() {
     setIsLoading((old) => old + 1);
     Promise.all([
       controller.current.getGapTaxonomicGroups(),
-      controller.current.getGapTexts("recordGaps"),
+      controller.current.getTexts("recordGaps"),
     ])
-      .then(([groups, textsBack]) => {
+      .then(([groups, texts]) => {
         setGroupsAvailable(groups);
-        setTexts({ recordsGap: textsBack });
+        setTexts({ recordsGap: texts });
       })
       .catch((err) => {
         console.error(err);

@@ -8,7 +8,7 @@ import LayerAPI from "pages/search/api/layerAPI";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import type { RasterLayer } from "pages/search/types/layers";
 import { MetricsTypes } from "pages/search/types/metrics";
-import { mapMetricInfoToTexts } from "pages/search/utils/texts";
+import { getMetricTexts } from "pages/search/utils/texts";
 
 export class GapController {
   areaType: string = "";
@@ -145,18 +145,14 @@ export class GapController {
   }
 
   /**
-   * Returns texts for the Gap metric
+   * Returns texts for the metric
    *
    * @param {MetricsTypes} metric metric identifier
    *
-   * @returns {Promise<textsObject>} texts of Gap metric
+   * @returns {Promise<textsObject>} texts of the metric
    */
-  getGapTexts = (metric: MetricsTypes): Promise<textsObject> =>
-    SearchAPI.requestMetricsInfo(metric)
-      .then((res) => mapMetricInfoToTexts(res))
-      .catch(() => {
-        throw new Error("Error getting data");
-      });
+  getTexts = (metric: MetricsTypes): Promise<textsObject> =>
+    getMetricTexts(metric);
 
   /**
    * Transforms the graph data into an object to for the CSV download
