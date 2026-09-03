@@ -14,7 +14,7 @@ import BackendAPI from "pages/search/api/backendAPI";
 import { matchColor } from "pages/search/utils/matchColor";
 import TextBoxes from "@ui/TextBoxes";
 
-import { DPC, DPCKeys } from "pages/search/types/connectivity";
+import { DPC } from "pages/search/types/connectivity";
 import { textsObject } from "pages/search/types/texts";
 import {
   SmallBars,
@@ -302,7 +302,11 @@ function CurrentPAConnectivity(_: Props) {
           )}
         </div>
         <div className="dpcLegend">
-          {DPCKeys.map((cat) => (
+          {(
+            Object.keys(legendDPCCategories) as Array<
+              keyof typeof legendDPCCategories
+            >
+          ).map((cat) => (
             <PointFilledLegend color={matchColor("dpc")(cat)} key={cat}>
               {legendDPCCategories[cat]}
             </PointFilledLegend>
