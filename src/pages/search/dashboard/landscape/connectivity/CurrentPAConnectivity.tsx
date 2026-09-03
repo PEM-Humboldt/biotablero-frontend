@@ -6,9 +6,10 @@ import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
 import { Button } from "@ui/shadCN/component/button";
 import {
-  LegacyContextValues,
-  SearchLegacyCTX,
+  useSearchDispatchCTX,
+  useSearchStateCTX,
 } from "pages/search/hooks/SearchContext";
+import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 
 import BackendAPI from "pages/search/api/backendAPI";
 import { matchColor } from "pages/search/utils/matchColor";
@@ -66,8 +67,7 @@ type DpcPayload = {
 
 type Action =
   | { type: "TOGGLE_INFO"; payload: string }
-  | { type: "SET_SHOW_LOWEST"; payload: boolean }
-  | { type: "DPC_SUCCEEDED"; payload: DpcPayload }
+  | { type: "DPC_SUCCEEDED"; payload: DpcPayload & { showLowestDpc?: boolean } }
   | { type: "DPC_FAILED" }
   | { type: "SET_TEXTS"; payload: textsObject }
   | { type: "PA_LAYERS_SUCCEEDED"; payload: RasterLayer[] };
@@ -101,18 +101,13 @@ function reducer(
       else infoShown.add(action.payload);
       return { ...state, infoShown };
     }
-    case "SET_SHOW_LOWEST":
-      return {
-        ...state,
-        showLowestDpc: action.payload,
-        messages: { ...state.messages, dpc: "loading" },
-      };
     case "DPC_SUCCEEDED":
       return {
         ...state,
         dpcData: action.payload.dpcData,
         graphData: action.payload.graphData,
         messages: { ...state.messages, dpc: null },
+        showLowestDpc: action.payload.showLowestDpc || state.showLowestDpc,
       };
     case "DPC_FAILED":
       return {
@@ -132,16 +127,9 @@ function reducer(
 }
 
 function CurrentPAConnectivity() {
-  const context = useContext(SearchLegacyCTX) as LegacyContextValues;
-  const {
-    areaType,
-    areaId,
-    setLoadingLayer,
-    setShowAreaLayer,
-    setRasterLayers,
-    setLayerError,
-    setMapTitle,
-  } = context;
+  const context = useSearchStateCTX();
+  const searchDispatch = useSearchDispatchCTX();
+  const { areaType, areaId } = context;
 
   const controllerRef = useRef(new CurrentPAConnectivityController());
   const controller = controllerRef.current;
@@ -150,14 +138,19 @@ function CurrentPAConnectivity() {
 
   useEffect(() => {
     if (!areaType || !areaId) {
-      setLoadingLayer(false);
+      searchDispatch({
+        type: SearchUpdated.LOADING_LAYER,
+        loadingLayer: false,
+      });
       return () => {
         controller.cancelActiveRequests();
       };
     }
     controller.setArea(areaType.id, areaId.id);
-    setLoadingLayer(true);
-    dispatch({ type: "SET_SHOW_LOWEST", payload: showLowestDpc });
+    searchDispatch({
+      type: SearchUpdated.LOADING_LAYER,
+      loadingLayer: true,
+    });
 
     controller
       .loadSortedDpcData(false)
@@ -169,18 +162,29 @@ function CurrentPAConnectivity() {
               type: "PA_LAYERS_SUCCEEDED",
               payload: layersRes,
             });
-            setRasterLayers(layersRes);
-            setShowAreaLayer(true);
-            setLoadingLayer(false);
-            setMapTitle({
-              name: "Conectividad de áreas protegidas",
+            searchDispatch({
+              type: SearchUpdated.WILDCARD,
+              payload: {
+                rasterLayers: layersRes,
+                showAreaLayer: true,
+                loadingLayer: false,
+                mapTitle: { name: "Conectividad de áreas protegidas" },
+              },
             });
           })
-          .catch((e) => {
-            if (e.toString() !== "Error: request canceled") {
-              setLayerError(e.toString());
+          .catch((err) => {
+            if (String(err) !== "Error: request canceled") {
+              searchDispatch({
+                type: SearchUpdated.LAYER_ERROR,
+                layerError: String(err),
+              });
             }
-            setLoadingLayer(false);
+          })
+          .finally(() => {
+            searchDispatch({
+              type: SearchUpdated.LOADING_LAYER,
+              loadingLayer: false,
+            });
           });
         dispatch({ type: "DPC_SUCCEEDED", payload: result });
       })
@@ -213,8 +217,10 @@ function CurrentPAConnectivity() {
     controller
       .loadSortedDpcData(!state.showLowestDpc)
       .then((result) => {
-        dispatch({ type: "SET_SHOW_LOWEST", payload: !showLowestDpc });
-        dispatch({ type: "DPC_SUCCEEDED", payload: result });
+        dispatch({
+          type: "DPC_SUCCEEDED",
+          payload: { ...result, showLowestDpc },
+        });
       })
       .catch((error) => {
         if (error?.message === "request canceled") return;
@@ -224,12 +230,15 @@ function CurrentPAConnectivity() {
 
   const clickOnDPCGraph = (dpcId: string, category: string) => {
     const { layers } = state;
-    setRasterLayers(
-      layers.map((layer) => ({
-        ...layer,
-        selected: layer.id === dpcId,
-      })),
-    );
+    searchDispatch({
+      type: SearchUpdated.WILDCARD,
+      payload: {
+        rasterLayers: layers.map((layer) => ({
+          ...layer,
+          selected: layer.id === dpcId,
+        })),
+      },
+    });
   };
 
   const { dpcData, showLowestDpc, infoShown, messages, texts, graphData } =
