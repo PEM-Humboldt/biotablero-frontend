@@ -33,6 +33,9 @@ const legendDPCCategories = {
   alto: "Alto",
   muy_alto: "Muy Alto",
 };
+const DPCCats = (
+  Object.keys(legendDPCCategories) as Array<keyof typeof legendDPCCategories>
+).reverse();
 
 interface Props {}
 
@@ -302,11 +305,7 @@ function CurrentPAConnectivity(_: Props) {
           )}
         </div>
         <div className="dpcLegend">
-          {(
-            Object.keys(legendDPCCategories) as Array<
-              keyof typeof legendDPCCategories
-            >
-          ).map((cat) => (
+          {DPCCats.map((cat) => (
             <PointFilledLegend color={matchColor("dpc")(cat)} key={cat}>
               {legendDPCCategories[cat]}
             </PointFilledLegend>
