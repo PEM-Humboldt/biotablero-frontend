@@ -177,6 +177,7 @@ export function MapViewer({
               }
               return layer.color ? (
                 <CssMaskRasterOverlay
+                  key={`${layer.id}-${layer.data}`}
                   source={layer.data}
                   bounds={layerBounds}
                   opacity={opacity}
