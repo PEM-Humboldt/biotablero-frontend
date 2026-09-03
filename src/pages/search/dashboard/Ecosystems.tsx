@@ -310,26 +310,6 @@ export function Ecosystems() {
         });
     });
 
-    // TEXT_SECTIONS.forEach((section) => {
-    //   SearchAPI.requestMetricsInfo(section)
-    //     .then((res) => {
-    //       const value = mapMetricInfoToTexts(res);
-    //       dispatch({
-    //         type: "SET_TEXTS",
-    //         payload: { section, value },
-    //       });
-    //     })
-    //     .catch(() => {
-    //       dispatch({
-    //         type: "SET_TEXTS",
-    //         payload: {
-    //           section,
-    //           value: { info: "", cons: "", meto: "", quote: "", helper: "" },
-    //         },
-    //       });
-    //     });
-    // });
-
     return () => {
       isCurrent = false;
       clearLayers();

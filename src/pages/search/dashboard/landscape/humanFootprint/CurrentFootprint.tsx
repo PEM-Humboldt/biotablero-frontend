@@ -221,23 +221,6 @@ export function CurrentFootprint() {
         });
       });
 
-    // SearchAPI.requestMetricsInfo("currentHF")
-    //   .then((res) => {
-    //     if (!isCurrent) return;
-    //     const value = mapMetricInfoToTexts(res);
-    //     dispatch({
-    //       type: "SET_TEXTS",
-    //       payload: value,
-    //     });
-    //   })
-    //   .catch(() => {
-    //     if (!isCurrent) return;
-    //     dispatch({
-    //       type: "SET_TEXTS",
-    //       payload: { info: "", cons: "", meto: "", quote: "" },
-    //     });
-    //   });
-
     return () => {
       isCurrent = false;
       controller.cancelActiveRequests();

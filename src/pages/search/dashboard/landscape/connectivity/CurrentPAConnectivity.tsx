@@ -205,21 +205,6 @@ function CurrentPAConnectivity(_: Props) {
         });
       });
 
-    // SearchAPI.requestMetricsInfo("dpc")
-    //   .then((res) => {
-    //     const value = mapMetricInfoToTexts(res);
-    //     dispatch({
-    //       type: "SET_TEXTS",
-    //       payload: value,
-    //     });
-    //   })
-    //   .catch(() => {
-    //     dispatch({
-    //       type: "SET_TEXTS",
-    //       payload: { info: "", cons: "", meto: "", quote: "" },
-    //     });
-    //   });
-
     return () => {
       controller.cancelActiveRequests();
     };
