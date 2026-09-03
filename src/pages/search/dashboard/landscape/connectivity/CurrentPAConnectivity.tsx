@@ -13,7 +13,7 @@ import {
 import { matchColor } from "pages/search/utils/matchColor";
 import TextBoxes from "@ui/TextBoxes";
 
-import { DPC, DPCKeys } from "pages/search/types/connectivity";
+import { DPC } from "pages/search/types/connectivity";
 import { textsObject } from "pages/search/types/texts";
 import {
   SmallBars,
