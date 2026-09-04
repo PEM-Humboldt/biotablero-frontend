@@ -14,7 +14,7 @@ import TextBoxes from "@ui/TextBoxes";
 import type { TimelineHF } from "pages/search/types/humanFootprint";
 import type { SEDetails } from "pages/search/types/ecosystems";
 import type { TextsObject } from "pages/search/types/texts";
-import Lines from "@composites/charts/Lines";
+import { Lines } from "@composites/charts/Lines";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { type CartesianMarkerProps } from "@nivo/core";
 import { TimelineFootprintController } from "pages/search/dashboard/landscape/humanFootprint/TimelineFootprintController";
@@ -105,10 +105,6 @@ type hfTimelineActions =
       ecosystem: SEDetailsExt | null;
     }
   | {
-      type: HFTimelineUpdated.TEXTS;
-      texts: TextsObject;
-    }
-  | {
       type: HFTimelineUpdated.LAYERS;
       layers: RasterLayer[];
     };
@@ -162,10 +158,6 @@ function reducer(
 
     case HFTimelineUpdated.ECOSYSTEM:
       return { ...state, selectedEcosystem: action.ecosystem };
-
-    // TODO: Ver si este case es necesario
-    case HFTimelineUpdated.TEXTS:
-      return { ...state, texts: { hfTimeline: action.texts } };
 
     case HFTimelineUpdated.LAYERS:
       return { ...state, layers: action.layers };
@@ -357,10 +349,12 @@ export function TimelineFootprint() {
     <div className="graphcontainer pt6">
       <h2>
         <IconTooltip title="Interpretación">
-          <InfoIcon
-            className={`graphinfo${showInfoGraph ? " activeBox" : ""}`}
-            onClick={toggleInfoGraph}
-          />
+          <span className="iconWrapper">
+            <InfoIcon
+              className={`metrics-info-icon${showInfoGraph ? " activeBox" : ""}`}
+              onClick={toggleInfoGraph}
+            />
+          </span>
         </IconTooltip>
       </h2>
 
@@ -378,13 +372,16 @@ export function TimelineFootprint() {
         <Lines
           key={timelineLinesKey}
           colors={hfTimelineColors}
-          data={timelineData}
+          seriesData={timelineData}
           loadStatus={message}
           markers={hfTimelineMarkers}
+          showLegend={false}
+          enablePoints={true}
           onClickGraphHandler={(selectedKey: string) => {
             void clickOnGraph(selectedKey);
           }}
         />
+
         {selectedEcosystem && (
           <div>
             <h6>
@@ -393,6 +390,7 @@ export function TimelineFootprint() {
             <h5>{`${formatNumber(selectedEcosystem.total_area, 2)} ha`}</h5>
           </div>
         )}
+
         <TextBoxes
           consText={texts.hfTimeline.cons}
           metoText={texts.hfTimeline.meto}
