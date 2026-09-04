@@ -145,7 +145,7 @@ class SearchAPI {
   }
 
   /**
-   * Guet the layer for a given value on the collection
+   * Get the layer for a given value on the collection
    *
    * @param collectionId Collection id
    * @param value selected value
