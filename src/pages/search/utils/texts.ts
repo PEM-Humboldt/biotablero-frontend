@@ -1,12 +1,12 @@
 import SearchAPI from "pages/search/api/searchAPI";
-import { textsObject } from "pages/search/types/texts";
+import { TextsObject } from "pages/search/types/texts";
 import { MetricInfoResponse } from "../types/metrics";
 import { MetricsTypes } from "../types/metrics";
 
 export const mapMetricInfoToTexts = (
   metricInfoList: Array<MetricInfoResponse> = [],
-): textsObject => {
-  const value: textsObject = {
+): TextsObject => {
+  const value: TextsObject = {
     info: "",
     cons: "",
     meto: "",
@@ -21,7 +21,7 @@ export const mapMetricInfoToTexts = (
   return value;
 };
 
-export const getMetricTexts = (metric: MetricsTypes): Promise<textsObject> =>
+export const getMetricTexts = (metric: MetricsTypes): Promise<TextsObject> =>
   SearchAPI.requestMetricsInfo(metric)
     .then(mapMetricInfoToTexts)
     .catch(() => {

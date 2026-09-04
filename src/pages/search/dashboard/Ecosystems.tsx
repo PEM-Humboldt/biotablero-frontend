@@ -15,7 +15,7 @@ import { ProtectedAreas } from "pages/search/dashboard/ecosystems/ProtectedAreas
 import { StrategicEcosystems } from "pages/search/dashboard/ecosystems/StrategicEcosystems";
 import { SmallStackedBarData } from "@composites/charts/SmallStackedBar";
 
-import { textsObject } from "pages/search/types/texts";
+import { TextsObject } from "pages/search/types/texts";
 import { getMetricTexts } from "pages/search/utils/texts";
 
 type EcosystemsState = {
@@ -42,9 +42,9 @@ type EcosystemsState = {
   };
 
   texts: {
-    coverage: textsObject;
-    protectedAreas: textsObject;
-    paramo: textsObject;
+    coverage: TextsObject;
+    protectedAreas: TextsObject;
+    paramo: TextsObject;
   };
 };
 
@@ -86,7 +86,7 @@ type EcosystemsAction =
   | { type: "PROTECTED_AREAS_VALUES_FAILED" }
   | {
       type: "SET_TEXTS";
-      payload: { section: keyof EcosystemsState["texts"]; value: textsObject };
+      payload: { section: keyof EcosystemsState["texts"]; value: TextsObject };
     };
 
 const isNoProtected = (value: string) =>

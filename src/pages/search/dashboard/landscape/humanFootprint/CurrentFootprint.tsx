@@ -20,7 +20,7 @@ import {
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CurrentFootprintController } from "pages/search/dashboard/landscape/humanFootprint/CurrentFootprintController";
 import { RasterLayer } from "pages/search/types/layers";
-import { textsObject } from "pages/search/types/texts";
+import { TextsObject } from "pages/search/types/texts";
 import { getMetricTexts } from "pages/search/utils/texts";
 import colorPalettes from "pages/search/utils/colorPalettes";
 import { formatNumber } from "@utils/format";
@@ -32,7 +32,7 @@ interface State {
   hfCurrentValue: number;
   hfCurrentCategory: string;
   message: MessageWrapperType;
-  texts: { hfCurrent: textsObject };
+  texts: { hfCurrent: TextsObject };
   layers: RasterLayer[];
 }
 
@@ -45,7 +45,7 @@ type Action =
   | { type: "CURRENTHF_LAYERS_SUCCEEDED"; payload: RasterLayer[] }
   | { type: "CURRENTHF_VALUES_SUCCEEDED"; payload: LargeStackedBarData[] }
   | { type: "CURRENTHF_VALUES_FAILED" }
-  | { type: "SET_TEXTS"; payload: textsObject };
+  | { type: "SET_TEXTS"; payload: TextsObject };
 
 const initialState: State = {
   showInfoGraph: true,

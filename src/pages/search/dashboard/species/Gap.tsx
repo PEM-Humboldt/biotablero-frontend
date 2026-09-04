@@ -19,7 +19,7 @@ import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import TextBoxes from "@ui/TextBoxes";
-import type { textsObject } from "pages/search/types/texts";
+import type { TextsObject } from "pages/search/types/texts";
 import InfoIcon from "@mui/icons-material/Info";
 import { IconTooltip } from "@ui/Tooltips";
 import { ShortInfo } from "@composites/ShortInfo";
@@ -51,7 +51,7 @@ export function Gap() {
     Record<string, number>
   >({});
 
-  const [texts, setTexts] = useState<{ recordsGap: textsObject }>({
+  const [texts, setTexts] = useState<{ recordsGap: TextsObject }>({
     recordsGap: { info: "", cons: "", meto: "", quote: "" },
   });
   const [groupSeries, setGroupSeries] = useState<

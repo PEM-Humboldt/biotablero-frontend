@@ -1,4 +1,4 @@
-export type textsObject = {
+export type TextsObject = {
   info: string;
   cons: string;
   meto: string;

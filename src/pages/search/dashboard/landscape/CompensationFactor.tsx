@@ -12,7 +12,7 @@ import {
   type LegacyContextValues,
 } from "pages/search/hooks/SearchContext";
 import { cfData } from "pages/search/types/compensationFactor";
-import { textsObject } from "pages/search/types/texts";
+import { TextsObject } from "pages/search/types/texts";
 import { LargeStackedBar } from "@composites/charts/LargeStackedBar";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CompensationFactorController } from "pages/search/dashboard/landscape/CompensationFactorController";
@@ -35,9 +35,9 @@ interface compensationFactorState {
     bioticUnits: MessageWrapperType;
   };
   texts: {
-    cf: textsObject;
-    biomes: textsObject;
-    bioticRegions: textsObject;
+    cf: TextsObject;
+    biomes: TextsObject;
+    bioticRegions: TextsObject;
   };
   layers: Array<ShapeLayer>;
 }

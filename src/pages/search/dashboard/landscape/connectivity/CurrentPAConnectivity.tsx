@@ -14,7 +14,7 @@ import { matchColor } from "pages/search/utils/matchColor";
 import TextBoxes from "@ui/TextBoxes";
 
 import { DPC } from "pages/search/types/connectivity";
-import { textsObject } from "pages/search/types/texts";
+import { TextsObject } from "pages/search/types/texts";
 import { getMetricTexts } from "pages/search/utils/texts";
 import {
   SmallBars,
@@ -52,7 +52,7 @@ interface CurrentPAConnState {
     tooltips: Array<SmallBarTooltip>;
   };
   texts: {
-    paConnDPC: textsObject;
+    paConnDPC: TextsObject;
   };
   layers: RasterLayer[];
 }
@@ -71,7 +71,7 @@ type Action =
   | { type: "SET_SHOW_LOWEST"; payload: boolean }
   | { type: "DPC_SUCCEEDED"; payload: DpcPayload }
   | { type: "DPC_FAILED" }
-  | { type: "SET_TEXTS"; payload: textsObject }
+  | { type: "SET_TEXTS"; payload: TextsObject }
   | { type: "PA_LAYERS_SUCCEEDED"; payload: RasterLayer[] };
 
 const initialState: CurrentPAConnState = {

@@ -19,7 +19,7 @@ import {
   type ObservedRichnessDataType,
 } from "pages/search/dashboard/species/ObservedRichnessController";
 import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
-import type { textsObject } from "pages/search/types/texts";
+import type { TextsObject } from "pages/search/types/texts";
 import { speciesGroupLabels } from "pages/search/dashboard/species/commonDictionaries";
 import { CircleAlert, LayersIcon, LeafIcon, MapPin } from "lucide-react";
 import { LOCALE } from "@config/monitoring";
@@ -47,7 +47,7 @@ export function ObservedRichness() {
     current: ObservedRichnessDataType | null;
     context: ObservedRichnessDataType | null;
   }>({ current: null, context: null });
-  const [texts, setTexts] = useState<{ observedRichness: textsObject }>({
+  const [texts, setTexts] = useState<{ observedRichness: TextsObject }>({
     observedRichness: { info: "", cons: "", meto: "", quote: "" },
   });
 
