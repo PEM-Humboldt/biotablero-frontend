@@ -136,11 +136,10 @@ class SearchAPI {
   }
 
   /**
-   * Get the list of metrics info for a given metric
+   * Gets metrics info.
    *
-   * @param metricId Metric identifier
-   *
-   * @return {Promise<Array<MetricInfoResponse>>} array of metrics info
+   * @param metricId - Metric identifier.
+   * @returns List of metric info.
    */
   static requestMetricsInfo(
     metricId: MetricsTypes,

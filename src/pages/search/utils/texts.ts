@@ -5,9 +5,9 @@ import { MetricsTypes } from "pages/search/types/metrics";
 /**
  * Gets the texts for a given metric.
  *
- * @param {MetricsTypes} metric Metric identifier
- * @returns {Promise<TextsObject>} Promise containing the metric texts
- * @throws {Error} If the metric information cannot be retrieved
+ * @param metric - The metric whose texts should be retrieved.
+ * @returns The texts associated with the metric.
+ * @throws If the metric information cannot be retrieved.
  */
 export const getMetricTexts = (metric: MetricsTypes): Promise<TextsObject> =>
   SearchAPI.requestMetricsInfo(metric)
