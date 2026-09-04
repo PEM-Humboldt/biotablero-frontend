@@ -32,7 +32,7 @@ export class CurrentPAConnectivityController {
    *
    * @param showLowest whether to sort ascending or descending
    *
-   * @returns {Promise<{ dpcData: Array<DPC>; graphData: DpcGraphData }>}
+   * @returns First 5 dpcData items sorted accordingly
    */
   loadSortedDpcData = async (
     showLowest: boolean,
@@ -59,7 +59,7 @@ export class CurrentPAConnectivityController {
   /**
    * Get the values for connectivity of the protected areas in a given area.
    *
-   * @returns {Promise<{ dpcData: Array<DPC> }>}
+   * @returns all the dpcData from the backend
    */
   queryDpcData = async (): Promise<Array<DPC>> => {
     const areaId = Number(this.areaId);
@@ -100,9 +100,9 @@ export class CurrentPAConnectivityController {
   /**
    * Transform data structure to be passed to component as a prop
    *
-   * @param {Array<DPC>} rawData raw data from RestAPI
+   * @param rawData raw data from RestAPI
    *
-   * @returns {Array<SmallBarsData>} transformed data ready to be used by graph component
+   * @returns transformed data ready to be used by graph component
    */
   getGraphData(rawData: Array<DPC>) {
     const tooltips: Array<SmallBarTooltip> = [];
@@ -137,7 +137,7 @@ export class CurrentPAConnectivityController {
   /**
    * Get the layers associated to the current area
    *
-   * @returns { Promise<Array<RasterLayer>> } layer data
+   * @returns layer data
    */
   getPALayers = async (): Promise<Array<RasterLayer>> => {
     const requests: Array<
