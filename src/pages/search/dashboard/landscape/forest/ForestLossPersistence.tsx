@@ -13,11 +13,12 @@ import TextBoxes from "@ui/TextBoxes";
 
 import { ForestLPExt } from "pages/search/types/forest";
 import { SmallBars } from "@composites/charts/SmallBars";
-import { textsObject } from "pages/search/types/texts";
+import type { TextsObject } from "pages/search/types/texts";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { ForestLossPersistenceController } from "pages/search/dashboard/landscape/forest/ForestLossPersistenceController";
 import { RasterLayer } from "pages/search/types/layers";
 import colorPalettes from "pages/search/utils/colorPalettes";
+import { getMetricTexts } from "pages/search/utils/texts";
 
 export default function () {
   const context = useContext(SearchLegacyCTX) as LegacyContextValues;
@@ -34,7 +35,7 @@ export default function () {
   const [forestLP, setForestLP] = useState<Array<ForestLPExt>>([]);
   const [message, setMessage] = useState<MessageWrapperType>("loading");
   const [currentPersistence, setCurrentPersistence] = useState(0);
-  const [texts, setTexts] = useState<{ forestLP: textsObject }>({
+  const [texts, setTexts] = useState<{ forestLP: TextsObject }>({
     forestLP: { info: "", cons: "", meto: "", quote: "" },
   });
   const [layers, setLayers] = useState<Array<RasterLayer>>([]);
@@ -107,8 +108,7 @@ export default function () {
         setLoadingLayer(false);
       });
 
-    controller
-      .getForestLPTexts("forestLP")
+    getMetricTexts("lossPersistence")
       .then((res) => {
         if (!isCurrent) return;
         setTexts({ forestLP: res });

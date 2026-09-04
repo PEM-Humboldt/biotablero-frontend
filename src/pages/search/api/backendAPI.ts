@@ -7,11 +7,6 @@ import {
   timelinePAConn,
 } from "pages/search/types/connectivity";
 import { hfPersistence } from "pages/search/types/humanFootprint";
-import {
-  helperText,
-  textResponse,
-  textsObject,
-} from "pages/search/types/texts";
 import { concentration, gaps } from "pages/search/types/richness";
 import {
   portfoliosByTarget,
@@ -404,31 +399,6 @@ class BackendAPI {
       ),
       source,
     };
-  }
-
-  /** ************ */
-  /** CROSS MODULE */
-  /** ************ */
-
-  /**
-   * Get texts associated to one section
-   *
-   * @param {String} key section key
-   *
-   * @return {Promise<Object>} Object with texts
-   */
-  static requestTexts(key: string): Promise<textResponse> {
-    return BackendAPI.makeGetRequest(`util/texts?key=${key}`);
-  }
-
-  /** Same as previous function, but specifically for section texts */
-  static requestSectionTexts(key: string): Promise<textsObject> {
-    return BackendAPI.requestTexts(key) as Promise<textsObject>;
-  }
-
-  /** Same as previous function, but specifically for helper texts */
-  static requestHelperTexts(key: string): Promise<helperText> {
-    return BackendAPI.requestTexts(key) as Promise<helperText>;
   }
 
   /** ************** */

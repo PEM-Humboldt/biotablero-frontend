@@ -14,7 +14,7 @@ import {
   timelinePAConn,
   timeLinePAConnValues,
 } from "pages/search/types/connectivity";
-import { textsObject } from "pages/search/types/texts";
+import type { TextsObject } from "pages/search/types/texts";
 import BackendAPI from "pages/search/api/backendAPI";
 import Lines from "@composites/charts/Lines";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
@@ -35,7 +35,7 @@ interface timelinePAConnState {
   timelinePAConnData: Array<timelinePAConnExt>;
   message: MessageWrapperType;
   texts: {
-    paConnTimeline: textsObject;
+    paConnTimeline: TextsObject;
   };
   layers: Array<ShapeLayer>;
 }
@@ -106,13 +106,14 @@ class TimelinePAConnectivity extends React.Component<
         this.setState({ message: "no-data" });
       });
 
-    BackendAPI.requestSectionTexts("paConnTimeline")
-      .then((res: textsObject) => {
-        if (this.mounted) {
-          this.setState({ texts: { paConnTimeline: res } });
-        }
-      })
-      .catch(() => {});
+    // TODO: Actualizar textos de acuerdo a nuevo endpoint en searchAPI
+    // BackendAPI.requestSectionTexts("paConnTimeline")
+    //   .then((res: TextsObject) => {
+    //     if (this.mounted) {
+    //       this.setState({ texts: { paConnTimeline: res } });
+    //     }
+    //   })
+    //   .catch(() => {});
 
     setLoadingLayer(true);
     setMapTitle({ name: "" });

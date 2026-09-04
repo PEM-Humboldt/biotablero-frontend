@@ -11,12 +11,12 @@ import {
 } from "pages/search/hooks/SearchContext";
 import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 
-import BackendAPI from "pages/search/api/backendAPI";
 import { matchColor } from "pages/search/utils/matchColor";
 import TextBoxes from "@ui/TextBoxes";
 
 import { DPC } from "pages/search/types/connectivity";
-import { textsObject } from "pages/search/types/texts";
+import type { TextsObject } from "pages/search/types/texts";
+import { getMetricTexts } from "pages/search/utils/texts";
 import {
   SmallBars,
   SmallBarsData,
@@ -51,7 +51,7 @@ interface CurrentPAConnState {
     tooltips: Array<SmallBarTooltip>;
   };
   texts: {
-    paConnDPC: textsObject;
+    paConnDPC: TextsObject;
   };
   layers: RasterLayer[];
 }
@@ -70,7 +70,7 @@ type Action =
   | { type: "TOGGLE_INFO"; payload: string }
   | { type: "DPC_SUCCEEDED"; payload: DpcPayload }
   | { type: "DPC_FAILED" }
-  | { type: "SET_TEXTS"; payload: textsObject }
+  | { type: "SET_TEXTS"; payload: TextsObject }
   | { type: "PA_LAYERS_SUCCEEDED"; payload: RasterLayer[] };
 
 const initialState: CurrentPAConnState = {
@@ -197,9 +197,12 @@ function CurrentPAConnectivity() {
         dispatch({ type: "DPC_FAILED" });
       });
 
-    BackendAPI.requestSectionTexts("paConnDPC")
+    getMetricTexts("dpc")
       .then((res) => {
-        dispatch({ type: "SET_TEXTS", payload: res });
+        dispatch({
+          type: "SET_TEXTS",
+          payload: res,
+        });
       })
       .catch(() => {
         dispatch({

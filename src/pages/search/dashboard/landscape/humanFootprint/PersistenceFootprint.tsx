@@ -12,7 +12,7 @@ import BackendAPI from "pages/search/api/backendAPI";
 import TextBoxes from "@ui/TextBoxes";
 
 import { hfPersistence } from "pages/search/types/humanFootprint";
-import { textsObject } from "pages/search/types/texts";
+import type { TextsObject } from "pages/search/types/texts";
 import { LargeStackedBar } from "@composites/charts/LargeStackedBar";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { ShapeLayer } from "pages/search/types/layers";
@@ -34,7 +34,7 @@ interface persistenceHFState {
   hfPersistence: Array<hfPersistenceExt>;
   message: MessageWrapperType;
   texts: {
-    hfPersistence: textsObject;
+    hfPersistence: TextsObject;
   };
   layers: Array<ShapeLayer>;
 }
@@ -91,17 +91,18 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
         this.setState({ message: "no-data" });
       });
 
-    BackendAPI.requestSectionTexts("hfPersistence")
-      .then((res) => {
-        if (this.mounted) {
-          this.setState({ texts: { hfPersistence: res } });
-        }
-      })
-      .catch(() => {
-        this.setState({
-          texts: { hfPersistence: { info: "", cons: "", meto: "", quote: "" } },
-        });
-      });
+    // TODO: Actualizar textos de acuerdo a nuevo endpoint en searchAPI
+    // BackendAPI.requestSectionTexts("hfPersistence")
+    //   .then((res) => {
+    //     if (this.mounted) {
+    //       this.setState({ texts: { hfPersistence: res } });
+    //     }
+    //   })
+    //   .catch(() => {
+    //     this.setState({
+    //       texts: { hfPersistence: { info: "", cons: "", meto: "", quote: "" } },
+    //     });
+    //   });
 
     setLoadingLayer(true);
 

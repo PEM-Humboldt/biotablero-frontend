@@ -19,11 +19,12 @@ import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import TextBoxes from "@ui/TextBoxes";
-import type { textsObject } from "pages/search/types/texts";
+import type { TextsObject } from "pages/search/types/texts";
 import InfoIcon from "@mui/icons-material/Info";
 import { IconTooltip } from "@ui/Tooltips";
 import { ShortInfo } from "@composites/ShortInfo";
 import { speciesGroupLabels } from "pages/search/dashboard/species/commonDictionaries";
+import { getMetricTexts } from "pages/search/utils/texts";
 
 const GAP_GRAPH_MAX_YEARS_VISUALIZATION_AMOUTN = 5;
 const GAP_GRAPH_START_YEARS_VISUALIZATION_AMOUTN = 3;
@@ -50,7 +51,7 @@ export function Gap() {
     Record<string, number>
   >({});
 
-  const [texts, setTexts] = useState<{ recordsGap: textsObject }>({
+  const [texts, setTexts] = useState<{ recordsGap: TextsObject }>({
     recordsGap: { info: "", cons: "", meto: "", quote: "" },
   });
   const [groupSeries, setGroupSeries] = useState<
@@ -70,11 +71,11 @@ export function Gap() {
     setIsLoading((old) => old + 1);
     Promise.all([
       controller.current.getGapTaxonomicGroups(),
-      controller.current.getGapTexts("recordsGap"),
+      getMetricTexts("recordGaps"),
     ])
-      .then(([groups, textsBack]) => {
+      .then(([groups, texts]) => {
         setGroupsAvailable(groups);
-        setTexts({ recordsGap: textsBack });
+        setTexts({ recordsGap: texts });
       })
       .catch((err) => {
         console.error(err);

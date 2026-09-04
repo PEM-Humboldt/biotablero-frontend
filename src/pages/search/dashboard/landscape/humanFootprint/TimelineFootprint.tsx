@@ -15,7 +15,7 @@ import TextBoxes from "@ui/TextBoxes";
 
 import { hfTimeline } from "pages/search/types/humanFootprint";
 import { seDetails } from "pages/search/types/ecosystems";
-import { textsObject } from "pages/search/types/texts";
+import type { TextsObject } from "pages/search/types/texts";
 import Lines from "@composites/charts/Lines";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CartesianMarkerProps } from "@nivo/core";
@@ -79,7 +79,7 @@ interface State {
   message: MessageWrapperType;
   selectedEcosystem: seDetailsExt | null;
   texts: {
-    hfTimeline: textsObject;
+    hfTimeline: TextsObject;
   };
   layers: Array<ShapeLayer>;
 }
@@ -151,17 +151,18 @@ class TimelineFootprint extends React.Component<Props, State> {
         this.setState({ message: "no-data" });
       });
 
-    BackendAPI.requestSectionTexts("hfTimeline")
-      .then((res) => {
-        if (this.mounted) {
-          this.setState({ texts: { hfTimeline: res } });
-        }
-      })
-      .catch(() => {
-        this.setState({
-          texts: { hfTimeline: { info: "", cons: "", meto: "", quote: "" } },
-        });
-      });
+    // TODO: Actualizar textos de acuerdo a nuevo endpoint en searchAPI
+    // BackendAPI.requestSectionTexts("hfTimeline")
+    //   .then((res) => {
+    //     if (this.mounted) {
+    //       this.setState({ texts: { hfTimeline: res } });
+    //     }
+    //   })
+    //   .catch(() => {
+    //     this.setState({
+    //       texts: { hfTimeline: { info: "", cons: "", meto: "", quote: "" } },
+    //     });
+    //   });
 
     setLoadingLayer(true);
 
