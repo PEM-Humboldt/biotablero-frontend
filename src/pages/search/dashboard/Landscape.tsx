@@ -3,15 +3,15 @@ import React from "react";
 import Accordion from "pages/search/Accordion";
 import CompensationFactor from "pages/search/dashboard/landscape/CompensationFactor";
 import Forest from "pages/search/dashboard/landscape/Forest";
-import HumanFootprint from "pages/search/dashboard/landscape/HumanFootprint";
+import { HumanFootprint } from "pages/search/dashboard/landscape/HumanFootprint";
 import PAConnectivity from "pages/search/dashboard/landscape/PAConnectivity";
 import {
   SearchLegacyCTX,
   type LegacyContextValues,
 } from "pages/search/hooks/SearchContext";
-import { accordionComponent } from "pages/search/types/ui";
+import type { AccordionComponent } from "pages/search/types/ui";
 
-interface Props {}
+type Props = Record<string, never>;
 
 interface State {
   visible: string;
@@ -78,7 +78,7 @@ class Landscape extends React.Component<Props, State> {
   render() {
     const { areaType } = this.context as LegacyContextValues;
     const { childMap, visible } = this.state;
-    const initialArray: Array<accordionComponent> = [
+    const initialArray: Array<AccordionComponent> = [
       /*{
         label: {
           id: "fc",

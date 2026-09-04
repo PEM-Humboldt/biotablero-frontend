@@ -47,13 +47,13 @@ const getLabel = (type: string): string => {
 type TimelineSeriesKey = "aTotal" | "paramo" | "dryForest" | "wetland";
 type TimelineField = "poligono" | "paramo" | "bosqueSeco" | "humedal";
 
-interface TimelineSeries {
+interface hfTimelineSeries {
   key: TimelineSeriesKey;
   label: string;
   data: { x: string; y: number }[];
 }
 
-const timelineSeriesConfig: {
+const hfTimelineSeriesConfig: {
   key: TimelineSeriesKey;
   label: string;
   source: TimelineField;
@@ -64,7 +64,7 @@ const timelineSeriesConfig: {
   { key: "wetland", label: "Humedal", source: "humedal" },
 ];
 
-const hfTImelineMarkers: CartesianMarkerProps[] = [
+const hfTimelineMarkers: CartesianMarkerProps[] = [
   {
     axis: "y",
     value: 15,
@@ -105,7 +105,7 @@ interface seDetailsExt extends SEDetails {
 
 interface hfTimelineState {
   showInfoGraph: boolean;
-  hfTimelineGraphData: TimelineSeries[];
+  hfTimelineGraphData: hfTimelineSeries[];
   message: MessageWrapperType;
   selectedEcosystem: seDetailsExt | null;
   texts: { hfTimeline: TextsObject };
@@ -120,7 +120,7 @@ type hfTimelineAction =
   | { type: "SET_TEXTS"; payload: TextsObject }
   | { type: "SET_LAYERS"; payload: RasterLayer[] };
 
-function transformTimelineData(data: TimelineHF[]): TimelineSeries[] {
+function transformTimelineData(data: TimelineHF[]): hfTimelineSeries[] {
   if (!Array.isArray(data) || data.length === 0) {
     return [];
   }
@@ -129,7 +129,7 @@ function transformTimelineData(data: TimelineHF[]): TimelineSeries[] {
     (left, right) => Number(left.id) - Number(right.id),
   );
 
-  return timelineSeriesConfig.map(({ key, label, source }) => ({
+  return hfTimelineSeriesConfig.map(({ key, label, source }) => ({
     key,
     label,
     data: orderedData.map((row) => ({ x: row.id, y: row[source] })),
@@ -360,7 +360,7 @@ export function TimelineFootprint() {
           colors={hfTimelineColors}
           data={hfTimeline}
           loadStatus={message}
-          markers={hfTImelineMarkers}
+          markers={hfTimelineMarkers}
           onClickGraphHandler={(selectedKey: string) => {
             void clickOnGraph(selectedKey);
           }}

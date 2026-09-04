@@ -3,15 +3,15 @@ import Accordion from "pages/search/Accordion";
 import ForestIntegrity from "pages/search/dashboard/landscape/forest/ForestIntegrity";
 import ForestLossPersistence from "pages/search/dashboard/landscape/forest/ForestLossPersistence";
 import { useSearchLegacyCTX } from "pages/search/hooks/SearchContext";
-import { accordionComponent, componentProps } from "pages/search/types/ui";
+import { AccordionComponent, ComponentProps } from "pages/search/types/ui";
 
-const Forest: React.FC<componentProps> = (props) => {
+const Forest: React.FC<ComponentProps> = (props) => {
   const { handleAccordionChange, openTab } = props;
 
   const { searchType } = useSearchLegacyCTX();
 
   //TODO: Habilitar seccion de integridad de bosques cuando se conecte el nuevo backend de consultas
-  const initialArray: Array<accordionComponent> = [
+  const initialArray: Array<AccordionComponent> = [
     {
       label: {
         id: "forestLP-2016-2021",

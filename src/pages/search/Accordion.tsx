@@ -3,10 +3,10 @@ import AccordionUI from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import type { accordionComponent } from "pages/search/types/ui";
+import type { AccordionComponent } from "pages/search/types/ui";
 
 interface Props {
-  componentsArray: Array<accordionComponent>;
+  componentsArray: Array<AccordionComponent>;
   classNameSelected: string;
   classNameDefault: string;
   handleChange: (

@@ -1,15 +1,16 @@
 import AddIcon from "@mui/icons-material/Add";
 
 import Accordion from "pages/search/Accordion";
+import type { AccordionComponent, ComponentProps } from "pages/search/types/ui";
 import { CurrentFootprint } from "pages/search/dashboard/landscape/humanFootprint/CurrentFootprint";
-import PersistenceFooprint from "pages/search/dashboard/landscape/humanFootprint/PersistenceFootprint";
-import TimelineFootprint from "pages/search/dashboard/landscape/humanFootprint/TimelineFootprint";
-import { accordionComponent, componentProps } from "pages/search/types/ui";
+import { TimelineFootprint } from "pages/search/dashboard/landscape/humanFootprint/TimelineFootprint";
+// import PersistenceFooprint from "pages/search/dashboard/landscape/humanFootprint/PersistenceFootprint";
 
-const HumanFootprint: React.FC<componentProps> = (props) => {
-  const { handleAccordionChange, openTab } = props;
-
-  const componentsArray: Array<accordionComponent> = [
+export function HumanFootprint({
+  handleAccordionChange,
+  openTab,
+}: ComponentProps) {
+  const componentsArray: Array<AccordionComponent> = [
     {
       label: {
         id: "hfCurrent",
@@ -58,6 +59,4 @@ const HumanFootprint: React.FC<componentProps> = (props) => {
       />
     </div>
   );
-};
-
-export default HumanFootprint;
+}
