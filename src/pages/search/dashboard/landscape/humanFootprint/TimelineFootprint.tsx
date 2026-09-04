@@ -21,6 +21,7 @@ import { TimelineFootprintController } from "pages/search/dashboard/landscape/hu
 import type { RasterLayer } from "pages/search/types/layers";
 import { matchColor } from "pages/search/utils/matchColor";
 import { SearchUpdated } from "pages/search/hooks/SearchReducer";
+import { getMetricTexts } from "pages/search/utils/texts";
 
 type SEKeys = Record<"paramo" | "dryForest" | "wetland" | "aTotal", string>;
 
@@ -64,61 +65,53 @@ const hfTimelineSeriesConfig: {
   { key: "wetland", label: "Humedal", source: "humedal" },
 ];
 
-const hfTimelineMarkers: CartesianMarkerProps[] = [
-  {
-    axis: "y",
-    value: 15,
-    legend: "Natural",
-    lineStyle: { stroke: "#909090", strokeWidth: 1 },
-    textStyle: { fill: "#3fbf9f", fontSize: 9 },
-    legendPosition: "bottom-right",
-  },
-  {
-    axis: "y",
-    value: 40,
-    legend: "Baja",
-    lineStyle: { stroke: "#909090", strokeWidth: 1 },
-    textStyle: { fill: "#d5a529", fontSize: 9 },
-    legendPosition: "bottom-right",
-  },
-  {
-    axis: "y",
-    value: 60,
-    legend: "Media",
-    lineStyle: { stroke: "#909090", strokeWidth: 1 },
-    textStyle: { fill: "#e66c29", fontSize: 9 },
-    legendPosition: "bottom-right",
-  },
-  {
-    axis: "y",
-    value: 100,
-    legend: "Alta",
-    lineStyle: { stroke: "#909090", strokeWidth: 1 },
-    textStyle: { fill: "#cf324e", fontSize: 9 },
-    legendPosition: "bottom-right",
-  },
-];
-
-interface seDetailsExt extends SEDetails {
+interface SEDetailsExt extends SEDetails {
   type: string;
 }
 
 interface hfTimelineState {
   showInfoGraph: boolean;
-  hfTimelineGraphData: hfTimelineSeries[];
+  timelineData: hfTimelineSeries[];
   message: MessageWrapperType;
-  selectedEcosystem: seDetailsExt | null;
+  selectedEcosystem: SEDetailsExt | null;
   texts: { hfTimeline: TextsObject };
   layers: RasterLayer[];
 }
 
-type hfTimelineAction =
-  | { type: "TOGGLE_INFO_GRAPH" }
-  | { type: "TIMELINE_VALUES_SUCCEEDED"; payload: TimelineHF[] }
-  | { type: "TIMELINE_VALUES_FAILED" }
-  | { type: "SET_SELECTED_ECOSYSTEM"; payload: seDetailsExt | null }
-  | { type: "SET_TEXTS"; payload: TextsObject }
-  | { type: "SET_LAYERS"; payload: RasterLayer[] };
+enum HFTimelineUpdated {
+  TOGGLE_TEXTS = "toggleInfoGraph",
+  TIMELINE_VALUES = "timelineValuesSucceeded",
+  TIMELINE_ERROR = "timelineValuesFailed",
+  ECOSYSTEM = "setSelectedEcosystem",
+  TEXTS = "setTexts",
+  LAYERS = "setLayers",
+}
+
+type hfTimelineActions =
+  | {
+      type: HFTimelineUpdated.TOGGLE_TEXTS;
+      forceState?: boolean;
+    }
+  | {
+      type: HFTimelineUpdated.TIMELINE_VALUES;
+      payload: { timelineData: TimelineHF[]; texts?: TextsObject };
+    }
+  | {
+      type: HFTimelineUpdated.TIMELINE_ERROR;
+      error?: string;
+    }
+  | {
+      type: HFTimelineUpdated.ECOSYSTEM;
+      ecosystem: SEDetailsExt | null;
+    }
+  | {
+      type: HFTimelineUpdated.TEXTS;
+      texts: TextsObject;
+    }
+  | {
+      type: HFTimelineUpdated.LAYERS;
+      layers: RasterLayer[];
+    };
 
 function transformTimelineData(data: TimelineHF[]): hfTimelineSeries[] {
   if (!Array.isArray(data) || data.length === 0) {
@@ -138,37 +131,54 @@ function transformTimelineData(data: TimelineHF[]): hfTimelineSeries[] {
 
 function reducer(
   state: hfTimelineState,
-  action: hfTimelineAction,
+  action: hfTimelineActions,
 ): hfTimelineState {
   switch (action.type) {
-    case "TOGGLE_INFO_GRAPH":
-      return { ...state, showInfoGraph: !state.showInfoGraph };
-    case "TIMELINE_VALUES_SUCCEEDED":
+    case HFTimelineUpdated.TOGGLE_TEXTS:
       return {
         ...state,
-        hfTimelineGraphData: transformTimelineData(action.payload),
+        showInfoGraph:
+          action.forceState !== undefined
+            ? action.forceState
+            : !state.showInfoGraph,
+      };
+
+    case HFTimelineUpdated.TIMELINE_VALUES:
+      return {
+        ...state,
+        ...(action.payload.texts !== undefined
+          ? { texts: { hfTimeline: action.payload.texts } }
+          : {}),
+        timelineData: transformTimelineData(action.payload.timelineData),
         message: null,
       };
-    case "TIMELINE_VALUES_FAILED":
+
+    case HFTimelineUpdated.TIMELINE_ERROR:
       return {
         ...state,
-        hfTimelineGraphData: [],
+        timelineData: [],
         message: "no-data",
       };
-    case "SET_SELECTED_ECOSYSTEM":
-      return { ...state, selectedEcosystem: action.payload };
-    case "SET_TEXTS":
-      return { ...state, texts: { hfTimeline: action.payload } };
-    case "SET_LAYERS":
-      return { ...state, layers: action.payload };
+
+    case HFTimelineUpdated.ECOSYSTEM:
+      return { ...state, selectedEcosystem: action.ecosystem };
+
+    // TODO: Ver si este case es necesario
+    case HFTimelineUpdated.TEXTS:
+      return { ...state, texts: { hfTimeline: action.texts } };
+
+    case HFTimelineUpdated.LAYERS:
+      return { ...state, layers: action.layers };
+
     default:
+      console.warn("Unknown requested searchReducer action");
       return state;
   }
 }
 
 const initialState: hfTimelineState = {
   showInfoGraph: true,
-  hfTimelineGraphData: [],
+  timelineData: [],
   message: "loading",
   selectedEcosystem: null,
   texts: {
@@ -177,25 +187,29 @@ const initialState: hfTimelineState = {
   layers: [],
 };
 
+const hfTimelineColors = (key: string | number) =>
+  matchColor("hfTimeline")(key) ?? "#3d3c48";
+
 export function TimelineFootprint() {
   const { areaType, areaId } = useSearchStateCTX();
   const searchMapDispatch = useSearchDispatchCTX();
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [hfTimelineState, hfTimelineDispatch] = useReducer(
+    reducer,
+    initialState,
+  );
 
   const {
     showInfoGraph,
-    hfTimelineGraphData: hfTimeline,
+    timelineData,
     selectedEcosystem,
     message,
     texts,
     layers,
-  } = state;
+  } = hfTimelineState;
 
   const controllerRef = useRef(new TimelineFootprintController());
 
-  const hfTimelineColors = (key: string | number) =>
-    matchColor("hfTimeline")(key) ?? "#3d3c48";
-  const timelineLinesKey = hfTimeline
+  const timelineLinesKey = timelineData
     .map(
       ({ key, data }) =>
         `${key}:${data.map(({ x, y }) => `${x}-${y}`).join(",")}`,
@@ -212,52 +226,52 @@ export function TimelineFootprint() {
       };
     }
 
-    const controller = controllerRef.current;
-    controller.setArea(areaType.id, areaId.id.toString());
-
-    controller
-      .getTimelineData()
-      .then((timelineData) => {
-        if (!isCurrent) {
-          return;
-        }
-        dispatch({
-          type: "TIMELINE_VALUES_SUCCEEDED",
-          payload: timelineData,
-        });
-      })
-      .catch(() => {
-        if (!isCurrent) {
-          return;
-        }
-        dispatch({ type: "TIMELINE_VALUES_FAILED" });
-      });
-
     searchMapDispatch({
       type: SearchUpdated.LOADING_LAYER,
       loadingLayer: true,
     });
 
-    controller
-      .getLayer()
-      .then((timelineHF) => {
-        if (!isCurrent) {
-          return;
-        }
-        searchMapDispatch({
-          type: SearchUpdated.RASTER_LAYERS,
+    const controller = controllerRef.current;
+    controller.setArea(areaType.id, areaId.id.toString());
+
+    Promise.all([
+      controller.getTimelineData(),
+      getMetricTexts("timelineHF"),
+      // controller.getLayer(),
+    ])
+      .then(([timelineRawData, timelineTexts]) => {
+        hfTimelineDispatch({
+          type: HFTimelineUpdated.TIMELINE_VALUES,
           payload: {
-            rasterLayers: timelineHF,
-            mapTitle: {
-              name: "HH - Huella humana en el tiempo y ecosistemas estratégicos (EE)",
-            },
+            timelineData: timelineRawData,
+            texts: timelineTexts,
           },
         });
+
+        searchMapDispatch({
+          type: SearchUpdated.SHOW_AREA_LAYER,
+          showAreaLayer: true,
+        });
+        searchMapDispatch({
+          type: SearchUpdated.LOADING_LAYER,
+          loadingLayer: false,
+        });
+
+        // searchMapDispatch({
+        //   type: SearchUpdated.RASTER_LAYERS,
+        //   payload: {
+        //     rasterLayers: baseLayer,
+        //     mapTitle: {
+        //       name: "HH - Huella humana en el tiempo y ecosistemas estratégicos (EE)",
+        //     },
+        //   },
+        // });
       })
       .catch((error) => {
         if (!isCurrent) {
           return;
         }
+        hfTimelineDispatch({ type: HFTimelineUpdated.TIMELINE_ERROR });
         searchMapDispatch({
           type: SearchUpdated.LAYER_ERROR,
           layerError: error instanceof Error ? error.message : String(error),
@@ -271,7 +285,7 @@ export function TimelineFootprint() {
   }, [areaType, areaId, searchMapDispatch]);
 
   const toggleInfoGraph = () => {
-    dispatch({ type: "TOGGLE_INFO_GRAPH" });
+    hfTimelineDispatch({ type: HFTimelineUpdated.TOGGLE_TEXTS });
   };
 
   const clickOnGraph = async (selectedKey: string) => {
@@ -281,7 +295,10 @@ export function TimelineFootprint() {
         : `HH - Huella humana en el tiempo - ${seTitle[selectedKey as keyof SEKeys]}`;
 
     if (selectedKey === "aTotal") {
-      dispatch({ type: "SET_SELECTED_ECOSYSTEM", payload: null });
+      hfTimelineDispatch({
+        type: HFTimelineUpdated.ECOSYSTEM,
+        ecosystem: null,
+      });
 
       searchMapDispatch({
         type: SearchUpdated.RASTER_LAYERS,
@@ -309,7 +326,10 @@ export function TimelineFootprint() {
           selectedKey as keyof Omit<SEKeys, "aTotal">,
         );
         updatedLayers = [...layers, ...seLayer];
-        dispatch({ type: "SET_LAYERS", payload: updatedLayers });
+        hfTimelineDispatch({
+          type: HFTimelineUpdated.LAYERS,
+          layers: updatedLayers,
+        });
       }
 
       searchMapDispatch({
@@ -358,7 +378,7 @@ export function TimelineFootprint() {
         <Lines
           key={timelineLinesKey}
           colors={hfTimelineColors}
-          data={hfTimeline}
+          data={timelineData}
           loadStatus={message}
           markers={hfTimelineMarkers}
           onClickGraphHandler={(selectedKey: string) => {
@@ -377,7 +397,7 @@ export function TimelineFootprint() {
           consText={texts.hfTimeline.cons}
           metoText={texts.hfTimeline.meto}
           quoteText={texts.hfTimeline.quote}
-          downloadData={processDataCsv(hfTimeline)}
+          downloadData={processDataCsv(timelineData)}
           downloadName={`timeline_hf_${areaType.id}_${areaId.id}.csv`}
           isInfoOpen={showInfoGraph}
           toggleInfo={toggleInfoGraph}
@@ -387,4 +407,37 @@ export function TimelineFootprint() {
   );
 }
 
-export default TimelineFootprint;
+const hfTimelineMarkers: CartesianMarkerProps[] = [
+  {
+    axis: "y",
+    value: 15,
+    legend: "Natural",
+    lineStyle: { stroke: "#909090", strokeWidth: 1 },
+    textStyle: { fill: "#3fbf9f", fontSize: 9 },
+    legendPosition: "bottom-right",
+  },
+  {
+    axis: "y",
+    value: 40,
+    legend: "Baja",
+    lineStyle: { stroke: "#909090", strokeWidth: 1 },
+    textStyle: { fill: "#d5a529", fontSize: 9 },
+    legendPosition: "bottom-right",
+  },
+  {
+    axis: "y",
+    value: 60,
+    legend: "Media",
+    lineStyle: { stroke: "#909090", strokeWidth: 1 },
+    textStyle: { fill: "#e66c29", fontSize: 9 },
+    legendPosition: "bottom-right",
+  },
+  {
+    axis: "y",
+    value: 100,
+    legend: "Alta",
+    lineStyle: { stroke: "#909090", strokeWidth: 1 },
+    textStyle: { fill: "#cf324e", fontSize: 9 },
+    legendPosition: "bottom-right",
+  },
+];

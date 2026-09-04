@@ -67,7 +67,11 @@ export type SearchActions =
   | { type: SearchUpdated.RASTER_LAYERS_PARTIAL; rasterLayers: RasterLayer[] } // LEGACY
   | {
       type: SearchUpdated.RASTER_LAYERS;
-      payload: { rasterLayers: RasterLayer[]; mapTitle?: MapTitle };
+      payload: {
+        rasterLayers: RasterLayer[];
+        mapTitle?: MapTitle;
+        showBackgroundLayer?: boolean;
+      };
     } // handleShapeLayersUpdate
   | { type: SearchUpdated.MAP_TITLE; mapTitle: MapTitle }
   | { type: SearchUpdated.LOADING_LAYER; loadingLayer: boolean }
@@ -183,10 +187,11 @@ export function searchReducer(
     case SearchUpdated.RASTER_LAYERS:
       return {
         ...state,
-        rasterLayers: action.payload.rasterLayers,
+        ...(action.payload.showBackgroundLayer ? { showAreaLayer: true } : {}),
         ...(action.payload.mapTitle
           ? { mapTitle: action.payload.mapTitle }
           : {}),
+        rasterLayers: action.payload.rasterLayers,
         loadingLayer: false,
         layerError: false,
       };
