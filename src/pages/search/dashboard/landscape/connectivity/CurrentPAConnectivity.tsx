@@ -1,4 +1,4 @@
-import { useContext, useEffect, useReducer, useRef } from "react";
+import { useEffect, useReducer, useRef } from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
 import { PointFilledLegend } from "@ui/CssLegends";
@@ -63,11 +63,12 @@ type DpcPayload = {
     keys: Array<string>;
     tooltips: Array<SmallBarTooltip>;
   };
+  showLowestDpc: boolean;
 };
 
 type Action =
   | { type: "TOGGLE_INFO"; payload: string }
-  | { type: "DPC_SUCCEEDED"; payload: DpcPayload & { showLowestDpc?: boolean } }
+  | { type: "DPC_SUCCEEDED"; payload: DpcPayload }
   | { type: "DPC_FAILED" }
   | { type: "SET_TEXTS"; payload: textsObject }
   | { type: "PA_LAYERS_SUCCEEDED"; payload: RasterLayer[] };
@@ -107,7 +108,7 @@ function reducer(
         dpcData: action.payload.dpcData,
         graphData: action.payload.graphData,
         messages: { ...state.messages, dpc: null },
-        showLowestDpc: action.payload.showLowestDpc || state.showLowestDpc,
+        showLowestDpc: action.payload.showLowestDpc,
       };
     case "DPC_FAILED":
       return {
@@ -186,7 +187,10 @@ function CurrentPAConnectivity() {
               loadingLayer: false,
             });
           });
-        dispatch({ type: "DPC_SUCCEEDED", payload: result });
+        dispatch({
+          type: "DPC_SUCCEEDED",
+          payload: { ...result, showLowestDpc: false },
+        });
       })
       .catch((error) => {
         if (error?.message === "request canceled") return;
@@ -219,7 +223,7 @@ function CurrentPAConnectivity() {
       .then((result) => {
         dispatch({
           type: "DPC_SUCCEEDED",
-          payload: { ...result, showLowestDpc },
+          payload: { ...result, showLowestDpc: !state.showLowestDpc },
         });
       })
       .catch((error) => {
