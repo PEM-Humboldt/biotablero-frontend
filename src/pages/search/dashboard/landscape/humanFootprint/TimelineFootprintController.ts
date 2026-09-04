@@ -1,7 +1,7 @@
 import SearchAPI from "pages/search/api/searchAPI";
 import { RasterLayer } from "pages/search/types/layers";
 import { CancelTokenSource } from "axios";
-import { timelineHF } from "pages/search/types/humanFootprint";
+import { TimelineHF } from "pages/search/types/humanFootprint";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import LayerAPI from "pages/search/api/layerAPI";
 
@@ -20,7 +20,7 @@ export class TimelineFootprintController {
     this.areaId = areaId;
   }
 
-  getTimelineData = async (): Promise<Array<timelineHF>> => {
+  getTimelineData = async (): Promise<Array<TimelineHF>> => {
     const { request } = SearchAPI.requestMetricsValues<"timelineHF">(
       "timelineHF",
       Number(this.areaId),

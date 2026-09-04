@@ -156,7 +156,10 @@ export function LegacyCTX({ children }: { children: ReactNode }) {
         searchDispatch({ type: SearchUpdated.AREA_HA, areaHa: areaHa }),
 
       setRasterLayers: (rasterLayers: RasterLayer[]) =>
-        searchDispatch({ type: SearchUpdated.RASTER_LAYERS, rasterLayers }),
+        searchDispatch({
+          type: SearchUpdated.RASTER_LAYERS_PARTIAL,
+          rasterLayers,
+        }),
 
       setShowAreaLayer: (showAreaLayer: boolean) =>
         searchDispatch({ type: SearchUpdated.SHOW_AREA_LAYER, showAreaLayer }),

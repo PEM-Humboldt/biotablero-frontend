@@ -21,6 +21,7 @@ export enum SearchUpdated {
   AREA_HA = "areaHa",
   AREA_LAYER = "areaLayer",
   SHAPE_LAYERS = "shapeLayers",
+  RASTER_LAYERS_PARTIAL = "rasterLayersPartial",
   RASTER_LAYERS = "rasterLayers",
   MAP_TITLE = "mapTitle",
   LOADING_LAYER = "loadingLayer",
@@ -63,7 +64,11 @@ export type SearchActions =
       areaLayerJSON: geojson.GeoJsonObject | undefined;
     } // handleAreaLayerUpdate
   | { type: SearchUpdated.SHAPE_LAYERS; shapeLayers: ShapeLayer[] }
-  | { type: SearchUpdated.RASTER_LAYERS; rasterLayers: RasterLayer[] } // handleShapeLayersUpdate
+  | { type: SearchUpdated.RASTER_LAYERS_PARTIAL; rasterLayers: RasterLayer[] } // LEGACY
+  | {
+      type: SearchUpdated.RASTER_LAYERS;
+      payload: { rasterLayers: RasterLayer[]; mapTitle?: MapTitle };
+    } // handleShapeLayersUpdate
   | { type: SearchUpdated.MAP_TITLE; mapTitle: MapTitle }
   | { type: SearchUpdated.LOADING_LAYER; loadingLayer: boolean }
   | { type: SearchUpdated.LAYER_ERROR; layerError: string | undefined } // handleSetLayerError
@@ -178,6 +183,16 @@ export function searchReducer(
     case SearchUpdated.RASTER_LAYERS:
       return {
         ...state,
+        rasterLayers: action.payload.rasterLayers,
+        ...(action.payload.mapTitle
+          ? { mapTitle: action.payload.mapTitle }
+          : {}),
+        loadingLayer: false,
+        layerError: false,
+      };
+    case SearchUpdated.RASTER_LAYERS_PARTIAL:
+      return {
+        ...state,
         rasterLayers: action.rasterLayers,
         loadingLayer: false,
         layerError: false,
@@ -188,7 +203,7 @@ export function searchReducer(
       return { ...state, loadingLayer: action.loadingLayer };
     case SearchUpdated.LAYER_ERROR:
       // TODO: Revisar por una implementación más robusta de manejo de errores
-      return { ...state, layerError: !!action.layerError };
+      return { ...state, loadingLayer: false, layerError: !!action.layerError };
     case SearchUpdated.SHOW_DRAW_CONTROL:
       return { ...state, showDrawControl: action.showDrawControl };
     case SearchUpdated.SHOW_AREA_LAYER:

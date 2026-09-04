@@ -6,7 +6,7 @@ import {
   currentSEPAConn,
   timelinePAConn,
 } from "pages/search/types/connectivity";
-import { hfPersistence } from "pages/search/types/humanFootprint";
+import { HFPersistence } from "pages/search/types/humanFootprint";
 import { concentration, gaps } from "pages/search/types/richness";
 import {
   portfoliosByTarget,
@@ -168,7 +168,7 @@ class BackendAPI {
   static requestHFPersistence(
     areaType: string,
     areaId: string | number,
-  ): Promise<Array<hfPersistence>> {
+  ): Promise<Array<HFPersistence>> {
     return BackendAPI.makeGetRequest(`${areaType}/${areaId}/hf/persistence`);
   }
 
