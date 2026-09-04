@@ -15,7 +15,7 @@ import TextBoxes from "@ui/TextBoxes";
 
 import { hfTimeline } from "pages/search/types/humanFootprint";
 import { seDetails } from "pages/search/types/ecosystems";
-import { TextsObject } from "pages/search/types/texts";
+import type { TextsObject } from "pages/search/types/texts";
 import Lines from "@composites/charts/Lines";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CartesianMarkerProps } from "@nivo/core";

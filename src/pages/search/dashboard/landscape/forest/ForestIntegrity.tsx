@@ -15,7 +15,7 @@ import {
   type LegacyContextValues,
 } from "pages/search/hooks/SearchContext";
 import { SCICats, HFCats, SCIHF } from "pages/search/types/forest";
-import { TextsObject } from "pages/search/types/texts";
+import type { TextsObject } from "pages/search/types/texts";
 import Pie from "@composites/charts/Pie";
 import SmallStackedBar from "@composites/charts/SmallStackedBar";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";

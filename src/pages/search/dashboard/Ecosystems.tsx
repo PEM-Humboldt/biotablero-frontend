@@ -15,7 +15,7 @@ import { ProtectedAreas } from "pages/search/dashboard/ecosystems/ProtectedAreas
 import { StrategicEcosystems } from "pages/search/dashboard/ecosystems/StrategicEcosystems";
 import { SmallStackedBarData } from "@composites/charts/SmallStackedBar";
 
-import { TextsObject } from "pages/search/types/texts";
+import type { TextsObject } from "pages/search/types/texts";
 import { getMetricTexts } from "pages/search/utils/texts";
 
 type EcosystemsState = {

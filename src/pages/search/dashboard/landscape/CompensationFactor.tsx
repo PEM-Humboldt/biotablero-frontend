@@ -12,7 +12,7 @@ import {
   type LegacyContextValues,
 } from "pages/search/hooks/SearchContext";
 import { cfData } from "pages/search/types/compensationFactor";
-import { TextsObject } from "pages/search/types/texts";
+import type { TextsObject } from "pages/search/types/texts";
 import { LargeStackedBar } from "@composites/charts/LargeStackedBar";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CompensationFactorController } from "pages/search/dashboard/landscape/CompensationFactorController";

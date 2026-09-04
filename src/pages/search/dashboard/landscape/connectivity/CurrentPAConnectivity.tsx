@@ -14,7 +14,7 @@ import { matchColor } from "pages/search/utils/matchColor";
 import TextBoxes from "@ui/TextBoxes";
 
 import { DPC } from "pages/search/types/connectivity";
-import { TextsObject } from "pages/search/types/texts";
+import type { TextsObject } from "pages/search/types/texts";
 import { getMetricTexts } from "pages/search/utils/texts";
 import {
   SmallBars,

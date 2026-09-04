@@ -1,6 +1,6 @@
 import SearchAPI from "pages/search/api/searchAPI";
-import { TextsObject } from "pages/search/types/texts";
-import { MetricsTypes } from "../types/metrics";
+import type { TextsObject } from "pages/search/types/texts";
+import { MetricsTypes } from "pages/search/types/metrics";
 
 /**
  * Gets the texts for a given metric.
@@ -27,4 +27,3 @@ export const getMetricTexts = (metric: MetricsTypes): Promise<TextsObject> =>
     .catch(() => {
       throw new Error("Error getting data");
     });
-

@@ -14,7 +14,7 @@ import {
   timelinePAConn,
   timeLinePAConnValues,
 } from "pages/search/types/connectivity";
-import { TextsObject } from "pages/search/types/texts";
+import type { TextsObject } from "pages/search/types/texts";
 import BackendAPI from "pages/search/api/backendAPI";
 import Lines from "@composites/charts/Lines";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";

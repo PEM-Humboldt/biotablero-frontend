@@ -13,7 +13,7 @@ import TextBoxes from "@ui/TextBoxes";
 
 import { ForestLPExt } from "pages/search/types/forest";
 import { SmallBars } from "@composites/charts/SmallBars";
-import { TextsObject } from "pages/search/types/texts";
+import type { TextsObject } from "pages/search/types/texts";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { ForestLossPersistenceController } from "pages/search/dashboard/landscape/forest/ForestLossPersistenceController";
 import { RasterLayer } from "pages/search/types/layers";

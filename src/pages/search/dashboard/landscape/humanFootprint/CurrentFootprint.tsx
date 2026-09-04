@@ -20,7 +20,7 @@ import {
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CurrentFootprintController } from "pages/search/dashboard/landscape/humanFootprint/CurrentFootprintController";
 import { RasterLayer } from "pages/search/types/layers";
-import { TextsObject } from "pages/search/types/texts";
+import type { TextsObject } from "pages/search/types/texts";
 import { getMetricTexts } from "pages/search/utils/texts";
 import colorPalettes from "pages/search/utils/colorPalettes";
 import { formatNumber } from "@utils/format";
