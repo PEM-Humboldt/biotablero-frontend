@@ -79,15 +79,19 @@ export class CurrentPAConnectivityController {
       throw new Error("request canceled");
     }
 
-    const normalizedDpc = res
-      .map((item) => ({
+    const normalizedDpc = res.reduce((acc: Array<DPC>, item) => {
+      if (item.dpc < 0) {
+        return acc;
+      }
+      acc.push({
         id: item.id,
         dpc: Number(item.dpc),
         pa_id: Number(item.pa_id),
         pa_name: String(item.pa_name),
         category: item.category,
-      }))
-      .filter((item) => item.dpc > 0);
+      });
+      return acc;
+    }, []);
 
     this.dpcData = normalizedDpc;
     return normalizedDpc;
