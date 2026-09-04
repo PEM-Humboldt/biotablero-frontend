@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { LatLngBoundsExpression, LatLngBoundsLiteral, Map } from "leaflet";
+import type { LatLngBoundsExpression, Map } from "leaflet";
 import {
   ImageOverlay,
   MapContainer,
@@ -20,6 +20,7 @@ import "leaflet/dist/leaflet.css";
 import { useUserCTX } from "@hooks/UserCTX";
 import { COLOMBIA_BOUNDS } from "pages/utils/settings";
 import { OnLoadingModal } from "@ui/OnLoadingModal";
+import { CssMaskRasterOverlay } from "./mapViewer/CssMaskRasterOverlay";
 
 const config = {
   params: {
@@ -163,15 +164,30 @@ export function MapViewer({
           {rasterLayers
             .filter((l) => l.paneLevel === panelLevel)
             .map((layer) => {
-              let opacity = layer.selected ? 1 : 0.7;
-              if (layer.opacity) {
-                opacity = layer.opacity;
+              let opacity = layer.opacity ?? 0.7;
+              if (layer.selected) {
+                opacity = 1;
               }
-              return (
+              let layerBounds = bounds;
+              if (layer.bbox) {
+                layerBounds = [
+                  [layer.bbox[1], layer.bbox[0]],
+                  [layer.bbox[3], layer.bbox[2]],
+                ];
+              }
+              return layer.color ? (
+                <CssMaskRasterOverlay
+                  key={`${layer.id}-${layer.data}`}
+                  source={layer.data}
+                  bounds={layerBounds}
+                  opacity={opacity}
+                  color={layer.color}
+                />
+              ) : (
                 <ImageOverlay
                   key={`${layer.id}-${layer.data}`}
                   url={layer.data}
-                  bounds={bounds}
+                  bounds={layerBounds}
                   opacity={opacity}
                 />
               );

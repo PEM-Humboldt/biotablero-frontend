@@ -13,6 +13,7 @@ class SearchAPI {
    * Check if search backend is up
    */
   static requestTestBackend(): Promise<Array<String>> {
+    // TODO: Bext agregó un endpoit de health, mejor usar ese
     return SearchAPI.makeGetRequest(`redoc`);
   }
 
@@ -126,6 +127,43 @@ class SearchAPI {
           ...(group && { group }),
         },
       }) as Promise<{ layer: string }>,
+      source,
+    };
+  }
+
+  /** *********** */
+  /** COLLECTIONS */
+  /** *********** */
+
+  /**
+   * Get the list of available collections
+   *
+   * @returns Collections list
+   */
+  static reqestCollections(): Promise<Array<{ id: number; name: string }>> {
+    return SearchAPI.makeGetRequest("collections");
+  }
+
+  /**
+   * Get the layer for a given value on the collection
+   *
+   * @param collectionId Collection id
+   * @param value selected value
+   *
+   * @returns Object with the image url and associated bbox
+   */
+  static requestCollectionLayer(
+    collectionId: number,
+    value: number,
+  ): RasterAPIObject {
+    const source = axios.CancelToken.source();
+
+    return {
+      request: SearchAPI.makeGetRequest(`collections/${collectionId}/layer`, {
+        params: {
+          value: value,
+        },
+      }) as Promise<{ layer: string; bbox: [number, number, number, number] }>,
       source,
     };
   }

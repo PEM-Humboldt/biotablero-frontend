@@ -55,7 +55,8 @@ export class CurrentFootprintController {
         const average = Number(averageValues.average);
 
         return {
-          ...averageValues,
+          id: averageValues.id,
+          average,
           category: this.getHFCategory(average),
         };
       })

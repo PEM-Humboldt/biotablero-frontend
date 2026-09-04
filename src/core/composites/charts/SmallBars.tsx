@@ -188,10 +188,7 @@ export function SmallBarsElement({
             : [];
 
           return (
-            <div
-              className="tooltip-graph-container"
-              style={{ position: "absolute" }}
-            >
+            <div className="tooltip-graph-container">
               <strong style={{ color }}>
                 {currentVal ? currentVal.tooltipContent[0] : ""}
               </strong>

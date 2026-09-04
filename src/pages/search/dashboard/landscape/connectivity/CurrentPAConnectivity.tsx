@@ -1,17 +1,21 @@
-import { useContext, useEffect, useReducer, useRef } from "react";
+import { useEffect, useReducer, useRef } from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
 import { PointFilledLegend } from "@ui/CssLegends";
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
 import { Button } from "@ui/shadCN/component/button";
-import { useSearchLegacyCTX } from "pages/search/hooks/SearchContext";
+import {
+  useSearchDispatchCTX,
+  useSearchStateCTX,
+} from "pages/search/hooks/SearchContext";
+import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 
 import BackendAPI from "pages/search/api/backendAPI";
 import { matchColor } from "pages/search/utils/matchColor";
 import TextBoxes from "@ui/TextBoxes";
 
-import { DPC, DPCKeys } from "pages/search/types/connectivity";
+import { DPC } from "pages/search/types/connectivity";
 import { textsObject } from "pages/search/types/texts";
 import {
   SmallBars,
@@ -21,6 +25,7 @@ import {
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CurrentPAConnectivityController } from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivityController";
 import colorPalettes from "pages/search/utils/colorPalettes";
+import { RasterLayer } from "pages/search/types/layers";
 
 const legendDPCCategories = {
   muy_bajo: "Muy bajo",
@@ -29,8 +34,9 @@ const legendDPCCategories = {
   alto: "Alto",
   muy_alto: "Muy Alto",
 };
-
-interface Props {}
+const DPCCats = (
+  Object.keys(legendDPCCategories) as Array<keyof typeof legendDPCCategories>
+).reverse();
 
 interface CurrentPAConnState {
   infoShown: Set<string>;
@@ -47,6 +53,7 @@ interface CurrentPAConnState {
   texts: {
     paConnDPC: textsObject;
   };
+  layers: RasterLayer[];
 }
 
 type DpcPayload = {
@@ -56,14 +63,15 @@ type DpcPayload = {
     keys: Array<string>;
     tooltips: Array<SmallBarTooltip>;
   };
+  showLowestDpc: boolean;
 };
 
 type Action =
   | { type: "TOGGLE_INFO"; payload: string }
-  | { type: "SET_SHOW_LOWEST"; payload: boolean }
   | { type: "DPC_SUCCEEDED"; payload: DpcPayload }
   | { type: "DPC_FAILED" }
-  | { type: "SET_TEXTS"; payload: textsObject };
+  | { type: "SET_TEXTS"; payload: textsObject }
+  | { type: "PA_LAYERS_SUCCEEDED"; payload: RasterLayer[] };
 
 const initialState: CurrentPAConnState = {
   infoShown: new Set(["dpc"]),
@@ -80,6 +88,7 @@ const initialState: CurrentPAConnState = {
   texts: {
     paConnDPC: { info: "", cons: "", meto: "", quote: "" },
   },
+  layers: [],
 };
 
 function reducer(
@@ -93,18 +102,13 @@ function reducer(
       else infoShown.add(action.payload);
       return { ...state, infoShown };
     }
-    case "SET_SHOW_LOWEST":
-      return {
-        ...state,
-        showLowestDpc: action.payload,
-        messages: { ...state.messages, dpc: "loading" },
-      };
     case "DPC_SUCCEEDED":
       return {
         ...state,
         dpcData: action.payload.dpcData,
         graphData: action.payload.graphData,
         messages: { ...state.messages, dpc: null },
+        showLowestDpc: action.payload.showLowestDpc,
       };
     case "DPC_FAILED":
       return {
@@ -113,44 +117,85 @@ function reducer(
       };
     case "SET_TEXTS":
       return { ...state, texts: { paConnDPC: action.payload } };
+    case "PA_LAYERS_SUCCEEDED":
+      return {
+        ...state,
+        layers: action.payload,
+      };
     default:
       return state;
   }
 }
 
-function CurrentPAConnectivity(_: Props) {
-  const { areaType, areaId } = useSearchLegacyCTX();
+function CurrentPAConnectivity() {
+  const context = useSearchStateCTX();
+  const searchDispatch = useSearchDispatchCTX();
+  const { areaType, areaId } = context;
 
   const controllerRef = useRef(new CurrentPAConnectivityController());
   const controller = controllerRef.current;
 
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const loadDpcData = (showLowestDpc: boolean) => {
-    dispatch({ type: "SET_SHOW_LOWEST", payload: showLowestDpc });
+  useEffect(() => {
+    if (!areaType || !areaId) {
+      searchDispatch({
+        type: SearchUpdated.LOADING_LAYER,
+        loadingLayer: false,
+      });
+      return () => {
+        controller.cancelActiveRequests();
+      };
+    }
+    controller.setArea(areaType.id, areaId.id);
+    searchDispatch({
+      type: SearchUpdated.LOADING_LAYER,
+      loadingLayer: true,
+    });
 
     controller
-      .getDpcData(showLowestDpc)
+      .loadSortedDpcData(false)
       .then((result) => {
-        dispatch({ type: "DPC_SUCCEEDED", payload: result });
+        controller
+          .getPALayers()
+          .then((layersRes) => {
+            dispatch({
+              type: "PA_LAYERS_SUCCEEDED",
+              payload: layersRes,
+            });
+            searchDispatch({
+              type: SearchUpdated.WILDCARD,
+              payload: {
+                rasterLayers: layersRes,
+                showAreaLayer: true,
+                loadingLayer: false,
+                mapTitle: { name: "Conectividad de áreas protegidas" },
+              },
+            });
+          })
+          .catch((err) => {
+            if (String(err) !== "Error: request canceled") {
+              searchDispatch({
+                type: SearchUpdated.LAYER_ERROR,
+                layerError: String(err),
+              });
+            }
+          })
+          .finally(() => {
+            searchDispatch({
+              type: SearchUpdated.LOADING_LAYER,
+              loadingLayer: false,
+            });
+          });
+        dispatch({
+          type: "DPC_SUCCEEDED",
+          payload: { ...result, showLowestDpc: false },
+        });
       })
       .catch((error) => {
         if (error?.message === "request canceled") return;
         dispatch({ type: "DPC_FAILED" });
       });
-  };
-
-  useEffect(() => {
-    if (!areaType || !areaId) {
-      return;
-    }
-
-    const areaTypeId = areaType.id;
-    const areaIdId = areaId.id.toString();
-
-    controller.setArea(areaTypeId, areaIdId);
-
-    loadDpcData(false);
 
     BackendAPI.requestSectionTexts("paConnDPC")
       .then((res) => {
@@ -173,7 +218,31 @@ function CurrentPAConnectivity(_: Props) {
   };
 
   const toggleDpcMode = () => {
-    loadDpcData(!state.showLowestDpc);
+    controller
+      .loadSortedDpcData(!state.showLowestDpc)
+      .then((result) => {
+        dispatch({
+          type: "DPC_SUCCEEDED",
+          payload: { ...result, showLowestDpc: !state.showLowestDpc },
+        });
+      })
+      .catch((error) => {
+        if (error?.message === "request canceled") return;
+        dispatch({ type: "DPC_FAILED" });
+      });
+  };
+
+  const clickOnDPCGraph = (dpcId: string, category: string) => {
+    const { layers } = state;
+    searchDispatch({
+      type: SearchUpdated.WILDCARD,
+      payload: {
+        rasterLayers: layers.map((layer) => ({
+          ...layer,
+          selected: layer.id === dpcId,
+        })),
+      },
+    });
   };
 
   const { dpcData, showLowestDpc, infoShown, messages, texts, graphData } =
@@ -231,7 +300,7 @@ function CurrentPAConnectivity(_: Props) {
               colors={(key: string) =>
                 matchColor("dpc")(key) || colorPalettes.default[0]
               }
-              onClickHandler={() => {}}
+              onClickHandler={clickOnDPCGraph}
               animate={false}
               margin={{
                 bottom: 50,
@@ -247,7 +316,7 @@ function CurrentPAConnectivity(_: Props) {
           )}
         </div>
         <div className="dpcLegend">
-          {DPCKeys.map((cat) => (
+          {DPCCats.map((cat) => (
             <PointFilledLegend color={matchColor("dpc")(cat)} key={cat}>
               {legendDPCCategories[cat]}
             </PointFilledLegend>

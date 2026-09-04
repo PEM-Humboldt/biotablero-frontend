@@ -7,7 +7,7 @@ interface MatchInfo {
 }
 
 type ColorValue = string | number;
-type ColorResult = string | null;
+type ColorResult = string | undefined;
 type ColorMapper = (value?: string | number) => ColorResult;
 interface CyclicCache {
   counter: number;
@@ -203,15 +203,15 @@ const cache: {
 /**
  * returns the color determined for a given value.
  *
- * @param {string} type - type of information to apply colors.
- * @param {boolean} [resetCache=false] - whether to clean the cache before assigning colors. Applies to 'pa'
+ * @param type - type of information to apply colors.
+ * @param [resetCache=false] - whether to clean the cache before assigning colors. Applies to 'pa'
  *
- * @param {any} value - value to assign a color, type of data will depend on type arg.
+ * @param value - value to assign a color, type of data will depend on type arg.
  *
  * fc will receive numbers between 4 and 10 (multiple of 0.25).
  * The rest of the types will receive strings.
  *
- * @returns {function(string | number): (string | null)} A function that takes a value and returns a color string or null.
+ * @returns A function that takes a value and returns a color string or undefined.
  */
 
 export const matchColor = (
@@ -225,21 +225,21 @@ export const matchColor = (
   switch (type) {
     case "fc":
       return (value?: ColorValue): ColorResult => {
-        if (value === undefined) return null;
+        if (value === undefined) return undefined;
 
         const numValue = Number(value);
-        if (Number.isNaN(numValue)) return null;
+        if (Number.isNaN(numValue)) return undefined;
 
         let idx = sort.indexOf(numValue);
         if (idx === -1) idx = sort.indexOf(numValue + 0.25);
 
-        return idx === -1 ? null : palette[idx];
+        return idx === -1 ? undefined : palette[idx];
       };
 
     case "biomas":
     case "bioticReg":
       return (value?: ColorValue): ColorResult => {
-        if (value === undefined) return null;
+        if (value === undefined) return undefined;
 
         const key = String(value);
         const bucket = cache[type];
@@ -258,7 +258,7 @@ export const matchColor = (
       if (resetCache) cache.pa_counter = 1;
 
       return (value?: ColorValue): ColorResult => {
-        if (value === undefined) return null;
+        if (value === undefined) return undefined;
 
         const idx = sort.indexOf(value);
         if (idx !== -1) return palette[idx];
@@ -284,7 +284,7 @@ export const matchColor = (
     case "caTargets":
     case "se":
       return (value?: ColorValue): ColorResult => {
-        if (value === undefined) return null;
+        if (value === undefined) return undefined;
 
         const idx = sort.indexOf(value);
         return idx === -1 ? palette[palette.length - 1] : palette[idx];
@@ -303,10 +303,10 @@ export const matchColor = (
     case "functionalDFFeatureSSD":
     case "functionalDFFeatureSM":
       return (value?: ColorValue): ColorResult => {
-        if (value === undefined) return null;
+        if (value === undefined) return undefined;
 
         const idx = sort.indexOf(value);
-        return idx === -1 ? null : palette[idx];
+        return idx === -1 ? undefined : palette[idx];
       };
 
     case "polygon":

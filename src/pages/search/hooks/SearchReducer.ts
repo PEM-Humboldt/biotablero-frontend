@@ -136,8 +136,7 @@ const areaLayerUpdate = (
       json: layerJSON,
       layerStyle: () => ({
         stroke: false,
-        // WARN: de dónde sale el valor que pide la funcion???
-        fillColor: matchColor("geofence")() ?? undefined,
+        fillColor: matchColor("default")() ?? undefined,
         fillOpacity: 0.6,
       }),
     };
