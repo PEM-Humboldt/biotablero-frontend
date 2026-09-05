@@ -1,28 +1,27 @@
-import { useEffect, useRef, useReducer } from "react";
+import { useEffect, useRef, useReducer, useMemo } from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
+import { type CartesianMarkerProps } from "@nivo/core";
+import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
+import TextBoxes from "@ui/TextBoxes";
+import { Lines } from "@composites/charts/Lines";
+import { GraphLegend } from "@ui/GraphLegend";
+import { LOCALE } from "@config/monitoring";
+
+import type { TimelineHF } from "pages/search/types/humanFootprint";
+import type { TextsObject } from "pages/search/types/texts";
+import type { RasterLayer } from "pages/search/types/layers";
 import {
   useSearchDispatchCTX,
   useSearchStateCTX,
 } from "pages/search/hooks/SearchContext";
-import { formatNumber } from "@utils/format";
 import processDataCsv from "pages/search/utils/processDataCsv";
-import TextBoxes from "@ui/TextBoxes";
-
-import type { TimelineHF } from "pages/search/types/humanFootprint";
-import type { SEDetails } from "pages/search/types/ecosystems";
-import type { TextsObject } from "pages/search/types/texts";
-import { Lines } from "@composites/charts/Lines";
-import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
-import { type CartesianMarkerProps } from "@nivo/core";
 import { TimelineFootprintController } from "pages/search/dashboard/landscape/humanFootprint/TimelineFootprintController";
-import type { RasterLayer } from "pages/search/types/layers";
 import { matchColor } from "pages/search/utils/matchColor";
 import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 import { getMetricTexts } from "pages/search/utils/texts";
-import { GraphLegend } from "@ui/GraphLegend";
 
 export const hfTimelineLUT = [
   { key: "aTotal", label: "Área consulta", source: "poligono" },
@@ -56,7 +55,6 @@ enum HFTimelineUpdated {
   TIMELINE_VALUES = "timelineValuesSucceeded",
   TIMELINE_ERROR = "timelineValuesFailed",
   SELECT_SE = "selectSE",
-  SE_INFO = "setSelectedEcosystem",
   SE_LAYERS = "setLayers",
 }
 
@@ -67,7 +65,11 @@ type hfTimelineActions =
     }
   | {
       type: HFTimelineUpdated.TIMELINE_VALUES;
-      payload: { timelineData: TimelineHF[]; texts?: TextsObject };
+      payload: {
+        timelineData: TimelineHF[];
+        texts?: TextsObject;
+        seValues?: Record<string, number>;
+      };
     }
   | {
       type: HFTimelineUpdated.TIMELINE_ERROR;
@@ -75,11 +77,7 @@ type hfTimelineActions =
     }
   | {
       type: HFTimelineUpdated.SELECT_SE;
-      selectedSE: string | null;
-    }
-  | {
-      type: HFTimelineUpdated.SE_INFO;
-      ecosystems: Partial<Record<SESource, number>>;
+      seLabel: string | null;
     }
   | {
       type: HFTimelineUpdated.SE_LAYERS;
@@ -123,8 +121,14 @@ function reducer(
           ? { texts: { hfTimeline: action.payload.texts } }
           : {}),
         timelineData: transformTimelineData(action.payload.timelineData),
+        ...(action.payload?.seValues
+          ? { seSize: action.payload.seValues }
+          : {}),
         message: null,
       };
+
+    case HFTimelineUpdated.SELECT_SE:
+      return { ...state, selectedSE: action.seLabel as SELabel };
 
     case HFTimelineUpdated.TIMELINE_ERROR:
       return {
@@ -133,14 +137,11 @@ function reducer(
         message: "no-data",
       };
 
-    case HFTimelineUpdated.SE_INFO:
-      return { ...state, seSize: action.ecosystems };
-
     case HFTimelineUpdated.SE_LAYERS:
       return { ...state, seLayers: action.layers };
 
     default:
-      console.warn("Unknown requested searchReducer action");
+      console.warn("Unknown requested hfReducer action");
       return state;
   }
 }
@@ -171,20 +172,14 @@ export function TimelineFootprint() {
   const {
     showInfoGraph,
     timelineData,
-    seSize: selectedEcosystem,
+    seSize,
     message,
     texts,
+    selectedSE,
     seLayers: _layers,
   } = hfTimelineState;
 
   const controllerRef = useRef(new TimelineFootprintController());
-
-  const timelineLinesKey = timelineData
-    .map(
-      ({ key, data }) =>
-        `${key}:${data.map(({ x, y }) => `${x}-${y}`).join(",")}`,
-    )
-    .join("|");
 
   useEffect(() => {
     let isCurrent = true;
@@ -202,19 +197,21 @@ export function TimelineFootprint() {
     });
 
     const controller = controllerRef.current;
-    controller.setArea(areaType.id, areaId.id.toString());
+    controller.setArea(areaType.id, areaId.id);
 
     Promise.all([
       controller.getTimelineData(),
       getMetricTexts("timelineHF"),
+      controller.getSEData(),
       // controller.getLayer(),
     ])
-      .then(([timelineRawData, timelineTexts]) => {
+      .then(([timelineRawData, timelineTexts, seData]) => {
         hfTimelineDispatch({
           type: HFTimelineUpdated.TIMELINE_VALUES,
           payload: {
             timelineData: timelineRawData,
             texts: timelineTexts,
+            seValues: seData,
           },
         });
 
@@ -255,84 +252,34 @@ export function TimelineFootprint() {
     };
   }, [areaType, areaId, searchMapDispatch]);
 
-  useEffect(() => {}, []);
-
-  const toggleInfoGraph = () => {
-    hfTimelineDispatch({ type: HFTimelineUpdated.TOGGLE_TEXTS });
-  };
-
-  // const clickOnGraph = async (selectedKey: string) => {
-  //   const layerDescription =
-  //     selectedKey === "aTotal"
-  //       ? "HH - Huella humana en el tiempo y ecosistemas estratégicos (EE)"
-  //       : `HH - Huella humana en el tiempo - ${seTitle[selectedKey as keyof SEKeys]}`;
-  //
-  //   if (selectedKey === "aTotal") {
-  //     hfTimelineDispatch({
-  //       type: HFTimelineUpdated.ECOSYSTEM,
-  //       ecosystem: null,
-  //     });
-  //
-  //     searchMapDispatch({
-  //       type: SearchUpdated.RASTER_LAYERS,
-  //       payload: {
-  //         rasterLayers: layers.filter((layer) =>
-  //           ["timelineHF"].includes(layer.id),
-  //         ),
-  //         mapTitle: { name: layerDescription },
-  //       },
-  //     });
-  //     return;
-  //   }
-  //
-  //   searchMapDispatch({
-  //     type: SearchUpdated.LOADING_LAYER,
-  //     loadingLayer: true,
-  //   });
-  //
-  //   try {
-  //     const isLayerAvailable = layers.some((layer) => layer.id === selectedKey);
-  //     let updatedLayers = layers;
-  //
-  //     if (!isLayerAvailable) {
-  //       const seLayer = await controllerRef.current.getSELayer(
-  //         selectedKey as keyof Omit<SEKeys, "aTotal">,
-  //       );
-  //       updatedLayers = [...layers, ...seLayer];
-  //       hfTimelineDispatch({
-  //         type: HFTimelineUpdated.LAYERS,
-  //         layers: updatedLayers,
-  //       });
-  //     }
-  //
-  //     searchMapDispatch({
-  //       type: SearchUpdated.RASTER_LAYERS,
-  //       payload: {
-  //         rasterLayers: updatedLayers.filter((layer) =>
-  //           ["timelineHF", selectedKey].includes(layer.id),
-  //         ),
-  //         mapTitle: { name: layerDescription },
-  //       },
-  //     });
-  //   } catch (error) {
-  //     searchMapDispatch({
-  //       type: SearchUpdated.LAYER_ERROR,
-  //       layerError: error instanceof Error ? error.message : String(error),
-  //     });
-  //   }
-  // };
+  const customColorMap = useMemo(
+    () =>
+      timelineData.reduce<Record<string, string>>((acc, item) => {
+        acc[item.label] = hfTimelineColors(item.key);
+        return acc;
+      }, {}),
+    [timelineData],
+  );
 
   if (!areaType || !areaId) {
     return null;
   }
 
-  const customColorMap = timelineData.reduce<Record<string, string>>(
-    (acc, item) => {
-      acc[item.label] = hfTimelineColors(item.key);
-      return acc;
-    },
-    {},
-  );
+  const toggleInfoGraph = () => {
+    hfTimelineDispatch({ type: HFTimelineUpdated.TOGGLE_TEXTS });
+  };
+
+  const handleEcosystemSelection = (ecosystemLabel: string) => {
+    const ecosystem = hfTimelineLUT.find((e) => e.label === ecosystemLabel);
+
+    const seLabel =
+      !ecosystem || ecosystem.key === "aTotal" ? null : ecosystem.label;
+
+    hfTimelineDispatch({
+      type: HFTimelineUpdated.SELECT_SE,
+      seLabel,
+    });
+  };
 
   return (
     <div className="graphcontainer pt6">
@@ -359,7 +306,6 @@ export function TimelineFootprint() {
       <p>Haz clic en un ecosistema para ver su comportamiento</p>
       <div>
         <Lines
-          key={timelineLinesKey}
           colors={hfTimelineColors}
           seriesData={timelineData}
           loadStatus={message}
@@ -369,21 +315,28 @@ export function TimelineFootprint() {
         />
 
         <GraphLegend
-          keys={timelineData.map((s) => s.label)}
-          customColorMap={customColorMap}
+          keys={hfTimelineLUT.map((item) => item.label)}
           isBar={false}
-          selected={selectedEcosystem?.type ? [selectedEcosystem.type] : []}
-          onClick={(selectedLabel: string) => {
-            console.warn(selectedLabel);
-          }}
+          customColorMap={customColorMap}
+          onClick={handleEcosystemSelection}
+          selected={selectedSE ? [selectedSE] : []}
+          className="justify-center"
         />
 
-        {selectedEcosystem && (
-          <div>
-            <h6>{`${666} dentro de la unidad de consulta`}</h6>
-            {/* <h5>{`${formatNumber(selectedEcosystem.total_area, 2)} ha`}</h5> */}
-          </div>
-        )}
+        {selectedSE &&
+          (() => {
+            const activeSE = hfTimelineLUT.find(
+              (item) => item.label === selectedSE,
+            );
+            const value = activeSE ? seSize[activeSE.source] : undefined;
+
+            return value === undefined ? null : (
+              <div>
+                <h6>{`${selectedSE} dentro de la unidad de consulta`}</h6>
+                <h5>{`${Math.round(value).toLocaleString(LOCALE)} ha`}</h5>
+              </div>
+            );
+          })()}
 
         <TextBoxes
           consText={texts.hfTimeline.cons}
@@ -433,3 +386,64 @@ const hfTimelineMarkers: CartesianMarkerProps[] = [
     legendPosition: "bottom-right",
   },
 ];
+
+// const clickOnGraph = async (selectedKey: string) => {
+//   const layerDescription =
+//     selectedKey === "aTotal"
+//       ? "HH - Huella humana en el tiempo y ecosistemas estratégicos (EE)"
+//       : `HH - Huella humana en el tiempo - ${seTitle[selectedKey as keyof SEKeys]}`;
+//
+//   if (selectedKey === "aTotal") {
+//     hfTimelineDispatch({
+//       type: HFTimelineUpdated.ECOSYSTEM,
+//       ecosystem: null,
+//     });
+//
+//     searchMapDispatch({
+//       type: SearchUpdated.RASTER_LAYERS,
+//       payload: {
+//         rasterLayers: layers.filter((layer) =>
+//           ["timelineHF"].includes(layer.id),
+//         ),
+//         mapTitle: { name: layerDescription },
+//       },
+//     });
+//     return;
+//   }
+//
+//   searchMapDispatch({
+//     type: SearchUpdated.LOADING_LAYER,
+//     loadingLayer: true,
+//   });
+//
+//   try {
+//     const isLayerAvailable = layers.some((layer) => layer.id === selectedKey);
+//     let updatedLayers = layers;
+//
+//     if (!isLayerAvailable) {
+//       const seLayer = await controllerRef.current.getSELayer(
+//         selectedKey as keyof Omit<SEKeys, "aTotal">,
+//       );
+//       updatedLayers = [...layers, ...seLayer];
+//       hfTimelineDispatch({
+//         type: HFTimelineUpdated.LAYERS,
+//         layers: updatedLayers,
+//       });
+//     }
+//
+//     searchMapDispatch({
+//       type: SearchUpdated.RASTER_LAYERS,
+//       payload: {
+//         rasterLayers: updatedLayers.filter((layer) =>
+//           ["timelineHF", selectedKey].includes(layer.id),
+//         ),
+//         mapTitle: { name: layerDescription },
+//       },
+//     });
+//   } catch (error) {
+//     searchMapDispatch({
+//       type: SearchUpdated.LAYER_ERROR,
+//       layerError: error instanceof Error ? error.message : String(error),
+//     });
+//   }
+// };
