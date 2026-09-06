@@ -64,7 +64,7 @@ export function ObservedRichness() {
     setErrors([]);
 
     Promise.all([
-      controller.current.getTaxonomicGroups(),
+      controller.current.getORichnessTaxonomicGroups(),
       getMetricTexts("statsOnSpecies"),
     ])
       .then(([groups, texts]) => {
