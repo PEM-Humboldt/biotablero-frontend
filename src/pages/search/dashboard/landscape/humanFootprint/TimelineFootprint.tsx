@@ -17,7 +17,7 @@ import {
   useSearchDispatchCTX,
   useSearchStateCTX,
 } from "pages/search/hooks/SearchContext";
-import processDataCsv from "pages/search/utils/processDataCsv";
+import { processLineSeriesDataToCsv } from "pages/search/utils/processDataCsv";
 import { TimelineFootprintController } from "pages/search/dashboard/landscape/humanFootprint/TimelineFootprintController";
 import { matchColor } from "pages/search/utils/matchColor";
 import { SearchUpdated } from "pages/search/hooks/SearchReducer";
@@ -45,12 +45,12 @@ interface hfTimelineState {
   timelineData: hfTimelineSeries[];
   message: MessageWrapperType;
   selectedSE: SELabel;
-  seSize: Partial<Record<SESource, number>>;
+  seExtension: Partial<Record<SESource, number>>;
   seLayers: RasterLayer[];
   texts: { hfTimeline: TextsObject };
 }
 
-enum HFTimelineUpdated {
+enum TimelineHFUpdated {
   TOGGLE_TEXTS = "toggleInfoGraph",
   TIMELINE_VALUES = "timelineValuesSucceeded",
   TIMELINE_ERROR = "timelineValuesFailed",
@@ -60,11 +60,11 @@ enum HFTimelineUpdated {
 
 type hfTimelineActions =
   | {
-      type: HFTimelineUpdated.TOGGLE_TEXTS;
+      type: TimelineHFUpdated.TOGGLE_TEXTS;
       forceState?: boolean;
     }
   | {
-      type: HFTimelineUpdated.TIMELINE_VALUES;
+      type: TimelineHFUpdated.TIMELINE_VALUES;
       payload: {
         timelineData: TimelineHF[];
         texts?: TextsObject;
@@ -72,15 +72,15 @@ type hfTimelineActions =
       };
     }
   | {
-      type: HFTimelineUpdated.TIMELINE_ERROR;
+      type: TimelineHFUpdated.TIMELINE_ERROR;
       error?: string;
     }
   | {
-      type: HFTimelineUpdated.SELECT_SE;
+      type: TimelineHFUpdated.SELECT_SE;
       seLabel: string | null;
     }
   | {
-      type: HFTimelineUpdated.SE_LAYERS;
+      type: TimelineHFUpdated.SE_LAYERS;
       layers: RasterLayer[];
     };
 
@@ -105,7 +105,7 @@ function reducer(
   action: hfTimelineActions,
 ): hfTimelineState {
   switch (action.type) {
-    case HFTimelineUpdated.TOGGLE_TEXTS:
+    case TimelineHFUpdated.TOGGLE_TEXTS:
       return {
         ...state,
         showInfoGraph:
@@ -114,7 +114,7 @@ function reducer(
             : !state.showInfoGraph,
       };
 
-    case HFTimelineUpdated.TIMELINE_VALUES:
+    case TimelineHFUpdated.TIMELINE_VALUES:
       return {
         ...state,
         ...(action.payload.texts !== undefined
@@ -122,22 +122,22 @@ function reducer(
           : {}),
         timelineData: transformTimelineData(action.payload.timelineData),
         ...(action.payload?.seValues
-          ? { seSize: action.payload.seValues }
+          ? { seExtension: action.payload.seValues }
           : {}),
         message: null,
       };
 
-    case HFTimelineUpdated.SELECT_SE:
+    case TimelineHFUpdated.SELECT_SE:
       return { ...state, selectedSE: action.seLabel as SELabel };
 
-    case HFTimelineUpdated.TIMELINE_ERROR:
+    case TimelineHFUpdated.TIMELINE_ERROR:
       return {
         ...state,
         timelineData: [],
         message: "no-data",
       };
 
-    case HFTimelineUpdated.SE_LAYERS:
+    case TimelineHFUpdated.SE_LAYERS:
       return { ...state, seLayers: action.layers };
 
     default:
@@ -151,7 +151,7 @@ const initialState: hfTimelineState = {
   timelineData: [],
   message: "loading",
   selectedSE: "Área consulta",
-  seSize: {},
+  seExtension: {},
   texts: {
     hfTimeline: { info: "", cons: "", meto: "", quote: "" },
   },
@@ -164,7 +164,7 @@ const hfTimelineColors = (key: string | number) =>
 export function TimelineFootprint() {
   const { areaType, areaId } = useSearchStateCTX();
   const searchMapDispatch = useSearchDispatchCTX();
-  const [hfTimelineState, hfTimelineDispatch] = useReducer(
+  const [timelineHFState, timelineHFDispatch] = useReducer(
     reducer,
     initialState,
   );
@@ -172,12 +172,12 @@ export function TimelineFootprint() {
   const {
     showInfoGraph,
     timelineData,
-    seSize,
+    seExtension,
     message,
     texts,
     selectedSE,
     seLayers: _layers,
-  } = hfTimelineState;
+  } = timelineHFState;
 
   const controllerRef = useRef(new TimelineFootprintController());
 
@@ -206,8 +206,8 @@ export function TimelineFootprint() {
       // controller.getLayer(),
     ])
       .then(([timelineRawData, timelineTexts, seData]) => {
-        hfTimelineDispatch({
-          type: HFTimelineUpdated.TIMELINE_VALUES,
+        timelineHFDispatch({
+          type: TimelineHFUpdated.TIMELINE_VALUES,
           payload: {
             timelineData: timelineRawData,
             texts: timelineTexts,
@@ -239,7 +239,7 @@ export function TimelineFootprint() {
         if (!isCurrent) {
           return;
         }
-        hfTimelineDispatch({ type: HFTimelineUpdated.TIMELINE_ERROR });
+        timelineHFDispatch({ type: TimelineHFUpdated.TIMELINE_ERROR });
         searchMapDispatch({
           type: SearchUpdated.LAYER_ERROR,
           layerError: error instanceof Error ? error.message : String(error),
@@ -261,12 +261,8 @@ export function TimelineFootprint() {
     [timelineData],
   );
 
-  if (!areaType || !areaId) {
-    return null;
-  }
-
   const toggleInfoGraph = () => {
-    hfTimelineDispatch({ type: HFTimelineUpdated.TOGGLE_TEXTS });
+    timelineHFDispatch({ type: TimelineHFUpdated.TOGGLE_TEXTS });
   };
 
   const handleEcosystemSelection = (ecosystemLabel: string) => {
@@ -275,13 +271,16 @@ export function TimelineFootprint() {
     const seLabel =
       !ecosystem || ecosystem.key === "aTotal" ? null : ecosystem.label;
 
-    hfTimelineDispatch({
-      type: HFTimelineUpdated.SELECT_SE,
+    timelineHFDispatch({
+      type: TimelineHFUpdated.SELECT_SE,
       seLabel,
     });
   };
 
-  return (
+  const activeSE = hfTimelineLUT.find((item) => item.label === selectedSE);
+  const seExtensionvalue = activeSE ? seExtension[activeSE.source] : undefined;
+
+  return !areaType || !areaId ? null : (
     <div className="graphcontainer pt6">
       <h2>
         <IconTooltip title="Interpretación">
@@ -304,6 +303,7 @@ export function TimelineFootprint() {
 
       <h6>Huella humana en el tiempo comparada con EE</h6>
       <p>Haz clic en un ecosistema para ver su comportamiento</p>
+
       <div>
         <Lines
           colors={hfTimelineColors}
@@ -323,26 +323,18 @@ export function TimelineFootprint() {
           className="justify-center"
         />
 
-        {selectedSE &&
-          (() => {
-            const activeSE = hfTimelineLUT.find(
-              (item) => item.label === selectedSE,
-            );
-            const value = activeSE ? seSize[activeSE.source] : undefined;
-
-            return value === undefined ? null : (
-              <div>
-                <h6>{`${selectedSE} dentro de la unidad de consulta`}</h6>
-                <h5>{`${Math.round(value).toLocaleString(LOCALE)} ha`}</h5>
-              </div>
-            );
-          })()}
+        {selectedSE && seExtensionvalue && (
+          <div>
+            <h6>{`${selectedSE} dentro de la unidad de consulta`}</h6>
+            <h5>{`${Math.round(seExtensionvalue).toLocaleString(LOCALE)} ha`}</h5>
+          </div>
+        )}
 
         <TextBoxes
           consText={texts.hfTimeline.cons}
           metoText={texts.hfTimeline.meto}
           quoteText={texts.hfTimeline.quote}
-          downloadData={processDataCsv(timelineData)}
+          downloadData={processLineSeriesDataToCsv(timelineData)}
           downloadName={`timeline_hf_${areaType.id}_${areaId.id}.csv`}
           isInfoOpen={showInfoGraph}
           toggleInfo={toggleInfoGraph}

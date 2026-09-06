@@ -8,7 +8,7 @@ import {
   type LegacyContextValues,
 } from "pages/search/hooks/SearchContext";
 import { matchColor } from "pages/search/utils/matchColor";
-import processDataCsv from "pages/search/utils/processDataCsv";
+import { processLineSeriesDataToCsv } from "pages/search/utils/processDataCsv";
 import TextBoxes from "@ui/TextBoxes";
 import type {
   timelinePAConn,
@@ -202,7 +202,7 @@ class TimelinePAConnectivity extends React.Component<
               consText={texts.paConnTimeline.cons}
               metoText={texts.paConnTimeline.meto}
               quoteText={texts.paConnTimeline.quote}
-              downloadData={processDataCsv(timelinePAConnData)}
+              downloadData={processLineSeriesDataToCsv(timelinePAConnData)}
               downloadName={`conn_timeline_${areaTypeId}_${areaIdId}.csv`}
               isInfoOpen={showInfoGraph}
               toggleInfo={this.toggleInfoGraph}
