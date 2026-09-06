@@ -69,6 +69,7 @@ export function Gap() {
 
   useEffect(() => {
     setIsLoading((old) => old + 1);
+    setErrors([]);
     Promise.all([
       controller.current.getGapTaxonomicGroups(),
       getMetricTexts("recordGaps"),
@@ -86,11 +87,17 @@ export function Gap() {
       });
   }, []);
 
+  const groupRequest = selectedGroup !== "all" ? selectedGroup : undefined;
+
   useEffect(() => {
     setIsLoading((old) => old + 1);
+    setErrors([]);
+    setYearsAvailable([]);
+    setSelectedYears([]);
+
     Promise.all([
-      controller.current.getGapData(selectedGroup),
-      controller.current.getGapAverage(selectedGroup),
+      controller.current.getGapData(groupRequest),
+      controller.current.getGapAverage(groupRequest),
     ])
       .then(([gapData, average]) => {
         const series = gapData?.series ?? [];
@@ -117,7 +124,7 @@ export function Gap() {
       .finally(() => {
         setIsLoading((old) => old - 1);
       });
-  }, [selectedGroup]);
+  }, [groupRequest]);
 
   useEffect(() => {
     if (!lastYear) {
@@ -129,7 +136,7 @@ export function Gap() {
     });
 
     controller.current
-      .getGapLayer(String(lastYear), selectedGroup)
+      .getGapLayer(String(lastYear), groupRequest)
       .then((layersRes) => {
         searchDispatch({
           type: SearchUpdated.WILDCARD,
@@ -153,7 +160,7 @@ export function Gap() {
           loadingLayer: false,
         });
       });
-  }, [selectedGroup, lastYear, searchDispatch]);
+  }, [groupRequest, lastYear, searchDispatch]);
 
   const handleSelectYear = (year: number) => {
     setSelectedYears((oldYears) => {
@@ -168,7 +175,7 @@ export function Gap() {
       if (newYears.length > GAP_GRAPH_MAX_YEARS_VISUALIZATION_AMOUTN) {
         newYears.shift();
       }
-      return newYears;
+      return newYears.sort();
     });
   };
 
@@ -381,7 +388,7 @@ function SliceTooltip({
       style={{ pointerEvents: "none" }}
     >
       <div className="font-normal text-foreground border-b pb-1">
-        IVR: {slice.points[0]?.data.xFormatted}
+        IVR: {Number(slice.points[0]?.data.x.toFixed(2))}
       </div>
 
       <div className="flex flex-col gap-1">

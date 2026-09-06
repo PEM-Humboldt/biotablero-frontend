@@ -47,9 +47,8 @@ export type MetricTypesMap = {
     category: "muy_alto" | "alto" | "medio" | "bajo" | "muy_bajo";
   }>;
 
-  // TODO: Ddescomentar cuando se actualice el endpoint
-  // recordGaps: { id: string; frequency: number[]; bin_edges: number[] }[];
-  // currentRecordsGaps_average: { id: string; average: number }[];
+  recordGaps: { id: string; frequency: number[]; bin_edges: number[] }[];
+  recordGaps_averages: { id: string; average: number }[];
   statsOnSpecies: {
     id: string;
     total: number;
@@ -61,10 +60,6 @@ export type MetricTypesMap = {
     endemic: number;
     endemic_threatened: number;
   };
-
-  // TODO: Borrar cuando se actualice el endpoint
-  recordGaps: { id: string; frequency: number[]; bin_edges: number[] };
-  currentRecordsGaps_average: { id: string; average: number };
 };
 
 export type MetricsTypes = keyof MetricTypesMap;
