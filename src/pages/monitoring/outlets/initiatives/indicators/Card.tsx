@@ -2,7 +2,6 @@ import { BadgeCheck, type LucideIcon } from "lucide-react";
 
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { Spinner } from "@ui/shadCN/component/spinner";
-import { LOCALE } from "@config/monitoring";
 import {
   Tabs,
   TabsList,
@@ -15,8 +14,16 @@ import type { IndicatorMetadata } from "pages/monitoring/types/indicators";
 import { GraphSelector } from "pages/monitoring/outlets/initiatives/indicators/card/GraphSelector";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
 import { AddMCIndicatorToReport } from "@ui/AddMCIndicatorToReport";
+import { useLocation, useParams } from "react-router";
+import { InitiativeError } from "pages/monitoring/outlets/initiatives/InitiativeError";
+
+interface RouterState {
+  from?: string;
+}
 
 export function Card() {
+  const { detailItem } = useParams();
+  const location = useLocation();
   const { indicators, currentIndicator, isLoading, errors } =
     useIndicatorsCTX();
 
@@ -31,6 +38,19 @@ export function Card() {
 
     return all;
   }, []);
+
+  if (detailItem && !currentIndicator) {
+    const state = location.state as RouterState | null;
+    const previousUrl = state?.from || "/Monitoreo";
+
+    return (
+      <InitiativeError
+        msg="el indicador que buscas no se encuentra en este enlace"
+        errors={errors}
+        goBack={previousUrl}
+      />
+    );
+  }
 
   return (
     <main className="flex-3 bg-[#f5f5f5]">
