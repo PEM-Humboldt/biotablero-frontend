@@ -17,7 +17,7 @@ pipeline {
         stage('Stop container') {
             steps {
                 script {
-                    echo "Stopping the "${CONTAINER_NAME}" container..."
+                    echo "Stopping the ${CONTAINER_NAME} container..."
                     sh "docker compose -p ${PROJECT_NAME} --env-file ${ENVIRONMENT_FILE_NAME} -f ${COMPOSE_FILE_NAME} down"
                 }
             }
@@ -26,7 +26,7 @@ pipeline {
         stage('Deploy new container version') {
             steps {
                 script {
-                    echo "Deploying the "${CONTAINER_NAME}" container..."
+                    echo "Deploying the ${CONTAINER_NAME} container..."
                     sh """
                         export DEFAULT_TAG=${IMAGE_TAG}
                         docker compose -p ${PROJECT_NAME} --env-file ${ENVIRONMENT_FILE_NAME} -f ${COMPOSE_FILE_NAME} up -d
