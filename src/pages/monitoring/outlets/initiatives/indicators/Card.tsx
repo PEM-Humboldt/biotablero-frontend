@@ -39,7 +39,7 @@ export function Card() {
     return all;
   }, []);
 
-  if (detailItem && !currentIndicator) {
+  if (!isLoading && detailItem && !currentIndicator && errors.length) {
     const state = location.state as RouterState | null;
     const previousUrl = state?.from || "/Monitoreo";
 
