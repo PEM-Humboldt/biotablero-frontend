@@ -22,6 +22,7 @@ import {
   StoryTimestamp,
 } from "pages/monitoring/outlets/initiatives/territoryStories/ui/StoryCreationInfo";
 import { uiText } from "pages/monitoring/outlets/initiatives/territoryStories/readTS/territoryStoryReader/layout/uiText";
+import { useState } from "react";
 
 export function TerritoryStoryReader() {
   const { initiativeId } = useParams();
@@ -81,16 +82,7 @@ export function TerritoryStoryReader() {
       <article>
         <header className="flex flex-col px-4 lg:px-8 pt-2 lg:pt-4">
           {currentStory.images.length > 0 && (
-            <figure className="flex flex-col items-end mb-4">
-              <img
-                src={featuredImg.url}
-                alt={featuredImg.alt}
-                className="w-full rounded"
-              />
-              <figcaption className="text-right p-4 pt-1 w-[50%] min-w-[250px] text-balance">
-                {featuredImg.alt}
-              </figcaption>
-            </figure>
+            <FeaturedImageContainer featuredImg={featuredImg} />
           )}
 
           <div className="flex flex-col-reverse">
@@ -191,5 +183,32 @@ export function TerritoryStoryReader() {
         </footer>
       </article>
     </div>
+  );
+}
+
+function FeaturedImageContainer({
+  featuredImg,
+}: {
+  featuredImg: { url: string; alt: string };
+}) {
+  const [isVertical, setIsVertical] = useState(false);
+
+  return (
+    <figure className="flex flex-col items-end mb-4">
+      <img
+        src={featuredImg.url}
+        alt={featuredImg.alt}
+        onLoad={(e) => {
+          const img = e.currentTarget;
+          setIsVertical(img.naturalHeight > img.naturalWidth);
+        }}
+        className={`w-full object-cover rounded ${
+          isVertical ? "aspect-3/2" : "aspect-auto"
+        }`}
+      />
+      <figcaption className="text-right p-4 pt-1 w-[50%] min-w-[250px] text-balance">
+        {featuredImg.alt}
+      </figcaption>
+    </figure>
   );
 }
