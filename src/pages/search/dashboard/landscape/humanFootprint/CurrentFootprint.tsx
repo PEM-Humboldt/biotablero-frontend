@@ -10,7 +10,6 @@ import {
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
 import { matchColor } from "pages/search/utils/matchColor";
-import BackendAPI from "pages/search/api/backendAPI";
 import TextBoxes from "@ui/TextBoxes";
 
 import {
@@ -21,7 +20,8 @@ import {
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CurrentFootprintController } from "pages/search/dashboard/landscape/humanFootprint/CurrentFootprintController";
 import { RasterLayer } from "pages/search/types/layers";
-import { textsObject } from "pages/search/types/texts";
+import type { TextsObject } from "pages/search/types/texts";
+import { getMetricTexts } from "pages/search/utils/texts";
 import colorPalettes from "pages/search/utils/colorPalettes";
 import { formatNumber } from "@utils/format";
 
@@ -32,7 +32,7 @@ interface State {
   hfCurrentValue: number;
   hfCurrentCategory: string;
   message: MessageWrapperType;
-  texts: { hfCurrent: textsObject };
+  texts: { hfCurrent: TextsObject };
   layers: RasterLayer[];
 }
 
@@ -45,7 +45,7 @@ type Action =
   | { type: "CURRENTHF_LAYERS_SUCCEEDED"; payload: RasterLayer[] }
   | { type: "CURRENTHF_VALUES_SUCCEEDED"; payload: LargeStackedBarData[] }
   | { type: "CURRENTHF_VALUES_FAILED" }
-  | { type: "SET_TEXTS"; payload: textsObject };
+  | { type: "SET_TEXTS"; payload: TextsObject };
 
 const initialState: State = {
   showInfoGraph: true,
@@ -205,7 +205,7 @@ export function CurrentFootprint() {
         setLoadingLayer(false);
       });
 
-    BackendAPI.requestSectionTexts("hfCurrent")
+    getMetricTexts("currentHF")
       .then((res) => {
         if (!isCurrent) return;
         dispatch({

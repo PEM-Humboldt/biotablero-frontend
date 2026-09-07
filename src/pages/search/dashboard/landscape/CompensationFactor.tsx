@@ -12,7 +12,7 @@ import {
   type LegacyContextValues,
 } from "pages/search/hooks/SearchContext";
 import { cfData } from "pages/search/types/compensationFactor";
-import { textsObject } from "pages/search/types/texts";
+import type { TextsObject } from "pages/search/types/texts";
 import { LargeStackedBar } from "@composites/charts/LargeStackedBar";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CompensationFactorController } from "pages/search/dashboard/landscape/CompensationFactorController";
@@ -35,9 +35,9 @@ interface compensationFactorState {
     bioticUnits: MessageWrapperType;
   };
   texts: {
-    cf: textsObject;
-    biomes: textsObject;
-    bioticRegions: textsObject;
+    cf: TextsObject;
+    biomes: TextsObject;
+    bioticRegions: TextsObject;
   };
   layers: Array<ShapeLayer>;
 }
@@ -164,24 +164,25 @@ class CompensationFactor extends React.Component<
         }));
       });
 
-    ["cf", "biomes", "bioticRegions"].forEach((item) => {
-      BackendAPI.requestSectionTexts(item)
-        .then((res) => {
-          if (this.mounted) {
-            this.setState((prevState) => ({
-              texts: { ...prevState.texts, [item]: res },
-            }));
-          }
-        })
-        .catch(() => {
-          this.setState((prevState) => ({
-            texts: {
-              ...prevState.texts,
-              [item]: { info: "", cons: "", meto: "", quote: "" },
-            },
-          }));
-        });
-    });
+    // TODO: Actualizar textos de acuerdo a nuevo endpoint en searchAPI
+    // ["cf", "biomes", "bioticRegions"].forEach((item) => {
+    //   BackendAPI.requestSectionTexts(item)
+    //     .then((res) => {
+    //       if (this.mounted) {
+    //         this.setState((prevState) => ({
+    //           texts: { ...prevState.texts, [item]: res },
+    //         }));
+    //       }
+    //     })
+    //     .catch(() => {
+    //       this.setState((prevState) => ({
+    //         texts: {
+    //           ...prevState.texts,
+    //           [item]: { info: "", cons: "", meto: "", quote: "" },
+    //         },
+    //       }));
+    //     });
+    // });
 
     setLoadingLayer(true);
 

@@ -3,11 +3,9 @@ import SearchAPI from "pages/search/api/searchAPI";
 import type { GapSerieData } from "pages/search/types/species";
 // TODO: descomentar la importación cuando el endpoint de grupos esté
 // import axios from "axios";
-import type { textsObject } from "pages/search/types/texts";
 import LayerAPI from "pages/search/api/layerAPI";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import type { RasterLayer } from "pages/search/types/layers";
-import BackendAPI from "pages/search/api/backendAPI";
 
 export class GapController {
   areaType: string = "";
@@ -141,30 +139,6 @@ export class GapController {
       .finally(() => {
         this.activeRequests.delete(requestKey);
       });
-  }
-
-  /**
-   * Returns texts for the Gap section
-   *
-   * @param {String} sectionName section name
-   *
-   * @returns {Object} texts of forestLP section
-   */
-  async getGapTexts(sectionName: string): Promise<textsObject> {
-    // TODO: Eliminar este retornogcuando el back con los textos esté al día
-    return Promise.resolve({
-      info: "",
-      cons: "",
-      meto: "",
-      quote: "",
-    });
-
-    // TODO: Actualizar funcion cuando el back con los textos esté al día
-    // BackendAPI.requestSectionTexts(sectionName)
-    //   .then((res) => res)
-    //   .catch(() => {
-    //     throw new Error("Error getting data");
-    //   });
   }
 
   /**
