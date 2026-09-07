@@ -219,11 +219,7 @@ export function InitiativeCard({
 
         <TagsUpdater title={uiText.initiative.module.tags.title} />
 
-        <ImagesUpdater
-          title={uiText.initiative.module.images.title}
-          backEndpointImage="Initiative/UploadImage"
-          backEndpointBanner="Initiative/UploadBanner"
-        />
+        <ImagesUpdater title={uiText.initiative.module.images.title} />
       </article>
     </AdminInitiativeUpdateCtx.Provider>
   );
