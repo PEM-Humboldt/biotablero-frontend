@@ -1,0 +1,38 @@
+services:
+
+  biotablero_front:
+    image: ghcr.io/pem-humboldt/biotablero-frontend:${DEFAULT_TAG}
+    container_name: biotablero_front_dev
+    restart: unless-stopped
+    environment:
+      - VITE_BACKEND_URL=${VITE_BACKEND_URL}
+      - VITE_GEOSERVER_URL=${VITE_GEOSERVER_URL}
+      - VITE_BACKEND_KEY=${VITE_BACKEND_KEY}
+      - VITE_ENVIRONMENT='develop'
+      - VITE_API_KEY=${VITE_API_KEY}
+      - VITE_DOMAIN=${VITE_DOMAIN}
+      - VITE_PROJECT_ID=${VITE_PROJECT_ID}
+      - VITE_STORAGE_BUCKET=${VITE_STORAGE_BUCKET}
+      - VITE_SENDER_ID=${VITE_SENDER_ID}
+      - VITE_APP_ID=${VITE_APP_ID}
+      - VITE_SEARCH_BACKEND_URL=${VITE_SEARCH_BACKEND_URL}
+      - VITE_GA_TRACKING_ID=${VITE_GA_TRACKING_ID}
+      - VITE_YM_ID=${VITE_YM_ID}
+      - VITE_MONITORING_BACKEND_URL=${VITE_MONITORING_BACKEND_URL}
+      - VITE_AUTH_BACKEND_URL=${KEYCLOAK_BASE_URL}
+      - VITE_APP_KEYCLOAK_URL=${KEYCLOAK_BASE_URL}
+      - VITE_APP_KEYCLOAK_REALM=${KEYCLOAK_REALM}
+      - VITE_APP_KEYCLOAK_CLIENT_ID=${KEYCLOAK_CLIENT}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.bt-front.rule=PathPrefix(`/`)
+      - traefik.http.routers.bt-front.entrypoints=web
+      - traefik.http.services.bt-front.loadbalancer.server.port=5000
+      - traefik.http.routers.bt-front.middlewares=cors-custom, secure-headers
+    networks:
+      - bio_net
+
+networks:
+  bio_net:
+    name: bio_net_dev
+    external: true
