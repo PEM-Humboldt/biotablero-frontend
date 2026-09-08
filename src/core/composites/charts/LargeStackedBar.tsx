@@ -74,7 +74,7 @@ export const LargeStackedBarElement = (props: Props) => {
     allData: Record<string, string | number>,
     color: string,
   ) => {
-    if (allData[`${id}Percentage`]) {
+    if (units !== "%" && allData[`${id}Percentage`]) {
       return (
         <div className="tooltip-graph-container">
           <strong style={{ color: darkColors[color] ? "#ffffff" : color }}>
@@ -93,7 +93,11 @@ export const LargeStackedBarElement = (props: Props) => {
         <strong style={{ color: darkColors[color] ? "#ffffff" : color }}>
           {allData[`${id}Label`]}
         </strong>
-        <div>{`${formatNumber(allData[id], 0)} ${units}`}</div>
+        <div>
+          {units === "%"
+            ? `${formatNumber(allData[id], 2)}%`
+            : `${formatNumber(allData[id], 0)} ${units}`}
+        </div>
       </div>
     );
   };
