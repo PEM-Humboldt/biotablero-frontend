@@ -49,10 +49,10 @@ function Selector({ showDrawControls }: SelectorProps) {
         setDrawPolygonFlag(polygonFlag);
 
         const areaTypesReq = await SearchAPI.requestAreaTypes();
-        if (areaTypesReq.length < 1) {
-          setAreasError("empty-result");
-        }
-        setAreaTypes(areaTypesReq);
+        const selectableAreaTypes = areaTypesReq.filter(
+          ({ id }) => id !== "national",
+        );
+        setAreaTypes(selectableAreaTypes);
         setAreasError("none");
       } catch (err) {
         setAreasError("request-failed");
