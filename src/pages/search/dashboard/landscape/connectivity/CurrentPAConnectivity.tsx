@@ -22,10 +22,13 @@ import {
   SmallBarsData,
   type SmallBarTooltip,
 } from "@composites/charts/SmallBars";
+import { LargeStackedBar } from "@composites/charts/LargeStackedBar";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CurrentPAConnectivityController } from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivityController";
+import { formatNumber } from "@utils/format";
 import colorPalettes from "pages/search/utils/colorPalettes";
 import { RasterLayer } from "pages/search/types/layers";
+import { CurrentPAConnGraphData } from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivityController";
 
 const legendDPCCategories = {
   muy_bajo: "Muy bajo",
@@ -38,11 +41,16 @@ const DPCCats = (
   Object.keys(legendDPCCategories) as Array<keyof typeof legendDPCCategories>
 ).reverse();
 
+type CurrentPAConnBarData = CurrentPAConnGraphData;
+
 interface CurrentPAConnState {
   infoShown: Set<string>;
   dpcData: Array<DPC>;
   showLowestDpc: boolean;
+  currentPAConnData: Array<CurrentPAConnBarData>;
+  currentPAConnPercentage: number;
   messages: {
+    currentPAConn: MessageWrapperType;
     dpc: MessageWrapperType;
   };
   graphData: {
@@ -52,6 +60,7 @@ interface CurrentPAConnState {
   };
   texts: {
     paConnDPC: TextsObject;
+    protConn: TextsObject;
   };
   layers: RasterLayer[];
 }
@@ -66,18 +75,31 @@ type DpcPayload = {
   showLowestDpc: boolean;
 };
 
+type CurrentPAConnPayload = {
+  currentPAConnData: Array<CurrentPAConnBarData>;
+  currentPAConnPercentage: number;
+};
+
 type Action =
   | { type: "TOGGLE_INFO"; payload: string }
   | { type: "DPC_SUCCEEDED"; payload: DpcPayload }
   | { type: "DPC_FAILED" }
-  | { type: "SET_TEXTS"; payload: TextsObject }
+  | { type: "CURRENT_PA_CONN_SUCCEEDED"; payload: CurrentPAConnPayload }
+  | { type: "CURRENT_PA_CONN_FAILED" }
+  | {
+      type: "SET_TEXTS";
+      payload: { key: keyof CurrentPAConnState["texts"]; texts: TextsObject };
+    }
   | { type: "PA_LAYERS_SUCCEEDED"; payload: RasterLayer[] };
 
 const initialState: CurrentPAConnState = {
-  infoShown: new Set(["dpc"]),
+  infoShown: new Set(["protConn", "dpc"]),
   dpcData: [],
   showLowestDpc: false,
+  currentPAConnData: [],
+  currentPAConnPercentage: 0,
   messages: {
+    currentPAConn: "loading",
     dpc: "loading",
   },
   graphData: {
@@ -87,6 +109,7 @@ const initialState: CurrentPAConnState = {
   },
   texts: {
     paConnDPC: { info: "", cons: "", meto: "", quote: "" },
+    protConn: { info: "", cons: "", meto: "", quote: "" },
   },
   layers: [],
 };
@@ -115,8 +138,26 @@ function reducer(
         ...state,
         messages: { ...state.messages, dpc: "no-data" },
       };
+    case "CURRENT_PA_CONN_SUCCEEDED":
+      return {
+        ...state,
+        currentPAConnData: action.payload.currentPAConnData,
+        currentPAConnPercentage: action.payload.currentPAConnPercentage,
+        messages: { ...state.messages, currentPAConn: null },
+      };
+    case "CURRENT_PA_CONN_FAILED":
+      return {
+        ...state,
+        messages: { ...state.messages, currentPAConn: "no-data" },
+      };
     case "SET_TEXTS":
-      return { ...state, texts: { paConnDPC: action.payload } };
+      return {
+        ...state,
+        texts: {
+          ...state.texts,
+          [action.payload.key]: action.payload.texts,
+        },
+      };
     case "PA_LAYERS_SUCCEEDED":
       return {
         ...state,
@@ -152,6 +193,16 @@ function CurrentPAConnectivity() {
       type: SearchUpdated.LOADING_LAYER,
       loadingLayer: true,
     });
+
+    controller
+      .getCurrentPAConn()
+      .then((result) => {
+        dispatch({ type: "CURRENT_PA_CONN_SUCCEEDED", payload: result });
+      })
+      .catch((error) => {
+        if (error?.message === "request canceled") return;
+        dispatch({ type: "CURRENT_PA_CONN_FAILED" });
+      });
 
     controller
       .loadSortedDpcData(false)
@@ -197,19 +248,26 @@ function CurrentPAConnectivity() {
         dispatch({ type: "DPC_FAILED" });
       });
 
-    getMetricTexts("dpc")
-      .then((res) => {
-        dispatch({
-          type: "SET_TEXTS",
-          payload: res,
+    const textMetrics = [
+      { metric: "protConn", key: "protConn" },
+      { metric: "dpc", key: "paConnDPC" },
+    ] as const;
+
+    textMetrics.forEach(({ metric, key }) => {
+      getMetricTexts(metric)
+        .then((texts) => {
+          dispatch({ type: "SET_TEXTS", payload: { key, texts } });
+        })
+        .catch(() => {
+          dispatch({
+            type: "SET_TEXTS",
+            payload: {
+              key,
+              texts: { info: "", cons: "", meto: "", quote: "" },
+            },
+          });
         });
-      })
-      .catch(() => {
-        dispatch({
-          type: "SET_TEXTS",
-          payload: { info: "", cons: "", meto: "", quote: "" },
-        });
-      });
+    });
 
     return () => {
       controller.cancelActiveRequests();
@@ -248,14 +306,74 @@ function CurrentPAConnectivity() {
     });
   };
 
-  const { dpcData, showLowestDpc, infoShown, messages, texts, graphData } =
-    state;
+  const {
+    dpcData,
+    showLowestDpc,
+    infoShown,
+    messages,
+    texts,
+    graphData,
+    currentPAConnData,
+    currentPAConnPercentage,
+  } = state;
   const areaTypeId = areaType!.id;
   const areaIdId = areaId!.id.toString();
 
   return (
     <div className="graphcontainer pt6">
       <div>
+        <h6>Conectividad de áreas protegidas</h6>
+        <IconTooltip title="Interpretación">
+          <span className="iconWrapper">
+            <InfoIcon
+              fontSize="medium"
+              className={`metrics-info-icon${infoShown.has("protConn") ? " activeBox" : ""}`}
+              onClick={() => toggleInfo("protConn")}
+            />
+          </span>
+        </IconTooltip>
+        {infoShown.has("protConn") && (
+          <ShortInfo
+            description={`<p>${texts.protConn.info}</p>`}
+            className="graphinfo2"
+            collapseButton={false}
+          />
+        )}
+        <div>
+          <LargeStackedBar
+            data={currentPAConnData}
+            colors={(key: string | number) =>
+              matchColor("currentPAConn")(key) || colorPalettes.default[0]
+            }
+            loadStatus={messages.currentPAConn}
+            labelX="Porcentaje (%)"
+            labelY="Conectividad de áreas protegidas"
+            units="%"
+            padding={0.25}
+          />
+        </div>
+        {currentPAConnData.length > 0 && (
+          <div className="mb2 ml-6">
+            <h6 className="innerInfo">Porcentaje de área protegida</h6>
+            <h5
+              className="innerInfoH5"
+              style={{
+                backgroundColor: matchColor("timelinePAConn")("prot"),
+              }}
+            >
+              {`${formatNumber(currentPAConnPercentage, 2)}%`}
+            </h5>
+          </div>
+        )}
+        <TextBoxes
+          consText={texts.protConn.cons}
+          metoText={texts.protConn.meto}
+          quoteText={texts.protConn.quote}
+          downloadData={currentPAConnData}
+          downloadName={`conn_pa_current_${areaTypeId}_${areaIdId}.csv`}
+          isInfoOpen={infoShown.has("protConn")}
+          toggleInfo={() => toggleInfo("protConn")}
+        />
         <h6>Aporte de las áreas protegidas a la conectividad</h6>
         <IconTooltip title="Interpretación">
           <span className="iconWrapper">
