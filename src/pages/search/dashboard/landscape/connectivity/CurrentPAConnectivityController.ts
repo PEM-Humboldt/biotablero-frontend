@@ -1,5 +1,5 @@
 import { SmallBarsData } from "@composites/charts/SmallBars";
-import { DPC } from "pages/search/types/connectivity";
+import { currentPAConn, DPC } from "pages/search/types/connectivity";
 import { formatNumber } from "@utils/format";
 import { type SmallBarTooltip } from "@composites/charts/SmallBars";
 import SearchAPI from "pages/search/api/searchAPI";
@@ -12,6 +12,8 @@ import { MetricsUtils } from "pages/search/utils/metrics";
 
 type DpcGraphData = ReturnType<CurrentPAConnectivityController["getGraphData"]>;
 
+export type CurrentPAConnGraphData = currentPAConn & { label: string };
+
 const ASSOCIATED_COLLECTION = "AreasProtegidas";
 
 export class CurrentPAConnectivityController {
@@ -22,10 +24,76 @@ export class CurrentPAConnectivityController {
 
   constructor() {}
 
+  private transformProtConn(
+    res: MetricTypesMap["protConn"],
+  ): Array<CurrentPAConnGraphData> {
+    return [
+      {
+        key: "prot_conn",
+        area: res.prot_conn,
+        percentage: res.prot_conn,
+        label: "Protegida conectada",
+      },
+      {
+        key: "prot_unconn",
+        area: res.prot_unconn,
+        percentage: res.prot_unconn,
+        label: "Protegida no conectada",
+      },
+      {
+        key: "unprot",
+        area: res.unprot,
+        percentage: res.unprot,
+        label: "No protegida",
+      },
+    ];
+  }
+
   setArea(areaType: string, areaId: number) {
     this.areaType = areaType;
     this.areaId = areaId;
   }
+
+  /**
+   * Get the current connectivity values for protected areas.
+   */
+  getCurrentPAConn = async (): Promise<{
+    currentPAConnData: Array<CurrentPAConnGraphData>;
+    currentPAConnPercentage: number;
+  }> => {
+    const requestKey = "current-pa-conn";
+    this.activeRequests.get(requestKey)?.cancel();
+
+    const { request, source } = SearchAPI.requestMetricsValues<"protConn">(
+      "protConn",
+      Number(this.areaId),
+    );
+    this.activeRequests.set(requestKey, source);
+
+    try {
+      const res: MetricTypesMap["protConn"] = await request;
+      if (typeof res === "string") {
+        throw new Error("request canceled");
+      }
+      const currentPAConnData = this.transformProtConn(res);
+      const protConn = currentPAConnData.find(
+        (item) => item.key === "prot_conn",
+      );
+      const protUnconn = currentPAConnData.find(
+        (item) => item.key === "prot_unconn",
+      );
+
+      return {
+        currentPAConnData,
+        currentPAConnPercentage:
+          protConn && protUnconn
+            ? protConn.percentage + protUnconn.percentage
+            : 0,
+      };
+    } finally {
+      this.activeRequests.delete(requestKey);
+    }
+  };
 
   /**
    * Get the first 5 values for connectivity according to the given order
