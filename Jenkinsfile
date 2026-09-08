@@ -8,7 +8,7 @@ pipeline {
     environment {
         COMPOSE_FILE_NAME = "docker-compose-jenkins.yml"
         PROJECT_NAME = "bt-local"
-        ENVIRONMENT_FILE_NAME = ".env.local"
+        ENV_FILE_PATH = "/var/jenkins_secrets/secrets.env"
         CONTAINER_NAME = "biotablero_front_dev"
         IMAGE_TAG = "${params.IMAGE_TAG}"
     }
@@ -18,7 +18,7 @@ pipeline {
             steps {
                 script {
                     echo "Stopping the ${CONTAINER_NAME} container..."
-                    sh "docker compose -p ${PROJECT_NAME} --env-file ${ENVIRONMENT_FILE_NAME} -f ${COMPOSE_FILE_NAME} down"
+                    sh "docker compose -p ${PROJECT_NAME} --env-file ${ENV_FILE_PATH} -f ${COMPOSE_FILE_NAME} down"
                 }
             }
         }
@@ -29,7 +29,7 @@ pipeline {
                     echo "Deploying the ${CONTAINER_NAME} container..."
                     sh """
                         export DEFAULT_TAG=${IMAGE_TAG}
-                        docker compose -p ${PROJECT_NAME} --env-file ${ENVIRONMENT_FILE_NAME} -f ${COMPOSE_FILE_NAME} up -d
+                        docker compose -p ${PROJECT_NAME} --env-file ${ENV_FILE_PATH} -f ${COMPOSE_FILE_NAME} up -d
                     """
                 }
             }
