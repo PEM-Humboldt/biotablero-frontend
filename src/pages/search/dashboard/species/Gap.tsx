@@ -1,5 +1,5 @@
 import { ResponsiveLine, type SliceData } from "@nivo/line";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef } from "react";
 import { getSeriesColor } from "@utils/color";
 import { cn } from "@ui/shadCN/lib/utils";
 import { Button } from "@ui/shadCN/component/button";
@@ -40,110 +40,290 @@ const customColorMap: Record<number, string> = {
   2025: GRAPHS_EXTENDED_COLOR_PALETTE[29],
 };
 
+type GapSerie = { id: string; data: { x: number; y: number }[] };
+
+type GapState = {
+  isLoading: boolean;
+  errors: string[];
+  availableGroups: string[];
+  currentGroup: string;
+  availableYears: number[];
+  activeYears: number[];
+  seriesData: GapSerie[];
+  averages: Record<string, number>;
+  showInfo: boolean;
+  texts: TextsObject;
+};
+
+const gapInitialState: GapState = {
+  isLoading: true,
+  errors: [],
+  availableGroups: [],
+  currentGroup: "all",
+  availableYears: [],
+  activeYears: [],
+  seriesData: [],
+  averages: {},
+  showInfo: false,
+  texts: { info: "", cons: "", meto: "", quote: "" },
+};
+
+enum GapsUpdated {
+  INITIAL_DATA = "initialData",
+  LOADING = "isLoading",
+  ERRORS_FOUND = "errors",
+  TAXONOMIC_GROUP = "taxonomicGroup",
+  ACTIVE_YEARS = "yearsSelected",
+  SHOW_INFO = "showTexts",
+}
+
+type GapAction =
+  | { type: GapsUpdated.LOADING; forceState?: boolean }
+  | { type: GapsUpdated.SHOW_INFO; forceState?: boolean }
+  | {
+      type: GapsUpdated.ERRORS_FOUND;
+      errors: { user: string[]; console: unknown };
+    }
+  | {
+      type: GapsUpdated.INITIAL_DATA;
+      payload: {
+        taxonomicGroups: string[];
+        texts: TextsObject;
+        series: GapSerie[];
+        yearsAvailable: number[];
+        averages: Record<string, number>;
+      };
+    }
+  | { type: GapsUpdated.ACTIVE_YEARS; selectedYear: number }
+  | {
+      type: GapsUpdated.TAXONOMIC_GROUP;
+      payload: {
+        taxonomicGroup: string;
+        series: GapSerie[];
+        yearsAvailable: number[];
+        averages: Record<string, number>;
+      };
+    };
+
+function preSelectedYears(yearsAvailable: number[]): number[] {
+  return yearsAvailable.length > 0
+    ? yearsAvailable.slice(
+        -Math.min(
+          GAP_GRAPH_START_YEARS_VISUALIZATION_AMOUTN,
+          yearsAvailable.length,
+        ),
+      )
+    : [];
+}
+
+function gapReducer(state: GapState, action: GapAction): GapState {
+  switch (action.type) {
+    case GapsUpdated.LOADING: {
+      const isLoading =
+        action.forceState !== undefined ? action.forceState : !state.isLoading;
+      return {
+        ...state,
+        errors: isLoading ? [] : state.errors,
+        isLoading,
+      };
+    }
+
+    case GapsUpdated.SHOW_INFO: {
+      const isActive =
+        action.forceState !== undefined ? action.forceState : !state.showInfo;
+      return {
+        ...state,
+        errors: isActive ? [] : state.errors,
+        showInfo: isActive,
+      };
+    }
+
+    case GapsUpdated.ERRORS_FOUND:
+      console.error(action.errors.console);
+      return {
+        ...state,
+        errors: action.errors.user,
+        isLoading: false,
+      };
+
+    case GapsUpdated.INITIAL_DATA:
+      return {
+        ...state,
+        availableGroups: action.payload.taxonomicGroups,
+        texts: action.payload.texts,
+        seriesData: action.payload.series,
+        availableYears: action.payload.yearsAvailable,
+        activeYears: preSelectedYears(action.payload.yearsAvailable),
+        averages: action.payload.averages,
+        isLoading: false,
+        errors: [],
+      };
+
+    case GapsUpdated.TAXONOMIC_GROUP:
+      return {
+        ...state,
+        currentGroup: action.payload.taxonomicGroup,
+        averages: action.payload.averages,
+        seriesData: action.payload.series,
+        availableYears: action.payload.yearsAvailable,
+        activeYears: preSelectedYears(action.payload.yearsAvailable),
+        isLoading: false,
+        errors: [],
+      };
+
+    case GapsUpdated.ACTIVE_YEARS: {
+      const newYearsSelection = state.activeYears.includes(action.selectedYear)
+        ? state.activeYears.filter((y) => y !== action.selectedYear)
+        : [...new Set([...state.activeYears, action.selectedYear])];
+
+      if (newYearsSelection.length <= 0) {
+        newYearsSelection.push(
+          state.availableYears[state.availableYears.length - 1],
+        );
+      }
+
+      if (newYearsSelection.length > GAP_GRAPH_MAX_YEARS_VISUALIZATION_AMOUTN) {
+        newYearsSelection.shift();
+      }
+
+      return {
+        ...state,
+        activeYears: newYearsSelection,
+      };
+    }
+
+    default:
+      console.warn("Unknown requested gapReducer action");
+      return state;
+  }
+}
+
 export function Gap() {
-  const [isLoading, setIsLoading] = useState(0);
-  const [errors, setErrors] = useState<string[]>([]);
-  const [groupsAvailable, setGroupsAvailable] = useState<string[]>([]);
-  const [selectedGroup, setSelectedGroup] = useState("");
-  const [yearsAvailable, setYearsAvailable] = useState<number[]>([]);
-  const [selectedYears, setSelectedYears] = useState<number[]>([]);
-  const [showInfoGraph, setShowInfoGraph] = useState(false);
-  const [recordsGapAverage, setRecordsGapAverage] = useState<
-    Record<string, number>
-  >({});
-
-  const [texts, setTexts] = useState<{ recordsGap: TextsObject }>({
-    recordsGap: { info: "", cons: "", meto: "", quote: "" },
-  });
-  const [groupSeries, setGroupSeries] = useState<
-    { id: string; data: { x: number; y: number }[] }[]
-  >([]);
   const { areaType, areaId } = useSearchStateCTX();
+  const [gap, updateGap] = useReducer(gapReducer, gapInitialState);
   const searchDispatch = useSearchDispatchCTX();
-  const controller = useRef(new GapController());
+  const controllerRef = useRef<GapController | null>(null);
 
-  const lastYear = selectedYears[selectedYears.length - 1];
-
-  if (areaType && areaId) {
-    controller.current.setArea(areaType.id, areaId.id);
+  if (!controllerRef.current) {
+    controllerRef.current = new GapController();
   }
 
-  useEffect(() => {
-    setIsLoading((old) => old + 1);
-    setErrors([]);
-    Promise.all([
-      controller.current.getGapTaxonomicGroups(),
-      getMetricTexts("recordGaps"),
-    ])
-      .then(([groups, texts]) => {
-        setGroupsAvailable(groups);
-        setTexts({ recordsGap: texts });
-      })
-      .catch((err) => {
-        console.error(err);
-        setErrors(["No fue posible obtener los datos del indicador"]);
-      })
-      .finally(() => {
-        setIsLoading((old) => old - 1);
+  const lastYear = gap.activeYears.toSorted()[gap.activeYears.length - 1];
+
+  if (areaType && areaId) {
+    controllerRef.current.setArea(areaType.id, areaId.id);
+  }
+
+  const getGapData = useCallback(
+    (taxonomicGroup: string) => {
+      if (!controllerRef.current) {
+        return;
+      }
+      const groupRequest =
+        taxonomicGroup === "all" ? undefined : taxonomicGroup;
+      const controller = controllerRef.current;
+
+      updateGap({ type: GapsUpdated.LOADING, forceState: true });
+      searchDispatch({
+        type: SearchUpdated.LOADING_LAYER,
+        loadingLayer: true,
       });
-  }, []);
 
-  const groupRequest = selectedGroup !== "all" ? selectedGroup : undefined;
-
-  useEffect(() => {
-    setIsLoading((old) => old + 1);
-    setErrors([]);
-    setYearsAvailable([]);
-    setSelectedYears([]);
-
-    Promise.all([
-      controller.current.getGapData(groupRequest),
-      controller.current.getGapAverage(groupRequest),
-    ])
-      .then(([gapData, average]) => {
-        const series = gapData?.series ?? [];
-        const years = gapData?.years ?? [];
-
-        setRecordsGapAverage(average ?? {});
-        setGroupSeries(series);
-        setYearsAvailable(years);
-        setSelectedYears(
-          years.length > 0
-            ? years.slice(
-                -Math.min(
-                  GAP_GRAPH_START_YEARS_VISUALIZATION_AMOUTN,
-                  years.length,
-                ),
-              )
-            : [],
-        );
-      })
-      .catch((err) => {
-        console.error(err);
-        setErrors(["No fue posible obtener los datos del indicador"]);
-      })
-      .finally(() => {
-        setIsLoading((old) => old - 1);
-      });
-  }, [groupRequest]);
+      Promise.all([
+        controller.getGapData(groupRequest),
+        controller.getGapAverage(groupRequest),
+      ])
+        .then(([gapData, average]) => {
+          updateGap({
+            type: GapsUpdated.TAXONOMIC_GROUP,
+            payload: {
+              series: gapData.series,
+              yearsAvailable: gapData.years,
+              averages: average,
+              taxonomicGroup: taxonomicGroup,
+            },
+          });
+        })
+        .catch((err) => {
+          updateGap({
+            type: GapsUpdated.ERRORS_FOUND,
+            errors: {
+              user: ["No fue posible obtener los datos del indicador"],
+              console: err,
+            },
+          });
+        });
+    },
+    [searchDispatch],
+  );
 
   useEffect(() => {
-    if (!lastYear) {
+    if (!controllerRef.current) {
       return;
     }
+    const controller = controllerRef.current;
+
+    updateGap({ type: GapsUpdated.LOADING, forceState: true });
     searchDispatch({
       type: SearchUpdated.LOADING_LAYER,
       loadingLayer: true,
     });
 
-    controller.current
-      .getGapLayer(String(lastYear), groupRequest)
+    Promise.all([
+      controller.getGapTaxonomicGroups(),
+      getMetricTexts("recordGaps"),
+      controller.getGapData(),
+      controller.getGapAverage(),
+    ])
+      .then(([groups, texts, gapSeries, gapAverages]) => {
+        updateGap({
+          type: GapsUpdated.INITIAL_DATA,
+          payload: {
+            taxonomicGroups: groups,
+            texts: texts,
+            series: gapSeries.series,
+            yearsAvailable: gapSeries.years,
+            averages: gapAverages,
+          },
+        });
+      })
+      .catch((err) => {
+        updateGap({
+          type: GapsUpdated.ERRORS_FOUND,
+          errors: {
+            user: ["No fue posible obtener los datos del indicador"],
+            console: err,
+          },
+        });
+      });
+
+    return () => {
+      controller.cancelActiveRequests();
+    };
+  }, [searchDispatch]);
+
+  useEffect(() => {
+    if (!controllerRef.current || !lastYear) {
+      return;
+    }
+
+    searchDispatch({
+      type: SearchUpdated.LOADING_LAYER,
+      loadingLayer: true,
+    });
+
+    const controller = controllerRef.current;
+    const groupReq = gap.currentGroup === "all" ? undefined : gap.currentGroup;
+
+    controller
+      .getGapLayer(String(lastYear), groupReq)
       .then((layersRes) => {
         searchDispatch({
           type: SearchUpdated.WILDCARD,
           payload: {
             rasterLayers: layersRes,
             mapTitle: { name: `Vacíos · ${lastYear}` },
+            loadingLayer: false,
           },
         });
       })
@@ -153,35 +333,21 @@ export function Gap() {
             type: SearchUpdated.LAYER_ERROR,
             layerError: String(err),
           });
+          searchDispatch({
+            type: SearchUpdated.LOADING_LAYER,
+            loadingLayer: false,
+          });
         }
-      })
-      .finally(() => {
-        searchDispatch({
-          type: SearchUpdated.LOADING_LAYER,
-          loadingLayer: false,
-        });
       });
-  }, [groupRequest, lastYear, searchDispatch]);
+  }, [lastYear, gap.currentGroup, searchDispatch]);
 
   const handleSelectYear = (year: number) => {
-    setSelectedYears((oldYears) => {
-      const newYears = oldYears.includes(year)
-        ? oldYears.filter((y) => y !== year)
-        : [...new Set([...oldYears, year])];
-
-      if (newYears.length <= 0) {
-        newYears.push(yearsAvailable[yearsAvailable.length - 1]);
-      }
-
-      if (newYears.length > GAP_GRAPH_MAX_YEARS_VISUALIZATION_AMOUTN) {
-        newYears.shift();
-      }
-      return newYears.sort();
-    });
+    updateGap({ type: GapsUpdated.ACTIVE_YEARS, selectedYear: year });
   };
 
-  const renderData = groupSeries.filter((g) =>
-    selectedYears.includes(Number(g.id)),
+  const renderData = useMemo(
+    () => gap.seriesData.filter((g) => gap.activeYears.includes(Number(g.id))),
+    [gap.seriesData, gap.activeYears],
   );
 
   return (
@@ -189,30 +355,27 @@ export function Gap() {
       <h4>Índice de Vacíos por Registros (IVR) por km²</h4>
       <IconTooltip title="Interpretación">
         <InfoIcon
-          className={`metrics-info-icon${showInfoGraph ? " activeBox" : ""}`}
-          onClick={() => setShowInfoGraph((prev) => !prev)}
+          className={`metrics-info-icon${gap.showInfo ? " activeBox" : ""}`}
+          onClick={() => updateGap({ type: GapsUpdated.SHOW_INFO })}
         />
       </IconTooltip>
 
-      {showInfoGraph && (
+      {gap.showInfo && (
         <ShortInfo
-          description={`<p>${texts.recordsGap.info}</p>`}
+          description={`<p>${gap.texts.info}</p>`}
           className="graphinfo2"
           collapseButton={false}
         />
       )}
 
-      {Object.keys(groupsAvailable).length > 1 && (
-        <Select
-          value={selectedGroup}
-          onValueChange={(val) => setSelectedGroup(val)}
-        >
+      {gap.availableGroups.length > 1 && (
+        <Select value={gap.currentGroup} onValueChange={getGapData}>
           <SelectTrigger id="gap-species-group" className="border-grey">
             <SelectValue placeholder="Grupo Taxonómico" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Todos los grupos</SelectItem>
-            {groupsAvailable.map((group) => (
+            {gap.availableGroups.map((group) => (
               <SelectItem key={`selectGroup-${group}`} value={group}>
                 {speciesGroupLabels[group] ?? group}
               </SelectItem>
@@ -221,7 +384,7 @@ export function Gap() {
         </Select>
       )}
 
-      {yearsAvailable.length > 1 ? (
+      {gap.availableYears.length > 1 ? (
         <fieldset className="border-0 p-0 m-0">
           <legend className="sr-only">Selecciona los años a visualizar</legend>
           <div
@@ -229,11 +392,10 @@ export function Gap() {
             aria-label="Años a visualizar"
             className="flex flex-wrap items-center"
           >
-            {yearsAvailable
-              .slice()
+            {gap.availableYears
               .sort((a, b) => a - b)
               .map((year) => {
-                const isSelected = selectedYears.includes(year);
+                const isSelected = gap.activeYears.includes(year);
 
                 return (
                   <Button
@@ -275,77 +437,78 @@ export function Gap() {
             )}
             style={{
               backgroundColor:
-                customColorMap[yearsAvailable[0]] ??
-                getSeriesColor(yearsAvailable[0]),
+                customColorMap[gap.availableYears[0]] ??
+                getSeriesColor(gap.availableYears[0]),
             }}
           />
-          <span className="text-sm">{yearsAvailable[0]}</span>
+          <span className="text-sm">{gap.availableYears[0]}</span>
         </div>
       )}
 
-      <ErrorsList errorItems={errors} />
+      <ErrorsList errorItems={gap.errors} />
 
-      <div className="w-full h-full aspect-video">
-        {isLoading ? (
-          <div className="errorData">Cargando datos...</div>
-        ) : (
-          <ResponsiveLine
-            data={renderData}
-            markers={markers(lastYear, recordsGapAverage)}
-            margin={{ top: 30, right: 10, bottom: 60, left: 60 }}
-            xScale={{ type: "linear", min: "auto", max: "auto" }}
-            yScale={{
-              type: "linear",
-              min: 0,
-              max: "auto",
-              stacked: false,
-              reverse: false,
-            }}
-            curve="monotoneX"
-            axisBottom={{
-              tickSize: 5,
-              tickPadding: 5,
-              tickRotation: 0,
-              legend: "Índice de Vacíos de Registros por (IVR)",
-              legendOffset: 36,
-              legendPosition: "middle",
-            }}
-            colors={(series) =>
-              customColorMap[Number(series.id)] ??
-              getSeriesColor(Number(series.id))
-            }
-            gridYValues={5}
-            axisLeft={{
-              tickValues: 5,
-              legend: "Frecuencia de unidades de 1km²",
-              legendOffset: -50,
-              format: (value) => `${value / 1000}k`,
-            }}
-            pointSize={7}
-            pointColor="#ffffff"
-            pointBorderWidth={2}
-            pointBorderColor={{ from: "seriesColor" }}
-            pointLabelYOffset={-12}
-            enableTouchCrosshair={true}
-            useMesh={true}
-            enableSlices="x"
-            sliceTooltip={SliceTooltip}
+      {gap.isLoading ? (
+        <div className="errorData">Cargando datos...</div>
+      ) : (
+        <>
+          <div className="w-full h-full aspect-video">
+            <ResponsiveLine
+              data={renderData}
+              markers={markers(lastYear, gap.averages)}
+              margin={{ top: 30, right: 10, bottom: 60, left: 60 }}
+              xScale={{ type: "linear", min: "auto", max: "auto" }}
+              yScale={{
+                type: "linear",
+                min: 0,
+                max: "auto",
+                stacked: false,
+                reverse: false,
+              }}
+              curve="monotoneX"
+              axisBottom={{
+                tickSize: 5,
+                tickPadding: 5,
+                tickRotation: 0,
+                legend: "Índice de Vacíos de Registros por (IVR)",
+                legendOffset: 36,
+                legendPosition: "middle",
+              }}
+              colors={(series) =>
+                customColorMap[Number(series.id)] ??
+                getSeriesColor(Number(series.id))
+              }
+              gridYValues={5}
+              axisLeft={{
+                tickValues: 5,
+                legend: "Frecuencia de unidades de 1km²",
+                legendOffset: -50,
+                format: (value) => `${value / 1000}k`,
+              }}
+              pointSize={7}
+              pointColor="#ffffff"
+              pointBorderWidth={2}
+              pointBorderColor={{ from: "seriesColor" }}
+              pointLabelYOffset={-12}
+              enableTouchCrosshair={true}
+              useMesh={true}
+              enableSlices="x"
+              sliceTooltip={SliceTooltip}
+            />
+          </div>
+          <p className="text-sm text-center">
+            0 : vacío mínimo · 1 : vacíos máximo
+          </p>
+          <TextBoxes
+            consText={gap.texts.cons}
+            metoText={gap.texts.meto}
+            quoteText={gap.texts.quote}
+            downloadData={controllerRef.current.getDownloadData(renderData)}
+            downloadName={`índiceVacíos_${areaType?.label}_${areaId?.name}.csv`}
+            isInfoOpen={gap.showInfo}
+            toggleInfo={() => updateGap({ type: GapsUpdated.SHOW_INFO })}
           />
-        )}
-      </div>
-      <p className="text-sm text-center">
-        0 : vacío mínimo · 1 : vacíos máximo
-      </p>
-
-      <TextBoxes
-        consText={texts.recordsGap.cons}
-        metoText={texts.recordsGap.meto}
-        quoteText={texts.recordsGap.quote}
-        downloadData={controller.current.getDownloadData(renderData)}
-        downloadName={`índiceVacíos_${areaType?.label}_${areaId?.name}.csv`}
-        isInfoOpen={showInfoGraph}
-        toggleInfo={() => setShowInfoGraph((prev) => !prev)}
-      />
+        </>
+      )}
     </div>
   );
 }

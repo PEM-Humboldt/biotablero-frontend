@@ -1,8 +1,6 @@
 import type { CancelTokenSource } from "axios";
 import SearchAPI from "pages/search/api/searchAPI";
 import type { GapSerieData } from "pages/search/types/species";
-// TODO: descomentar la importación cuando el endpoint de grupos esté
-// import axios from "axios";
 import LayerAPI from "pages/search/api/layerAPI";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import type { RasterLayer } from "pages/search/types/layers";
@@ -30,6 +28,12 @@ export class GapController {
     this.activeRequests.set("recordGaps-groups", source);
 
     return request
+      .then((res) => {
+        if (!Array.isArray(res)) {
+          return [];
+        }
+        return res;
+      })
       .catch((err) => {
         console.error("Error original:", err);
         throw new Error("Error getting data");
@@ -60,6 +64,10 @@ export class GapController {
 
     return request
       .then((res) => {
+        if (!Array.isArray(res)) {
+          return { series: [], years: [] };
+        }
+
         const series = res.reduce<GapSerieData[]>((all, current) => {
           const pairedData = current.bin_edges.map((edge, idx) => ({
             x: edge,
@@ -103,12 +111,16 @@ export class GapController {
     this.activeRequests.set(requestKey, source);
 
     return request
-      .then((res) =>
-        res.reduce<Record<string, number>>((all, current) => {
+      .then((res) => {
+        if (!Array.isArray(res)) {
+          return {};
+        }
+
+        return res.reduce<Record<string, number>>((all, current) => {
           all[current.id] = Number(current.average.toFixed(2));
           return all;
-        }, {}),
-      )
+        }, {});
+      })
       .catch((err) => {
         console.error("Error original:", err);
         throw new Error("Error getting data");
