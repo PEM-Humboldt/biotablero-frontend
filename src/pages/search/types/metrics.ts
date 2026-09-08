@@ -39,6 +39,10 @@ export type MetricTypesMap = {
   protectedAreas_paramo: MetricDataStructure<"id", string>;
   protectedAreas_tropicalDryForest: MetricDataStructure<"id", string>;
   protectedAreas_wetland: MetricDataStructure<"id", string>;
+  protConn: MetricDataStructure<
+    "id",
+    "prot" | "unprot" | "prot_conn" | "prot_unconn"
+  >;
   dpc: Array<{
     id: string;
     dpc: number;
