@@ -34,5 +34,5 @@ services:
 
 networks:
   bio_net:
-    name: bio_net_dev
+    name: bio_net_local
     external: true
