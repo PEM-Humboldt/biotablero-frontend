@@ -58,6 +58,11 @@ export class TimelineFootprintController {
     this.areaId = areaId;
   }
 
+  /**
+   * Fetch the human footprint time series for the selected area.
+   *
+   * @returns A promise resolving to an array of historical data points `TimelineHF[]`.
+   */
   async getTimelineData(): Promise<TimelineHF[]> {
     const { request, source } = SearchAPI.requestMetricsValues<"timelineHF">(
       "timelineHF",
@@ -75,6 +80,12 @@ export class TimelineFootprintController {
       });
   }
 
+  /**
+   * Fetch the extension values for each strategic ecosystem class
+   * configured in `seClasses` for the selected area.
+   *
+   * @returns A promise resolving to a key-value record (Ecosystem ID / value).
+   */
   async getSEData(): Promise<Record<string, number>> {
     const requests: ReturnType<
       typeof SearchAPI.requestMetricsValues<MetricsTypes>
@@ -116,6 +127,13 @@ export class TimelineFootprintController {
       });
   }
 
+  /**
+   * Fetch and processes the raster layer for a specific strategic ecosystem.
+   *
+   * @param metricId - Identifier of the metric or ecosystem to query.
+   *
+   * @returns A promise resolving to an array containing `RasterLayer[]`.
+   */
   async getSELayer(metricId: keyof MetricTypesMap): Promise<RasterLayer[]> {
     const targetSE = this.seClasses.find((se) => se.metricId === metricId);
     if (!targetSE) {
@@ -166,7 +184,7 @@ export class TimelineFootprintController {
   }
 
   /**
-   * Send the cancel signal to all active requests and remove them from the map
+   * Sends the cancel signal to all active requests and remove them from the map
    */
   cancelActiveRequests = () => {
     this.activeRequests.forEach((value) => {
