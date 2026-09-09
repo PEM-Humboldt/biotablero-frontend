@@ -31,7 +31,7 @@ export function Header({
         className,
       )}
     >
-      <div className="flex gap-2 items-baseline p-2 md:px-8">
+      <div className="flex gap-2 items-baseline p-2 md:px-8 min-w-0 flex-1">
         <Link to="/">
           <h1 className="text-secondary font-semibold! m-0! text-xl! sm:text-2xl! md:text-5xl!">
             BioTablero
@@ -42,7 +42,7 @@ export function Header({
         <Menu />
 
         {renderCompositeTitle && (
-          <h2 className="hidden lg:block! lg:text-xl! font-light! border-l border-l-grey-light px-4! m-0! truncate">
+          <h2 className="hidden lg:block! lg:text-xl! font-light! border-l border-l-grey-light px-4! m-0! truncate min-w-0">
             {title} {subtitle !== "" ? `/ ${subtitle}` : ""}
           </h2>
         )}
