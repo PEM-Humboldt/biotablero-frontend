@@ -4,12 +4,30 @@ import { type CancelTokenSource } from "axios";
 import type { TimelineHF } from "pages/search/types/humanFootprint";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import LayerAPI from "pages/search/api/layerAPI";
-
-type SEKeys = Record<"paramo" | "dryForest" | "wetland", string>;
+import type { RasterAPIObject } from "pages/search/types/api";
+import type { MetricsTypes } from "pages/search/types/metrics";
+import { matchColor } from "pages/search/utils/matchColor";
 
 export class TimelineFootprintController {
   areaType: string = "";
   areaId: number = 0;
+  seClasses: { metricId: MetricsTypes; itemId: string; classId: string }[] = [
+    {
+      metricId: "wetland",
+      itemId: "Humedales30",
+      classId: "humedal",
+    },
+    {
+      metricId: "tropicalDryForest",
+      itemId: "BosqueSeco1000",
+      classId: "bosqueSeco",
+    },
+    {
+      metricId: "paramo",
+      itemId: "Paramos30",
+      classId: "paramo",
+    },
+  ];
   activeRequests: Map<string, CancelTokenSource> = new Map();
 
   constructor() {}
@@ -37,87 +55,104 @@ export class TimelineFootprintController {
   }
 
   async getSEData(): Promise<Record<string, number>> {
-    const wetlandReq = SearchAPI.requestMetricsValues<"wetland">(
-      "wetland",
-      this.areaId,
-    );
-    const dryForestReq = SearchAPI.requestMetricsValues<"tropicalDryForest">(
-      "tropicalDryForest",
-      this.areaId,
-    );
-    const paramoReq = SearchAPI.requestMetricsValues<"paramo">(
-      "paramo",
-      this.areaId,
-    );
+    const requests: ReturnType<
+      typeof SearchAPI.requestMetricsValues<MetricsTypes>
+    >["request"][] = [];
 
-    this.activeRequests.set("se_wetland", wetlandReq.source);
-    this.activeRequests.set("se_dryForest", dryForestReq.source);
-    this.activeRequests.set("se_paramo", paramoReq.source);
+    const requestKeys: string[] = [];
 
-    return Promise.all([
-      wetlandReq.request,
-      dryForestReq.request,
-      paramoReq.request,
-    ])
-      .then(([wetlandRes, dryForestRes, paramoRes]) => {
-        const { id: _id1, ...wetlandData } = wetlandRes;
-        const { id: _id2, ...dryForestData } = dryForestRes;
-        const { id: _id3, ...paramoData } = paramoRes;
+    this.seClasses.forEach((se) => {
+      const reqKey = `seData_${se.metricId}`;
+      const { request, source } = SearchAPI.requestMetricsValues<
+        typeof se.metricId
+      >(se.metricId, this.areaId);
 
-        return {
-          ...wetlandData,
-          ...dryForestData,
-          ...paramoData,
-        };
-      })
+      this.activeRequests.set(reqKey, source);
+      requestKeys.push(reqKey);
+      requests.push(request);
+    });
+
+    return Promise.all(requests)
+      .then((res) =>
+        res.reduce<Record<string, number>>((all, cur) => {
+          const dataObj = Array.isArray(cur) ? cur[0] : cur;
+          if (!dataObj || typeof dataObj !== "object") {
+            return all;
+          }
+
+          const { id: _, ...rest } = dataObj as Record<string, number>;
+          return { ...all, ...rest };
+        }, {}),
+      )
       .catch((err) => {
         console.error("Error fetching SE data:", err);
         throw new Error("Error getting ecosystem details");
       })
       .finally(() => {
-        this.activeRequests.delete("se_wetland");
-        this.activeRequests.delete("se_dryForest");
-        this.activeRequests.delete("se_paramo");
+        requestKeys.forEach((key) => {
+          this.activeRequests.delete(key);
+        });
       });
   }
 
-  /**
-   * Get shape layers in GeoJSON format for special ecosystems
-   *
-   * @param {string} selectedKey category for special ecosystems
-   *
-   * @returns { Promise<ShapeLayer> } object with the parameters of the layer
-   */
-  async getSELayer(selectedKey: keyof SEKeys): Promise<Array<RasterLayer>> {
-    const { request, source } = SearchAPI.requestMetricsLayer(
-      "timelineHF",
-      String(this.areaId),
-      selectedKey,
-      this.areaId,
-    );
-    this.activeRequests.set(selectedKey, source);
-    const res = await request;
-    this.activeRequests.delete(selectedKey);
+  async getSELayer(): Promise<Array<RasterLayer>> {
+    const requests: RasterAPIObject["request"][] = [];
+    const requestKeys: string[] = [];
 
-    if (typeof res === "string") {
+    this.seClasses.forEach((se) => {
+      const reqKey = `seLayer_${se.metricId}`;
+      const { request, source } = SearchAPI.requestMetricsLayer(
+        se.metricId,
+        se.itemId,
+        se.classId,
+        this.areaId,
+      );
+      requests.push(request);
+      requestKeys.push(reqKey);
+      this.activeRequests.set(reqKey, source);
+    });
+
+    const res = await Promise.all(requests);
+    requestKeys.forEach((key) => {
+      this.activeRequests.delete(key);
+    });
+
+    if (res.some((response) => typeof response === "string")) {
       throw new Error("request canceled");
     }
 
-    const { request: layerRequest, source: layerSource } =
-      LayerAPI.getLayerData(res);
-    this.activeRequests.set(`${selectedKey}-blob`, layerSource);
-    const blob = await layerRequest;
-    this.activeRequests.delete(`${selectedKey}-blob`);
-    const data = await MetricsUtils.blobToBase64(blob);
+    const layersRequests: Promise<Blob>[] = [];
+    res.forEach((layerObj) => {
+      const { request, source } = LayerAPI.getLayerData(layerObj);
+      layersRequests.push(request);
+      this.activeRequests.set(layerObj.layer, source);
+    });
 
-    return [
-      {
-        id: selectedKey,
-        paneLevel: 2,
-        data,
-        selected: false,
-      },
-    ];
+    const layerResponses = await Promise.all(layersRequests);
+    res.forEach((layerObj) => {
+      this.activeRequests.delete(layerObj.layer);
+    });
+
+    if (res.some((result) => typeof result === "string")) {
+      throw new Error("request canceled");
+    }
+
+    const layersBase64Promises: Promise<string>[] = [];
+
+    layerResponses.forEach((response) => {
+      const layerBase64 = MetricsUtils.blobToBase64(response);
+      layersBase64Promises.push(layerBase64);
+    });
+
+    const layersBase64 = await Promise.all(layersBase64Promises);
+
+    return this.seClasses.map(({ metricId }, index) => ({
+      id: metricId,
+      data: layersBase64[index],
+      selected: false,
+      paneLevel: 2,
+      color: matchColor("hfTimeline")(metricId),
+    }));
   }
 
   /**

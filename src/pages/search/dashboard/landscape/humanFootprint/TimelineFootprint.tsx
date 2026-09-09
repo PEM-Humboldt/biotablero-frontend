@@ -12,7 +12,6 @@ import { LOCALE } from "@config/monitoring";
 
 import type { TimelineHF } from "pages/search/types/humanFootprint";
 import type { TextsObject } from "pages/search/types/texts";
-import type { RasterLayer } from "pages/search/types/layers";
 import {
   useSearchDispatchCTX,
   useSearchStateCTX,
@@ -24,47 +23,65 @@ import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 import { getMetricTexts } from "pages/search/utils/texts";
 
 export const hfTimelineLUT = [
-  { key: "aTotal", label: "Área consulta", source: "poligono" },
-  { key: "paramo", label: "Páramo", source: "paramo" },
-  { key: "dryForest", label: "Bosque Seco Tropical", source: "bosqueSeco" },
-  { key: "wetland", label: "Humedal", source: "humedal" },
+  {
+    key: "aTotal",
+    label: "Área consulta",
+    classId: "poligono",
+    itemId: "Humedales30",
+  },
+  {
+    key: "paramo",
+    label: "Páramo",
+    classId: "paramo",
+    itemId: "Paramos30",
+  },
+  {
+    key: "tropicalDryForest",
+    label: "Bosque Seco Tropical",
+    classId: "bosqueSeco",
+    itemId: "BosqueSeco1000",
+  },
+  {
+    key: "wetland",
+    label: "Humedal",
+    classId: "humedal",
+  },
 ] as const;
 
 export type SEKey = (typeof hfTimelineLUT)[number]["key"];
 export type SELabel = (typeof hfTimelineLUT)[number]["label"];
-export type SESource = (typeof hfTimelineLUT)[number]["source"];
+export type SESource = (typeof hfTimelineLUT)[number]["classId"];
 
-export interface hfTimelineSeries {
+export type TimelineFPSeries = {
   key: SEKey;
   label: SELabel;
   data: { x: string; y: number }[];
-}
+};
 
-interface hfTimelineState {
+type TimelineFPState = {
+  isLoading: boolean;
   showInfoGraph: boolean;
-  timelineData: hfTimelineSeries[];
+  timelineData: TimelineFPSeries[];
   message: MessageWrapperType;
   selectedSE: SELabel;
   seExtension: Partial<Record<SESource, number>>;
-  seLayers: RasterLayer[];
   texts: { hfTimeline: TextsObject };
+};
+
+enum TimelineFPUpdated {
+  SHOW_INFO = "toggleInfoGraph",
+  SERIES = "timelineValuesSucceeded",
+  ERRORS_FOUND = "timelineValuesFailed",
+  CURRENT_SE = "selectSE",
 }
 
-enum TimelineHFUpdated {
-  TOGGLE_TEXTS = "toggleInfoGraph",
-  TIMELINE_VALUES = "timelineValuesSucceeded",
-  TIMELINE_ERROR = "timelineValuesFailed",
-  SELECT_SE = "selectSE",
-  SE_LAYERS = "setLayers",
-}
-
-type hfTimelineActions =
+type TimelineFPActions =
   | {
-      type: TimelineHFUpdated.TOGGLE_TEXTS;
+      type: TimelineFPUpdated.SHOW_INFO;
       forceState?: boolean;
     }
   | {
-      type: TimelineHFUpdated.TIMELINE_VALUES;
+      type: TimelineFPUpdated.SERIES;
       payload: {
         timelineData: TimelineHF[];
         texts?: TextsObject;
@@ -72,19 +89,15 @@ type hfTimelineActions =
       };
     }
   | {
-      type: TimelineHFUpdated.TIMELINE_ERROR;
+      type: TimelineFPUpdated.ERRORS_FOUND;
       error?: string;
     }
   | {
-      type: TimelineHFUpdated.SELECT_SE;
+      type: TimelineFPUpdated.CURRENT_SE;
       seLabel: string | null;
-    }
-  | {
-      type: TimelineHFUpdated.SE_LAYERS;
-      layers: RasterLayer[];
     };
 
-function transformTimelineData(data: TimelineHF[]): hfTimelineSeries[] {
+function transformTimelineData(data: TimelineHF[]): TimelineFPSeries[] {
   if (!Array.isArray(data) || data.length === 0) {
     return [];
   }
@@ -93,19 +106,19 @@ function transformTimelineData(data: TimelineHF[]): hfTimelineSeries[] {
     (left, right) => Number(left.id) - Number(right.id),
   );
 
-  return hfTimelineLUT.map(({ key, label, source }) => ({
+  return hfTimelineLUT.map(({ key, label, classId: source }) => ({
     key,
     label,
     data: orderedData.map((row) => ({ x: row.id, y: row[source] })),
   }));
 }
 
-function reducer(
-  state: hfTimelineState,
-  action: hfTimelineActions,
-): hfTimelineState {
+function timelineFPReducer(
+  state: TimelineFPState,
+  action: TimelineFPActions,
+): TimelineFPState {
   switch (action.type) {
-    case TimelineHFUpdated.TOGGLE_TEXTS:
+    case TimelineFPUpdated.SHOW_INFO:
       return {
         ...state,
         showInfoGraph:
@@ -114,7 +127,7 @@ function reducer(
             : !state.showInfoGraph,
       };
 
-    case TimelineHFUpdated.TIMELINE_VALUES:
+    case TimelineFPUpdated.SERIES:
       return {
         ...state,
         ...(action.payload.texts !== undefined
@@ -127,18 +140,15 @@ function reducer(
         message: null,
       };
 
-    case TimelineHFUpdated.SELECT_SE:
+    case TimelineFPUpdated.CURRENT_SE:
       return { ...state, selectedSE: action.seLabel as SELabel };
 
-    case TimelineHFUpdated.TIMELINE_ERROR:
+    case TimelineFPUpdated.ERRORS_FOUND:
       return {
         ...state,
         timelineData: [],
         message: "no-data",
       };
-
-    case TimelineHFUpdated.SE_LAYERS:
-      return { ...state, seLayers: action.layers };
 
     default:
       console.warn("Unknown requested hfReducer action");
@@ -146,8 +156,9 @@ function reducer(
   }
 }
 
-const initialState: hfTimelineState = {
-  showInfoGraph: true,
+const timelineFPInitialState: TimelineFPState = {
+  isLoading: true,
+  showInfoGraph: false,
   timelineData: [],
   message: "loading",
   selectedSE: "Área consulta",
@@ -155,18 +166,17 @@ const initialState: hfTimelineState = {
   texts: {
     hfTimeline: { info: "", cons: "", meto: "", quote: "" },
   },
-  seLayers: [],
 };
 
-const hfTimelineColors = (key: string | number) =>
+const timelineFPColors = (key: string | number) =>
   matchColor("hfTimeline")(key) ?? "#3d3c48";
 
 export function TimelineFootprint() {
-  const { areaType, areaId } = useSearchStateCTX();
+  const { areaType, areaId, rasterLayers } = useSearchStateCTX();
   const searchMapDispatch = useSearchDispatchCTX();
   const [timelineHFState, timelineHFDispatch] = useReducer(
-    reducer,
-    initialState,
+    timelineFPReducer,
+    timelineFPInitialState,
   );
 
   const {
@@ -176,7 +186,6 @@ export function TimelineFootprint() {
     message,
     texts,
     selectedSE,
-    seLayers: _layers,
   } = timelineHFState;
 
   const controllerRef = useRef(new TimelineFootprintController());
@@ -203,11 +212,11 @@ export function TimelineFootprint() {
       controller.getTimelineData(),
       getMetricTexts("timelineHF"),
       controller.getSEData(),
-      // controller.getLayer(),
+      controller.getSELayer(),
     ])
-      .then(([timelineRawData, timelineTexts, seData]) => {
+      .then(([timelineRawData, timelineTexts, seData, layers]) => {
         timelineHFDispatch({
-          type: TimelineHFUpdated.TIMELINE_VALUES,
+          type: TimelineFPUpdated.SERIES,
           payload: {
             timelineData: timelineRawData,
             texts: timelineTexts,
@@ -216,30 +225,22 @@ export function TimelineFootprint() {
         });
 
         searchMapDispatch({
-          type: SearchUpdated.SHOW_AREA_LAYER,
-          showAreaLayer: true,
+          type: SearchUpdated.WILDCARD,
+          payload: {
+            showAreaLayer: true,
+            rasterLayers: layers,
+            mapTitle: {
+              name: "HH - Huella humana en el tiempo y ecosistemas estratégicos (EE)",
+            },
+            loadingLayer: false,
+          },
         });
-
-        searchMapDispatch({
-          type: SearchUpdated.LOADING_LAYER,
-          loadingLayer: false,
-        });
-
-        // searchMapDispatch({
-        //   type: SearchUpdated.RASTER_LAYERS,
-        //   payload: {
-        //     rasterLayers: baseLayer,
-        //     mapTitle: {
-        //       name: "HH - Huella humana en el tiempo y ecosistemas estratégicos (EE)",
-        //     },
-        //   },
-        // });
       })
       .catch((error) => {
         if (!isCurrent) {
           return;
         }
-        timelineHFDispatch({ type: TimelineHFUpdated.TIMELINE_ERROR });
+        timelineHFDispatch({ type: TimelineFPUpdated.ERRORS_FOUND });
         searchMapDispatch({
           type: SearchUpdated.LAYER_ERROR,
           layerError: error instanceof Error ? error.message : String(error),
@@ -255,30 +256,49 @@ export function TimelineFootprint() {
   const customColorMap = useMemo(
     () =>
       timelineData.reduce<Record<string, string>>((acc, item) => {
-        acc[item.label] = hfTimelineColors(item.key);
+        acc[item.label] = timelineFPColors(item.key);
         return acc;
       }, {}),
     [timelineData],
   );
 
   const toggleInfoGraph = () => {
-    timelineHFDispatch({ type: TimelineHFUpdated.TOGGLE_TEXTS });
+    timelineHFDispatch({ type: TimelineFPUpdated.SHOW_INFO });
   };
 
   const handleEcosystemSelection = (ecosystemLabel: string) => {
     const ecosystem = hfTimelineLUT.find((e) => e.label === ecosystemLabel);
+    const isAlreadySelected = selectedSE === ecosystemLabel;
+    const isTotalOrInvalid =
+      !ecosystem || ecosystem.key === "aTotal" || isAlreadySelected;
 
-    const seLabel =
-      !ecosystem || ecosystem.key === "aTotal" ? null : ecosystem.label;
+    const seLabel = isTotalOrInvalid ? null : ecosystem.label;
+    const seKey = isTotalOrInvalid ? null : ecosystem.key;
 
     timelineHFDispatch({
-      type: TimelineHFUpdated.SELECT_SE,
+      type: TimelineFPUpdated.CURRENT_SE,
       seLabel,
+    });
+
+    searchMapDispatch({
+      type: SearchUpdated.RASTER_LAYERS,
+      payload: {
+        rasterLayers: rasterLayers.map((layer) => ({
+          ...layer,
+          selected: layer.id === seKey,
+          opacity: layer.id === seKey ? 1 : 0.3,
+        })),
+        mapTitle: {
+          name: !seKey
+            ? "HH - Huella humana en el tiempo y ecosistemas estratégicos (EE)"
+            : `HH - Huella humana en el tiempo - ${seLabel}`,
+        },
+      },
     });
   };
 
   const activeSE = hfTimelineLUT.find((item) => item.label === selectedSE);
-  const seExtensionvalue = activeSE ? seExtension[activeSE.source] : undefined;
+  const seExtensionvalue = activeSE ? seExtension[activeSE.classId] : undefined;
 
   return !areaType || !areaId ? null : (
     <div className="graphcontainer pt6">
@@ -306,7 +326,7 @@ export function TimelineFootprint() {
 
       <div>
         <Lines
-          colors={hfTimelineColors}
+          colors={timelineFPColors}
           seriesData={timelineData}
           loadStatus={message}
           markers={hfTimelineMarkers}
@@ -378,64 +398,3 @@ const hfTimelineMarkers: CartesianMarkerProps[] = [
     legendPosition: "bottom-right",
   },
 ];
-
-// const clickOnGraph = async (selectedKey: string) => {
-//   const layerDescription =
-//     selectedKey === "aTotal"
-//       ? "HH - Huella humana en el tiempo y ecosistemas estratégicos (EE)"
-//       : `HH - Huella humana en el tiempo - ${seTitle[selectedKey as keyof SEKeys]}`;
-//
-//   if (selectedKey === "aTotal") {
-//     hfTimelineDispatch({
-//       type: HFTimelineUpdated.ECOSYSTEM,
-//       ecosystem: null,
-//     });
-//
-//     searchMapDispatch({
-//       type: SearchUpdated.RASTER_LAYERS,
-//       payload: {
-//         rasterLayers: layers.filter((layer) =>
-//           ["timelineHF"].includes(layer.id),
-//         ),
-//         mapTitle: { name: layerDescription },
-//       },
-//     });
-//     return;
-//   }
-//
-//   searchMapDispatch({
-//     type: SearchUpdated.LOADING_LAYER,
-//     loadingLayer: true,
-//   });
-//
-//   try {
-//     const isLayerAvailable = layers.some((layer) => layer.id === selectedKey);
-//     let updatedLayers = layers;
-//
-//     if (!isLayerAvailable) {
-//       const seLayer = await controllerRef.current.getSELayer(
-//         selectedKey as keyof Omit<SEKeys, "aTotal">,
-//       );
-//       updatedLayers = [...layers, ...seLayer];
-//       hfTimelineDispatch({
-//         type: HFTimelineUpdated.LAYERS,
-//         layers: updatedLayers,
-//       });
-//     }
-//
-//     searchMapDispatch({
-//       type: SearchUpdated.RASTER_LAYERS,
-//       payload: {
-//         rasterLayers: updatedLayers.filter((layer) =>
-//           ["timelineHF", selectedKey].includes(layer.id),
-//         ),
-//         mapTitle: { name: layerDescription },
-//       },
-//     });
-//   } catch (error) {
-//     searchMapDispatch({
-//       type: SearchUpdated.LAYER_ERROR,
-//       layerError: error instanceof Error ? error.message : String(error),
-//     });
-//   }
-// };
