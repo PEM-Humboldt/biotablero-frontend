@@ -208,7 +208,7 @@ export function Gap() {
     controllerRef.current = new GapController();
   }
 
-  const lastYear = gap.activeYears.toSorted()[gap.activeYears.length - 1];
+  const lastYear = gap.activeYears.toSorted().at(-1);
 
   if (areaType && areaId) {
     controllerRef.current.setArea(areaType.id, areaId.id);
@@ -333,10 +333,6 @@ export function Gap() {
             type: SearchUpdated.LAYER_ERROR,
             layerError: String(err),
           });
-          searchDispatch({
-            type: SearchUpdated.LOADING_LAYER,
-            loadingLayer: false,
-          });
         }
       });
   }, [lastYear, gap.currentGroup, searchDispatch]);
@@ -350,7 +346,7 @@ export function Gap() {
     [gap.seriesData, gap.activeYears],
   );
 
-  return (
+  return !lastYear ? null : (
     <div className="graphcontainer pt6 overflow-hidden">
       <h4>Índice de Vacíos por Registros (IVR) por km²</h4>
       <IconTooltip title="Interpretación">
