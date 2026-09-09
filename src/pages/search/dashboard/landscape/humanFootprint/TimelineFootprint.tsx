@@ -302,7 +302,7 @@ export function TimelineFootprint() {
       )}
 
       <h6>Huella humana en el tiempo comparada con EE</h6>
-      <p>Haz clic en un ecosistema para ver su comportamiento</p>
+      {!message && <p>Haz clic en un ecosistema para ver su comportamiento</p>}
 
       <div>
         <Lines
@@ -312,16 +312,21 @@ export function TimelineFootprint() {
           markers={hfTimelineMarkers}
           showLegend={false}
           enablePoints={true}
+          height={300}
         />
 
-        <GraphLegend
-          keys={availableLabels}
-          isBar={false}
-          customColorMap={customColorMap}
-          onClick={(esLabel: string) => void handleEcosystemSelection(esLabel)}
-          selected={selectedSE ? [selectedSE] : []}
-          className="justify-center"
-        />
+        {!message && (
+          <GraphLegend
+            keys={availableLabels}
+            isBar={false}
+            customColorMap={customColorMap}
+            onClick={(esLabel: string) =>
+              void handleEcosystemSelection(esLabel)
+            }
+            selected={selectedSE ? [selectedSE] : []}
+            className="justify-center"
+          />
+        )}
 
         {selectedSE && seExtensionvalue && (
           <div>
