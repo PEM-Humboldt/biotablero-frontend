@@ -38,7 +38,7 @@ import { fetchInitiativeContext } from "@hooks/useReport/utils/fetchInitiativeCo
 import { makeMapImg } from "@hooks/useReport/utils/makeMapImg";
 import { makeGraphImg } from "@hooks/useReport/utils/makeGraphImg";
 import { CMIndicatorReportModel } from "@hooks/useReport/reportModels/CMIndicatorReportModel";
-import { LOCALE } from "@config/monitoring";
+import { LOCALE } from "@config/global";
 import { ReportDocumentTree } from "@hooks/useReport/reportModels/ReportDocumentTree";
 import { Button } from "@ui/shadCN/component/button";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";

@@ -2,10 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 
 import { type BarDatum, ResponsiveBar } from "@nivo/bar";
 import { GRAPHS_GRADIENT_COLOR_PALETTE } from "@config/color";
-import {
-  INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY,
-  GRAPH_ANIMATION_CONFIG,
-} from "@config/monitoring";
+import { GRAPH_ANIMATION_CONFIG } from "@config/global";
+import { INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY } from "@config/monitoring";
 import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
@@ -123,6 +121,7 @@ export function RelationalIntensityIndex() {
                 indexBy="actor"
                 layout="horizontal"
                 margin={{ top: 0, right: 0, bottom: 60, left: 150 }}
+                motionConfig={GRAPH_ANIMATION_CONFIG}
                 padding={0.4}
                 valueScale={{ type: "linear", min: -1.0, max: 1.0 }}
                 indexScale={{ type: "band", round: true }}
@@ -151,6 +150,7 @@ export function RelationalIntensityIndex() {
                   indexBy="actor"
                   layout="horizontal"
                   margin={{ top: 0, right: 10, bottom: 60, left: 10 }}
+                  motionConfig={GRAPH_ANIMATION_CONFIG}
                   padding={0.4}
                   valueScale={{ type: "linear", min: -1.0, max: 1.0 }}
                   indexScale={{ type: "band", round: true }}

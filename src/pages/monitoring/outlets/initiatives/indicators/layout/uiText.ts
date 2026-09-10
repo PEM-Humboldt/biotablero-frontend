@@ -1,4 +1,4 @@
-import { LOCALE } from "@config/monitoring";
+import { LOCALE } from "@config/global";
 import {
   Network,
   BookOpenCheck,

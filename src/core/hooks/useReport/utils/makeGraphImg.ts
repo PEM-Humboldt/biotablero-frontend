@@ -1,7 +1,7 @@
 import type { ReactElement } from "react";
 import { domToBlob, type Options } from "modern-screenshot";
 import { createRoot } from "react-dom/client";
-import { GRAPH_ANIMATION_CONFIG } from "@config/monitoring";
+import { GRAPH_ANIMATION_CONFIG } from "@config/global";
 import { uiText } from "@hooks/useReport/layout/uiText";
 
 export async function makeGraphImg(
