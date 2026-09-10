@@ -4,7 +4,8 @@ import { ChevronRightCircle } from "lucide-react";
 
 import { cn } from "@ui/shadCN/lib/utils";
 import { Button } from "@ui/shadCN/component/button";
-import { LOCALE, TAG_COLORS } from "@config/monitoring";
+import { LOCALE } from "@config/global";
+import { TAG_COLORS } from "@config/monitoring";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { TagsRender } from "pages/monitoring/ui/TagsRender";

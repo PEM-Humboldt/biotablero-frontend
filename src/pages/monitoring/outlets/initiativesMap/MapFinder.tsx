@@ -10,7 +10,8 @@ import type {
   Geometry,
 } from "geojson";
 
-import { INITIATIVES_MAP_GRADIENT, COUNTRY_BOUNDS } from "@config/monitoring";
+import { COUNTRY_BOUNDS } from "@config/global";
+import { INITIATIVES_MAP_GRADIENT } from "@config/monitoring";
 
 import { createGradientScale } from "pages/monitoring/utils/createGradientScale";
 import { type InitiativeByLocation } from "pages/monitoring/types/initiative";

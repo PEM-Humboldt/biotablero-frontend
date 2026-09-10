@@ -2,10 +2,13 @@ import politicalSelection from "@assets/mapButtons/political.png";
 import topographicSelection from "@assets/mapButtons/topography.png";
 import satelitalSelection from "@assets/mapButtons/satelital.png";
 
-import deforestationBtn from "@assets/mapButtons/deforestacion.png";
-import forestBtn from "@assets/mapButtons/bosques.png";
-import waterResourcesBtn from "@assets/mapButtons/fuentesHidricas.png";
-import roadsBtn from "@assets/mapButtons/vias.png";
+import paramos from "@assets/mapButtons/paramo.png";
+import forest from "@assets/mapButtons/forest.png";
+import wetland from "@assets/mapButtons/wetland.png";
+import protectedAreas from "@assets/mapButtons/protectedAreas.png";
+import comunitaryCouncil from "@assets/mapButtons/comunitaryCouncil.png";
+import indigenousLand from "@assets/mapButtons/indigenousLand.png";
+import farmersReserve from "@assets/mapButtons/farmersReserve.png";
 
 export const MAP_TILES: {
   label: string;
@@ -23,8 +26,8 @@ export const MAP_TILES: {
   {
     label: "Topográfico",
     attribution:
-      'Sources: Esri, HERE, Garmin, Intermap, increment P Corp., GEBCO, USGS, FAO, NPS, NRCAN, GeoBase, IGN, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), (c) OpenStreetMap contributors, and the GIS User Community | Powered by <a href="https://www.esri.com/">Esri</a>',
-    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
+      '&copy; 2012 Esri | Powered by <a href="https://www.esri.com/">Esri</a>',
+    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}",
     uiThumbs: { button: topographicSelection, selection: satelitalSelection },
   },
   {
@@ -48,14 +51,14 @@ export const MAP_LAYERS: {
     attribution: "",
     url: "https://geoservicios.humboldt.org.co/geoserver/wms",
     layers: "Proyecto_fondo_adaptacion:Limites24Paramos_25K_2016",
-    buttonBkg: deforestationBtn,
+    buttonBkg: paramos,
   },
   {
     label: "Cobertura boscosa",
     attribution: "",
     url: "https://geoservicios.humboldt.org.co/geoserver/ideam/wms",
     layers: "ideam:bnb_2024_v8",
-    buttonBkg: forestBtn,
+    buttonBkg: forest,
   },
   {
     label: "Humedales",
@@ -63,13 +66,34 @@ export const MAP_LAYERS: {
     attribution: "",
     layers:
       "Proyecto_fondo_adaptacion:Humedales_Continentales_Insulares_2015_Vector",
-    buttonBkg: waterResourcesBtn,
+    buttonBkg: wetland,
   },
   {
     label: "Áreas protegidas",
     attribution: "",
     url: "https://mapas.parquesnacionales.gov.co/services/pnn/wms",
     layers: "pnn:runap",
-    buttonBkg: roadsBtn,
+    buttonBkg: protectedAreas,
+  },
+  {
+    label: "Consejo Comunitario Titulado",
+    attribution: "",
+    url: "https://geoservicios.humboldt.org.co/geoserver/wms",
+    layers: "ant:Consejo comunitario titulado",
+    buttonBkg: comunitaryCouncil,
+  },
+  {
+    label: "Resguardo indígena formalizado",
+    attribution: "",
+    url: "https://geoservicios.humboldt.org.co/geoserver/wms",
+    layers: "ant:Resguardo indígena formalizado",
+    buttonBkg: indigenousLand,
+  },
+  {
+    label: "Zona de reserva campesina constituida",
+    attribution: "",
+    url: "https://geoservicios.humboldt.org.co/geoserver/wms",
+    layers: "ant:Zona de reserva campesina constituida",
+    buttonBkg: farmersReserve,
   },
 ];

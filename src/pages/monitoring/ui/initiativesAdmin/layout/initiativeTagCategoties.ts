@@ -1,7 +1,7 @@
+import { SUPPORT_EMAIL } from "@config/global";
 import {
   INITIATIVE_TAGS_LIMIT_CULTURAL_CTX,
   INITIATIVE_TAGS_LIMIT_POLITICAL_CTX,
-  SUPPORT_EMAIL,
 } from "@config/monitoring";
 
 export const initiativeTagCategories: {

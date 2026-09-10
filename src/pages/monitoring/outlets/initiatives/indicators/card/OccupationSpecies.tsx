@@ -2,10 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { ResponsiveLine } from "@nivo/line";
 
 import { GRAPHS_CONTRAST_COLOR_PALETTE } from "@config/color";
-import {
-  GRAPH_ANIMATION_CONFIG,
-  INDICATOR_MAX_COUNT_OCUPATION_SPECIES,
-} from "@config/monitoring";
+import { GRAPH_ANIMATION_CONFIG } from "@config/global";
+import { INDICATOR_MAX_COUNT_OCUPATION_SPECIES } from "@config/monitoring";
 import { cn } from "@ui/shadCN/lib/utils";
 import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
 import { hashStringToRange } from "@utils/format";
@@ -154,6 +152,7 @@ export function OccupationSpecies() {
             <ResponsiveLine
               data={filteredIndicator}
               margin={{ top: 20, right: 30, bottom: 30, left: 30 }}
+              motionConfig={GRAPH_ANIMATION_CONFIG}
               xScale={{ type: "point" }}
               yScale={{ type: "linear", min: 0, max: 100 }}
               axisBottom={{ tickSize: 5, legendPosition: "middle" }}

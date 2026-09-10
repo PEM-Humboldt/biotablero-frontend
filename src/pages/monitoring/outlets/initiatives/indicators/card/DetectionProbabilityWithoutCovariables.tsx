@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { SearchIcon } from "lucide-react";
 
 import { ResponsiveLine } from "@nivo/line";
-import { GRAPH_ANIMATION_CONFIG } from "@config/monitoring";
+import { GRAPH_ANIMATION_CONFIG } from "@config/global";
 import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
 import { Combobox } from "@ui/ComboBox";
 import { cn } from "@ui/shadCN/lib/utils";
@@ -132,6 +132,7 @@ export function DetectionProbabilityWithoutCovariables() {
             <ResponsiveLine
               data={filteredData}
               margin={{ top: 20, right: 30, bottom: 30, left: 30 }}
+              motionConfig={GRAPH_ANIMATION_CONFIG}
               xScale={{ type: "point" }}
               yScale={{
                 type: "linear",

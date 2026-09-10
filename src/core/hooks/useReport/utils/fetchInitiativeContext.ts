@@ -1,5 +1,5 @@
 import type { IndicatorContext, IndicatorTag } from "@appTypes/report";
-import { LOCALE } from "@config/monitoring";
+import { LOCALE } from "@config/global";
 import {
   getInitiativeMonitoringEvents,
   getInitiativeStats,
