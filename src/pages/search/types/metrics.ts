@@ -23,9 +23,6 @@ export type MetricTypesMap = {
   timelineHF: Array<
     MetricDataStructure<"id", "poligono" | "paramo" | "bosqueSeco" | "humedal">
   >;
-  hfPersistence: Array<
-    MetricDataStructure<"id", "area" | "percentage" | "key">
-  >;
   paramo: MetricDataStructure<"id", "paramo">;
   tropicalDryForest: MetricDataStructure<"id", "bosqueSeco">;
   wetland: MetricDataStructure<"id", "humedal">;
