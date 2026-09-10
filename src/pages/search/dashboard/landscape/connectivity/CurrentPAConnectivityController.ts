@@ -56,6 +56,8 @@ export class CurrentPAConnectivityController {
 
   /**
    * Get the current connectivity values for protected areas.
+   *
+   * @returns ProtConn graph data and the total protected area percentage.
    */
   getCurrentPAConn = async (): Promise<{
     currentPAConnData: Array<CurrentPAConnGraphData>;

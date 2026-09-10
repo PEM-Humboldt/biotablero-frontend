@@ -24,11 +24,13 @@ import {
 } from "@composites/charts/SmallBars";
 import { LargeStackedBar } from "@composites/charts/LargeStackedBar";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
-import { CurrentPAConnectivityController } from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivityController";
+import {
+  CurrentPAConnectivityController,
+  type CurrentPAConnGraphData,
+} from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivityController";
 import { formatNumber } from "@utils/format";
 import colorPalettes from "pages/search/utils/colorPalettes";
 import { RasterLayer } from "pages/search/types/layers";
-import { CurrentPAConnGraphData } from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivityController";
 
 const legendDPCCategories = {
   muy_bajo: "Muy bajo",
@@ -41,13 +43,11 @@ const DPCCats = (
   Object.keys(legendDPCCategories) as Array<keyof typeof legendDPCCategories>
 ).reverse();
 
-type CurrentPAConnBarData = CurrentPAConnGraphData;
-
 interface CurrentPAConnState {
   infoShown: Set<string>;
   dpcData: Array<DPC>;
   showLowestDpc: boolean;
-  currentPAConnData: Array<CurrentPAConnBarData>;
+  currentPAConnData: Array<CurrentPAConnGraphData>;
   currentPAConnPercentage: number;
   messages: {
     currentPAConn: MessageWrapperType;
@@ -76,7 +76,7 @@ type DpcPayload = {
 };
 
 type CurrentPAConnPayload = {
-  currentPAConnData: Array<CurrentPAConnBarData>;
+  currentPAConnData: Array<CurrentPAConnGraphData>;
   currentPAConnPercentage: number;
 };
 
@@ -352,6 +352,15 @@ function CurrentPAConnectivity() {
             padding={0.25}
           />
         </div>
+        <TextBoxes
+          consText={texts.protConn.cons}
+          metoText={texts.protConn.meto}
+          quoteText={texts.protConn.quote}
+          downloadData={currentPAConnData}
+          downloadName={`conn_pa_current_${areaTypeId}_${areaIdId}.csv`}
+          isInfoOpen={infoShown.has("protConn")}
+          toggleInfo={() => toggleInfo("protConn")}
+        />
         {currentPAConnData.length > 0 && (
           <div className="mb2 ml-6">
             <h6 className="innerInfo">Porcentaje de área protegida</h6>
@@ -365,15 +374,7 @@ function CurrentPAConnectivity() {
             </h5>
           </div>
         )}
-        <TextBoxes
-          consText={texts.protConn.cons}
-          metoText={texts.protConn.meto}
-          quoteText={texts.protConn.quote}
-          downloadData={currentPAConnData}
-          downloadName={`conn_pa_current_${areaTypeId}_${areaIdId}.csv`}
-          isInfoOpen={infoShown.has("protConn")}
-          toggleInfo={() => toggleInfo("protConn")}
-        />
+
         <h6>Aporte de las áreas protegidas a la conectividad</h6>
         <IconTooltip title="Interpretación">
           <span className="iconWrapper">
