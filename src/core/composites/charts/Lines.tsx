@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { type Point, ResponsiveLine } from "@nivo/line";
 import { type CartesianMarkerProps } from "@nivo/core";
 
@@ -30,6 +30,7 @@ interface Props {
   units?: string;
   showLegend?: boolean;
   enablePoints?: boolean;
+  selectedIdProp?: string;
 }
 
 function LinesGraph({
@@ -45,10 +46,11 @@ function LinesGraph({
   height = 490,
   showLegend = true,
   enablePoints = false,
+  selectedIdProp,
 }: Props) {
   const [data, setData] = useState<SerieData[]>([]);
   const [labels, setLabels] = useState<Record<string, string>>({});
-  const [selectedId, setSelectedId] = useState<string>("");
+  const [selectedId, setSelectedId] = useState<string>(selectedIdProp ?? "");
 
   useEffect(() => {
     const newLabels: Record<string, string> = {};
@@ -60,16 +62,25 @@ function LinesGraph({
     setLabels(newLabels);
   }, [seriesData, colors]);
 
-  const changeSelected = (idToSelect: string | number) => {
-    const transformedData = seriesData.map((obj) => {
-      if (obj.key === idToSelect) {
-        return { ...obj, id: obj.key, color: colors(`${obj.key}Sel`) };
-      }
-      return { ...obj, id: obj.key, color: colors(obj.key) };
-    });
-    setData(transformedData);
-    setSelectedId(String(idToSelect));
-  };
+  const changeSelected = useCallback(
+    (idToSelect: string | number) => {
+      const transformedData = seriesData.map((obj) => {
+        if (obj.key === idToSelect) {
+          return { ...obj, id: obj.key, color: colors(`${obj.key}Sel`) };
+        }
+        return { ...obj, id: obj.key, color: colors(obj.key) };
+      });
+      setData(transformedData);
+      setSelectedId(String(idToSelect));
+    },
+    [colors, seriesData],
+  );
+
+  useEffect(() => {
+    if (selectedIdProp) {
+      changeSelected(selectedIdProp);
+    }
+  }, [selectedIdProp, changeSelected]);
 
   const selectLine = (id: string) => {
     changeSelected(id);
@@ -141,7 +152,9 @@ function LinesGraph({
         markers={markers}
         isInteractive
         onClick={(point) => {
-          selectLine(String(point.seriesId));
+          if ("seriesId" in point) {
+            selectLine(String(point.seriesId));
+          }
         }}
         tooltip={(point) => getToolTip(point.point)}
         crosshairType="cross"

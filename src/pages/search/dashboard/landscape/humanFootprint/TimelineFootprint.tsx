@@ -219,28 +219,36 @@ export function TimelineFootprint() {
   const customColorMap = useMemo(
     () =>
       timelineData.reduce<Record<string, string>>((acc, item) => {
-        acc[item.label] = timelineFPColors(item.key);
+        const isSelected = selectedSE === item.label;
+
+        const colorKey = isSelected ? `${item.key}Sel` : item.key;
+
+        acc[item.label] = timelineFPColors(colorKey);
         return acc;
       }, {}),
-    [timelineData],
+    [timelineData, selectedSE],
   );
 
   const toggleInfoGraph = () => {
     timelineHFDispatch({ type: TimelineFPUpdated.SHOW_INFO });
   };
 
-  const handleEcosystemSelection = async (ecosystemLabel: string) => {
+  const handleEcosystemSelection = async (seLabelOrKey: string) => {
     if (!controllerRef.current) {
       return;
     }
 
-    const ecosystem = hfTimelineLUT.find((e) => e.label === ecosystemLabel);
-    const isAlreadySelected = selectedSE === ecosystemLabel;
-    const isTotalOrInvalid =
-      !ecosystem || ecosystem.key === "aTotal" || isAlreadySelected;
+    const ecosystem = hfTimelineLUT.find(
+      (e) => e.label === seLabelOrKey || e.key === seLabelOrKey,
+    );
+    if (!ecosystem) {
+      return;
+    }
 
-    const seLabel = isTotalOrInvalid ? null : ecosystem.label;
-    const seKey = isTotalOrInvalid ? null : ecosystem.key;
+    const isAlreadySelected = selectedSE === ecosystem.label;
+    const isDeselect = ecosystem.key === "aTotal" || isAlreadySelected;
+    const seLabel = isDeselect ? null : ecosystem.label;
+    const seKey = isDeselect ? null : ecosystem.key;
 
     timelineHFDispatch({
       type: TimelineFPUpdated.CURRENT_SE,
@@ -248,7 +256,6 @@ export function TimelineFootprint() {
     });
 
     let layer: RasterLayer[] = [];
-
     if (seKey) {
       searchMapDispatch({
         type: SearchUpdated.LOADING_LAYER,
@@ -277,8 +284,12 @@ export function TimelineFootprint() {
       .filter((item) => seExtension[item.classId])
       .map((item) => item.label),
   ];
-  const activeSE = hfTimelineLUT.find((item) => item.label === selectedSE);
-  const seExtensionvalue = activeSE ? seExtension[activeSE.classId] : undefined;
+
+  const activeSEInfo = hfTimelineLUT.find((item) => item.label === selectedSE);
+
+  const seExtensionvalue = activeSEInfo
+    ? seExtension[activeSEInfo.classId]
+    : undefined;
 
   return !areaType || !areaId ? null : (
     <div className="graphcontainer pt6">
@@ -313,6 +324,8 @@ export function TimelineFootprint() {
           showLegend={false}
           enablePoints={true}
           height={300}
+          onClickGraphHandler={(id) => void handleEcosystemSelection(id)}
+          selectedIdProp={activeSEInfo?.key ?? "aTotal"}
         />
 
         {!message && (
@@ -320,15 +333,17 @@ export function TimelineFootprint() {
             keys={availableLabels}
             isBar={false}
             customColorMap={customColorMap}
-            onClick={(esLabel: string) =>
-              void handleEcosystemSelection(esLabel)
+            onClick={(label: string) => void handleEcosystemSelection(label)}
+            selected={
+              !activeSEInfo || activeSEInfo.key === "aTotal"
+                ? []
+                : [activeSEInfo.label]
             }
-            selected={selectedSE ? [selectedSE] : []}
             className="justify-center"
           />
         )}
 
-        {selectedSE && seExtensionvalue && (
+        {activeSEInfo && activeSEInfo.key !== "aTotal" && seExtensionvalue && (
           <div>
             <h6>{`${selectedSE} dentro de la unidad de consulta`}</h6>
             <h5>{`${Math.round(seExtensionvalue).toLocaleString(LOCALE)} ha`}</h5>

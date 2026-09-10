@@ -178,7 +178,7 @@ export class TimelineFootprintController {
         data: base64,
         selected: true,
         paneLevel: 2,
-        color: matchColor("hfTimeline")(targetSE.metricId),
+        color: matchColor("hfTimeline")(`${targetSE.metricId}Sel`),
       },
     ];
   }
