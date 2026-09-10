@@ -1,5 +1,12 @@
 import { ResponsiveLine, type SliceData } from "@nivo/line";
-import { useCallback, useEffect, useMemo, useReducer, useRef } from "react";
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+} from "react";
 import { getSeriesColor } from "@utils/color";
 import { cn } from "@ui/shadCN/lib/utils";
 import { Button } from "@ui/shadCN/component/button";
@@ -25,6 +32,7 @@ import { IconTooltip } from "@ui/Tooltips";
 import { ShortInfo } from "@composites/ShortInfo";
 import { speciesGroupLabels } from "pages/search/dashboard/species/commonDictionaries";
 import { getMetricTexts } from "pages/search/utils/texts";
+import { GRAPH_ANIMATION_CONFIG } from "@config/monitoring";
 
 const GAP_GRAPH_MAX_YEARS_VISUALIZATION_AMOUTN = 5;
 const GAP_GRAPH_START_YEARS_VISUALIZATION_AMOUTN = 3;
@@ -389,7 +397,7 @@ export function Gap() {
             className="flex flex-wrap items-center"
           >
             {gap.availableYears
-              .sort((a, b) => a - b)
+              .toSorted((a, b) => a - b)
               .map((year) => {
                 const isSelected = gap.activeYears.includes(year);
 
@@ -448,47 +456,10 @@ export function Gap() {
       ) : (
         <>
           <div className="w-full h-full aspect-video">
-            <ResponsiveLine
+            <GapLineChart
               data={renderData}
-              markers={markers(lastYear, gap.averages)}
-              margin={{ top: 30, right: 10, bottom: 60, left: 60 }}
-              xScale={{ type: "linear", min: "auto", max: "auto" }}
-              yScale={{
-                type: "linear",
-                min: 0,
-                max: "auto",
-                stacked: false,
-                reverse: false,
-              }}
-              curve="monotoneX"
-              axisBottom={{
-                tickSize: 5,
-                tickPadding: 5,
-                tickRotation: 0,
-                legend: "Índice de Vacíos de Registros por (IVR)",
-                legendOffset: 36,
-                legendPosition: "middle",
-              }}
-              colors={(series) =>
-                customColorMap[Number(series.id)] ??
-                getSeriesColor(Number(series.id))
-              }
-              gridYValues={5}
-              axisLeft={{
-                tickValues: 5,
-                legend: "Frecuencia de unidades de 1km²",
-                legendOffset: -50,
-                format: (value) => `${value / 1000}k`,
-              }}
-              pointSize={7}
-              pointColor="#ffffff"
-              pointBorderWidth={2}
-              pointBorderColor={{ from: "seriesColor" }}
-              pointLabelYOffset={-12}
-              enableTouchCrosshair={true}
-              useMesh={true}
-              enableSlices="x"
-              sliceTooltip={SliceTooltip}
+              lastYear={lastYear}
+              averages={gap.averages}
             />
           </div>
           <p className="text-sm text-center">
@@ -508,6 +479,54 @@ export function Gap() {
     </div>
   );
 }
+
+const GapLineChart = memo(function GapLineChart({
+  data,
+  lastYear,
+  averages,
+}: {
+  data: GapSerie[];
+  lastYear: number;
+  averages: Record<string, number>;
+}) {
+  return (
+    <ResponsiveLine
+      data={data}
+      markers={markers(lastYear, averages)}
+      margin={{ top: 30, right: 10, bottom: 60, left: 60 }}
+      xScale={{ type: "linear", min: "auto", max: "auto" }}
+      yScale={{ type: "linear", min: 0, max: "auto" }}
+      curve="monotoneX"
+      axisBottom={{
+        tickSize: 5,
+        tickPadding: 5,
+        tickRotation: 0,
+        legend: "Índice de Vacíos de Registros por (IVR)",
+        legendOffset: 36,
+        legendPosition: "middle" as const,
+      }}
+      colors={(series) =>
+        customColorMap[Number(series.id)] ?? getSeriesColor(Number(series.id))
+      }
+      gridYValues={5}
+      axisLeft={{
+        tickValues: 5,
+        legend: "Frecuencia de unidades de 1km²",
+        legendOffset: -50,
+        format: (value: number) => `${value / 1000}k`,
+      }}
+      pointSize={7}
+      pointColor="#ffffff"
+      pointBorderWidth={2}
+      pointBorderColor={{ from: "seriesColor" }}
+      pointLabelYOffset={-12}
+      enableTouchCrosshair={true}
+      useMesh={true}
+      enableSlices="x"
+      sliceTooltip={SliceTooltip}
+    />
+  );
+});
 
 function markers(year: number, recordsGapAverage: Record<string, number>) {
   const value = recordsGapAverage[year];
