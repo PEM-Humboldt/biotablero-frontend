@@ -121,8 +121,11 @@ function reducer(
   switch (action.type) {
     case "TOGGLE_INFO": {
       const infoShown = new Set(state.infoShown);
-      if (infoShown.has(action.payload)) infoShown.delete(action.payload);
-      else infoShown.add(action.payload);
+      if (infoShown.has(action.payload)) {
+        infoShown.delete(action.payload);
+      } else {
+        infoShown.add(action.payload);
+      }
       return { ...state, infoShown };
     }
     case "DPC_SUCCEEDED":
@@ -168,7 +171,7 @@ function reducer(
   }
 }
 
-function CurrentPAConnectivity() {
+export function CurrentPAConnectivity() {
   const context = useSearchStateCTX();
   const searchDispatch = useSearchDispatchCTX();
   const { areaType, areaId } = context;
@@ -200,7 +203,9 @@ function CurrentPAConnectivity() {
         dispatch({ type: "CURRENT_PA_CONN_SUCCEEDED", payload: result });
       })
       .catch((error) => {
-        if (error?.message === "request canceled") return;
+        if (error?.message === "request canceled") {
+          return;
+        }
         dispatch({ type: "CURRENT_PA_CONN_FAILED" });
       });
 
@@ -244,7 +249,9 @@ function CurrentPAConnectivity() {
         });
       })
       .catch((error) => {
-        if (error?.message === "request canceled") return;
+        if (error?.message === "request canceled") {
+          return;
+        }
         dispatch({ type: "DPC_FAILED" });
       });
 
@@ -288,12 +295,14 @@ function CurrentPAConnectivity() {
         });
       })
       .catch((error) => {
-        if (error?.message === "request canceled") return;
+        if (error?.message === "request canceled") {
+          return;
+        }
         dispatch({ type: "DPC_FAILED" });
       });
   };
 
-  const clickOnDPCGraph = (dpcId: string, category: string) => {
+  const clickOnDPCGraph = (dpcId: string) => {
     const { layers } = state;
     searchDispatch({
       type: SearchUpdated.WILDCARD,
@@ -457,5 +466,3 @@ function CurrentPAConnectivity() {
     </div>
   );
 }
-
-export default CurrentPAConnectivity;

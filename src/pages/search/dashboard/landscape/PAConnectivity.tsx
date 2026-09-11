@@ -1,5 +1,5 @@
 import Accordion from "pages/search/Accordion";
-import CurrentPAConnectivity from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivity";
+import { CurrentPAConnectivity } from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivity";
 import TimelinePAConnectivity from "pages/search/dashboard/landscape/connectivity/TimelinePAConnectivity";
 import CurrentSEPAConnectivity from "pages/search/dashboard/landscape/connectivity/CurrentSEPAConnectivity";
 import { accordionComponent, componentProps } from "pages/search/types/ui";
