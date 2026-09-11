@@ -40,7 +40,7 @@ export function Header({
             <span className="sr-only">{activeModuleInfo.name}</span>
           </h1>
           {environmentLabel && (
-            <span className="inline-flex rounded px-2 py-1 text-sm font-bold leading-none tracking-wider text-secondary uppercase">
+            <span className="inline-flex rounded px-2 py-1 text-sm/0 m-0 font-bold leading-none text-secondary uppercase">
               {environmentLabel}
             </span>
           )}
