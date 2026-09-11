@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Outlet, useOutletContext } from "react-router";
 
 import { MonitoringBackendUnavailable } from "@ui/MonitoringBackendUnavailable";
-import { monitoringAPI } from "pages/monitoring/api/core";
+import { checkMonitoringBackend } from "pages/monitoring/api/services/health";
 
 import { SidebarProvider } from "@ui/shadCN/component/sidebar";
 
@@ -22,26 +22,7 @@ export function Monitoring() {
     const controller = new AbortController();
 
     async function checkBackend() {
-      let available = false;
-      try {
-        const response = await monitoringAPI<{
-          results?: { postgres?: string };
-        }>({
-          type: "get",
-          endpoint: "health/ready",
-          getStatus: true,
-          options: {
-            timeout: 5000,
-            signal: controller.signal,
-            validateStatus: (status) => status === 200 || status === 503,
-          },
-        });
-        available =
-          !("message" in response) &&
-          response.data?.results?.postgres === "Healthy";
-      } catch {
-        available = false;
-      }
+      const available = await checkMonitoringBackend(controller.signal);
       if (!controller.signal.aborted) {
         setIsAvailable(available);
       }
@@ -49,7 +30,7 @@ export function Monitoring() {
 
     void checkBackend();
     return () => controller.abort();
-  }, []);
+  }, [layoutState]);
 
   useEffect(() => {
     layoutDispatch({
