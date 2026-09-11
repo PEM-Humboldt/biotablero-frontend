@@ -1,15 +1,16 @@
 import AddIcon from "@mui/icons-material/Add";
 
 import Accordion from "pages/search/Accordion";
+import type { AccordionComponent, ComponentProps } from "pages/search/types/ui";
 import { CurrentFootprint } from "pages/search/dashboard/landscape/humanFootprint/CurrentFootprint";
-import PersistenceFooprint from "pages/search/dashboard/landscape/humanFootprint/PersistenceFootprint";
-import TimelineFootprint from "pages/search/dashboard/landscape/humanFootprint/TimelineFootprint";
-import { accordionComponent, componentProps } from "pages/search/types/ui";
+import { TimelineFootprint } from "pages/search/dashboard/landscape/humanFootprint/TimelineFootprint";
+// import PersistenceFooprint from "pages/search/dashboard/landscape/humanFootprint/PersistenceFootprint";
 
-const HumanFootprint: React.FC<componentProps> = (props) => {
-  const { handleAccordionChange, openTab } = props;
-
-  const componentsArray: Array<accordionComponent> = [
+export function HumanFootprint({
+  handleAccordionChange,
+  openTab,
+}: ComponentProps) {
+  const componentsArray: Array<AccordionComponent> = [
     {
       label: {
         id: "hfCurrent",
@@ -33,11 +34,11 @@ const HumanFootprint: React.FC<componentProps> = (props) => {
           "Representa la persistencia desde el origen del muestreo hasta el periodo actual, producto de análisis de huella humana en el tiempo y en esta área de consulta",
       },
       component: PersistenceFooprint,
-    },
+    },*/
     {
       label: {
         id: "hfTimeline",
-        name: "Histórico y Ecosistémas estratégicos (EE)",
+        name: "Histórico y Ecosistemas estratégicos (EE)",
         collapsed: openTab !== "hfTimeline",
         expandIcon: <AddIcon />,
         detailId: "Huella humana a través del tiempo en el área",
@@ -45,7 +46,7 @@ const HumanFootprint: React.FC<componentProps> = (props) => {
           "Representa diferentes análisis de huella humana en esta área de consulta",
       },
       component: TimelineFootprint,
-    },*/
+    },
   ];
   return (
     <div style={{ width: "100%" }}>
@@ -58,6 +59,4 @@ const HumanFootprint: React.FC<componentProps> = (props) => {
       />
     </div>
   );
-};
-
-export default HumanFootprint;
+}

@@ -5,14 +5,16 @@ import SmallStackedBar, {
 } from "@composites/charts/SmallStackedBar";
 import colorPalettes from "pages/search/utils/colorPalettes";
 
-import { RasterLayer } from "pages/search/types/layers";
-
-import { useSearchLegacyCTX } from "pages/search/hooks/SearchContext";
+import {
+  useSearchDispatchCTX,
+  useSearchStateCTX,
+} from "pages/search/hooks/SearchContext";
 
 import { StrategicEcosystemsDistributionController } from "pages/search/dashboard/ecosystems/StrategicEcosystemsDistributionController";
 import { matchColor } from "pages/search/utils/matchColor";
 import { SEKey, SELabels } from "pages/search/types/ecosystems";
 import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
+import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 
 interface Props {
   SEType: SEKey;
@@ -24,18 +26,10 @@ export function StrategicEcosystemsDistribution({ SEType }: Props) {
   const [distributionData, setDistributionData] = useState<
     SmallStackedBarData[]
   >([]);
-  const [layers, setLayers] = useState<RasterLayer[]>([]);
   const [chartStatus, setChartStatus] = useState<ChartStatus>("loading");
 
-  const {
-    areaType,
-    areaId,
-    setLoadingLayer,
-    setRasterLayers,
-    setShowAreaLayer,
-    setMapTitle,
-    setLayerError,
-  } = useSearchLegacyCTX();
+  const { areaType, areaId, rasterLayers: layers } = useSearchStateCTX();
+  const dispatchSearchMap = useSearchDispatchCTX();
 
   const controllerRef = useRef(new StrategicEcosystemsDistributionController());
   const controller = controllerRef.current;
@@ -52,19 +46,21 @@ export function StrategicEcosystemsDistribution({ SEType }: Props) {
   const areaIdId = areaId?.id;
 
   const clickOnGraph = (selectedKey: string) => {
-    setRasterLayers(
-      layers.map((layer) => ({
-        ...layer,
-        selected: layer.id === selectedKey,
-      })),
-    );
+    dispatchSearchMap({
+      type: SearchUpdated.RASTER_LAYERS,
+      payload: {
+        rasterLayers: layers.map((layer) => ({
+          ...layer,
+          selected: layer.id === selectedKey,
+        })),
+      },
+    });
   };
 
   useEffect(() => {
     let isCurrent = true;
 
     if (!areaTypeId || !areaIdId) {
-      setLoadingLayer(false);
       return () => {
         isCurrent = false;
         controller.cancelActiveRequests();
@@ -74,12 +70,16 @@ export function StrategicEcosystemsDistribution({ SEType }: Props) {
     const loadData = async () => {
       setChartStatus("loading");
       setDistributionData([]);
-      setLayers([]);
       controller.setArea(areaTypeId, areaIdId);
 
-      setShowAreaLayer(true);
-      setRasterLayers([]);
-      setLoadingLayer(true);
+      dispatchSearchMap({
+        type: SearchUpdated.RASTER_LAYERS,
+        payload: {
+          rasterLayers: [],
+          showBackgroundLayer: true,
+          forceLoadState: true,
+        },
+      });
 
       try {
         const distributionDataRes =
@@ -93,25 +93,32 @@ export function StrategicEcosystemsDistribution({ SEType }: Props) {
           await controller.getStrategicEcosystemsDistributionLayers(SEType);
 
         if (!isCurrent) return;
-        setLayers(layersRes);
-        setRasterLayers(layersRes);
-        setMapTitle({ name: `Coberturas - ${SELabels[SEType]}` });
-        setLoadingLayer(false);
-      } catch (error) {
-        if (!isCurrent) return;
 
+        dispatchSearchMap({
+          type: SearchUpdated.RASTER_LAYERS,
+          payload: {
+            rasterLayers: layersRes,
+            showBackgroundLayer: true,
+            mapTitle: { name: `Coberturas - ${SELabels[SEType]}` },
+          },
+        });
+      } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : String(error);
-        if (!errorMessage.includes("request canceled")) {
-          setLayerError?.(errorMessage);
-        }
+        const isCanceled = errorMessage.includes("request canceled");
+
+        if (!isCurrent || isCanceled) return;
+
         setDistributionData([]);
         setChartStatus("error");
-        setLoadingLayer(false);
+        dispatchSearchMap({
+          type: SearchUpdated.LAYER_ERROR,
+          layerError: errorMessage,
+        });
       }
     };
 
-    loadData();
+    void loadData();
 
     return () => {
       isCurrent = false;

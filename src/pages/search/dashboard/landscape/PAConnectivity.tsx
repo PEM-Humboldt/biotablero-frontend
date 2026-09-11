@@ -2,12 +2,12 @@ import Accordion from "pages/search/Accordion";
 import CurrentPAConnectivity from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivity";
 import TimelinePAConnectivity from "pages/search/dashboard/landscape/connectivity/TimelinePAConnectivity";
 import CurrentSEPAConnectivity from "pages/search/dashboard/landscape/connectivity/CurrentSEPAConnectivity";
-import { accordionComponent, componentProps } from "pages/search/types/ui";
+import { AccordionComponent, ComponentProps } from "pages/search/types/ui";
 
-const PAConnectivity: React.FC<componentProps> = (props) => {
+const PAConnectivity: React.FC<ComponentProps> = (props) => {
   const { handleAccordionChange, openTab } = props;
 
-  const componentsArray: Array<accordionComponent> = [
+  const componentsArray: Array<AccordionComponent> = [
     {
       label: {
         id: "currentPAConn",

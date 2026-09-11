@@ -8,18 +8,18 @@ import {
   type LegacyContextValues,
 } from "pages/search/hooks/SearchContext";
 import { matchColor } from "pages/search/utils/matchColor";
-import processDataCsv from "pages/search/utils/processDataCsv";
+import { processLineSeriesDataToCsv } from "pages/search/utils/processDataCsv";
 import TextBoxes from "@ui/TextBoxes";
-import {
+import type {
   timelinePAConn,
   timeLinePAConnValues,
 } from "pages/search/types/connectivity";
 import type { TextsObject } from "pages/search/types/texts";
 import BackendAPI from "pages/search/api/backendAPI";
-import Lines from "@composites/charts/Lines";
+import { Lines } from "@composites/charts/Lines";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { TimelinePAConnectivityController } from "pages/search/dashboard/landscape/connectivity/TimelinePAConnectivityController";
-import { ShapeLayer } from "pages/search/types/layers";
+import type { ShapeLayer } from "pages/search/types/layers";
 
 const getLabel = {
   prot: "Protegida",
@@ -193,7 +193,7 @@ class TimelinePAConnectivity extends React.Component<
           <div>
             <Lines
               colors={matchColor("timelinePAConn")}
-              data={timelinePAConnData}
+              seriesData={timelinePAConnData}
               message={message}
               units="%"
               yMax={50}
@@ -202,7 +202,7 @@ class TimelinePAConnectivity extends React.Component<
               consText={texts.paConnTimeline.cons}
               metoText={texts.paConnTimeline.meto}
               quoteText={texts.paConnTimeline.quote}
-              downloadData={processDataCsv(timelinePAConnData)}
+              downloadData={processLineSeriesDataToCsv(timelinePAConnData)}
               downloadName={`conn_timeline_${areaTypeId}_${areaIdId}.csv`}
               isInfoOpen={showInfoGraph}
               toggleInfo={this.toggleInfoGraph}

@@ -94,14 +94,6 @@ export function SearchCTX({
 
 // HACK: soporte de contexto para componentes de clase o
 // pendientes de actualizar... DE ACÁ PA' BAJO VUELA PRRO
-export function useSearchLegacyCTX() {
-  const context = useContext(SearchLegacyCTX);
-  if (!context) {
-    throw new Error("useSearchLegacyCTX must be within the SearchCTX");
-  }
-  return context;
-}
-
 export type LegacyContextValues = {
   // state
   searchType: SrchType;
@@ -156,7 +148,10 @@ export function LegacyCTX({ children }: { children: ReactNode }) {
         searchDispatch({ type: SearchUpdated.AREA_HA, areaHa: areaHa }),
 
       setRasterLayers: (rasterLayers: RasterLayer[]) =>
-        searchDispatch({ type: SearchUpdated.RASTER_LAYERS, rasterLayers }),
+        searchDispatch({
+          type: SearchUpdated.RASTER_LAYERS_PARTIAL,
+          rasterLayers,
+        }),
 
       setShowAreaLayer: (showAreaLayer: boolean) =>
         searchDispatch({ type: SearchUpdated.SHOW_AREA_LAYER, showAreaLayer }),

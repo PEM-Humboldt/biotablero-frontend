@@ -1,39 +1,376 @@
-import React from "react";
+import { useEffect, useRef, useReducer, useMemo } from "react";
 import InfoIcon from "@mui/icons-material/Info";
 
+import { type CartesianMarkerProps } from "@nivo/core";
+import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
-import {
-  SearchLegacyCTX,
-  type LegacyContextValues,
-} from "pages/search/hooks/SearchContext";
-import { formatNumber } from "@utils/format";
-import { matchColor } from "pages/search/utils/matchColor";
-import processDataCsv from "pages/search/utils/processDataCsv";
-import BackendAPI from "pages/search/api/backendAPI";
 import TextBoxes from "@ui/TextBoxes";
+import { Lines } from "@composites/charts/Lines";
+import { GraphLegend } from "@ui/GraphLegend";
+import { LOCALE } from "@config/monitoring";
 
-import { hfTimeline } from "pages/search/types/humanFootprint";
-import { seDetails } from "pages/search/types/ecosystems";
+import type { TimelineHF } from "pages/search/types/humanFootprint";
 import type { TextsObject } from "pages/search/types/texts";
-import Lines from "@composites/charts/Lines";
-import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
-import { CartesianMarkerProps } from "@nivo/core";
-import { TimelineFootprintController } from "pages/search/dashboard/landscape/humanFootprint/TimelineFootprintController";
-import { ShapeLayer } from "pages/search/types/layers";
+import {
+  useSearchDispatchCTX,
+  useSearchStateCTX,
+} from "pages/search/hooks/SearchContext";
+import { processLineSeriesDataToCsv } from "pages/search/utils/processDataCsv";
+import {
+  hfTimelineLUT,
+  TimelineFootprintController,
+} from "pages/search/dashboard/landscape/humanFootprint/TimelineFootprintController";
+import { matchColor } from "pages/search/utils/matchColor";
+import { SearchUpdated } from "pages/search/hooks/SearchReducer";
+import { getMetricTexts } from "pages/search/utils/texts";
+import type { RasterLayer } from "pages/search/types/layers";
 
-type SEKeys = Record<"paramo" | "dryForest" | "wetland" | "aTotal", string>;
+export type SEKey = (typeof hfTimelineLUT)[number]["key"];
+export type SELabel = (typeof hfTimelineLUT)[number]["label"];
+export type SESource = (typeof hfTimelineLUT)[number]["classId"];
 
-const changeValues: Array<CartesianMarkerProps> = [
+export type TimelineFPSeries = {
+  key: SEKey;
+  label: SELabel;
+  data: { x: string; y: number }[];
+};
+
+type TimelineFPState = {
+  showInfoGraph: boolean;
+  timelineData: TimelineFPSeries[];
+  message: MessageWrapperType;
+  selectedSE: SELabel;
+  seExtension: Partial<Record<SESource, number>>;
+  texts: { hfTimeline: TextsObject };
+};
+
+enum TimelineFPUpdated {
+  SHOW_INFO = "toggleInfoGraph",
+  SERIES = "timelineValuesSucceeded",
+  ERRORS_FOUND = "timelineValuesFailed",
+  CURRENT_SE = "selectSE",
+}
+
+type TimelineFPActions =
+  | {
+      type: TimelineFPUpdated.SHOW_INFO;
+      forceState?: boolean;
+    }
+  | {
+      type: TimelineFPUpdated.SERIES;
+      payload: {
+        timelineData: TimelineHF[];
+        texts?: TextsObject;
+        seValues?: Record<string, number>;
+      };
+    }
+  | {
+      type: TimelineFPUpdated.ERRORS_FOUND;
+      error?: string;
+    }
+  | {
+      type: TimelineFPUpdated.CURRENT_SE;
+      seLabel: string | null;
+    };
+
+function transformTimelineData(data: TimelineHF[]): TimelineFPSeries[] {
+  if (!Array.isArray(data) || data.length === 0) {
+    return [];
+  }
+
+  const orderedData = [...data].sort(
+    (left, right) => Number(left.id) - Number(right.id),
+  );
+
+  return hfTimelineLUT
+    .map(({ key, label, classId: source }) => ({
+      key,
+      label,
+      data: orderedData
+        .map((row) => ({ x: row.id, y: row[source] }))
+        .filter((point) => point.y !== 0),
+    }))
+    .filter((series) => series.data.length > 0);
+}
+
+function timelineFPReducer(
+  state: TimelineFPState,
+  action: TimelineFPActions,
+): TimelineFPState {
+  switch (action.type) {
+    case TimelineFPUpdated.SHOW_INFO:
+      return {
+        ...state,
+        showInfoGraph:
+          action.forceState !== undefined
+            ? action.forceState
+            : !state.showInfoGraph,
+      };
+
+    case TimelineFPUpdated.SERIES:
+      return {
+        ...state,
+        ...(action.payload.texts !== undefined
+          ? { texts: { hfTimeline: action.payload.texts } }
+          : {}),
+        timelineData: transformTimelineData(action.payload.timelineData),
+        ...(action.payload?.seValues
+          ? { seExtension: action.payload.seValues }
+          : {}),
+        message: null,
+      };
+
+    case TimelineFPUpdated.CURRENT_SE:
+      return { ...state, selectedSE: action.seLabel as SELabel };
+
+    case TimelineFPUpdated.ERRORS_FOUND:
+      return {
+        ...state,
+        timelineData: [],
+        message: "no-data",
+      };
+
+    default:
+      console.warn("Unknown requested hfReducer action");
+      return state;
+  }
+}
+
+const timelineFPInitialState: TimelineFPState = {
+  showInfoGraph: false,
+  timelineData: [],
+  message: "loading",
+  selectedSE: "Área consulta",
+  seExtension: {},
+  texts: {
+    hfTimeline: { info: "", cons: "", meto: "", quote: "" },
+  },
+};
+
+const timelineFPColors = (key: string | number) =>
+  matchColor("hfTimeline")(key) ?? "#3d3c48";
+
+export function TimelineFootprint() {
+  const { areaType, areaId } = useSearchStateCTX();
+  const searchMapDispatch = useSearchDispatchCTX();
+  const [timelineHFState, timelineHFDispatch] = useReducer(
+    timelineFPReducer,
+    timelineFPInitialState,
+  );
+
+  const {
+    showInfoGraph,
+    timelineData,
+    seExtension,
+    message,
+    texts,
+    selectedSE,
+  } = timelineHFState;
+
+  const controllerRef = useRef(new TimelineFootprintController());
+
+  useEffect(() => {
+    if (!areaType?.id || !areaId?.id) {
+      return;
+    }
+    let isCurrent = true;
+
+    const controller = controllerRef.current;
+    controller.setArea(areaType.id, areaId.id);
+
+    searchMapDispatch({
+      type: SearchUpdated.RASTER_LAYERS,
+      payload: { rasterLayers: [], showBackgroundLayer: true },
+    });
+
+    Promise.all([
+      controller.getTimelineData(),
+      getMetricTexts("timelineHF"),
+      controller.getSEData(),
+    ])
+      .then(([timelineRawData, timelineTexts, seData]) => {
+        if (!isCurrent) {
+          return;
+        }
+
+        timelineHFDispatch({
+          type: TimelineFPUpdated.SERIES,
+          payload: {
+            timelineData: timelineRawData,
+            texts: timelineTexts,
+            seValues: seData,
+          },
+        });
+      })
+      .catch((error) => {
+        timelineHFDispatch({
+          type: TimelineFPUpdated.ERRORS_FOUND,
+          error: typeof error === "string" ? error : JSON.stringify(error),
+        });
+      });
+
+    return () => {
+      isCurrent = false;
+      controller.cancelActiveRequests();
+    };
+  }, [areaType, areaId, searchMapDispatch]);
+
+  const customColorMap = useMemo(
+    () =>
+      timelineData.reduce<Record<string, string>>((acc, item) => {
+        const isSelected = selectedSE === item.label;
+
+        const colorKey = isSelected ? `${item.key}Sel` : item.key;
+
+        acc[item.label] = timelineFPColors(colorKey);
+        return acc;
+      }, {}),
+    [timelineData, selectedSE],
+  );
+
+  const toggleInfoGraph = () => {
+    timelineHFDispatch({ type: TimelineFPUpdated.SHOW_INFO });
+  };
+
+  const handleEcosystemSelection = async (seLabelOrKey: string) => {
+    if (!controllerRef.current) {
+      return;
+    }
+
+    const ecosystem = hfTimelineLUT.find(
+      (e) => e.label === seLabelOrKey || e.key === seLabelOrKey,
+    );
+    if (!ecosystem) {
+      return;
+    }
+
+    const isAlreadySelected = selectedSE === ecosystem.label;
+    const isDeselect = ecosystem.key === "aTotal" || isAlreadySelected;
+    const seLabel = isDeselect ? null : ecosystem.label;
+    const seKey = isDeselect ? null : ecosystem.key;
+
+    timelineHFDispatch({
+      type: TimelineFPUpdated.CURRENT_SE,
+      seLabel,
+    });
+
+    let layer: RasterLayer[] = [];
+    if (seKey) {
+      searchMapDispatch({
+        type: SearchUpdated.LOADING_LAYER,
+        loadingLayer: true,
+      });
+
+      layer = await controllerRef.current.getSELayer(seKey);
+    }
+
+    searchMapDispatch({
+      type: SearchUpdated.RASTER_LAYERS,
+      payload: {
+        rasterLayers: layer,
+        mapTitle: {
+          name: !seKey
+            ? "HH - Huella humana en el tiempo y ecosistemas estratégicos (EE)"
+            : `HH - Huella humana en el tiempo - ${seLabel}`,
+        },
+      },
+    });
+  };
+
+  const availableLabels = [
+    hfTimelineLUT[0].label,
+    ...hfTimelineLUT
+      .filter((item) => seExtension[item.classId])
+      .map((item) => item.label),
+  ];
+
+  const activeSEInfo = hfTimelineLUT.find((item) => item.label === selectedSE);
+
+  const seExtensionvalue = activeSEInfo
+    ? seExtension[activeSEInfo.classId]
+    : undefined;
+
+  return !areaType || !areaId ? null : (
+    <div className="graphcontainer pt6">
+      <h2>
+        <IconTooltip title="Interpretación">
+          <span className="iconWrapper">
+            <InfoIcon
+              className={`metrics-info-icon${showInfoGraph ? " activeBox" : ""}`}
+              onClick={toggleInfoGraph}
+            />
+          </span>
+        </IconTooltip>
+      </h2>
+
+      {showInfoGraph && (
+        <ShortInfo
+          description={`<p>${texts.hfTimeline.info}</p>`}
+          className="graphinfo2"
+          collapseButton={false}
+        />
+      )}
+
+      <h6>Huella humana en el tiempo comparada con EE</h6>
+      {!message && <p>Haz clic en un ecosistema para ver su comportamiento</p>}
+
+      <div>
+        <Lines
+          loadStatus={message}
+          colors={timelineFPColors}
+          seriesData={timelineData}
+          markers={hfTimelineMarkers}
+          showLegend={false}
+          enablePoints={true}
+          height={300}
+          onClickGraphHandler={(id) => void handleEcosystemSelection(id)}
+          selectedIdProp={activeSEInfo?.key ?? "aTotal"}
+        />
+
+        {!message && (
+          <GraphLegend
+            keys={availableLabels}
+            isBar={false}
+            customColorMap={customColorMap}
+            onClick={(label: string) => void handleEcosystemSelection(label)}
+            selected={
+              !activeSEInfo || activeSEInfo.key === "aTotal"
+                ? []
+                : [activeSEInfo.label]
+            }
+            className="justify-center"
+          />
+        )}
+
+        {activeSEInfo && activeSEInfo.key !== "aTotal" && seExtensionvalue && (
+          <div>
+            <h6>{`${selectedSE} dentro de la unidad de consulta`}</h6>
+            <h5>{`${Math.round(seExtensionvalue).toLocaleString(LOCALE)} ha`}</h5>
+          </div>
+        )}
+
+        <TextBoxes
+          consText={texts.hfTimeline.cons}
+          metoText={texts.hfTimeline.meto}
+          quoteText={texts.hfTimeline.quote}
+          downloadData={processLineSeriesDataToCsv(timelineData)}
+          downloadName={`timeline_hf_${areaType.id}_${areaId.id}.csv`}
+          isInfoOpen={showInfoGraph}
+          toggleInfo={toggleInfoGraph}
+        />
+      </div>
+    </div>
+  );
+}
+
+const hfTimelineMarkers: CartesianMarkerProps[] = [
   {
     axis: "y",
     value: 15,
     legend: "Natural",
     lineStyle: { stroke: "#909090", strokeWidth: 1 },
-    textStyle: {
-      fill: "#3fbf9f",
-      fontSize: 9,
-    },
+    textStyle: { fill: "#3fbf9f", fontSize: 9 },
     legendPosition: "bottom-right",
   },
   {
@@ -41,10 +378,7 @@ const changeValues: Array<CartesianMarkerProps> = [
     value: 40,
     legend: "Baja",
     lineStyle: { stroke: "#909090", strokeWidth: 1 },
-    textStyle: {
-      fill: "#d5a529",
-      fontSize: 9,
-    },
+    textStyle: { fill: "#d5a529", fontSize: 9 },
     legendPosition: "bottom-right",
   },
   {
@@ -52,10 +386,7 @@ const changeValues: Array<CartesianMarkerProps> = [
     value: 60,
     legend: "Media",
     lineStyle: { stroke: "#909090", strokeWidth: 1 },
-    textStyle: {
-      fill: "#e66c29",
-      fontSize: 9,
-    },
+    textStyle: { fill: "#e66c29", fontSize: 9 },
     legendPosition: "bottom-right",
   },
   {
@@ -63,320 +394,7 @@ const changeValues: Array<CartesianMarkerProps> = [
     value: 100,
     legend: "Alta",
     lineStyle: { stroke: "#909090", strokeWidth: 1 },
-    textStyle: {
-      fill: "#cf324e",
-      fontSize: 9,
-    },
+    textStyle: { fill: "#cf324e", fontSize: 9 },
     legendPosition: "bottom-right",
   },
 ];
-
-interface Props {}
-
-interface State {
-  showInfoGraph: boolean;
-  hfTimeline: Array<hfTimelineExt>;
-  message: MessageWrapperType;
-  selectedEcosystem: seDetailsExt | null;
-  texts: {
-    hfTimeline: TextsObject;
-  };
-  layers: Array<ShapeLayer>;
-}
-
-interface hfTimelineExt extends hfTimeline {
-  label: string;
-}
-
-interface seDetailsExt extends seDetails {
-  type: string;
-}
-
-class TimelineFootprint extends React.Component<Props, State> {
-  static contextType = SearchLegacyCTX;
-  mounted = false;
-  TimelineHFController;
-
-  constructor(props: Props) {
-    super(props);
-    this.TimelineHFController = new TimelineFootprintController();
-    this.state = {
-      showInfoGraph: true,
-      hfTimeline: [],
-      message: "loading",
-      selectedEcosystem: null,
-      texts: {
-        hfTimeline: { info: "", cons: "", meto: "", quote: "" },
-      },
-      layers: [],
-    };
-  }
-
-  componentDidMount() {
-    this.mounted = true;
-
-    const {
-      areaType,
-      areaId,
-      setShapeLayers,
-      setLoadingLayer,
-      setLayerError,
-      setMapTitle,
-    } = this.context as LegacyContextValues;
-
-    const areaTypeId = areaType!.id;
-    const areaIdId = areaId!.id.toString();
-
-    this.TimelineHFController.setArea(areaTypeId, areaIdId.toString());
-
-    Promise.all([
-      BackendAPI.requestSEHFTimeline(areaTypeId, areaIdId, "Páramo"),
-      BackendAPI.requestSEHFTimeline(areaTypeId, areaIdId, "Humedal"),
-      BackendAPI.requestSEHFTimeline(
-        areaTypeId,
-        areaIdId,
-        "Bosque Seco Tropical",
-      ),
-      BackendAPI.requestTotalHFTimeline(areaTypeId, areaIdId),
-    ])
-      .then(([paramo, wetland, dryForest, aTotal]) => {
-        if (this.mounted) {
-          this.setState({
-            hfTimeline: this.processData([paramo, wetland, dryForest, aTotal]),
-            message: null,
-          });
-        }
-      })
-      .catch(() => {
-        this.setState({ message: "no-data" });
-      });
-
-    // TODO: Actualizar textos de acuerdo a nuevo endpoint en searchAPI
-    // BackendAPI.requestSectionTexts("hfTimeline")
-    //   .then((res) => {
-    //     if (this.mounted) {
-    //       this.setState({ texts: { hfTimeline: res } });
-    //     }
-    //   })
-    //   .catch(() => {
-    //     this.setState({
-    //       texts: { hfTimeline: { info: "", cons: "", meto: "", quote: "" } },
-    //     });
-    //   });
-
-    setLoadingLayer(true);
-
-    this.TimelineHFController.getLayer()
-      .then((hfPersistence) => {
-        if (this.mounted) {
-          this.setState(
-            () => ({ layers: [hfPersistence] }),
-            () => setLoadingLayer(false),
-          );
-          setShapeLayers(this.state.layers);
-          setMapTitle({
-            name: "HH - Persistencia y Ecosistemas estratégicos (EE)",
-          });
-        }
-      })
-      .catch((error) => setLayerError(error));
-  }
-
-  componentWillUnmount() {
-    this.mounted = false;
-    this.TimelineHFController.cancelActiveRequests();
-  }
-
-  /**
-   * Show or hide the detailed information on each graph
-   */
-  toggleInfoGraph = () => {
-    this.setState((prevState) => ({
-      showInfoGraph: !prevState.showInfoGraph,
-    }));
-  };
-
-  /**
-   * Set data about selected ecosystem
-   *
-   * @param {string} seType type of strategic ecosystem to request
-   */
-  setSelectedEcosystem = (seType: string) => {
-    const { areaType, areaId } = this.context as LegacyContextValues;
-
-    const areaTypeId = areaType!.id;
-    const areaIdId = areaId!.id.toString();
-
-    if (seType !== "aTotal") {
-      BackendAPI.requestSEDetailInArea(
-        areaTypeId,
-        areaIdId,
-        this.getLabel(seType),
-      ).then((value) => {
-        const res = { ...value, type: seType };
-        this.setState({ selectedEcosystem: res });
-      });
-    } else {
-      this.setState({ selectedEcosystem: null });
-    }
-  };
-
-  /**
-   * Defines the label for a given data
-   * @param {string} type data identifier
-   *
-   * @returns {string} label to be used for tooltips, legends, etc.
-   * Max. length = 16 characters
-   */
-  getLabel = (type: string): string => {
-    switch (type) {
-      case "paramo":
-        return "Páramo";
-      case "wetland":
-        return "Humedal";
-      case "dryForest":
-        return "Bosque Seco Tropical";
-      default:
-        return "Área consulta";
-    }
-  };
-
-  /**
-   * Transform data to fit in the graph structure
-   * @param {array} data data to be transformed
-   *
-   * @returns {array} data transformed
-   */
-  processData = (data: Array<hfTimeline>) => {
-    if (!data) return [];
-    return data.map((obj) => ({
-      ...obj,
-      label: this.getLabel(obj.key).substr(0, 13),
-    }));
-  };
-
-  render() {
-    const { areaType, areaId } = this.context as LegacyContextValues;
-    const { showInfoGraph, hfTimeline, selectedEcosystem, message, texts } =
-      this.state;
-
-    const areaTypeId = areaType!.id;
-    const areaIdId = areaId!.id.toString();
-
-    return (
-      <div className="graphcontainer pt6">
-        <h2>
-          <IconTooltip title="Interpretación">
-            <InfoIcon
-              className={`graphinfo${showInfoGraph ? " activeBox" : ""}`}
-              onClick={() => this.toggleInfoGraph()}
-            />
-          </IconTooltip>
-        </h2>
-        {showInfoGraph && (
-          <ShortInfo
-            description={`<p>${texts.hfTimeline.info}</p>`}
-            className="graphinfo2"
-            collapseButton={false}
-          />
-        )}
-        <h6>Huella humana comparada con EE</h6>
-        <p>Haz clic en un ecosistema para ver su comportamiento</p>
-        <div>
-          <Lines
-            colors={matchColor("hfTimeline")}
-            data={hfTimeline}
-            message={message}
-            markers={changeValues}
-            onClickGraphHandler={(selectedKey) => {
-              this.setSelectedEcosystem(selectedKey);
-              this.clickOnGraph(selectedKey);
-            }}
-          />
-          {selectedEcosystem && (
-            <div>
-              <h6>
-                {`${this.getLabel(
-                  selectedEcosystem.type,
-                )} dentro de la unidad de consulta`}
-              </h6>
-              <h5>{`${formatNumber(selectedEcosystem.total_area, 2)} ha`}</h5>
-            </div>
-          )}
-          <TextBoxes
-            consText={texts.hfTimeline.cons}
-            metoText={texts.hfTimeline.meto}
-            quoteText={texts.hfTimeline.quote}
-            downloadData={processDataCsv(hfTimeline)}
-            downloadName={`hf_timeline_${areaTypeId}_${areaIdId}.csv`}
-            isInfoOpen={showInfoGraph}
-            toggleInfo={this.toggleInfoGraph}
-          />
-        </div>
-      </div>
-    );
-  }
-
-  clickOnGraph = async (selectedKey: string) => {
-    const { setShapeLayers, setLoadingLayer, setLayerError, setMapTitle } = this
-      .context as LegacyContextValues;
-
-    let layerDescription = "";
-
-    const seTitle: SEKeys = {
-      paramo: "Páramos",
-      dryForest: "Bosque seco tropical",
-      wetland: "Humedales",
-      aTotal: "Total",
-    };
-
-    if (selectedKey === "aTotal") {
-      setShapeLayers(
-        this.state.layers.filter((layer) =>
-          ["hfPersistence"].includes(layer.id),
-        ),
-      );
-      setMapTitle({
-        name: "HH - Persistencia y Ecosistemas estratégicos (EE)",
-      });
-    } else {
-      layerDescription = `HH - Persistencia - ${
-        seTitle[selectedKey as keyof SEKeys]
-      }`;
-
-      if (!this.state.layers.find((layer) => layer.id === selectedKey)) {
-        setLoadingLayer(true);
-        try {
-          const SELayer = await this.TimelineHFController.getSELayer(
-            selectedKey as keyof Omit<SEKeys, "aTotal">,
-          );
-          this.setState(
-            (prevState) => ({
-              layers: [...prevState.layers, SELayer],
-            }),
-            () => {
-              setLoadingLayer(false);
-              const activeLayers = this.state.layers.filter((layer) =>
-                ["hfPersistence", selectedKey].includes(layer.id),
-              );
-              setShapeLayers(activeLayers);
-            },
-          );
-        } catch (error) {
-          setLayerError(error instanceof Error ? error.message : String(error));
-        } finally {
-          setLoadingLayer(false);
-        }
-      } else {
-        const activeLayers = this.state.layers.filter((layer) =>
-          ["hfPersistence", selectedKey].includes(layer.id),
-        );
-        setShapeLayers(activeLayers);
-      }
-
-      setMapTitle({ name: layerDescription });
-    }
-  };
-}
-
-export default TimelineFootprint;

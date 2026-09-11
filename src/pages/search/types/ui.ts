@@ -2,7 +2,7 @@ import { SvgIconTypeMap } from "@mui/material";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 import React from "react";
 
-export interface componentProps {
+export interface ComponentProps {
   handleAccordionChange?: (
     level: string,
     tabLayerId: string,
@@ -11,7 +11,7 @@ export interface componentProps {
   openTab?: string;
 }
 
-export interface accordionComponent {
+export interface AccordionComponent {
   label: {
     id: string;
     name: React.ReactNode;
