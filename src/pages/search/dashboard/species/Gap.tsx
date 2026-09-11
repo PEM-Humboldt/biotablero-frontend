@@ -32,7 +32,6 @@ import { IconTooltip } from "@ui/Tooltips";
 import { ShortInfo } from "@composites/ShortInfo";
 import { speciesGroupLabels } from "pages/search/dashboard/species/commonDictionaries";
 import { getMetricTexts } from "pages/search/utils/texts";
-import { GRAPH_ANIMATION_CONFIG } from "@config/monitoring";
 
 const GAP_GRAPH_MAX_YEARS_VISUALIZATION_AMOUTN = 5;
 const GAP_GRAPH_START_YEARS_VISUALIZATION_AMOUTN = 3;
