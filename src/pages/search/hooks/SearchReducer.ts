@@ -188,7 +188,7 @@ export function searchReducer(
       return { ...state, loadingLayer: action.loadingLayer };
     case SearchUpdated.LAYER_ERROR:
       // TODO: Revisar por una implementación más robusta de manejo de errores
-      return { ...state, layerError: !!action.layerError };
+      return { ...state, layerError: !!action.layerError, loadingLayer: false };
     case SearchUpdated.SHOW_DRAW_CONTROL:
       return { ...state, showDrawControl: action.showDrawControl };
     case SearchUpdated.SHOW_AREA_LAYER:
