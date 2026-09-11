@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { cn } from "@ui/shadCN/lib/utils";
 import type { Names } from "@appTypes/layout";
+import { environmentLabel } from "@config/environment";
 
 import { Menu } from "core/layout/mainLayout/header/Menu";
 import { Uim } from "core/layout/mainLayout/header/Uim";
@@ -27,7 +28,8 @@ export function Header({
   return (
     <header
       className={cn(
-        "flex flex-wrap justify-between items-center border-b border-b-grey min-h-[60px] md:h-[70px]! isolate",
+        "flex flex-wrap justify-between items-center border-b border-b-grey min-h-[60px] md:min-h-[70px] isolate",
+        environmentLabel && "bg-secondary/25 border-b-secondary/60",
         className,
       )}
     >
@@ -37,6 +39,11 @@ export function Header({
             BioTablero
             <span className="sr-only">{activeModuleInfo.name}</span>
           </h1>
+          {environmentLabel && (
+            <span className="inline-flex rounded px-2 py-1 text-sm/0 m-0 font-bold leading-none text-secondary uppercase">
+              {environmentLabel}
+            </span>
+          )}
         </Link>
 
         <Menu />
@@ -52,7 +59,10 @@ export function Header({
 
       {activeModuleInfo.name !== "" && (
         <div
-          className="flex gap-4 px-6 items-center bg-grey-light h-full"
+          className={cn(
+            "flex gap-4 px-6 items-center self-stretch",
+            environmentLabel ? "bg-secondary/20" : "bg-grey-light",
+          )}
           aria-hidden="true"
         >
           <span className="hidden lg:inline! text-base text-grey-dark md:text-lg font-normal">
