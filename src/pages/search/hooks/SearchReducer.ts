@@ -17,8 +17,9 @@ export enum SearchUpdated {
   SEARCH_TYPE = "searchType",
   AREA_TYPE = "areaType",
   AREA_ID = "areaId",
-  AREA_NAMES_LIST = "areaNamesList",
   AREA_HA = "areaHa",
+  AREA_SELECTION = "areaSelection",
+  AREA_NAMES_LIST = "areaNamesList",
   AREA_LAYER = "areaLayer",
   SHAPE_LAYERS = "shapeLayers",
   RASTER_LAYERS_PARTIAL = "rasterLayersPartial",
@@ -35,6 +36,7 @@ export enum SearchUpdated {
   GO_BACK = "goBack",
   RESET = "reset",
   WILDCARD = "wildcard",
+  RESET_SEARCH_TYPE = "resetSearchType",
 }
 
 export type SearchState = {
@@ -57,11 +59,19 @@ export type SearchActions =
   | { type: SearchUpdated.SEARCH_TYPE; searchType: SrchType } // -> searchType
   | { type: SearchUpdated.AREA_TYPE; areaType: AreaType | undefined } // handleAreaTypeUpdate
   | { type: SearchUpdated.AREA_ID; areaId: AreaIdBasic | undefined } // handleAreaIdUpdate
+  | {
+      type: SearchUpdated.AREA_SELECTION;
+      payload?: {
+        areaId?: AreaIdBasic;
+        areaLayerJSON?: geojson.GeoJsonObject;
+        areaHa?: number;
+      };
+    }
   | { type: SearchUpdated.AREA_NAMES_LIST; areaNamesList: AreaIdBasic[] }
   | { type: SearchUpdated.AREA_HA; areaHa: number | undefined }
   | {
       type: SearchUpdated.AREA_LAYER;
-      areaLayerJSON: geojson.GeoJsonObject | undefined;
+      payload: { areaLayerJSON: geojson.GeoJsonObject; areaType?: AreaType };
     } // handleAreaLayerUpdate
   | { type: SearchUpdated.SHAPE_LAYERS; shapeLayers: ShapeLayer[] }
   | { type: SearchUpdated.RASTER_LAYERS_PARTIAL; rasterLayers: RasterLayer[] } // LEGACY
@@ -71,6 +81,7 @@ export type SearchActions =
         rasterLayers: RasterLayer[];
         mapTitle?: MapTitle;
         showBackgroundLayer?: boolean;
+        forceLoadState?: boolean;
       };
     } // handleShapeLayersUpdate
   | { type: SearchUpdated.MAP_TITLE; mapTitle: MapTitle }
@@ -98,7 +109,8 @@ export type SearchActions =
       payload: { areaId: AreaIdBasic; areaInfo: AreaId };
     } // search/useEffect/syncDrawConsole
   | { type: SearchUpdated.RESET }
-  | { type: SearchUpdated.WILDCARD; payload: Partial<SearchState> };
+  | { type: SearchUpdated.WILDCARD; payload: Partial<SearchState> }
+  | { type: SearchUpdated.RESET_SEARCH_TYPE; searchType: SrchType };
 
 const searchClearLayersState: Pick<
   SearchState,
@@ -168,12 +180,27 @@ export function searchReducer(
       return { ...state, areaType: action.areaType, areaId: undefined };
     case SearchUpdated.AREA_ID:
       return { ...state, areaId: action.areaId };
+
+    case SearchUpdated.AREA_SELECTION:
+      return {
+        ...state,
+        ...(action?.payload?.areaId ? { areaId: action.payload.areaId } : {}),
+        ...(action?.payload?.areaHa ? { areaHa: action.payload.areaHa } : {}),
+        ...(action?.payload?.areaLayerJSON
+          ? { areaLayer: areaLayerUpdate(action?.payload?.areaLayerJSON) }
+          : {}),
+      };
     case SearchUpdated.AREA_NAMES_LIST:
       return { ...state, areaNamesList: action.areaNamesList };
     case SearchUpdated.AREA_HA:
       return { ...state, areaHa: action.areaHa };
     case SearchUpdated.AREA_LAYER:
-      return { ...state, areaLayer: areaLayerUpdate(action.areaLayerJSON) };
+      return {
+        ...state,
+        areaLayer: areaLayerUpdate(action.payload.areaLayerJSON),
+        areaType: action.payload.areaType,
+        ...(action.payload.areaType ? { areaId: undefined } : {}),
+      };
     case SearchUpdated.SHAPE_LAYERS:
       if (hasInvalidGeoJson(action.shapeLayers)) {
         return state;
@@ -192,7 +219,10 @@ export function searchReducer(
           ? { mapTitle: action.payload.mapTitle }
           : {}),
         rasterLayers: action.payload.rasterLayers,
-        loadingLayer: false,
+        loadingLayer:
+          action.payload?.forceLoadState !== undefined
+            ? action.payload.forceLoadState
+            : false,
         layerError: false,
       };
     case SearchUpdated.RASTER_LAYERS_PARTIAL:
@@ -239,6 +269,12 @@ export function searchReducer(
       return searchInitialState;
     case SearchUpdated.WILDCARD:
       return { ...state, ...action.payload };
+    case SearchUpdated.RESET_SEARCH_TYPE:
+      return {
+        ...state,
+        ...searchGoBackState,
+        searchType: action.searchType,
+      };
     default:
       console.warn("Unknown requested searchReducer action");
       return state;

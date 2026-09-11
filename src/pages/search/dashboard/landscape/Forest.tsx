@@ -1,14 +1,13 @@
-import React, { useContext } from "react";
 import Accordion from "pages/search/Accordion";
 import ForestIntegrity from "pages/search/dashboard/landscape/forest/ForestIntegrity";
-import ForestLossPersistence from "pages/search/dashboard/landscape/forest/ForestLossPersistence";
-import { useSearchLegacyCTX } from "pages/search/hooks/SearchContext";
-import { AccordionComponent, ComponentProps } from "pages/search/types/ui";
+import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
+import { ForestLossPersistence } from "pages/search/dashboard/landscape/forest/ForestLossPersistence";
+import type { AccordionComponent, ComponentProps } from "pages/search/types/ui";
 
-const Forest: React.FC<ComponentProps> = (props) => {
+export function Forest(props: ComponentProps) {
   const { handleAccordionChange, openTab } = props;
 
-  const { searchType } = useSearchLegacyCTX();
+  const { searchType } = useSearchStateCTX();
 
   //TODO: Habilitar seccion de integridad de bosques cuando se conecte el nuevo backend de consultas
   const initialArray: Array<AccordionComponent> = [
@@ -52,6 +51,4 @@ const Forest: React.FC<ComponentProps> = (props) => {
       />
     </div>
   );
-};
-
-export default Forest;
+}

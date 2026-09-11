@@ -94,14 +94,6 @@ export function SearchCTX({
 
 // HACK: soporte de contexto para componentes de clase o
 // pendientes de actualizar... DE ACÁ PA' BAJO VUELA PRRO
-export function useSearchLegacyCTX() {
-  const context = useContext(SearchLegacyCTX);
-  if (!context) {
-    throw new Error("useSearchLegacyCTX must be within the SearchCTX");
-  }
-  return context;
-}
-
 export type LegacyContextValues = {
   // state
   searchType: SrchType;
