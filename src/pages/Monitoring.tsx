@@ -1,5 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useOutletContext } from "react-router";
+
+import { MonitoringBackendUnavailable } from "@ui/MonitoringBackendUnavailable";
+import { checkMonitoringBackend } from "pages/monitoring/api/services/health";
 
 import { SidebarProvider } from "@ui/shadCN/component/sidebar";
 
@@ -13,6 +16,22 @@ import { Glosary } from "pages/monitoring/layout/Glosary";
 export function Monitoring() {
   const { layoutDispatch, layoutState } = useOutletContext<UiManager>();
 
+  const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function checkBackend() {
+      const available = await checkMonitoringBackend(controller.signal);
+      if (!controller.signal.aborted) {
+        setIsAvailable(available);
+      }
+    }
+
+    void checkBackend();
+    return () => controller.abort();
+  }, [layoutState]);
+
   useEffect(() => {
     layoutDispatch({
       type: LayoutUpdated.CHANGE_SECTION,
@@ -22,6 +41,18 @@ export function Monitoring() {
       },
     });
   }, [layoutDispatch]);
+
+  if (isAvailable === null) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-muted text-primary">
+        Comprobando conexión...
+      </div>
+    );
+  }
+
+  if (!isAvailable) {
+    return <MonitoringBackendUnavailable />;
+  }
 
   return (
     <UserInMonitoringCTX>
