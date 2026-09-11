@@ -39,6 +39,7 @@ export type LocationBasicInfo = {
   id: number;
   name: string;
   code: string;
+  level: number;
   parent?: {
     id: number;
     name: string;

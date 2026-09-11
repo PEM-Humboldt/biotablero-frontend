@@ -23,7 +23,7 @@ export function GraphLegend({
     <ul
       className={cn("flex flex-wrap justify-end gap-4 text-sm p-4", className)}
     >
-      {keys.map((key) => {
+      {[...new Set(keys)].map((key) => {
         const color =
           customColorMap?.[key] ??
           getSeriesColor(

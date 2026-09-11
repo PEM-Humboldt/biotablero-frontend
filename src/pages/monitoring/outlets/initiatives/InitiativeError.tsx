@@ -31,7 +31,7 @@ export function InitiativeError({
           to={goBack ?? "/Monitoreo"}
           className="underline text-primary hover:text-accent"
         >
-          Volver al buscador
+          Volver
         </Link>
       </Button>
     </div>

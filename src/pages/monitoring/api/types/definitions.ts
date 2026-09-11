@@ -56,9 +56,16 @@ export type ResponseWithStatus<T> = {
 };
 
 export type ImageUploadInfo = {
-  file: File | null | undefined | string;
-  path: string;
-};
+  type: "banner" | "image";
+} & (
+  | {
+      action: "add";
+      file: File | null | undefined | string;
+    }
+  | {
+      action: "remove";
+    }
+);
 
 export type LogTypeValue = {
   id: number;

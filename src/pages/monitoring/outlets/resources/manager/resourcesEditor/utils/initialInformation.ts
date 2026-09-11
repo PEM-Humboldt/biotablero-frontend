@@ -8,7 +8,7 @@ export function setInitialInformation(
   resource: MonitoringResource | null,
 ): MonitoringResourceForm {
   return {
-    initiativeId: resource?.initiativeId || null,
+    initiativeId: resource?.initiative.id || null,
     name: resource?.name || "",
     description: resource?.description || "",
     isDraft: resource?.isDraft || false,
