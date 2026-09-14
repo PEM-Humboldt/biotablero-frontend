@@ -1,5 +1,7 @@
 import type { CancelTokenSource } from "axios";
+import LayerAPI from "pages/search/api/layerAPI";
 import SearchAPI from "pages/search/api/searchAPI";
+import { MetricsUtils } from "pages/search/utils/metrics";
 
 export type ObservedRichnessDataType = {
   total: number;
@@ -112,6 +114,68 @@ export class ObservedRichnessController {
    */
   async getNationalData(taxonomicGroup?: string) {
     return this.getData(NATIONAL_AREA_ID_VALUE, taxonomicGroup);
+  }
+
+  async getRichnessLayer(taxonomicGroup?: string) {
+    if (this.areaId === 0) {
+      throw Error("Polygon and area undefined");
+    }
+
+    const requests: Array<Promise<{ layer: string }>> = [];
+
+    this.classes.forEach((classId) => {
+      const { request, source } = SearchAPI.requestMetricsLayer(
+        "richness",
+        "2026",
+        classId,
+        this.areaId,
+        taxonomicGroup,
+      );
+      requests.push(request);
+      this.activeRequests.set(classId, source);
+    });
+
+    const res = await Promise.all(requests);
+
+    this.classes.forEach((classId) => {
+      this.activeRequests.delete(classId);
+    });
+
+    if (res.some((result) => typeof result === "string")) {
+      throw new Error("request canceled");
+    }
+    const layersRequests: Array<Promise<Blob>> = [];
+
+    res.forEach((layerObj) => {
+      const { request, source } = LayerAPI.getLayerData(layerObj);
+      layersRequests.push(request);
+      this.activeRequests.set(layerObj.layer, source);
+    });
+
+    const layerResponses = await Promise.all(layersRequests);
+    res.forEach((layerObj) => {
+      this.activeRequests.delete(layerObj.layer);
+    });
+
+    if (layersRequests.some((result) => typeof result === "string")) {
+      throw new Error("request canceled");
+    }
+
+    const layersBase64Promises: Array<Promise<string>> = [];
+
+    layerResponses.forEach((response) => {
+      const layerBase64 = MetricsUtils.blobToBase64(response);
+      layersBase64Promises.push(layerBase64);
+    });
+
+    const layersBase64 = await Promise.all(layersBase64Promises);
+
+    return [...this.classes].map((classId, index) => ({
+      id: classId,
+      data: layersBase64[index],
+      selected: false,
+      paneLevel: 2,
+    }));
   }
 
   /**

@@ -1,4 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+} from "react";
 
 import {
   Select,
@@ -29,6 +36,8 @@ import SmallStackedBar, {
   type SmallStackedBarData,
 } from "@composites/charts/SmallStackedBar";
 import { getMetricTexts } from "pages/search/utils/texts";
+import { ResponsiveLine } from "@nivo/line";
+import { getSeriesColor } from "@utils/color";
 
 const OBSERVED_RICHNESS_GRAPH_KEYS = ["CR", "EN", "VU"];
 const customColorMap: Record<string, string> = {
@@ -158,6 +167,15 @@ export function ObservedRichness() {
         )}
       </div>
 
+      {richness.areaSerie && (
+        <div className="graphcontainer pt6">
+          <h4>Número de especies registradas por km2</h4>
+          <div className="w-full aspect-video">
+            <GapLineChart data={richness.areaSerie} />
+          </div>
+        </div>
+      )}
+
       <TextBoxes
         consText={texts.observedRichness.cons}
         metoText={texts.observedRichness.meto}
@@ -170,6 +188,48 @@ export function ObservedRichness() {
     </div>
   );
 }
+
+const GapLineChart = memo(function GapLineChart({
+  data,
+}: {
+  data: ObservedRichnessGraphSerie;
+}) {
+  return (
+    <ResponsiveLine
+      data={[data]}
+      margin={{ top: 30, right: 10, bottom: 60, left: 60 }}
+      xScale={{ type: "linear", min: "auto", max: "auto" }}
+      yScale={{ type: "linear", min: 0, max: "auto" }}
+      curve="monotoneX"
+      axisBottom={{
+        tickSize: 5,
+        tickPadding: 5,
+        tickRotation: 0,
+        legend: "Índice de Vacíos de Registros por (IVR)",
+        legendOffset: 36,
+        legendPosition: "middle" as const,
+      }}
+      colors={(series) =>
+        customColorMap[Number(series.id)] ?? getSeriesColor(Number(series.id))
+      }
+      gridYValues={5}
+      axisLeft={{
+        tickValues: 5,
+        legend: "Frecuencia de unidades de 1km²",
+        legendOffset: -50,
+        format: (value: number) => `${value / 1000}k`,
+      }}
+      pointSize={7}
+      pointColor="#ffffff"
+      pointBorderWidth={2}
+      pointBorderColor={{ from: "seriesColor" }}
+      pointLabelYOffset={-12}
+      enableTouchCrosshair={true}
+      useMesh={true}
+      enableSlices="x"
+    />
+  );
+});
 
 function buildSmallStackedBarData(
   data: ObservedRichnessDataType,
