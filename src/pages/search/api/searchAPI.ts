@@ -81,6 +81,18 @@ class SearchAPI {
   /** METRICS */
   /** ******* */
 
+  static requestMetricGroups<Metric extends MetricsTypes>(
+    metricId: Metric,
+  ): RequestAPIObject<string[]> {
+    const source = axios.CancelToken.source();
+    return {
+      request: SearchAPI.makeGetRequest(`metrics/${metricId}/groups`, {
+        cancelToken: source.token,
+      }),
+      source,
+    };
+  }
+
   /**
    * Get metrics values
    * @param metricId Metric identifier
