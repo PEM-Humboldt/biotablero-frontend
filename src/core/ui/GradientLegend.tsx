@@ -1,32 +1,21 @@
-import styled from "styled-components";
-
-interface PropsGradient {
+interface PropsGradientLeg {
   colors: Array<string>;
+  from: number;
+  to: number;
 }
 
-const Gradient = styled.div<PropsGradient>`
-  height: 12px;
-  width: 95%;
-  margin: 0 auto;
-  background: linear-gradient(0.25turn, ${(props) => props.colors.join()});
-`;
+export function GradientLegend({ colors, from, to }: PropsGradientLeg) {
+  const gradientStyle = {
+    background: `linear-gradient(0.25turn, ${colors.join(",")})`,
+  };
 
-interface PropsGradientLeg extends PropsGradient {
-  fromValue: string;
-  toValue: string;
-}
-
-const GradientLegend = (props: PropsGradientLeg) => {
-  const { fromValue, toValue, colors } = props;
   return (
-    <div className="gradientLegend">
-      <Gradient colors={colors} />
-      <div className="text">
-        <span>{fromValue}</span>
-        <span>{toValue}</span>
+    <div className="mt-px bg-white p-[5px_8px_3px] text-[9px] font-semibold text-[#2a363b]">
+      <div className="h-3 w-[95%] mx-auto" style={gradientStyle} />
+      <div className="mt-0 flex justify-between">
+        <span>{from}</span>
+        <span>{to}</span>
       </div>
     </div>
   );
-};
-
-export default GradientLegend;
+}
