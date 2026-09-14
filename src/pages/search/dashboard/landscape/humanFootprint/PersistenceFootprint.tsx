@@ -11,7 +11,7 @@ import { matchColor } from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
 import TextBoxes from "@ui/TextBoxes";
 
-import { hfPersistence } from "pages/search/types/humanFootprint";
+import { HFPersistence } from "pages/search/types/humanFootprint";
 import type { TextsObject } from "pages/search/types/texts";
 import { LargeStackedBar } from "@composites/charts/LargeStackedBar";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
@@ -24,7 +24,7 @@ const getLabel = {
   estable_alta: "Estable Alta",
 };
 
-interface hfPersistenceExt extends hfPersistence {
+interface hfPersistenceExt extends HFPersistence {
   label: string;
 }
 
@@ -76,7 +76,7 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
     this.PersistenceHFController.setArea(areaTypeId, areaIdId);
 
     BackendAPI.requestHFPersistence(areaTypeId, areaIdId)
-      .then((res: Array<hfPersistence>) => {
+      .then((res: Array<HFPersistence>) => {
         if (this.mounted) {
           this.setState({
             hfPersistence: res.map((item) => ({

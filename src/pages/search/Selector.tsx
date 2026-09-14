@@ -11,11 +11,13 @@ import {
 import SearchAPI from "pages/search/api/searchAPI";
 import type { AreaType } from "pages/search/types/dashboard";
 import {
-  useSearchLegacyCTX,
+  type SrchType,
+  useSearchDispatchCTX,
   useSearchStateCTX,
 } from "pages/search/hooks/SearchContext";
 import { DrawPolygon } from "pages/search/selector/DrawPolygon";
 import SearchAreas from "pages/search/selector/SearchAreas";
+import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 
 interface SelectorProps {
   showDrawControls: (show: boolean) => void;
@@ -39,8 +41,7 @@ function Selector({ showDrawControls }: SelectorProps) {
   const [isLoadingAreaTypes, setIsLoadingAreaTypes] = useState(true);
 
   const { searchType } = useSearchStateCTX();
-  const { setSearchType, setAreaHa, setAreaId, setAreaType, setAreaLayer } =
-    useSearchLegacyCTX();
+  const dispatchSearchMap = useSearchDispatchCTX();
 
   useEffect(() => {
     const selectorSync = async () => {
@@ -123,18 +124,18 @@ function Selector({ showDrawControls }: SelectorProps) {
   ];
 
   const onChange = (lvl: string, expTab: string) => {
+    let searchFor: SrchType | null = null;
     if (expTab === "panel1-Geocerca") {
-      setSearchType("definedArea");
+      searchFor = "definedArea";
     } else if (expTab === "draw-polygon") {
-      setSearchType("drawPolygon");
+      searchFor = "drawPolygon";
       showDrawControls(true);
-    } else {
-      setSearchType(null);
     }
-    setAreaHa();
-    setAreaId();
-    setAreaType();
-    setAreaLayer();
+
+    dispatchSearchMap({
+      type: SearchUpdated.RESET_SEARCH_TYPE,
+      searchType: searchFor,
+    });
   };
 
   return (

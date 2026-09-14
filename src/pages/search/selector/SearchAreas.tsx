@@ -2,22 +2,20 @@ import { Autocomplete, TextField } from "@mui/material";
 
 import Accordion from "pages/search/Accordion";
 import {
-  useSearchLegacyCTX,
-  type LegacyContextValues,
+  useSearchDispatchCTX,
+  useSearchStateCTX,
 } from "pages/search/hooks/SearchContext";
-import { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
+import type { AreaIdBasic, AreaType } from "pages/search/types/dashboard";
 import SearchAPI from "pages/search/api/searchAPI";
+import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 
 interface SearchAreasProps {
   areasList: Array<AreaType>;
 }
 
-const SearchAreas: React.FunctionComponent<SearchAreasProps> = ({
-  areasList,
-}) => {
-  const context = useSearchLegacyCTX();
-  const { areaNamesList, areaType, setAreaType } =
-    context as LegacyContextValues;
+function SearchAreas({ areasList }: SearchAreasProps) {
+  const { areaNamesList, areaType } = useSearchStateCTX();
+  const dispatchSearchMap = useSearchDispatchCTX();
 
   const components = areasList
     .filter((area) => area.id !== "custom")
@@ -39,11 +37,13 @@ const SearchAreas: React.FunctionComponent<SearchAreasProps> = ({
     expandedTab: string,
     expandedTabLabel?: string,
   ) => {
-    if (expandedTab === "") {
-      setAreaType();
-    } else {
-      setAreaType({ id: expandedTab, label: expandedTabLabel || expandedTab });
-    }
+    dispatchSearchMap({
+      type: SearchUpdated.AREA_TYPE,
+      areaType:
+        expandedTab === ""
+          ? undefined
+          : { id: expandedTab, label: expandedTabLabel || expandedTab },
+    });
   };
 
   return (
@@ -57,17 +57,14 @@ const SearchAreas: React.FunctionComponent<SearchAreasProps> = ({
       />
     </div>
   );
-};
+}
 
 interface AreaAutocompleteProps {
   optionsList: Array<AreaIdBasic>;
 }
 
-const AreaAutocomplete: React.FunctionComponent<AreaAutocompleteProps> = ({
-  optionsList,
-}) => {
-  const context = useSearchLegacyCTX();
-  const { setAreaId, setAreaLayer, setAreaHa } = context as LegacyContextValues;
+function AreaAutocomplete({ optionsList }: AreaAutocompleteProps) {
+  const dispatchSearchMap = useSearchDispatchCTX();
 
   return (
     <Autocomplete
@@ -76,16 +73,25 @@ const AreaAutocomplete: React.FunctionComponent<AreaAutocompleteProps> = ({
       getOptionLabel={(option) => option.name}
       onChange={(_, value) => {
         if (value === null) {
-          setAreaId();
-          setAreaLayer();
-          setAreaHa();
+          dispatchSearchMap({ type: SearchUpdated.AREA_SELECTION });
         } else {
-          setAreaId(value);
-          // TODO: Agregar manejo de peticiones, para que si se desmonta el componente se cancelen las peticiones activas
-          SearchAPI.requestAreaInfo(value.id).then((areaId) => {
-            setAreaHa(Number(areaId.area));
-            setAreaLayer(areaId.geometry);
-          });
+          SearchAPI.requestAreaInfo(value.id)
+            .then((areaInfo) => {
+              dispatchSearchMap({
+                type: SearchUpdated.AREA_SELECTION,
+                payload: {
+                  areaId: value,
+                  areaHa: Number(areaInfo.area),
+                  areaLayerJSON: areaInfo.geometry,
+                },
+              });
+            })
+            .catch((err) => {
+              dispatchSearchMap({
+                type: SearchUpdated.LAYER_ERROR,
+                layerError: err instanceof Error ? err.message : String(err),
+              });
+            });
         }
       }}
       style={{ width: "100%" }}
@@ -115,6 +121,6 @@ const AreaAutocomplete: React.FunctionComponent<AreaAutocompleteProps> = ({
       }}
     />
   );
-};
+}
 
 export default SearchAreas;

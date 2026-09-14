@@ -4,7 +4,10 @@ import InfoIcon from "@mui/icons-material/Info";
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
 
-import { useSearchLegacyCTX } from "pages/search/hooks/SearchContext";
+import {
+  useSearchDispatchCTX,
+  useSearchStateCTX,
+} from "pages/search/hooks/SearchContext";
 
 import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { EcosystemsController } from "pages/search/dashboard/EcosystemsController";
@@ -17,6 +20,7 @@ import { SmallStackedBarData } from "@composites/charts/SmallStackedBar";
 
 import type { TextsObject } from "pages/search/types/texts";
 import { getMetricTexts } from "pages/search/utils/texts";
+import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 
 type EcosystemsState = {
   showInfoMain: boolean;
@@ -190,18 +194,9 @@ function ecosystemsReducer(
 }
 
 export function Ecosystems() {
-  const {
-    areaType,
-    areaId,
-    areaHa,
-    setLoadingLayer,
-    setRasterLayers,
-    setMapTitle,
-    setLayerError,
-    clearLayers,
-  } = useSearchLegacyCTX();
+  const { areaType, areaId, areaHa } = useSearchStateCTX();
+  const dispatchSearchMap = useSearchDispatchCTX();
   const controllerRef = useRef(new EcosystemsController());
-  const controller = controllerRef.current;
   const [activeSE, setActiveSE] = useState<string | null>(null);
 
   const [state, dispatch] = useReducer(ecosystemsReducer, initialState);
@@ -225,14 +220,21 @@ export function Ecosystems() {
     let isCurrent = true;
 
     if (!areaTypeId || !areaIdId) {
-      setLoadingLayer(false);
+      dispatchSearchMap({
+        type: SearchUpdated.LOADING_LAYER,
+        loadingLayer: false,
+      });
       return;
     }
 
+    const controller = controllerRef.current;
     dispatch({ type: "COVERAGE_LOADING" });
     controller.setArea(areaTypeId, areaIdId);
 
-    setLoadingLayer(true);
+    dispatchSearchMap({
+      type: SearchUpdated.LOADING_LAYER,
+      loadingLayer: true,
+    });
 
     controller
       .getCoverageValues()
@@ -243,18 +245,25 @@ export function Ecosystems() {
           .then((layersRes) => {
             if (!isCurrent) return;
             dispatch({ type: "COVERAGE_LAYERS_SUCCEEDED", payload: layersRes });
-            setRasterLayers(layersRes);
-            setLoadingLayer(false);
-            setMapTitle({ name: "Coberturas" });
+
+            dispatchSearchMap({
+              type: SearchUpdated.RASTER_LAYERS,
+              payload: {
+                rasterLayers: layersRes,
+                mapTitle: { name: "Coberturas" },
+              },
+            });
           })
           .catch((e) => {
             if (!isCurrent) return;
-            const errorMessage = e?.toString?.() ?? String(e);
+            const errorMessage = String(e);
             if (errorMessage.includes("request canceled")) {
               return;
             }
-            setLoadingLayer(false);
-            setLayerError?.(errorMessage);
+            dispatchSearchMap({
+              type: SearchUpdated.LAYER_ERROR,
+              layerError: errorMessage,
+            });
           });
         dispatch({
           type: "COVERAGE_VALUES_SUCCEEDED",
@@ -268,7 +277,10 @@ export function Ecosystems() {
           return;
         }
         dispatch({ type: "COVERAGE_VALUES_FAILED" });
-        setLoadingLayer(false);
+        dispatchSearchMap({
+          type: SearchUpdated.LOADING_LAYER,
+          loadingLayer: false,
+        });
       });
 
     controller
@@ -312,10 +324,10 @@ export function Ecosystems() {
 
     return () => {
       isCurrent = false;
-      clearLayers();
+      dispatchSearchMap({ type: SearchUpdated.CLEAR_LAYERS });
       controller.cancelActiveRequests();
     };
-  }, [areaTypeId, areaIdId, areaHa]);
+  }, [areaTypeId, areaIdId, areaHa, dispatchSearchMap]);
 
   if (!areaType || !areaId) {
     return null;
@@ -340,19 +352,28 @@ export function Ecosystems() {
    */
   const clickOnGraph = (selectedKey: string) => {
     setActiveSE(null);
-    setRasterLayers(
-      layers.map((layer) => ({
-        ...layer,
-        selected: layer.id === selectedKey,
-      })),
-    );
-    setMapTitle({ name: "Coberturas" });
+
+    dispatchSearchMap({
+      type: SearchUpdated.RASTER_LAYERS,
+      payload: {
+        rasterLayers: layers.map((layer) => ({
+          ...layer,
+          selected: layer.id === selectedKey,
+        })),
+        mapTitle: { name: "Coberturas" },
+      },
+    });
   };
 
   const restoreCoverageLayers = () => {
     setActiveSE(null);
-    setRasterLayers(layers);
-    setMapTitle({ name: "Coberturas" });
+    dispatchSearchMap({
+      type: SearchUpdated.RASTER_LAYERS,
+      payload: {
+        rasterLayers: layers,
+        mapTitle: { name: "Coberturas" },
+      },
+    });
   };
 
   const toggleSEDetail = (type: string) => {

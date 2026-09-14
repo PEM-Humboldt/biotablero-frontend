@@ -13,12 +13,14 @@ import EditPolygonIcon from "pages/search/selector/EditIcon";
 import PolygonIcon from "pages/search/selector/PolygonIcon";
 import RemoveIcon from "pages/search/selector/RemoveIcon";
 import {
+  useSearchDispatchCTX,
   useSearchDrawControlsCTX,
-  useSearchLegacyCTX,
 } from "pages/search/hooks/SearchContext";
 import { uiText } from "pages/search/selector/drawPolygon/layout/uiText";
 import "pages/search/selector/drawPolygon/layout/DrawPolygon.css";
 import { DrawMode } from "pages/search/selector/drawPolygon/types/drawPolygon";
+import { SearchUpdated } from "pages/search/hooks/SearchReducer";
+
 interface DrawModeHandler {
   handler: {
     enable(): void;
@@ -52,7 +54,7 @@ interface DrawControlExtend extends Control.Draw {
 export function DrawPolygon() {
   const { drawControlsRef, areDrawControlsMounted } =
     useSearchDrawControlsCTX();
-  const { setAreaType, setAreaLayer } = useSearchLegacyCTX();
+  const dispatchSearchMap = useSearchDispatchCTX();
 
   const [drawnPolygon, setDrawnPolygon] =
     useState<Polygon<geojson.Polygon> | null>(null);
@@ -184,8 +186,13 @@ export function DrawPolygon() {
       drawnPolygon.toGeoJSON() as geojson.Feature<geojson.Polygon>;
     feature.geometry.bbox = bbox;
 
-    setAreaType({ id: "custom", label: "Consulta Personalizada" });
-    setAreaLayer(feature);
+    dispatchSearchMap({
+      type: SearchUpdated.AREA_LAYER,
+      payload: {
+        areaLayerJSON: feature,
+        areaType: { id: "custom", label: "Consulta Personalizada" },
+      },
+    });
     setDrawnPolygon(null);
     setDrawMode(DrawMode.IDLE);
   };

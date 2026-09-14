@@ -11,6 +11,8 @@ export function GraphLegend({
   isBar = true,
   renderValues,
   className,
+  onClick,
+  selected,
 }: {
   keys: string[];
   customColorMap?: Record<string, string>;
@@ -18,12 +20,16 @@ export function GraphLegend({
   isBar?: boolean;
   renderValues?: Record<string, number>;
   className?: string;
+  onClick?: (label: string) => void;
+  selected?: string[];
 }) {
   return (
     <ul
       className={cn("flex flex-wrap justify-end gap-4 text-sm p-4", className)}
     >
       {keys.map((key) => {
+        const isSelected = selected?.includes(key) ?? false;
+
         const color =
           customColorMap?.[key] ??
           getSeriesColor(
@@ -34,8 +40,8 @@ export function GraphLegend({
             customColorList ?? GRAPHS_EXTENDED_COLOR_PALETTE,
           );
 
-        return (
-          <li key={`legend_${key}`} className="flex items-center">
+        const content = (
+          <>
             <span
               className={cn(
                 "relative inline-block w-4 mr-1 shrink-0 rounded-sm",
@@ -45,12 +51,32 @@ export function GraphLegend({
               )}
               style={{ backgroundColor: color }}
             />
-            <span>
+            <span
+              className={cn(
+                isSelected && "underline underline-offset-4 font-semibold",
+              )}
+            >
               {key}
               {renderValues && renderValues[key]
                 ? ` · ${renderValues[key]}`
                 : ""}
             </span>
+          </>
+        );
+
+        return (
+          <li key={`legend_${key}`} className="flex items-center">
+            {onClick ? (
+              <button
+                type="button"
+                onClick={() => onClick(key)}
+                className="flex items-center hover:opacity-80 transition-opacity"
+              >
+                {content}
+              </button>
+            ) : (
+              content
+            )}
           </li>
         );
       })}
