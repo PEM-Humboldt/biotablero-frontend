@@ -58,7 +58,7 @@ export class ObservedRichnessController {
    *
    * @returns a Promise resolving into a ObservedRichnessDataType
    */
-  private async getData(
+  private async getTableData(
     areaId: number,
     taxonomicGroup?: string,
   ): Promise<ObservedRichnessDataType> {
@@ -101,8 +101,8 @@ export class ObservedRichnessController {
    *
    * @returns a Promise resolving into a ObservedRichnessDataType
    */
-  async getCurrentData(taxonomicGroup?: string) {
-    return this.getData(this.areaId, taxonomicGroup);
+  async getAreaData(taxonomicGroup?: string) {
+    return this.getTableData(this.areaId, taxonomicGroup);
   }
 
   /**
@@ -113,7 +113,7 @@ export class ObservedRichnessController {
    * @returns a Promise resolving into a ObservedRichnessDataType
    */
   async getNationalData(taxonomicGroup?: string) {
-    return this.getData(NATIONAL_AREA_ID_VALUE, taxonomicGroup);
+    return this.getTableData(NATIONAL_AREA_ID_VALUE, taxonomicGroup);
   }
 
   async getRichnessLayer(taxonomicGroup?: string) {
@@ -178,6 +178,25 @@ export class ObservedRichnessController {
     }));
   }
 
+  async getRichnessSerie(taxonomicGroup?: string) {
+    const requestKey = "richnessSerie";
+    const { request, source } = SearchAPI.requestMetricsValues(
+      "richness",
+      this.areaId,
+      { params: taxonomicGroup ? { group: taxonomicGroup } : {} },
+    );
+    this.activeRequests.set(requestKey, source);
+
+    return request
+      .catch((err) => {
+        console.error("Error original:", err);
+        throw new Error("Error getting data");
+      })
+      .finally(() => {
+        this.activeRequests.delete(requestKey);
+      });
+  }
+
   /**
    * Transforms the graph data into an object to for the CSV download
    *
@@ -187,9 +206,9 @@ export class ObservedRichnessController {
    */
   getDownloadData(data: {
     current: ObservedRichnessDataType | null;
-    context: ObservedRichnessDataType | null;
+    national: ObservedRichnessDataType | null;
   }) {
-    return [data.current, data.context]
+    return [data.current, data.national]
       .filter((item): item is ObservedRichnessDataType => item !== null)
       .map((item: ObservedRichnessDataType) => ({
         total: item.total,
