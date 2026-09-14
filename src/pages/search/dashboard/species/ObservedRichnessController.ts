@@ -35,31 +35,18 @@ export class ObservedRichnessController {
    *
    * @returns a Promise resolving into a list of groups
    */
-  async getTaxonomicGroups(): Promise<string[]> {
-    // TODO: Eliminar este retorno cuando el endpoint de grupos esté
-    return Promise.resolve([
-      "mamiferos",
-      "aves",
-      "reptiles",
-      "anfibios",
-      "peces",
-      "plantas",
-    ]);
+  async getORichnessTaxonomicGroups(): Promise<string[]> {
+    const { request, source } = SearchAPI.requestMetricGroups("statsOnSpecies");
+    this.activeRequests.set("ORichness-groups", source);
 
-    // TODO: descomentar la función cuando el endpoint de grupos esté
-    // const request = SearchAPI.makeGetRequest("/metrics/recordGaps/groups");
-    // const source = axios.CancelToken.source();
-    // this.activeRequests.set("recordGaps-groups", source);
-    //
-    // return request
-    //   .then((res) => res as string[])
-    //   .catch((err) => {
-    //     console.error("Error original:", err);
-    //     throw new Error("Error getting data");
-    //   })
-    //   .finally(() => {
-    //     this.activeRequests.delete("recordGaps-groups");
-    //   });
+    return request
+      .catch((err) => {
+        console.error("Error original:", err);
+        throw new Error("Error getting data");
+      })
+      .finally(() => {
+        this.activeRequests.delete("ORichness-groups");
+      });
   }
 
   /**
