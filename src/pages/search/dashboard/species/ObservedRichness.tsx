@@ -25,7 +25,10 @@ import {
   ObservedRichnessController,
   type ObservedRichnessDataType,
 } from "pages/search/dashboard/species/ObservedRichnessController";
-import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
+import {
+  useSearchDispatchCTX,
+  useSearchStateCTX,
+} from "pages/search/hooks/SearchContext";
 import type { TextsObject } from "pages/search/types/texts";
 import { speciesGroupLabels } from "pages/search/dashboard/species/commonDictionaries";
 import { CircleAlert, LayersIcon, LeafIcon, MapPin } from "lucide-react";
@@ -38,6 +41,8 @@ import SmallStackedBar, {
 import { getMetricTexts } from "pages/search/utils/texts";
 import { ResponsiveLine } from "@nivo/line";
 import { getSeriesColor } from "@utils/color";
+import { SearchUpdated } from "pages/search/hooks/SearchReducer";
+import type { MetricTypesMap } from "pages/search/types/metrics";
 
 const OBSERVED_RICHNESS_GRAPH_KEYS = ["CR", "EN", "VU"];
 
@@ -85,7 +90,7 @@ type ObservedRichnessAction =
         texts: TextsObject;
         nationalData: ObservedRichnessDataType;
         areaData: ObservedRichnessDataType | null;
-        areaSerie: ObservedRichnessSerieType;
+        areaSerie: MetricTypesMap["richness"];
       };
     }
   | {
@@ -94,13 +99,13 @@ type ObservedRichnessAction =
         taxonomicGroup: string;
         nationalData: ObservedRichnessDataType;
         areaData: ObservedRichnessDataType | null;
-        areaSerie: ObservedRichnessSerieType;
+        areaSerie: MetricTypesMap["richness"];
       };
     }
   | { type: ObservedRichnessUpdated.SHOW_INFO; forceState?: boolean };
 
 function transformObservedRichnessSerie(
-  serie: ObservedRichnessSerieType,
+  serie: MetricTypesMap["richness"],
 ): ObservedRichnessGraphSerie {
   const pairedData = serie.bin_edges.map((edge, idx) => ({
     x: Number(edge.toFixed(2)),
@@ -180,6 +185,7 @@ export function ObservedRichness() {
   );
 
   const { areaType, areaId } = useSearchStateCTX();
+  const searchMapDispatch = useSearchDispatchCTX();
 
   const controller = useRef(new ObservedRichnessController());
 
@@ -189,6 +195,10 @@ export function ObservedRichness() {
 
   useEffect(() => {
     updateRichness({ type: ObservedRichnessUpdated.LOADING, isLoading: true });
+    searchMapDispatch({
+      type: SearchUpdated.LOADING_LAYER,
+      loadingLayer: true,
+    });
 
     Promise.all([
       controller.current.getORichnessTaxonomicGroups(),
@@ -196,6 +206,7 @@ export function ObservedRichness() {
       areaType?.id !== "custom" ? controller.current.getAreaData() : null,
       controller.current.getNationalData(),
       controller.current.getRichnessSerie(),
+      controller.current.getRichnessLayer(),
     ])
       .then(
         ([
@@ -216,6 +227,21 @@ export function ObservedRichness() {
               areaSerie: areaSerie,
             },
           });
+
+          searchMapDispatch({
+            type: SearchUpdated.RASTER_LAYERS,
+            payload: {
+              rasterLayers: areaRichnessMap,
+              mapTitle: {
+                name: `Riqueza observada en ${areaId?.name}`,
+                gradientData: {
+                  from: 0,
+                  to: 1,
+                  colors: ["#ff0000", "#0000ff"],
+                },
+              },
+            },
+          });
         },
       )
       .catch((err) => {
@@ -226,8 +252,13 @@ export function ObservedRichness() {
             console: err,
           },
         });
+
+        searchMapDispatch({
+          type: SearchUpdated.LAYER_ERROR,
+          layerError: err instanceof Error ? err.message : String(err),
+        });
       });
-  }, [areaType?.id]);
+  }, [areaType?.id, searchMapDispatch, areaId?.name]);
 
   const handleTaxonomicGroupChange = useCallback(
     (taxonomicGroup: string) => {
@@ -240,6 +271,10 @@ export function ObservedRichness() {
         type: ObservedRichnessUpdated.LOADING,
         isLoading: true,
       });
+      searchMapDispatch({
+        type: SearchUpdated.LOADING_LAYER,
+        loadingLayer: true,
+      });
 
       Promise.all([
         areaType?.id !== "custom"
@@ -247,8 +282,9 @@ export function ObservedRichness() {
           : null,
         controller.current.getNationalData(groupFilter),
         controller.current.getRichnessSerie(groupFilter),
+        controller.current.getRichnessLayer(groupFilter),
       ])
-        .then(([current, context, graphData]) => {
+        .then(([current, context, graphData, areaRichnessMap]) => {
           updateRichness({
             type: ObservedRichnessUpdated.TAXONOMIC_GROUP,
             payload: {
@@ -256,6 +292,23 @@ export function ObservedRichness() {
               nationalData: context,
               areaData: current,
               areaSerie: graphData,
+            },
+          });
+
+          searchMapDispatch({
+            type: SearchUpdated.RASTER_LAYERS,
+            payload: {
+              rasterLayers: areaRichnessMap,
+              mapTitle: {
+                name: groupFilter
+                  ? `Riqueza observada de ${groupFilter} en ${areaId?.name}`
+                  : `Riqueza observada en ${areaId?.name}`,
+                gradientData: {
+                  from: 0,
+                  to: 1,
+                  colors: ["#ff0000", "#0000ff"],
+                },
+              },
             },
           });
         })
@@ -269,7 +322,7 @@ export function ObservedRichness() {
           });
         });
     },
-    [areaType?.id],
+    [areaType?.id, areaId?.name, searchMapDispatch],
   );
 
   return (

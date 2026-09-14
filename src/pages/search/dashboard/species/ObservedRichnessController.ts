@@ -116,26 +116,41 @@ export class ObservedRichnessController {
     return this.getTableData(NATIONAL_AREA_ID_VALUE, taxonomicGroup);
   }
 
+  async getRichnessSerie(taxonomicGroup?: string) {
+    const requestKey = "richnessSerie";
+    const { request, source } = SearchAPI.requestMetricsValues(
+      "richness",
+      this.areaId,
+      { params: taxonomicGroup ? { group: taxonomicGroup } : {} },
+    );
+    this.activeRequests.set(requestKey, source);
+
+    return request
+      .catch((err) => {
+        console.error("Error original:", err);
+        throw new Error("Error getting data");
+      })
+      .finally(() => {
+        this.activeRequests.delete(requestKey);
+      });
+  }
+
   async getRichnessLayer(taxonomicGroup?: string) {
     if (this.areaId === 0) {
       throw Error("Polygon and area undefined");
     }
 
-    const requests: Array<Promise<{ layer: string }>> = [];
+    const { request, source } = SearchAPI.requestMetricsLayer(
+      "richness",
+      "2026",
+      "richness",
+      this.areaId,
+      taxonomicGroup,
+    );
 
-    this.classes.forEach((classId) => {
-      const { request, source } = SearchAPI.requestMetricsLayer(
-        "richness",
-        "2026",
-        classId,
-        this.areaId,
-        taxonomicGroup,
-      );
-      requests.push(request);
-      this.activeRequests.set(classId, source);
-    });
+    this.activeRequests.set("2026", source);
 
-    const res = await Promise.all(requests);
+    const res = await Promise.all([request]);
 
     this.classes.forEach((classId) => {
       this.activeRequests.delete(classId);
@@ -176,25 +191,6 @@ export class ObservedRichnessController {
       selected: false,
       paneLevel: 2,
     }));
-  }
-
-  async getRichnessSerie(taxonomicGroup?: string) {
-    const requestKey = "richnessSerie";
-    const { request, source } = SearchAPI.requestMetricsValues(
-      "richness",
-      this.areaId,
-      { params: taxonomicGroup ? { group: taxonomicGroup } : {} },
-    );
-    this.activeRequests.set(requestKey, source);
-
-    return request
-      .catch((err) => {
-        console.error("Error original:", err);
-        throw new Error("Error getting data");
-      })
-      .finally(() => {
-        this.activeRequests.delete(requestKey);
-      });
   }
 
   /**
