@@ -1,11 +1,4 @@
-import {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useReducer,
-  useRef,
-} from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef } from "react";
 
 import {
   Select,
@@ -40,17 +33,19 @@ import SmallStackedBar, {
 } from "@composites/charts/SmallStackedBar";
 import { getMetricTexts } from "pages/search/utils/texts";
 import { ResponsiveLine } from "@nivo/line";
-import { getSeriesColor } from "@utils/color";
 import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 import type { MetricTypesMap } from "pages/search/types/metrics";
+import { generateLinearTicks } from "@utils/ui";
 
 const OBSERVED_RICHNESS_GRAPH_KEYS = ["CR", "EN", "VU"];
 
-const customColorMap: Record<string, string> = {
+const threatenedSpeciesCustomColorMap: Record<string, string> = {
   CR: "#5c150c",
   EN: "#bc472b",
   VU: "#d98242",
 };
+
+const observedRichnessGradientColors = ["#1B0C42", "#A6216E", "#FCB03D"];
 
 enum ObservedRichnessUpdated {
   LOADING = "loading",
@@ -104,7 +99,7 @@ type ObservedRichnessAction =
     }
   | { type: ObservedRichnessUpdated.SHOW_INFO; forceState?: boolean };
 
-function transformObservedRichnessSerie(
+function transformSerieToObservedRichnessSerie(
   serie: MetricTypesMap["richness"],
 ): ObservedRichnessGraphSerie {
   const pairedData = serie.bin_edges.map((edge, idx) => ({
@@ -113,6 +108,23 @@ function transformObservedRichnessSerie(
   }));
 
   return { id: String(serie.id), data: pairedData };
+}
+
+function transformDataToSmallStackedBarData(
+  data: ObservedRichnessDataType,
+): SmallStackedBarData[] {
+  const totalThreatened = data.threatenedTotal || 1;
+
+  return OBSERVED_RICHNESS_GRAPH_KEYS.map((key) => {
+    const rawVal = data.barValues[key as keyof typeof data.barValues] ?? 0;
+
+    return {
+      key,
+      label: `${key}:${rawVal.toLocaleString(LOCALE)}`,
+      area: rawVal,
+      percentage: (rawVal / totalThreatened) * 100,
+    };
+  });
 }
 
 function observedRichnessReducer(
@@ -136,7 +148,9 @@ function observedRichnessReducer(
         nationalTableData: action.payload.nationalData,
         areaTableData: action.payload.areaData,
         texts: action.payload.texts,
-        areaSerie: transformObservedRichnessSerie(action.payload.areaSerie),
+        areaSerie: transformSerieToObservedRichnessSerie(
+          action.payload.areaSerie,
+        ),
         currentTaxonomicGroup: "all",
       };
 
@@ -147,7 +161,9 @@ function observedRichnessReducer(
         errors: [],
         nationalTableData: action.payload.nationalData,
         areaTableData: action.payload.areaData,
-        areaSerie: transformObservedRichnessSerie(action.payload.areaSerie),
+        areaSerie: transformSerieToObservedRichnessSerie(
+          action.payload.areaSerie,
+        ),
         currentTaxonomicGroup: action.payload.taxonomicGroup,
       };
 
@@ -239,9 +255,9 @@ export function ObservedRichness() {
                 ...(gradientMaxValue !== undefined
                   ? {
                       gradientData: {
-                        from: 0,
+                        from: 1,
                         to: gradientMaxValue,
-                        colors: ["#1B0C42", "#A6216E", "#FCB03D"],
+                        colors: observedRichnessGradientColors,
                       },
                     }
                   : {}),
@@ -301,6 +317,8 @@ export function ObservedRichness() {
             },
           });
 
+          const gradientMaxValue = graphData.bin_edges.at(-1);
+
           searchMapDispatch({
             type: SearchUpdated.RASTER_LAYERS,
             payload: {
@@ -309,11 +327,15 @@ export function ObservedRichness() {
                 name: groupFilter
                   ? `Riqueza observada de ${groupFilter} en ${areaId?.name}`
                   : `Riqueza observada en ${areaId?.name}`,
-                gradientData: {
-                  from: 0,
-                  to: 1,
-                  colors: ["#1B0C42", "#A6216E", "#FCB03D"],
-                },
+                ...(gradientMaxValue !== undefined
+                  ? {
+                      gradientData: {
+                        from: 1,
+                        to: gradientMaxValue,
+                        colors: observedRichnessGradientColors,
+                      },
+                    }
+                  : {}),
               },
             },
           });
@@ -331,151 +353,148 @@ export function ObservedRichness() {
     [areaType?.id, areaId?.name, searchMapDispatch],
   );
 
+  const graphSerieTicks = useMemo(() => {
+    if (!richness.areaSerie) {
+      return [];
+    }
+    const data = richness.areaSerie.data;
+    return generateLinearTicks(0, data[data.length - 1].x, 10);
+  }, [richness.areaSerie]);
+
   return (
-    <>
-      <div className="graphcontainer pt6">
-        <h4>Número de especies</h4>
-        <IconTooltip title="Interpretación">
-          <InfoIcon
-            className={`metrics-info-icon${richness.isInfoOpen ? " activeBox" : ""}`}
-            onClick={() =>
-              updateRichness({
-                type: ObservedRichnessUpdated.SHOW_INFO,
-              })
-            }
-          />
-        </IconTooltip>
-
-        {richness.isInfoOpen && (
-          <ShortInfo
-            description={`<p>${richness.texts.info}</p>`}
-            className="graphinfo2"
-            collapseButton={false}
-          />
-        )}
-
-        {Object.keys(richness.taxonomicGroupsAvailable).length > 1 && (
-          <Select
-            value={richness.currentTaxonomicGroup}
-            onValueChange={(val) => handleTaxonomicGroupChange(val)}
-          >
-            <SelectTrigger id="gap-species-group" className="border-grey">
-              <SelectValue placeholder="Grupo Taxonómico" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Todos los grupos</SelectItem>
-              {richness.taxonomicGroupsAvailable.map((group) => (
-                <SelectItem key={`selectGroup-${group}`} value={group}>
-                  {speciesGroupLabels[group] ?? group}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        )}
-
-        <ErrorsList errorItems={richness.errors} />
-
-        <div className="">
-          {richness.isLoading ? (
-            <div className="errorData">Cargando datos...</div>
-          ) : (
-            <>
-              <ObservedRichnessTable data={richness.areaTableData} />
-              <ObservedRichnessTable
-                data={richness.nationalTableData}
-                isReference={richness.areaTableData !== null}
-              />
-            </>
-          )}
-        </div>
-
-        {richness.areaSerie && (
-          <div className="graphcontainer pt6">
-            <h4>Número de especies registradas por km2</h4>
-            <div className="w-full aspect-video">
-              <GapLineChart data={richness.areaSerie} />
-            </div>
-          </div>
-        )}
-
-        <TextBoxes
-          consText={richness.texts.cons}
-          metoText={richness.texts.meto}
-          quoteText={richness.texts.quote}
-          downloadData={controller.current.getDownloadData({
-            current: richness.areaTableData,
-            national: richness.nationalTableData,
-          })}
-          downloadName={`cifrasRiquezaObservada_${areaType?.label}_${areaId?.name}_vs_contextoPaís.csv`}
-          isInfoOpen={richness.isInfoOpen}
-          toggleInfo={() =>
+    <div className="graphcontainer pt6">
+      <h4>Número de especies</h4>
+      <IconTooltip title="Interpretación">
+        <InfoIcon
+          className={`metrics-info-icon${richness.isInfoOpen ? " activeBox" : ""}`}
+          onClick={() =>
             updateRichness({
               type: ObservedRichnessUpdated.SHOW_INFO,
             })
           }
         />
+      </IconTooltip>
+
+      {richness.isInfoOpen && (
+        <ShortInfo
+          description={`<p>${richness.texts.info}</p>`}
+          className="graphinfo2"
+          collapseButton={false}
+        />
+      )}
+
+      {Object.keys(richness.taxonomicGroupsAvailable).length > 1 && (
+        <Select
+          value={richness.currentTaxonomicGroup}
+          onValueChange={(val) => handleTaxonomicGroupChange(val)}
+        >
+          <SelectTrigger id="gap-species-group" className="border-grey">
+            <SelectValue placeholder="Grupo Taxonómico" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos los grupos</SelectItem>
+            {richness.taxonomicGroupsAvailable.map((group) => (
+              <SelectItem key={`selectGroup-${group}`} value={group}>
+                {speciesGroupLabels[group] ?? group}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
+
+      <ErrorsList errorItems={richness.errors} />
+
+      <div className="">
+        {richness.isLoading ? (
+          <div className="errorData">Cargando datos...</div>
+        ) : (
+          <>
+            <ObservedRichnessTable data={richness.areaTableData} />
+            <ObservedRichnessTable
+              data={richness.nationalTableData}
+              isReference={richness.areaTableData !== null}
+            />
+          </>
+        )}
       </div>
-    </>
+
+      {richness.areaSerie && (
+        <div className="graphcontainer pt6">
+          <h4 className="text-balance">
+            Número de especies registradas por km2 (LMSC)
+          </h4>
+          <div className="w-full aspect-video">
+            {richness.isLoading ? (
+              <div className="errorData">Cargando datos...</div>
+            ) : (
+              <ResponsiveLine
+                data={[richness.areaSerie]}
+                margin={{ top: 30, right: 20, bottom: 60, left: 60 }}
+                xScale={{
+                  type: "linear",
+                  min: 1,
+                  max: graphSerieTicks[graphSerieTicks.length - 1],
+                  nice: false,
+                }}
+                yScale={{ type: "linear", min: 0, max: "auto" }}
+                curve="monotoneX"
+                gridXValues={graphSerieTicks}
+                axisBottom={{
+                  legend: "Número de especies registradas (LMSC)",
+                  legendOffset: 36,
+                  legendPosition: "middle" as const,
+                  tickValues: graphSerieTicks,
+                }}
+                colors={observedRichnessGradientColors}
+                gridYValues={5}
+                axisLeft={{
+                  tickValues: 5,
+                  legend: "Frecuencia de unidades de 1km² (LMSC)",
+                  legendOffset: -50,
+                  format: (value: number) => `${value / 1000}k`,
+                }}
+                pointSize={7}
+                pointColor="#ffffff"
+                pointBorderWidth={2}
+                pointBorderColor={{ from: "seriesColor" }}
+                pointLabelYOffset={-12}
+                enableTouchCrosshair={true}
+                useMesh={true}
+                tooltip={(p) => (
+                  <div className="bg-background rounded-lg text-grey-dark px-4 py-2 text-sm text-nowrap shadow-2xl flex flex-col">
+                    <span
+                      style={{ color: p.point.seriesColor }}
+                      className="font-semibold"
+                    >
+                      {p.point.data.yFormatted}
+                    </span>
+                    <span>Especies</span>
+                  </div>
+                )}
+              />
+            )}
+          </div>
+        </div>
+      )}
+
+      <TextBoxes
+        consText={richness.texts.cons}
+        metoText={richness.texts.meto}
+        quoteText={richness.texts.quote}
+        downloadData={controller.current.getDownloadData({
+          current: richness.areaTableData,
+          national: richness.nationalTableData,
+        })}
+        downloadName={`cifrasRiquezaObservada_${areaType?.label}_${areaId?.name}_vs_contextoPaís.csv`}
+        isInfoOpen={richness.isInfoOpen}
+        toggleInfo={() =>
+          updateRichness({
+            type: ObservedRichnessUpdated.SHOW_INFO,
+          })
+        }
+      />
+    </div>
   );
-}
-
-const GapLineChart = memo(function GapLineChart({
-  data,
-}: {
-  data: ObservedRichnessGraphSerie;
-}) {
-  return (
-    <ResponsiveLine
-      data={[data]}
-      margin={{ top: 30, right: 10, bottom: 60, left: 60 }}
-      xScale={{ type: "linear", min: "auto", max: "auto" }}
-      yScale={{ type: "linear", min: 0, max: "auto" }}
-      curve="monotoneX"
-      axisBottom={{
-        tickSize: 5,
-        tickPadding: 5,
-        tickRotation: 0,
-        legend: "Índice de Vacíos de Registros por (IVR)",
-        legendOffset: 36,
-        legendPosition: "middle" as const,
-      }}
-      colors={(series) =>
-        customColorMap[Number(series.id)] ?? getSeriesColor(Number(series.id))
-      }
-      gridYValues={5}
-      axisLeft={{
-        tickValues: 5,
-        legend: "Frecuencia de unidades de 1km²",
-        legendOffset: -50,
-        format: (value: number) => `${value / 1000}k`,
-      }}
-      pointSize={7}
-      pointColor="#ffffff"
-      pointBorderWidth={2}
-      pointBorderColor={{ from: "seriesColor" }}
-      pointLabelYOffset={-12}
-      enableTouchCrosshair={true}
-      useMesh={true}
-      enableSlices="x"
-    />
-  );
-});
-
-function buildSmallStackedBarData(
-  data: ObservedRichnessDataType,
-): SmallStackedBarData[] {
-  const totalThreatened = data.threatenedTotal || 1;
-
-  return OBSERVED_RICHNESS_GRAPH_KEYS.map((key) => {
-    const rawVal = data.barValues[key as keyof typeof data.barValues] ?? 0;
-
-    return {
-      key,
-      label: `${key}:${rawVal.toLocaleString(LOCALE)}`,
-      area: rawVal,
-      percentage: (rawVal / totalThreatened) * 100,
-    };
-  });
 }
 
 function ObservedRichnessTable({
@@ -491,7 +510,7 @@ function ObservedRichnessTable({
     if (!data) {
       return [];
     }
-    return buildSmallStackedBarData(data);
+    return transformDataToSmallStackedBarData(data);
   }, [data]);
 
   return !data ? null : (
@@ -581,7 +600,7 @@ function ObservedRichnessTable({
             data={stackedData}
             height={24}
             units="especies"
-            colors={(key) => customColorMap[key] ?? "#FF0000"}
+            colors={(key) => threatenedSpeciesCustomColorMap[key] ?? "#FF0000"}
             padding={0}
             margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
             forceFullPercent={true}
@@ -590,7 +609,7 @@ function ObservedRichnessTable({
 
         <GraphLegend
           keys={OBSERVED_RICHNESS_GRAPH_KEYS}
-          customColorMap={customColorMap}
+          customColorMap={threatenedSpeciesCustomColorMap}
           renderValues={data.barValues}
           className="justify-start px-0 pt-1 text-[#888]!"
         />
