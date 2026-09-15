@@ -47,6 +47,8 @@ const customColorMap: Record<number, string> = {
   2025: GRAPHS_EXTENDED_COLOR_PALETTE[29],
 };
 
+const recordGapsGradientColors = ["#3FBF9F", "#e4e890", "#CF324E"];
+
 type GapSerie = { id: string; data: { x: number; y: number }[] };
 
 type GapState = {
@@ -334,7 +336,7 @@ export function Gap() {
               gradientData: {
                 from: 0,
                 to: 1,
-                colors: ["#3FBF9F", "#e4e890", "#CF324E"],
+                colors: recordGapsGradientColors,
               },
             },
           },
@@ -359,7 +361,7 @@ export function Gap() {
     [gap.seriesData, gap.activeYears],
   );
 
-  return !lastYear ? null : (
+  return (
     <div className="graphcontainer pt6 overflow-hidden">
       <h4>Índice de Vacíos por Registros (IVR) por km²</h4>
       <IconTooltip title="Interpretación">
@@ -456,7 +458,7 @@ export function Gap() {
 
       <ErrorsList errorItems={gap.errors} />
 
-      {gap.isLoading ? (
+      {gap.isLoading || !lastYear ? (
         <div className="errorData">Cargando datos...</div>
       ) : (
         <>
