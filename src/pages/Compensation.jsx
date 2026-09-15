@@ -47,32 +47,16 @@ export class Compensation extends Component {
   componentDidMount() {
     const { user } = this.props;
     if (user && user.company && user.username) {
-      this.initializeUser(user);
+      this.setState(
+        {
+          currentCompanyId: user.company.id,
+          currentCompany: user.username.toUpperCase(),
+        },
+        () => this.loadProjectsList(),
+      );
     }
   }
-
-  componentDidUpdate(prevProps) {
-    const { user } = this.props;
-    if (
-      user &&
-      user.company &&
-      user.username &&
-      (!prevProps.user || prevProps.user.username !== user.username)
-    ) {
-      this.initializeUser(user);
-    }
-  }
-
-  initializeUser = (user) => {
-    this.setState(
-      {
-        currentCompanyId: user.company.id,
-        currentCompany: user.username.toUpperCase(),
-      },
-      () => this.loadProjectsList(),
-    );
-  };
-
+  
   componentWillUnmount() {
     const { setHeaderNames } = this.props;
     setHeaderNames({ title: "", subtitle: "" });

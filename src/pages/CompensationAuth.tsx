@@ -5,6 +5,7 @@ import { useLocation, useNavigate, useOutletContext } from "react-router";
 import { Compensation } from "pages/Compensation";
 import type { Names } from "@appTypes/layout";
 import { useUserCTX } from "@hooks/UserCTX";
+import { Modal } from "@mui/material";
 
 // HACK: Este componente de redireccionamiento es temporal, existe mientras
 // se actualiza el módulo de compensaciones a un componente de función
@@ -18,14 +19,9 @@ export function RenderCompensation() {
   const renderCompensation = user?.username === "geb";
 
   useEffect(() => {
-    // if (!renderCompensation) {
-    //   void navigate("/", {
-    //     state: { prevUrl: pathname },
-    //     replace: true,
-    //   });
-
-    //   return;
-    // }
+    if (!renderCompensation) {
+      return;
+    }
 
     layoutDispatch({
       type: LayoutUpdated.CHANGE_SECTION,
@@ -40,13 +36,29 @@ export function RenderCompensation() {
   const handleSetHeaderNames = (names: Names) =>
     layoutDispatch({ type: LayoutUpdated.HEADER_NAMES, newHeader: names });
 
-  return <Compensation
-    setHeaderNames={handleSetHeaderNames}
-    user={{
-      id: 1,
-      username: "geb",
-      name: "Grupo Energía Bogotá",
-      company: { id: 1, name: "Grupo Energía Bogotá" },
-    }}
-  />;
+  return <>
+    <Modal
+      aria-labelledby="simple-modal-title"
+      aria-describedby="simple-modal-description"
+      open={!renderCompensation}
+      disableAutoFocus
+    >
+      <div className="generalAlarm">
+        <h2>
+          <b>{user?.username == null ? "Acceso restringido" : "Usuario no autorizado"}</b>
+          <br />
+          {user?.username == null ? "Inicie sesión para acceder a la página." : "No tienes permisos para acceder a la página."}
+        </h2>
+        <button
+          type="button"
+          className="closebtn"
+          title="Cerrar"
+        >
+        </button>
+      </div>
+    </Modal>
+    {user?.username != null && <Compensation
+      setHeaderNames={handleSetHeaderNames} user={user}
+    />}
+  </>;
 }
