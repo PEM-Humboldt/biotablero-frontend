@@ -4,7 +4,7 @@ import Accordion from "pages/search/Accordion";
 import { useSearchDispatchCTX } from "pages/search/hooks/SearchContext";
 import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 import { Gap } from "pages/search/dashboard/species/Gap";
-import { ObservedRichness } from "pages/search/dashboard/species/ObservedRichness";
+import { Richness } from "pages/search/dashboard/species/Richness";
 
 export function Species() {
   const searchDispatch = useSearchDispatchCTX();
@@ -36,7 +36,7 @@ export function Species() {
         id: "observedRichness",
         name: "Riqueza observada",
       },
-      component: ObservedRichness,
+      component: Richness,
       componentProps: {
         handleAccordionChange: handleAccordionChange,
         openTab: childMap.observedRichness,

@@ -18,7 +18,7 @@ export type ObservedRichnessDataType = {
 
 const NATIONAL_AREA_ID_VALUE = 1;
 
-export class ObservedRichnessController {
+export class RichnessController {
   areaType: string = "";
   areaId: number = 0;
   classes: string[] = ["recordGaps"];
@@ -37,7 +37,7 @@ export class ObservedRichnessController {
    *
    * @returns a Promise resolving into a list of groups
    */
-  async getORichnessTaxonomicGroups(): Promise<string[]> {
+  async getRichnessTaxonomicGroups(): Promise<string[]> {
     const { request, source } = SearchAPI.requestMetricGroups("statsOnSpecies");
     this.activeRequests.set("ORichness-groups", source);
 
@@ -101,7 +101,7 @@ export class ObservedRichnessController {
    *
    * @returns a Promise resolving into a ObservedRichnessDataType
    */
-  async getAreaData(taxonomicGroup?: string) {
+  async getAreaRichnessData(taxonomicGroup?: string) {
     return this.getTableData(this.areaId, taxonomicGroup);
   }
 
@@ -112,11 +112,11 @@ export class ObservedRichnessController {
    *
    * @returns a Promise resolving into a ObservedRichnessDataType
    */
-  async getNationalData(taxonomicGroup?: string) {
+  async getNationalRichnessData(taxonomicGroup?: string) {
     return this.getTableData(NATIONAL_AREA_ID_VALUE, taxonomicGroup);
   }
 
-  async getRichnessSerie(taxonomicGroup?: string) {
+  async getRichnessGraphSerie(taxonomicGroup?: string) {
     const requestKey = "richnessSerie";
     const { request, source } = SearchAPI.requestMetricsValues(
       "richness",
@@ -200,7 +200,7 @@ export class ObservedRichnessController {
    *
    * @returns recordsGaps graph data transformed into an array to be downloaded in a csv file
    */
-  getDownloadData(data: {
+  makeDownloadRichnessData(data: {
     current: ObservedRichnessDataType | null;
     national: ObservedRichnessDataType | null;
   }) {
