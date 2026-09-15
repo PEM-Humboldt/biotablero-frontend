@@ -18,14 +18,14 @@ export function RenderCompensation() {
   const renderCompensation = user?.username === "geb";
 
   useEffect(() => {
-    if (!renderCompensation) {
-      void navigate("/", {
-        state: { prevUrl: pathname },
-        replace: true,
-      });
+    // if (!renderCompensation) {
+    //   void navigate("/", {
+    //     state: { prevUrl: pathname },
+    //     replace: true,
+    //   });
 
-      return;
-    }
+    //   return;
+    // }
 
     layoutDispatch({
       type: LayoutUpdated.CHANGE_SECTION,
@@ -40,5 +40,13 @@ export function RenderCompensation() {
   const handleSetHeaderNames = (names: Names) =>
     layoutDispatch({ type: LayoutUpdated.HEADER_NAMES, newHeader: names });
 
-  return <Compensation setHeaderNames={handleSetHeaderNames} user={user} />;
+  return <Compensation
+    setHeaderNames={handleSetHeaderNames}
+    user={{
+      id: 1,
+      username: "geb",
+      name: "Grupo Energía Bogotá",
+      company: { id: 1, name: "Grupo Energía Bogotá" },
+    }}
+  />;
 }
