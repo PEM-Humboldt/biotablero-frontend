@@ -412,7 +412,7 @@ export function ObservedRichness() {
             <ObservedRichnessTable data={richness.areaTableData} />
             <ObservedRichnessTable
               data={richness.nationalTableData}
-              isReference={richness.areaTableData !== null}
+              isReference={true}
             />
           </>
         )}
