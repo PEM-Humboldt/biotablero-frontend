@@ -326,11 +326,17 @@ export function Gap() {
       .getGapLayer(String(lastYear), groupReq)
       .then((layersRes) => {
         searchDispatch({
-          type: SearchUpdated.WILDCARD,
+          type: SearchUpdated.RASTER_LAYERS,
           payload: {
             rasterLayers: layersRes,
-            mapTitle: { name: `Vacíos · ${lastYear}` },
-            loadingLayer: false,
+            mapTitle: {
+              name: `Vacíos · ${lastYear}`,
+              gradientData: {
+                from: 0,
+                to: 1,
+                colors: ["#3FBF9F", "#e4e890", "#CF324E"],
+              },
+            },
           },
         });
       })

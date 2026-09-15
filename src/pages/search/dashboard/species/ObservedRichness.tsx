@@ -228,17 +228,23 @@ export function ObservedRichness() {
             },
           });
 
+          const gradientMaxValue = areaSerie.bin_edges.at(-1);
+
           searchMapDispatch({
             type: SearchUpdated.RASTER_LAYERS,
             payload: {
               rasterLayers: areaRichnessMap,
               mapTitle: {
                 name: `Riqueza observada en ${areaId?.name}`,
-                gradientData: {
-                  from: 0,
-                  to: 1,
-                  colors: ["#ff0000", "#0000ff"],
-                },
+                ...(gradientMaxValue !== undefined
+                  ? {
+                      gradientData: {
+                        from: 0,
+                        to: gradientMaxValue,
+                        colors: ["#1B0C42", "#A6216E", "#FCB03D"],
+                      },
+                    }
+                  : {}),
               },
             },
           });
@@ -306,7 +312,7 @@ export function ObservedRichness() {
                 gradientData: {
                   from: 0,
                   to: 1,
-                  colors: ["#ff0000", "#0000ff"],
+                  colors: ["#1B0C42", "#A6216E", "#FCB03D"],
                 },
               },
             },
