@@ -63,6 +63,11 @@ export async function monitoringAPI<T>({
 
       response = await monitoringClient[type]<T>(fullEndpoint, {
         responseType: options?.responseType,
+        ...(type === "get" && { timeout: options?.timeout }),
+        ...(type === "get" &&
+          options?.validateStatus && {
+            validateStatus: options.validateStatus,
+          }),
         signal,
       });
     } else {
