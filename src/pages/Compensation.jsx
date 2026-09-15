@@ -45,10 +45,10 @@ export class Compensation extends Component {
   }
 
   componentDidMount() {
-    let { user } =  this.props;
+    let { user } = this.props;
     user = { ...user, company: { id: 1, name: "Grupo Energía Bogotá" } };
     console.log(user);
-    
+
     if (user && user.company && user.username) {
       this.setState(
         {
@@ -59,7 +59,7 @@ export class Compensation extends Component {
       );
     }
   }
-  
+
   componentWillUnmount() {
     const { setHeaderNames } = this.props;
     setHeaderNames({ title: "", subtitle: "" });

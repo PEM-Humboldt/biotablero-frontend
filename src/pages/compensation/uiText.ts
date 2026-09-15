@@ -1,9 +1,9 @@
 type CompensationErrors = { title: string; description: string };
 
 type CompensationTexts = {
-  errors: { 
-    restrictedAccess: CompensationErrors,
-    unauthorizedUser: CompensationErrors, 
+  errors: {
+    restrictedAccess: CompensationErrors;
+    unauthorizedUser: CompensationErrors;
   };
 };
 
