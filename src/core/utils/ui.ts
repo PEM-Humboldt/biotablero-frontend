@@ -29,3 +29,35 @@ export function getRandomImageURL() {
 
   return imagesBank[seed];
 }
+
+/**
+ * Generates an array of linearly distributed numeric ticks.
+ *
+ * @param min - The lower bound of the tick range.
+ * @param max - The upper bound of the tick range.
+ * @param steps - The total number of ticks to generate.
+ *
+ * @returns An array of `steps` numbers evenly spaced between `min` and `max`, rounded to two decimal places.
+ */
+export function generateLinearTicks(
+  min: number,
+  max: number,
+  steps: number,
+): number[] {
+  if (steps <= 0) {
+    return [];
+  }
+  if (steps === 1) {
+    return [min];
+  }
+  if (min === max) {
+    return Array<number>(steps).fill(min);
+  }
+
+  const stepSize = (max - min) / (steps - 1);
+
+  return Array.from({ length: steps }, (_, i) => {
+    const value = min + i * stepSize;
+    return Math.round(value * 100) / 100;
+  });
+}
