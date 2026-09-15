@@ -47,7 +47,6 @@ export class Compensation extends Component {
   componentDidMount() {
     let { user } = this.props;
     user = { ...user, company: { id: 1, name: "Grupo Energía Bogotá" } };
-    console.log(user);
 
     if (user && user.company && user.username) {
       this.setState(
