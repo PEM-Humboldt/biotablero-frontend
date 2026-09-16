@@ -1,10 +1,10 @@
 import React from "react";
 
-import Accordion from "pages/search/Accordion";
+import { SearchAccordion } from "@ui/SearchAccordion";
 import CompensationFactor from "pages/search/dashboard/landscape/CompensationFactor";
 import { Forest } from "pages/search/dashboard/landscape/Forest";
 import { HumanFootprint } from "pages/search/dashboard/landscape/HumanFootprint";
-import PAConnectivity from "pages/search/dashboard/landscape/PAConnectivity";
+import { PAConnectivity } from "pages/search/dashboard/landscape/PAConnectivity";
 import {
   SearchLegacyCTX,
   type LegacyContextValues,
@@ -142,7 +142,7 @@ class Landscape extends React.Component<Props, State> {
     );
 
     return (
-      <Accordion
+      <SearchAccordion
         componentsArray={componentsArray}
         classNameDefault="m0b"
         classNameSelected="m0b selector-expanded"

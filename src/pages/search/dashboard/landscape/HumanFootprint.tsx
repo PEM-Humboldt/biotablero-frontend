@@ -1,6 +1,6 @@
 import AddIcon from "@mui/icons-material/Add";
 
-import Accordion from "pages/search/Accordion";
+import { SearchAccordion } from "@ui/SearchAccordion";
 import type { AccordionComponent, ComponentProps } from "pages/search/types/ui";
 import { CurrentFootprint } from "pages/search/dashboard/landscape/humanFootprint/CurrentFootprint";
 import { TimelineFootprint } from "pages/search/dashboard/landscape/humanFootprint/TimelineFootprint";
@@ -50,7 +50,7 @@ export function HumanFootprint({
   ];
   return (
     <div style={{ width: "100%" }}>
-      <Accordion
+      <SearchAccordion
         componentsArray={componentsArray}
         classNameDefault="m1"
         classNameSelected="m1 accordionSelected"

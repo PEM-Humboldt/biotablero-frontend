@@ -1,6 +1,6 @@
 import { Autocomplete, TextField } from "@mui/material";
 
-import Accordion from "pages/search/Accordion";
+import { SearchAccordion } from "@ui/SearchAccordion";
 import {
   useSearchDispatchCTX,
   useSearchStateCTX,
@@ -48,7 +48,7 @@ function SearchAreas({ areasList }: SearchAreasProps) {
 
   return (
     <div style={{ width: "100%" }}>
-      <Accordion
+      <SearchAccordion
         componentsArray={components}
         classNameDefault="m0"
         classNameSelected="m0"

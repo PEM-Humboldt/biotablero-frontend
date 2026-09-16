@@ -9,7 +9,7 @@ import type { AreaIdBasic } from "pages/search/types/dashboard";
 import { MapViewer } from "pages/search/MapViewer";
 import GeoServerAPI from "@api/geoServer";
 import { Dashboard } from "pages/search/Dashboard";
-import Selector from "pages/search/Selector";
+import { Selector } from "pages/search/Selector";
 import type { UiManager } from "core/layout/MainLayout";
 import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 import {

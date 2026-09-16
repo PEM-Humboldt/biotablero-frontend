@@ -440,7 +440,7 @@ export function ObservedRichness() {
       {richness.areaSerie && (
         <div className="graphcontainer pt6">
           <h4 className="text-balance">
-            Número de especies registradas por km2 (LMSC)
+            Número de especies registradas por km² (LMSC)
           </h4>
           <div className="w-full aspect-video">
             {richness.isLoading ? (

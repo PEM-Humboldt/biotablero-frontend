@@ -1,10 +1,10 @@
-import Accordion from "pages/search/Accordion";
+import { SearchAccordion } from "@ui/SearchAccordion";
 import { CurrentPAConnectivity } from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivity";
 import TimelinePAConnectivity from "pages/search/dashboard/landscape/connectivity/TimelinePAConnectivity";
 import CurrentSEPAConnectivity from "pages/search/dashboard/landscape/connectivity/CurrentSEPAConnectivity";
-import { AccordionComponent, ComponentProps } from "pages/search/types/ui";
+import type { AccordionComponent, ComponentProps } from "pages/search/types/ui";
 
-const PAConnectivity: React.FC<ComponentProps> = (props) => {
+export function PAConnectivity(props: ComponentProps) {
   const { handleAccordionChange, openTab } = props;
 
   const componentsArray: Array<AccordionComponent> = [
@@ -35,7 +35,7 @@ const PAConnectivity: React.FC<ComponentProps> = (props) => {
   ];
   return (
     <div style={{ width: "100%" }}>
-      <Accordion
+      <SearchAccordion
         componentsArray={componentsArray}
         classNameDefault="m1"
         classNameSelected="m1 accordionSelected"
@@ -44,6 +44,4 @@ const PAConnectivity: React.FC<ComponentProps> = (props) => {
       />
     </div>
   );
-};
-
-export default PAConnectivity;
+}
