@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import Accordion from "pages/search/Accordion";
+import { SearchAccordion } from "@ui/SearchAccordion";
 import { useSearchDispatchCTX } from "pages/search/hooks/SearchContext";
 import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 import { Gap } from "pages/search/dashboard/species/Gap";
@@ -56,7 +56,7 @@ export function Species() {
   ];
 
   return (
-    <Accordion
+    <SearchAccordion
       componentsArray={speciesComponents}
       classNameDefault="m0b"
       classNameSelected="m0b selector-expanded"
