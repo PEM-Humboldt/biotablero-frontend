@@ -1,4 +1,4 @@
-import { LOCALE } from "@config/monitoring";
+import { LOCALE } from "@config/global";
 
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { uiText } from "pages/monitoring/outlets/initiatives/layout/uiText";

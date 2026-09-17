@@ -2,7 +2,6 @@ import { BadgeCheck, type LucideIcon } from "lucide-react";
 
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { Spinner } from "@ui/shadCN/component/spinner";
-import { LOCALE } from "@config/monitoring";
 import {
   Tabs,
   TabsList,

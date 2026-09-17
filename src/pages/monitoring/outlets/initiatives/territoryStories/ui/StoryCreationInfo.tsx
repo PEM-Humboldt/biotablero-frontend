@@ -1,6 +1,5 @@
-import { LOCALE } from "@config/monitoring";
+import { LOCALE } from "@config/global";
 import { cn } from "@ui/shadCN/lib/utils";
-import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 
 import type { TerritoryStoryShort } from "pages/monitoring/types/odataResponse";
 

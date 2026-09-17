@@ -25,7 +25,7 @@ import {
 import type { TextsObject } from "pages/search/types/texts";
 import { speciesGroupLabels } from "pages/search/dashboard/species/commonDictionaries";
 import { CircleAlert, LayersIcon, LeafIcon, MapPin } from "lucide-react";
-import { LOCALE } from "@config/monitoring";
+import { LOCALE } from "@config/global";
 import { cn } from "@ui/shadCN/lib/utils";
 import { GraphLegend } from "@ui/GraphLegend";
 import SmallStackedBar, {
@@ -122,7 +122,7 @@ function transformDataToSmallStackedBarData(
       key,
       label: `${key}:${rawVal.toLocaleString(LOCALE)}`,
       area: rawVal,
-      percentage: (rawVal / totalThreatened) * 100,
+      percentage: rawVal / totalThreatened,
     };
   });
 }

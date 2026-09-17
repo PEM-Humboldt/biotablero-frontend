@@ -1,4 +1,4 @@
-import { LOCALE } from "@config/monitoring";
+import { LOCALE } from "@config/global";
 import { cn } from "@ui/shadCN/lib/utils";
 import { parseSimpleMarkdown } from "@utils/textParser";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
