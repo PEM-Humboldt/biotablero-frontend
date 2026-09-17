@@ -1,4 +1,4 @@
-import { LOCALE } from "@config/monitoring";
+import { LOCALE } from "@config/global";
 
 /**
  * Give format to a number and set max number of decimals
