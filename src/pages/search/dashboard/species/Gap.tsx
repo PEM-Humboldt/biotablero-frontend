@@ -133,6 +133,7 @@ function gapReducer(state: GapState, action: GapAction): GapState {
       return {
         ...state,
         errors: isLoading ? [] : state.errors,
+        availableYears: isLoading ? [] : state.availableYears,
         isLoading,
       };
     }
@@ -380,7 +381,11 @@ export function Gap() {
       )}
 
       {gap.availableGroups.length > 1 && (
-        <Select value={gap.currentGroup} onValueChange={getGapData}>
+        <Select
+          value={gap.currentGroup}
+          onValueChange={getGapData}
+          disabled={gap.isLoading}
+        >
           <SelectTrigger id="gap-species-group" className="border-grey">
             <SelectValue placeholder="Grupo Taxonómico" />
           </SelectTrigger>

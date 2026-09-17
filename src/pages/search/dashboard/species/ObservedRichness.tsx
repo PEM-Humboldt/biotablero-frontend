@@ -391,6 +391,7 @@ export function ObservedRichness() {
         <Select
           value={richness.currentTaxonomicGroup}
           onValueChange={(val) => handleTaxonomicGroupChange(val)}
+          disabled={richness.isLoading}
         >
           <SelectTrigger id="gap-species-group" className="border-grey">
             <SelectValue placeholder="Grupo Taxonómico" />
