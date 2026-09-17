@@ -183,7 +183,7 @@ function buildSmallStackedBarData(
       key,
       label: `${key}:${rawVal.toLocaleString(LOCALE)}`,
       area: rawVal,
-      percentage: (rawVal / totalThreatened) * 100,
+      percentage: rawVal / totalThreatened,
     };
   });
 }
