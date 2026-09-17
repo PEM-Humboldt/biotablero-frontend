@@ -1,7 +1,11 @@
 import axios, { AxiosRequestConfig } from "axios";
 import { RequestAPIObject, RasterAPIObject } from "pages/search/types/api";
 import { AreaIdBasic, AreaType, AreaId } from "pages/search/types/dashboard";
-import { MetricTypesMap, MetricsTypes } from "pages/search/types/metrics";
+import {
+  MetricInfoResponse,
+  MetricTypesMap,
+  MetricsTypes,
+} from "pages/search/types/metrics";
 import * as geojson from "geojson";
 
 class SearchAPI {
@@ -77,6 +81,18 @@ class SearchAPI {
   /** METRICS */
   /** ******* */
 
+  static requestMetricGroups<Metric extends MetricsTypes>(
+    metricId: Metric,
+  ): RequestAPIObject<string[]> {
+    const source = axios.CancelToken.source();
+    return {
+      request: SearchAPI.makeGetRequest(`metrics/${metricId}/groups`, {
+        cancelToken: source.token,
+      }),
+      source,
+    };
+  }
+
   /**
    * Get metrics values
    * @param metricId Metric identifier
@@ -129,6 +145,18 @@ class SearchAPI {
       }) as Promise<{ layer: string }>,
       source,
     };
+  }
+
+  /**
+   * Gets metrics info.
+   *
+   * @param metricId - Metric identifier.
+   * @returns List of metric info.
+   */
+  static requestMetricsInfo(
+    metricId: MetricsTypes,
+  ): Promise<Array<MetricInfoResponse>> {
+    return SearchAPI.makeGetRequest(`metrics/${metricId}/info`);
   }
 
   /** *********** */

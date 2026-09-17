@@ -90,7 +90,7 @@ function SmallStackedBar(props: Props) {
   ) => {
     if (id !== "NA") {
       const realArea = Number(allData[`${id}Area`] ?? 0);
-      const pctValue = Number(allData[`${id}Percentage`] ?? 0);
+      const pctValue = Number(allData[`${id}Percentage`] ?? 0) * 100;
 
       return (
         <div className="tooltip-graph-container">
@@ -100,7 +100,7 @@ function SmallStackedBar(props: Props) {
           <div>
             {`${formatNumber(realArea, 0)} ${units}`}
             <br />
-            {`${formatNumber(pctValue, 0)}%`}
+            {`${formatNumber(pctValue, 1)}%`}
           </div>
         </div>
       );

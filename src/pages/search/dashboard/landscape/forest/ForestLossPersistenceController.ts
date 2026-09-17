@@ -2,11 +2,9 @@ import {
   SmallBarsData,
   SmallBarsDataDetails,
 } from "@composites/charts/SmallBars";
-import BackendAPI from "pages/search/api/backendAPI";
 import SearchAPI from "pages/search/api/searchAPI";
 import LayerAPI from "pages/search/api/layerAPI";
 import { ForestLPExt } from "pages/search/types/forest";
-import { textsObject } from "pages/search/types/texts";
 import { formatNumber } from "@utils/format";
 import { type SmallBarTooltip } from "@composites/charts/SmallBars";
 import { polygonFeature } from "pages/search/types/dashboard";
@@ -167,20 +165,6 @@ export class ForestLossPersistenceController {
 
     return { transformedData, keys: Array.from(categories), tooltips };
   }
-
-  /**
-   * Returns texts of the forestLP section
-   *
-   * @param {String} sectionName section name
-   *
-   * @returns {Object} texts of forestLP section
-   */
-  getForestLPTexts = (sectionName: string): Promise<textsObject> =>
-    BackendAPI.requestSectionTexts(sectionName)
-      .then((res) => res)
-      .catch(() => {
-        throw new Error("Error getting data");
-      });
 
   /**
    * Returns data transformed to be downloaded in the csv file

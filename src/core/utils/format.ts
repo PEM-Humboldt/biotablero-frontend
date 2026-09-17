@@ -1,11 +1,13 @@
+import { LOCALE } from "@config/monitoring";
+
 /**
  * Give format to a number and set max number of decimals
- * @param {String | Number} value value to be formatted
- * @param {Number} decimals percentage value
+ *
+ * @param value - number to be formatted
+ * @param decimals - max amount of decimals percentage value
  */
-
 export function formatNumber(value: string | number, decimals: number) {
-  return Number(value).toLocaleString("en-US", {
+  return Number(value).toLocaleString(LOCALE, {
     maximumFractionDigits: decimals,
   });
 }

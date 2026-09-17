@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 
 import { hashStringToRange } from "@utils/format";
 import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
-import { GRAPH_ANIMATION_CONFIG } from "@config/monitoring";
+import { GRAPH_ANIMATION_CONFIG } from "@config/global";
 import { ResponsiveBar } from "@nivo/bar";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
@@ -134,6 +134,7 @@ export function CollectiveActionParticipation() {
               indexBy="date"
               layout="horizontal"
               margin={{ top: 0, right: 10, bottom: 30, left: 150 }}
+              motionConfig={GRAPH_ANIMATION_CONFIG}
               padding={0.4}
               valueScale={{ type: "linear", min: 0, max: 100 }}
               indexScale={{ type: "band", round: true }}

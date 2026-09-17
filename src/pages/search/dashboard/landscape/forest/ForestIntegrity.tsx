@@ -15,7 +15,7 @@ import {
   type LegacyContextValues,
 } from "pages/search/hooks/SearchContext";
 import { SCICats, HFCats, SCIHF } from "pages/search/types/forest";
-import { textsObject } from "pages/search/types/texts";
+import type { TextsObject } from "pages/search/types/texts";
 import Pie from "@composites/charts/Pie";
 import SmallStackedBar from "@composites/charts/SmallStackedBar";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
@@ -57,7 +57,7 @@ interface FIState {
     };
   };
   texts: {
-    forestSCIHF: textsObject;
+    forestSCIHF: TextsObject;
   };
   ProtectedAreas: {
     [Property in SCIHFCats]: Array<PA>;
@@ -205,13 +205,14 @@ class ForestIntegrity extends React.Component<Props, FIState> {
         this.setState({ loading: "no-data" });
       });
 
-    BackendAPI.requestSectionTexts("forestSCIHF")
-      .then((res) => {
-        if (this.mounted) {
-          this.setState({ texts: { forestSCIHF: res } });
-        }
-      })
-      .catch(() => {});
+    // TODO: Actualizar textos de acuerdo a nuevo endpoint en searchAPI
+    // BackendAPI.requestSectionTexts("forestSCIHF")
+    //   .then((res) => {
+    //     if (this.mounted) {
+    //       this.setState({ texts: { forestSCIHF: res } });
+    //     }
+    //   })
+    //   .catch(() => {});
 
     setLoadingLayer(true);
 

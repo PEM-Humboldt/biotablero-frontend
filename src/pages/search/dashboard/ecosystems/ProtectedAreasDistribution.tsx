@@ -5,7 +5,7 @@ import SmallStackedBar, {
 } from "@composites/charts/SmallStackedBar";
 import colorPalettes from "pages/search/utils/colorPalettes";
 
-import { useSearchLegacyCTX } from "pages/search/hooks/SearchContext";
+import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
 
 import { ProtectedAreasDistributionController } from "pages/search/dashboard/ecosystems/ProtectedAreasDistributionController";
 import { matchColor } from "pages/search/utils/matchColor";
@@ -24,7 +24,7 @@ export function ProtectedAreasDistribution({ SEType }: Props) {
   >([]);
   const [chartStatus, setChartStatus] = useState<ChartStatus>("loading");
 
-  const { areaType, areaId, areaHa } = useSearchLegacyCTX();
+  const { areaType, areaId, areaHa } = useSearchStateCTX();
 
   const controllerRef = useRef(new ProtectedAreasDistributionController());
   const controller = controllerRef.current;

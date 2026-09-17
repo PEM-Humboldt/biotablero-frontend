@@ -19,15 +19,16 @@ import {
   type ObservedRichnessDataType,
 } from "pages/search/dashboard/species/ObservedRichnessController";
 import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
-import type { textsObject } from "pages/search/types/texts";
+import type { TextsObject } from "pages/search/types/texts";
 import { speciesGroupLabels } from "pages/search/dashboard/species/commonDictionaries";
 import { CircleAlert, LayersIcon, LeafIcon, MapPin } from "lucide-react";
-import { LOCALE } from "@config/monitoring";
+import { LOCALE } from "@config/global";
 import { cn } from "@ui/shadCN/lib/utils";
 import { GraphLegend } from "@ui/GraphLegend";
 import SmallStackedBar, {
   type SmallStackedBarData,
 } from "@composites/charts/SmallStackedBar";
+import { getMetricTexts } from "pages/search/utils/texts";
 
 const OBSERVED_RICHNESS_GRAPH_KEYS = ["CR", "EN", "VU"];
 const customColorMap: Record<string, string> = {
@@ -46,7 +47,7 @@ export function ObservedRichness() {
     current: ObservedRichnessDataType | null;
     context: ObservedRichnessDataType | null;
   }>({ current: null, context: null });
-  const [texts, setTexts] = useState<{ observedRichness: textsObject }>({
+  const [texts, setTexts] = useState<{ observedRichness: TextsObject }>({
     observedRichness: { info: "", cons: "", meto: "", quote: "" },
   });
 
@@ -63,8 +64,8 @@ export function ObservedRichness() {
     setErrors([]);
 
     Promise.all([
-      controller.current.getTaxonomicGroups(),
-      controller.current.getTexts("statsOnSpecies"),
+      controller.current.getORichnessTaxonomicGroups(),
+      getMetricTexts("statsOnSpecies"),
     ])
       .then(([groups, texts]) => {
         setGroupsAvailable(groups);
@@ -182,7 +183,7 @@ function buildSmallStackedBarData(
       key,
       label: `${key}:${rawVal.toLocaleString(LOCALE)}`,
       area: rawVal,
-      percentage: (rawVal / totalThreatened) * 100,
+      percentage: rawVal / totalThreatened,
     };
   });
 }

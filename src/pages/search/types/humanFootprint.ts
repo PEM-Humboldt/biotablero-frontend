@@ -21,16 +21,16 @@ export const timelineHFYears = [
   "2018",
 ] as const;
 
-export interface hfPersistence {
+export interface HFPersistence {
   area: number;
   key: (typeof persistenceHFCategories)[number];
   percentage: number;
 }
 
-export interface hfTimeline {
-  key: (typeof timelineHFKeys)[number];
-  data: Array<{
-    x: (typeof timelineHFYears)[number];
-    y: number;
-  }>;
+export interface TimelineHF {
+  id: string;
+  poligono: number;
+  paramo: number;
+  bosqueSeco: number;
+  humedal: number;
 }

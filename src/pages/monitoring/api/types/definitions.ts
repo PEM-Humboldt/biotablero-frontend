@@ -1,4 +1,4 @@
-import { GenericAbortSignal, type InternalAxiosRequestConfig } from "axios";
+import type { GenericAbortSignal, InternalAxiosRequestConfig } from "axios";
 import { type ODataParams } from "@appTypes/odata";
 import type { QueryParams, RequestBody } from "@appTypes/htmlRequest";
 
@@ -25,6 +25,8 @@ export type MonitoringAPIParams = {
       options?: {
         data?: QueryParams;
         oData?: Partial<ODataParams>;
+        timeout?: number;
+        validateStatus?: (status: number) => boolean;
         headers?: Record<string, string>;
         responseType?: ResponseType;
         signal?: GenericAbortSignal;

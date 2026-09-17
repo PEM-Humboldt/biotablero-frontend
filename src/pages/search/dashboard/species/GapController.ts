@@ -1,13 +1,9 @@
 import type { CancelTokenSource } from "axios";
 import SearchAPI from "pages/search/api/searchAPI";
 import type { GapSerieData } from "pages/search/types/species";
-// TODO: descomentar la importación cuando el endpoint de grupos esté
-// import axios from "axios";
-import type { textsObject } from "pages/search/types/texts";
 import LayerAPI from "pages/search/api/layerAPI";
 import { MetricsUtils } from "pages/search/utils/metrics";
 import type { RasterLayer } from "pages/search/types/layers";
-import BackendAPI from "pages/search/api/backendAPI";
 
 export class GapController {
   areaType: string = "";
@@ -28,23 +24,23 @@ export class GapController {
    * @returns a Promise resolving into a list of groups
    */
   async getGapTaxonomicGroups(): Promise<string[]> {
-    // TODO: Eliminar este retorno cuando el endpoint de grupos esté
-    return Promise.resolve([]);
+    const { request, source } = SearchAPI.requestMetricGroups("recordGaps");
+    this.activeRequests.set("recordGaps-groups", source);
 
-    // TODO: descomentar la función cuando el endpoint de grupos esté
-    // const request = SearchAPI.makeGetRequest("/metrics/recordGaps/groups");
-    // const source = axios.CancelToken.source();
-    // this.activeRequests.set("recordGaps-groups", source);
-    //
-    // return request
-    //   .then((res) => res as string[])
-    //   .catch((err) => {
-    //     console.error("Error original:", err);
-    //     throw new Error("Error getting data");
-    //   })
-    //   .finally(() => {
-    //     this.activeRequests.delete("recordGaps-groups");
-    //   });
+    return request
+      .then((res) => {
+        if (!Array.isArray(res)) {
+          return [];
+        }
+        return res;
+      })
+      .catch((err) => {
+        console.error("Error original:", err);
+        throw new Error("Error getting data");
+      })
+      .finally(() => {
+        this.activeRequests.delete("recordGaps-groups");
+      });
   }
 
   /**
@@ -66,74 +62,26 @@ export class GapController {
     );
     this.activeRequests.set(requestKey, source);
 
-    return (
-      request
-        // TODO: borrar todo el then cuando el endpoint esté actualizado
-        .then((res) => {
-          const pairedData = res.bin_edges.map((edge, idx) => ({
-            x: Number(edge.toFixed(2)),
-            y: res.frequency[idx] ?? res.frequency[idx - 1],
+    return request
+      .then((res) => {
+        if (!Array.isArray(res)) {
+          return { series: [], years: [] };
+        }
+
+        const series = res.reduce<GapSerieData[]>((all, current) => {
+          const pairedData = current.bin_edges.map((edge, idx) => ({
+            x: edge,
+            y: current.frequency[idx] ?? 0,
           }));
 
-          return {
-            series: [{ id: String(res.id), data: pairedData }],
-            years: [Number(res.id)],
-          };
-        })
-        // TODO: descomentar cuando el endpoint esté actualizado
-        // .then((res: MetricTypesMap["recordGaps"]) => {
-        //   const series = res.reduce<GapSerieData[]>((all, current) => {
-        //     const pairedData = current.bin_edges.map((edge, idx) => ({
-        //       x: edge,
-        //       y: current.frecuency[idx] ?? 0,
-        //     }));
-        //
-        //     const serie = { id: String(current.id), data: pairedData };
-        //     all.push(serie);
-        //
-        //     return all;
-        //   }, []);
-        //   const years = [...new Set(res.map((r) => Number(r.id)).sort())];
-        //   return { series, years };
-        // })
-        .catch((err) => {
-          console.error("Error original:", err);
-          throw new Error("Error getting data");
-        })
-        .finally(() => {
-          this.activeRequests.delete(requestKey);
-        })
-    );
-  }
+          const serie = { id: String(current.id), data: pairedData };
+          all.push(serie);
 
-  /**
-   * Fetch the gap average values of the available years for the specified taxonomicGroup
-   *
-   * @param taxonomicGroup - Optional. the taxonomic group used for the metric, if undefined, returns the overall value
-   *
-   * @returns a Promise resolving into an Object {"year": value }
-   */
-  async getGapAverage(taxonomicGroup: string): Promise<Record<string, number>> {
-    const requestKey = `gaps_average-${taxonomicGroup ?? "all"}`;
-
-    const { request, source } = SearchAPI.requestMetricsValues(
-      "currentRecordsGaps_average",
-      this.areaId,
-      { params: taxonomicGroup ? { group: taxonomicGroup } : {} },
-    );
-    this.activeRequests.set(requestKey, source);
-
-    return request
-      .then(
-        // TODO: borrar cuando el endpoint esté actualizado
-        (res) => ({ [res.id]: Number(res.average.toFixed(2)) }),
-
-        // TODO: descomentar cuando el endpoint esté actualizado
-        // res.reduce<Record<string, number>>((all, current) => {
-        //   all[current.id] = Number(current.average.toFixed(2));
-        //   return all;
-        // }, {}),
-      )
+          return all;
+        }, []);
+        const years = [...new Set(res.map((r) => Number(r.id)).sort())];
+        return { series, years };
+      })
       .catch((err) => {
         console.error("Error original:", err);
         throw new Error("Error getting data");
@@ -144,27 +92,42 @@ export class GapController {
   }
 
   /**
-   * Returns texts for the Gap section
+   * Fetch the gap average values of the available years for the specified taxonomicGroup
    *
-   * @param {String} sectionName section name
+   * @param taxonomicGroup - Optional. the taxonomic group used for the metric, if undefined, returns the overall value
    *
-   * @returns {Object} texts of forestLP section
+   * @returns a Promise resolving into an Object {"year": value }
    */
-  async getGapTexts(sectionName: string): Promise<textsObject> {
-    // TODO: Eliminar este retornogcuando el back con los textos esté al día
-    return Promise.resolve({
-      info: "",
-      cons: "",
-      meto: "",
-      quote: "",
-    });
+  async getGapAverage(
+    taxonomicGroup?: string,
+  ): Promise<Record<string, number>> {
+    const requestKey = `gaps_average-${taxonomicGroup ?? "all"}`;
 
-    // TODO: Actualizar funcion cuando el back con los textos esté al día
-    // BackendAPI.requestSectionTexts(sectionName)
-    //   .then((res) => res)
-    //   .catch(() => {
-    //     throw new Error("Error getting data");
-    //   });
+    const { request, source } = SearchAPI.requestMetricsValues(
+      "recordGaps_averages",
+      this.areaId,
+      { params: taxonomicGroup ? { group: taxonomicGroup } : {} },
+    );
+    this.activeRequests.set(requestKey, source);
+
+    return request
+      .then((res) => {
+        if (!Array.isArray(res)) {
+          return {};
+        }
+
+        return res.reduce<Record<string, number>>((all, current) => {
+          all[current.id] = Number(current.average.toFixed(2));
+          return all;
+        }, {});
+      })
+      .catch((err) => {
+        console.error("Error original:", err);
+        throw new Error("Error getting data");
+      })
+      .finally(() => {
+        this.activeRequests.delete(requestKey);
+      });
   }
 
   /**

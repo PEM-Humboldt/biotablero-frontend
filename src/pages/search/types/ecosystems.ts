@@ -11,7 +11,7 @@ export interface SEPAData {
 export interface SEPADataExt extends SEPAData {
   percentage: number;
 }
-export interface seDetails {
+export interface SEDetails {
   national_percentage: number;
   total_area: string;
 }

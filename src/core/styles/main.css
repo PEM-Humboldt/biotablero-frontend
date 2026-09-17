@@ -77,6 +77,14 @@
   /* --spacing: 0.25rem; */
 }
 
+:root[data-environment="develop"] {
+  --secondary: oklch(0.324 0.0183 225.13);
+}
+
+:root[data-environment="staging"] {
+  --secondary: oklch(0.4526 0.0513 226.3075);
+}
+
 @theme inline {
   /* RESET */
   --font-*: initial;

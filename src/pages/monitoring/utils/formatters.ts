@@ -1,4 +1,4 @@
-import { LOCALE } from "@config/monitoring";
+import { LOCALE } from "@config/global";
 
 /**
  * Formats the date value of a log into a localized string.

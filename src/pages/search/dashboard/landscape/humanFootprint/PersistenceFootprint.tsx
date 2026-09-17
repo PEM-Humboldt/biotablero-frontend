@@ -11,8 +11,8 @@ import { matchColor } from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
 import TextBoxes from "@ui/TextBoxes";
 
-import { hfPersistence } from "pages/search/types/humanFootprint";
-import { textsObject } from "pages/search/types/texts";
+import { HFPersistence } from "pages/search/types/humanFootprint";
+import type { TextsObject } from "pages/search/types/texts";
 import { LargeStackedBar } from "@composites/charts/LargeStackedBar";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { ShapeLayer } from "pages/search/types/layers";
@@ -24,7 +24,7 @@ const getLabel = {
   estable_alta: "Estable Alta",
 };
 
-interface hfPersistenceExt extends hfPersistence {
+interface hfPersistenceExt extends HFPersistence {
   label: string;
 }
 
@@ -34,7 +34,7 @@ interface persistenceHFState {
   hfPersistence: Array<hfPersistenceExt>;
   message: MessageWrapperType;
   texts: {
-    hfPersistence: textsObject;
+    hfPersistence: TextsObject;
   };
   layers: Array<ShapeLayer>;
 }
@@ -76,7 +76,7 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
     this.PersistenceHFController.setArea(areaTypeId, areaIdId);
 
     BackendAPI.requestHFPersistence(areaTypeId, areaIdId)
-      .then((res: Array<hfPersistence>) => {
+      .then((res: Array<HFPersistence>) => {
         if (this.mounted) {
           this.setState({
             hfPersistence: res.map((item) => ({
@@ -91,17 +91,18 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
         this.setState({ message: "no-data" });
       });
 
-    BackendAPI.requestSectionTexts("hfPersistence")
-      .then((res) => {
-        if (this.mounted) {
-          this.setState({ texts: { hfPersistence: res } });
-        }
-      })
-      .catch(() => {
-        this.setState({
-          texts: { hfPersistence: { info: "", cons: "", meto: "", quote: "" } },
-        });
-      });
+    // TODO: Actualizar textos de acuerdo a nuevo endpoint en searchAPI
+    // BackendAPI.requestSectionTexts("hfPersistence")
+    //   .then((res) => {
+    //     if (this.mounted) {
+    //       this.setState({ texts: { hfPersistence: res } });
+    //     }
+    //   })
+    //   .catch(() => {
+    //     this.setState({
+    //       texts: { hfPersistence: { info: "", cons: "", meto: "", quote: "" } },
+    //     });
+    //   });
 
     setLoadingLayer(true);
 

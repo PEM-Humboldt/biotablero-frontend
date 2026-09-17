@@ -1,6 +1,5 @@
 import type { CancelTokenSource } from "axios";
 import SearchAPI from "pages/search/api/searchAPI";
-import type { textsObject } from "pages/search/types/texts";
 
 export type ObservedRichnessDataType = {
   total: number;
@@ -36,31 +35,18 @@ export class ObservedRichnessController {
    *
    * @returns a Promise resolving into a list of groups
    */
-  async getTaxonomicGroups(): Promise<string[]> {
-    // TODO: Eliminar este retorno cuando el endpoint de grupos esté
-    return Promise.resolve([
-      "mamiferos",
-      "aves",
-      "reptiles",
-      "anfibios",
-      "peces",
-      "plantas",
-    ]);
+  async getORichnessTaxonomicGroups(): Promise<string[]> {
+    const { request, source } = SearchAPI.requestMetricGroups("statsOnSpecies");
+    this.activeRequests.set("ORichness-groups", source);
 
-    // TODO: descomentar la función cuando el endpoint de grupos esté
-    // const request = SearchAPI.makeGetRequest("/metrics/recordGaps/groups");
-    // const source = axios.CancelToken.source();
-    // this.activeRequests.set("recordGaps-groups", source);
-    //
-    // return request
-    //   .then((res) => res as string[])
-    //   .catch((err) => {
-    //     console.error("Error original:", err);
-    //     throw new Error("Error getting data");
-    //   })
-    //   .finally(() => {
-    //     this.activeRequests.delete("recordGaps-groups");
-    //   });
+    return request
+      .catch((err) => {
+        console.error("Error original:", err);
+        throw new Error("Error getting data");
+      })
+      .finally(() => {
+        this.activeRequests.delete("ORichness-groups");
+      });
   }
 
   /**
@@ -126,30 +112,6 @@ export class ObservedRichnessController {
    */
   async getNationalData(taxonomicGroup?: string) {
     return this.getData(NATIONAL_AREA_ID_VALUE, taxonomicGroup);
-  }
-
-  /**
-   * Returns texts for the observed richness section
-   *
-   * @param {String} sectionName section name
-   *
-   * @returns {Object} texts of forestLP section
-   */
-  async getTexts(sectionName: string): Promise<textsObject> {
-    // TODO: Eliminar este retorno cuando el back con los textos esté al día y actualizar el método
-    return Promise.resolve({
-      info: "",
-      cons: "",
-      meto: "",
-      quote: "",
-    });
-
-    // TODO: Actualizar funcion cuando el back con los textos esté al día
-    // BackendAPI.requestSectionTexts(sectionName)
-    //   .then((res) => res)
-    //   .catch(() => {
-    //     throw new Error("Error getting data");
-    //   });
   }
 
   /**

@@ -4,9 +4,11 @@ import InfoIcon from "@mui/icons-material/Info";
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
 
-import { useSearchLegacyCTX } from "pages/search/hooks/SearchContext";
+import {
+  useSearchDispatchCTX,
+  useSearchStateCTX,
+} from "pages/search/hooks/SearchContext";
 
-import BackendAPI from "pages/search/api/backendAPI";
 import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { EcosystemsController } from "pages/search/dashboard/EcosystemsController";
 import { RasterLayer } from "pages/search/types/layers";
@@ -16,7 +18,9 @@ import { ProtectedAreas } from "pages/search/dashboard/ecosystems/ProtectedAreas
 import { StrategicEcosystems } from "pages/search/dashboard/ecosystems/StrategicEcosystems";
 import { SmallStackedBarData } from "@composites/charts/SmallStackedBar";
 
-type TextsContent = { info: string; cons: string; meto: string; quote: string };
+import type { TextsObject } from "pages/search/types/texts";
+import { getMetricTexts } from "pages/search/utils/texts";
+import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 
 type EcosystemsState = {
   showInfoMain: boolean;
@@ -42,10 +46,9 @@ type EcosystemsState = {
   };
 
   texts: {
-    ecosystems: TextsContent;
-    coverage: TextsContent;
-    pa: TextsContent;
-    se: TextsContent;
+    coverage: TextsObject;
+    protectedAreas: TextsObject;
+    paramo: TextsObject;
   };
 };
 
@@ -70,10 +73,9 @@ const initialState: EcosystemsState = {
   },
 
   texts: {
-    ecosystems: { info: "", cons: "", meto: "", quote: "" },
-    coverage: { info: "", cons: "", meto: "", quote: "" },
-    pa: { info: "", cons: "", meto: "", quote: "" },
-    se: { info: "", cons: "", meto: "", quote: "" },
+    coverage: { info: "", cons: "", meto: "", quote: "", helper: "" },
+    protectedAreas: { info: "", cons: "", meto: "", quote: "" },
+    paramo: { info: "", cons: "", meto: "", quote: "" },
   },
 };
 
@@ -88,7 +90,7 @@ type EcosystemsAction =
   | { type: "PROTECTED_AREAS_VALUES_FAILED" }
   | {
       type: "SET_TEXTS";
-      payload: { section: keyof EcosystemsState["texts"]; value: TextsContent };
+      payload: { section: keyof EcosystemsState["texts"]; value: TextsObject };
     };
 
 const isNoProtected = (value: string) =>
@@ -192,18 +194,9 @@ function ecosystemsReducer(
 }
 
 export function Ecosystems() {
-  const {
-    areaType,
-    areaId,
-    areaHa,
-    setLoadingLayer,
-    setRasterLayers,
-    setMapTitle,
-    setLayerError,
-    clearLayers,
-  } = useSearchLegacyCTX();
+  const { areaType, areaId, areaHa } = useSearchStateCTX();
+  const dispatchSearchMap = useSearchDispatchCTX();
   const controllerRef = useRef(new EcosystemsController());
-  const controller = controllerRef.current;
   const [activeSE, setActiveSE] = useState<string | null>(null);
 
   const [state, dispatch] = useReducer(ecosystemsReducer, initialState);
@@ -227,14 +220,21 @@ export function Ecosystems() {
     let isCurrent = true;
 
     if (!areaTypeId || !areaIdId) {
-      setLoadingLayer(false);
+      dispatchSearchMap({
+        type: SearchUpdated.LOADING_LAYER,
+        loadingLayer: false,
+      });
       return;
     }
 
+    const controller = controllerRef.current;
     dispatch({ type: "COVERAGE_LOADING" });
     controller.setArea(areaTypeId, areaIdId);
 
-    setLoadingLayer(true);
+    dispatchSearchMap({
+      type: SearchUpdated.LOADING_LAYER,
+      loadingLayer: true,
+    });
 
     controller
       .getCoverageValues()
@@ -245,18 +245,25 @@ export function Ecosystems() {
           .then((layersRes) => {
             if (!isCurrent) return;
             dispatch({ type: "COVERAGE_LAYERS_SUCCEEDED", payload: layersRes });
-            setRasterLayers(layersRes);
-            setLoadingLayer(false);
-            setMapTitle({ name: "Coberturas" });
+
+            dispatchSearchMap({
+              type: SearchUpdated.RASTER_LAYERS,
+              payload: {
+                rasterLayers: layersRes,
+                mapTitle: { name: "Coberturas" },
+              },
+            });
           })
           .catch((e) => {
             if (!isCurrent) return;
-            const errorMessage = e?.toString?.() ?? String(e);
+            const errorMessage = String(e);
             if (errorMessage.includes("request canceled")) {
               return;
             }
-            setLoadingLayer(false);
-            setLayerError?.(errorMessage);
+            dispatchSearchMap({
+              type: SearchUpdated.LAYER_ERROR,
+              layerError: errorMessage,
+            });
           });
         dispatch({
           type: "COVERAGE_VALUES_SUCCEEDED",
@@ -270,7 +277,10 @@ export function Ecosystems() {
           return;
         }
         dispatch({ type: "COVERAGE_VALUES_FAILED" });
-        setLoadingLayer(false);
+        dispatchSearchMap({
+          type: SearchUpdated.LOADING_LAYER,
+          loadingLayer: false,
+        });
       });
 
     controller
@@ -287,10 +297,14 @@ export function Ecosystems() {
         dispatch({ type: "PROTECTED_AREAS_VALUES_FAILED" });
       });
 
-    const TEXT_SECTIONS: TextSection[] = ["ecosystems", "coverage", "pa", "se"];
+    const TEXT_SECTIONS: TextSection[] = [
+      "coverage",
+      "protectedAreas",
+      "paramo",
+    ];
 
     TEXT_SECTIONS.forEach((section) => {
-      BackendAPI.requestSectionTexts(section)
+      getMetricTexts(section)
         .then((res) => {
           dispatch({
             type: "SET_TEXTS",
@@ -302,7 +316,7 @@ export function Ecosystems() {
             type: "SET_TEXTS",
             payload: {
               section,
-              value: { info: "", cons: "", meto: "", quote: "" },
+              value: { info: "", cons: "", meto: "", quote: "", helper: "" },
             },
           });
         });
@@ -310,10 +324,10 @@ export function Ecosystems() {
 
     return () => {
       isCurrent = false;
-      clearLayers();
+      dispatchSearchMap({ type: SearchUpdated.CLEAR_LAYERS });
       controller.cancelActiveRequests();
     };
-  }, [areaTypeId, areaIdId, areaHa]);
+  }, [areaTypeId, areaIdId, areaHa, dispatchSearchMap]);
 
   if (!areaType || !areaId) {
     return null;
@@ -338,19 +352,28 @@ export function Ecosystems() {
    */
   const clickOnGraph = (selectedKey: string) => {
     setActiveSE(null);
-    setRasterLayers(
-      layers.map((layer) => ({
-        ...layer,
-        selected: layer.id === selectedKey,
-      })),
-    );
-    setMapTitle({ name: "Coberturas" });
+
+    dispatchSearchMap({
+      type: SearchUpdated.RASTER_LAYERS,
+      payload: {
+        rasterLayers: layers.map((layer) => ({
+          ...layer,
+          selected: layer.id === selectedKey,
+        })),
+        mapTitle: { name: "Coberturas" },
+      },
+    });
   };
 
   const restoreCoverageLayers = () => {
     setActiveSE(null);
-    setRasterLayers(layers);
-    setMapTitle({ name: "Coberturas" });
+    dispatchSearchMap({
+      type: SearchUpdated.RASTER_LAYERS,
+      payload: {
+        rasterLayers: layers,
+        mapTitle: { name: "Coberturas" },
+      },
+    });
   };
 
   const toggleSEDetail = (type: string) => {
@@ -367,7 +390,7 @@ export function Ecosystems() {
 
       {showInfoMain && (
         <ShortInfo
-          description={`<p>${texts.ecosystems.info}</p>`}
+          description={`<p>${texts.coverage.helper}</p>`}
           className="graphinfo2"
           collapseButton={false}
         />
@@ -390,9 +413,9 @@ export function Ecosystems() {
           PATotalArea={PATotalArea}
           PADivergentData={PADivergentData}
           areaHa={areaHa!}
-          infoOpen={infoShown.has("pa")}
-          toggleInfo={() => toggleInfo("pa")}
-          texts={texts.pa}
+          infoOpen={infoShown.has("protectedAreas")}
+          toggleInfo={() => toggleInfo("protectedAreas")}
+          texts={texts.protectedAreas}
           messages={messages.pa}
           areaIdStr={`${areaIdId}`}
         />
@@ -401,7 +424,7 @@ export function Ecosystems() {
           areaTypeId={areaTypeId!}
           areaIdId={areaIdId!}
           areaHa={areaHa!}
-          texts={texts.se}
+          texts={texts.paramo}
           activeSE={activeSE}
           onToggleSEDetail={toggleSEDetail}
           onSEDetailClose={restoreCoverageLayers}

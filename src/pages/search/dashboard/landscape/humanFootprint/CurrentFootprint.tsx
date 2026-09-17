@@ -1,29 +1,30 @@
-import { useContext, useEffect, useReducer, useRef } from "react";
+import { useEffect, useReducer, useRef } from "react";
 
 import InfoIcon from "@mui/icons-material/Info";
 
 import {
-  SearchLegacyCTX,
-  type LegacyContextValues,
+  useSearchDispatchCTX,
+  useSearchStateCTX,
 } from "pages/search/hooks/SearchContext";
 
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
 import { matchColor } from "pages/search/utils/matchColor";
-import BackendAPI from "pages/search/api/backendAPI";
 import TextBoxes from "@ui/TextBoxes";
 
 import {
   LargeStackedBar,
-  LargeStackedBarData,
+  type LargeStackedBarData,
 } from "@composites/charts/LargeStackedBar";
 
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { CurrentFootprintController } from "pages/search/dashboard/landscape/humanFootprint/CurrentFootprintController";
-import { RasterLayer } from "pages/search/types/layers";
-import { textsObject } from "pages/search/types/texts";
+import type { RasterLayer } from "pages/search/types/layers";
+import type { TextsObject } from "pages/search/types/texts";
+import { getMetricTexts } from "pages/search/utils/texts";
 import colorPalettes from "pages/search/utils/colorPalettes";
 import { formatNumber } from "@utils/format";
+import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 
 interface State {
   showInfoGraph: boolean;
@@ -32,7 +33,7 @@ interface State {
   hfCurrentValue: number;
   hfCurrentCategory: string;
   message: MessageWrapperType;
-  texts: { hfCurrent: textsObject };
+  texts: { hfCurrent: TextsObject };
   layers: RasterLayer[];
 }
 
@@ -45,7 +46,7 @@ type Action =
   | { type: "CURRENTHF_LAYERS_SUCCEEDED"; payload: RasterLayer[] }
   | { type: "CURRENTHF_VALUES_SUCCEEDED"; payload: LargeStackedBarData[] }
   | { type: "CURRENTHF_VALUES_FAILED" }
-  | { type: "SET_TEXTS"; payload: textsObject };
+  | { type: "SET_TEXTS"; payload: TextsObject };
 
 const initialState: State = {
   showInfoGraph: true,
@@ -112,15 +113,8 @@ function reducer(state: State, action: Action): State {
 }
 
 export function CurrentFootprint() {
-  const context = useContext(SearchLegacyCTX) as LegacyContextValues;
-  const {
-    areaType,
-    areaId,
-    setRasterLayers,
-    setLoadingLayer,
-    setLayerError,
-    setMapTitle,
-  } = context;
+  const { areaType, areaId } = useSearchStateCTX();
+  const dispatchSearchMap = useSearchDispatchCTX();
 
   const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -136,15 +130,18 @@ export function CurrentFootprint() {
   } = state;
 
   const controllerRef = useRef(new CurrentFootprintController());
-  const controller = controllerRef.current;
   const areaTypeId = areaType?.id;
   const areaIdId = areaId?.id;
 
   useEffect(() => {
     let isCurrent = true;
+    const controller = controllerRef.current;
 
     if (!areaTypeId || !areaIdId) {
-      setLoadingLayer(false);
+      dispatchSearchMap({
+        type: SearchUpdated.LOADING_LAYER,
+        loadingLayer: false,
+      });
       return () => {
         isCurrent = false;
         controller.cancelActiveRequests();
@@ -153,7 +150,10 @@ export function CurrentFootprint() {
 
     controller.setArea(areaTypeId, areaIdId);
 
-    setLoadingLayer(true);
+    dispatchSearchMap({
+      type: SearchUpdated.LOADING_LAYER,
+      loadingLayer: true,
+    });
 
     controller
       .getCurrentHFAverage()
@@ -163,8 +163,11 @@ export function CurrentFootprint() {
       })
       .catch((e) => {
         if (!isCurrent) return;
-        if (e.toString() !== "Error: request canceled") {
-          setLayerError(e.toString());
+        if (String(e).includes("Error: request canceled")) {
+          dispatchSearchMap({
+            type: SearchUpdated.LAYER_ERROR,
+            layerError: e instanceof Error ? e.message : String(e),
+          });
         }
       });
 
@@ -180,18 +183,28 @@ export function CurrentFootprint() {
               type: "CURRENTHF_LAYERS_SUCCEEDED",
               payload: layersRes,
             });
-            setRasterLayers(layersRes);
-            setLoadingLayer(false);
-            setMapTitle({
-              name: `HH promedio · ${controller.itemId}`,
+            dispatchSearchMap({
+              type: SearchUpdated.RASTER_LAYERS,
+              payload: {
+                rasterLayers: layersRes,
+                mapTitle: {
+                  name: `HH promedio · ${controller.itemId}`,
+                },
+              },
             });
           })
           .catch((e) => {
-            if (!isCurrent) return;
-            if (e.toString() !== "Error: request canceled") {
-              setLayerError(e.toString());
+            if (!isCurrent || String(e).includes("Error: request canceled")) {
+              dispatchSearchMap({
+                type: SearchUpdated.LOADING_LAYER,
+                loadingLayer: false,
+              });
+              return;
             }
-            setLoadingLayer(false);
+            dispatchSearchMap({
+              type: SearchUpdated.LAYER_ERROR,
+              layerError: e instanceof Error ? e.message : String(e),
+            });
           });
 
         dispatch({
@@ -202,10 +215,13 @@ export function CurrentFootprint() {
       .catch(() => {
         if (!isCurrent) return;
         dispatch({ type: "CURRENTHF_VALUES_FAILED" });
-        setLoadingLayer(false);
+        dispatchSearchMap({
+          type: SearchUpdated.LOADING_LAYER,
+          loadingLayer: false,
+        });
       });
 
-    BackendAPI.requestSectionTexts("hfCurrent")
+    getMetricTexts("currentHF")
       .then((res) => {
         if (!isCurrent) return;
         dispatch({
@@ -225,15 +241,7 @@ export function CurrentFootprint() {
       isCurrent = false;
       controller.cancelActiveRequests();
     };
-  }, [
-    areaTypeId,
-    areaIdId,
-    controller,
-    setLayerError,
-    setLoadingLayer,
-    setMapTitle,
-    setRasterLayers,
-  ]);
+  }, [areaTypeId, areaIdId, dispatchSearchMap]);
 
   if (!areaTypeId || !areaIdId) {
     return null;
@@ -244,12 +252,15 @@ export function CurrentFootprint() {
   };
 
   const clickOnGraph = (selectedKey: string) => {
-    setRasterLayers(
-      layers.map((layer) => ({
-        ...layer,
-        selected: layer.id === selectedKey,
-      })),
-    );
+    dispatchSearchMap({
+      type: SearchUpdated.RASTER_LAYERS,
+      payload: {
+        rasterLayers: layers.map((layer) => ({
+          ...layer,
+          selected: layer.id === selectedKey,
+        })),
+      },
+    });
   };
 
   return (
