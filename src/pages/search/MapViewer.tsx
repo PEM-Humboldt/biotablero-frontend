@@ -99,8 +99,6 @@ export function MapViewer({
 
   return (
     <MapContainer id="map" ref={mapRef} bounds={config.params.colombia}>
-      {/* TODO: agrega componente para el gradiente */}
-
       {titleName && (
         <>
           <div className="mapsTitle">

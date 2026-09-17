@@ -21,7 +21,7 @@ const NATIONAL_AREA_ID_VALUE = 1;
 export class ObservedRichnessController {
   areaType: string = "";
   areaId: number = 0;
-  classes: string[] = ["recordGaps"];
+  classes: string[] = ["richness"];
   taxonomicGroup: string = "";
   activeRequests: Map<string, CancelTokenSource> = new Map();
 
@@ -42,9 +42,17 @@ export class ObservedRichnessController {
     this.activeRequests.set("ORichness-groups", source);
 
     return request
+      .then((res) => {
+        if (!Array.isArray(res)) {
+          return [];
+        }
+        return res;
+      })
       .catch((err) => {
-        console.error("Error original:", err);
-        throw new Error("Error getting data");
+        console.error(err);
+        throw new Error(
+          "Error getting Observed Richness taxonomic groups data",
+        );
       })
       .finally(() => {
         this.activeRequests.delete("ORichness-groups");
@@ -72,6 +80,17 @@ export class ObservedRichnessController {
 
     return request
       .then((res) => {
+        if (typeof res === "string") {
+          return {
+            total: 0,
+            threatenedTotal: 0,
+            invasive: 0,
+            endemic: 0,
+            endemicThreatened: 0,
+            barValues: { CR: 0, EN: 0, VU: 0 },
+          };
+        }
+
         return {
           total: res.total,
           threatenedTotal: res.threatened_total,
@@ -86,8 +105,8 @@ export class ObservedRichnessController {
         };
       })
       .catch((err) => {
-        console.error("Error original:", err);
-        throw new Error("Error getting data");
+        console.error(err);
+        throw new Error("Error getting ObservedRichness tables data");
       })
       .finally(() => {
         this.activeRequests.delete(requestKey);
@@ -126,9 +145,15 @@ export class ObservedRichnessController {
     this.activeRequests.set(requestKey, source);
 
     return request
+      .then((res) => {
+        if (typeof res !== "object") {
+          return { id: "", frequency: [], bin_edges: [] };
+        }
+        return res;
+      })
       .catch((err) => {
-        console.error("Error original:", err);
-        throw new Error("Error getting data");
+        console.error(err);
+        throw new Error("Error getting Richness data");
       })
       .finally(() => {
         this.activeRequests.delete(requestKey);
@@ -196,7 +221,9 @@ export class ObservedRichnessController {
   /**
    * Transforms the graph data into an object to for the CSV download
    *
-   * @param series - data array for recordsGaps graph
+   * @param data - object containig statsOnSpecies table values
+   * @param data.current - if current polygon is custom, null, otherwise the values for the current polygon
+   * @param data.national - the values for the national polygon for reference or null
    *
    * @returns recordsGaps graph data transformed into an array to be downloaded in a csv file
    */

@@ -203,13 +203,14 @@ export function ObservedRichness() {
   const { areaType, areaId } = useSearchStateCTX();
   const searchMapDispatch = useSearchDispatchCTX();
 
-  const controller = useRef(new ObservedRichnessController());
+  const controllerRef = useRef(new ObservedRichnessController());
 
   if (areaType && areaId) {
-    controller.current.setArea(areaType.id, areaId.id);
+    controllerRef.current.setArea(areaType.id, areaId.id);
   }
 
   useEffect(() => {
+    const controller = controllerRef.current;
     updateRichness({ type: ObservedRichnessUpdated.LOADING, isLoading: true });
     searchMapDispatch({
       type: SearchUpdated.LOADING_LAYER,
@@ -217,12 +218,12 @@ export function ObservedRichness() {
     });
 
     Promise.all([
-      controller.current.getORichnessTaxonomicGroups(),
+      controller.getORichnessTaxonomicGroups(),
       getMetricTexts("statsOnSpecies"),
-      areaType?.id !== "custom" ? controller.current.getAreaData() : null,
-      controller.current.getNationalData(),
-      controller.current.getRichnessSerie(),
-      controller.current.getRichnessLayer(),
+      areaType?.id !== "custom" ? controller.getAreaData() : null,
+      controller.getNationalData(),
+      controller.getRichnessSerie(),
+      controller.getRichnessLayer(),
     ])
       .then(
         ([
@@ -280,10 +281,12 @@ export function ObservedRichness() {
           layerError: err instanceof Error ? err.message : String(err),
         });
       });
+    return () => controller.cancelActiveRequests();
   }, [areaType?.id, searchMapDispatch, areaId?.name]);
 
   const handleTaxonomicGroupChange = useCallback(
     (taxonomicGroup: string) => {
+      const controller = controllerRef.current;
       const groupFilter =
         taxonomicGroup === "all" || taxonomicGroup === ""
           ? undefined
@@ -299,12 +302,10 @@ export function ObservedRichness() {
       });
 
       Promise.all([
-        areaType?.id !== "custom"
-          ? controller.current.getAreaData(groupFilter)
-          : null,
-        controller.current.getNationalData(groupFilter),
-        controller.current.getRichnessSerie(groupFilter),
-        controller.current.getRichnessLayer(groupFilter),
+        areaType?.id !== "custom" ? controller.getAreaData(groupFilter) : null,
+        controller.getNationalData(groupFilter),
+        controller.getRichnessSerie(groupFilter),
+        controller.getRichnessLayer(groupFilter),
       ])
         .then(([current, context, graphData, areaRichnessMap]) => {
           updateRichness({
@@ -358,6 +359,9 @@ export function ObservedRichness() {
       return [];
     }
     const data = richness.areaSerie.data;
+    if (data.length === 0) {
+      return [];
+    }
     return generateLinearTicks(0, data[data.length - 1].x, 10);
   }, [richness.areaSerie]);
 
@@ -438,12 +442,12 @@ export function ObservedRichness() {
                 }}
                 yScale={{ type: "linear", min: 0, max: "auto" }}
                 curve="monotoneX"
-                gridXValues={graphSerieTicks}
+                // gridXValues={graphSerieTicks}
                 axisBottom={{
                   legend: "Número de especies registradas (LMSC)",
                   legendOffset: 36,
                   legendPosition: "middle" as const,
-                  tickValues: graphSerieTicks,
+                  // tickValues: graphSerieTicks,
                 }}
                 colors={observedRichnessGradientColors}
                 gridYValues={5}
@@ -481,7 +485,7 @@ export function ObservedRichness() {
         consText={richness.texts.cons}
         metoText={richness.texts.meto}
         quoteText={richness.texts.quote}
-        downloadData={controller.current.getDownloadData({
+        downloadData={controllerRef.current.getDownloadData({
           current: richness.areaTableData,
           national: richness.nationalTableData,
         })}
