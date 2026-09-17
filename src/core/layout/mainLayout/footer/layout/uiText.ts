@@ -5,6 +5,7 @@ export const uiText = {
     links: {
       citation: "Citese",
       contact: "Contacto",
+      tos: "Términos",
     },
     collaboratorsTitle: "Colaboradores",
   },

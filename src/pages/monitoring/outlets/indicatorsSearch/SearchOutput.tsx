@@ -8,7 +8,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-import { INDICATORS_PER_PAGE, LOCALE, TAG_COLORS } from "@config/monitoring";
+import { LOCALE } from "@config/global";
+import { INDICATORS_PER_PAGE, TAG_COLORS } from "@config/monitoring";
 import { Button } from "@ui/shadCN/component/button";
 import { cn } from "@ui/shadCN/lib/utils";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";

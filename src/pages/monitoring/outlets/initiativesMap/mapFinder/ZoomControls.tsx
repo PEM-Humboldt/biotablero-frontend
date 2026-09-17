@@ -6,7 +6,7 @@ import { House, ZoomIn, ZoomOut } from "lucide-react";
 
 import { Button } from "@ui/shadCN/component/button";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
-import { COUNTRY_BOUNDS } from "@config/monitoring";
+import { COUNTRY_BOUNDS } from "@config/global";
 
 import {
   getTargetLatLng,

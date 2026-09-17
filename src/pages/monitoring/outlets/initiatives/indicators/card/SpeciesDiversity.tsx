@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ResponsiveLine } from "@nivo/line";
 import { hashStringToRange } from "@utils/format";
 import { GRAPHS_CONTRAST_COLOR_PALETTE } from "@config/color";
-import { GRAPH_ANIMATION_CONFIG } from "@config/monitoring";
+import { GRAPH_ANIMATION_CONFIG } from "@config/global";
 import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";

@@ -6,6 +6,7 @@ import { Button } from "@ui/shadCN/component/button";
 import { cn } from "@ui/shadCN/lib/utils";
 
 import { uiText } from "core/layout/mainLayout/footer/layout/uiText";
+import { ButtonGroup } from "@mui/material";
 
 interface FooterProps {
   logos: Set<Collaborators>;
@@ -22,11 +23,11 @@ export function Footer({ logos, className }: FooterProps) {
   return (
     <footer
       className={cn(
-        "bg-grey-dark p-4 md:px-8 flex text-background justify-between items-start",
+        "bg-grey-dark p-4 pt-1 md:px-8 flex text-background justify-between items-start",
         className,
       )}
     >
-      <div>
+      <div className="pt-3">
         {collaborators.length > 0 && (
           <a href={uiText.IAVH.url}>
             <img
@@ -43,10 +44,42 @@ export function Footer({ logos, className }: FooterProps) {
         </div>
       </div>
 
-      <div className="text-right">
+      <div className="text-right space-y-4">
+        <ButtonGroup className="space-x-2">
+          <Button
+            title={uiText.citationTooltip}
+            variant="link"
+            size="sm"
+            className="p-0 text-accent text-sm"
+            onClick={handleCitationClick}
+          >
+            {uiText.uiTxt.links.citation}
+          </Button>
+          <Button
+            title={uiText.tosTooltip}
+            variant="link"
+            size="sm"
+            className="p-0 text-accent text-sm"
+            asChild
+          >
+            <a href={`mailto:${uiText.IAVH.contact}`}>
+              {uiText.uiTxt.links.contact}
+            </a>
+          </Button>
+          <Button
+            title={uiText.tosTooltip}
+            variant="link"
+            size="sm"
+            className="p-0 **:p-0 text-accent text-sm"
+            asChild
+          >
+            <Link to="TerminosCondiciones">{uiText.uiTxt.links.tos}</Link>
+          </Button>
+        </ButtonGroup>
+
         {collaborators.length > 0 && (
           <>
-            <div className="text-sm mb-2">
+            <div className="text-sm font-normal mb-1">
               {uiText.uiTxt.collaboratorsTitle}
             </div>
             <div className="flex flex-wrap gap-4 justify-end">
@@ -67,31 +100,6 @@ export function Footer({ logos, className }: FooterProps) {
             </div>
           </>
         )}
-
-        <div className="text-right mt-2">
-          <Button
-            title={uiText.citationTooltip}
-            variant="link"
-            className="text-accent text-sm"
-            onClick={handleCitationClick}
-          >
-            {uiText.uiTxt.links.citation}
-          </Button>
-          <a
-            href={`mailto:${uiText.IAVH.contact}`}
-            className="underline-offset-4 text-sm hover:underline hover:text-accent text-accent font-normal"
-          >
-            {uiText.uiTxt.links.contact}
-          </a>
-          <Button
-            title={uiText.tosTooltip}
-            variant="link"
-            className="text-accent text-sm"
-            asChild
-          >
-            <Link to="TerminosCondiciones">Términos y condiciones</Link>
-          </Button>
-        </div>
       </div>
     </footer>
   );
