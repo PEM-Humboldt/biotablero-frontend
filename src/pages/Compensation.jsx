@@ -46,6 +46,7 @@ export class Compensation extends Component {
 
   componentDidMount() {
     const { user } = this.props;
+
     if (user && user.company && user.username) {
       this.setState(
         {
