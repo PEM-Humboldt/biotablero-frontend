@@ -210,7 +210,9 @@ export function ObservedRichness() {
   }
 
   useEffect(() => {
+    let isMounted = true;
     const controller = controllerRef.current;
+
     updateRichness({ type: ObservedRichnessUpdated.LOADING, isLoading: true });
     searchMapDispatch({
       type: SearchUpdated.LOADING_LAYER,
@@ -234,6 +236,10 @@ export function ObservedRichness() {
           areaSerie,
           areaRichnessMap,
         ]) => {
+          if (!isMounted) {
+            return;
+          }
+
           updateRichness({
             type: ObservedRichnessUpdated.STARTING_INFO,
             payload: {
@@ -268,6 +274,10 @@ export function ObservedRichness() {
         },
       )
       .catch((err) => {
+        if (!isMounted) {
+          return;
+        }
+
         updateRichness({
           type: ObservedRichnessUpdated.ERRORS,
           payload: {
@@ -281,7 +291,11 @@ export function ObservedRichness() {
           layerError: err instanceof Error ? err.message : String(err),
         });
       });
-    return () => controller.cancelActiveRequests();
+
+    return () => {
+      isMounted = false;
+      controller.cancelActiveRequests();
+    };
   }, [areaType?.id, searchMapDispatch, areaId?.name]);
 
   const handleTaxonomicGroupChange = useCallback(
@@ -438,17 +452,17 @@ export function ObservedRichness() {
                 xScale={{
                   type: "linear",
                   min: 1,
-                  max: graphSerieTicks[graphSerieTicks.length - 1],
+                  max: graphSerieTicks[graphSerieTicks.length - 1] + 1,
                   nice: false,
                 }}
                 yScale={{ type: "linear", min: 0, max: "auto" }}
                 curve="monotoneX"
-                // gridXValues={graphSerieTicks}
+                gridXValues={graphSerieTicks}
                 axisBottom={{
                   legend: "Número de especies registradas (LMSC)",
                   legendOffset: 36,
                   legendPosition: "middle" as const,
-                  // tickValues: graphSerieTicks,
+                  tickValues: graphSerieTicks,
                 }}
                 colors={observedRichnessGradientColors}
                 gridYValues={5}

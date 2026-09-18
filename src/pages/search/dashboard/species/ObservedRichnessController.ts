@@ -70,7 +70,7 @@ export class ObservedRichnessController {
     areaId: number,
     taxonomicGroup?: string,
   ): Promise<ObservedRichnessDataType> {
-    const requestKey = `gaps_data-${taxonomicGroup ?? "all"}`;
+    const requestKey = `observedRichness-${taxonomicGroup ?? "all"}`;
     const { request, source } = SearchAPI.requestMetricsValues(
       "statsOnSpecies",
       areaId,
@@ -225,7 +225,7 @@ export class ObservedRichnessController {
    * @param data.current - if current polygon is custom, null, otherwise the values for the current polygon
    * @param data.national - the values for the national polygon for reference or null
    *
-   * @returns recordsGaps graph data transformed into an array to be downloaded in a csv file
+   * @returns observedRichness data transformed into an array to be downloaded in a csv file
    */
   getDownloadData(data: {
     current: ObservedRichnessDataType | null;

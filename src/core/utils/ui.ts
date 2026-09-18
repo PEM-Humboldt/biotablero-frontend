@@ -58,6 +58,6 @@ export function generateLinearTicks(
 
   return Array.from({ length: steps }, (_, i) => {
     const value = min + i * stepSize;
-    return Math.round(value * 100) / 100;
+    return Math.round(value);
   });
 }
