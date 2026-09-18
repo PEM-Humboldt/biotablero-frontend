@@ -249,7 +249,7 @@ export function MapLegend({
                         disabled={tiles === Number(key)}
                         className="w-40 p-0! justify-start"
                       >
-                        <div className="flex gap-2 items-center  text-sm">
+                        <div className="flex gap-2 items-center text-sm">
                           <img
                             src={value.uiThumbs.button}
                             alt=""
@@ -257,7 +257,7 @@ export function MapLegend({
                           />
                           {value.label}
                         </div>
-                        {tiles === Number(key) && <Check />}
+                        {tiles === Number(key) && <Check size={16} />}
                       </Button>
                     </li>
                   ))}
@@ -268,28 +268,36 @@ export function MapLegend({
                 <span className="font-normal">
                   {uiText.mapLegend.layerSelector.layersTitle}
                 </span>
-                <ul className="mt-2 space-y-2">
+                <ul className="mt-2 space-y-4">
                   {Object.entries(MAP_LAYERS).map(([key, value]) => (
                     <li key={`mapLayer_${key}`}>
-                      <Button
+                      <button
                         onClick={() =>
                           setLayers((oldLayer) =>
                             oldLayer === Number(key) ? null : Number(key),
                           )
                         }
-                        variant="link"
-                        className="w-50 p-0! justify-start"
+                        className="w-55 p-0! justify-start mb-2 flex items-center"
                       >
-                        <div className="flex gap-2 items-center  text-sm">
+                        <div
+                          className={cn(
+                            "flex gap-2 items-center text-sm min-w-0",
+                            layers === Number(key) ? "opacity-70" : "",
+                          )}
+                        >
                           <img
                             src={value.buttonBkg}
                             alt=""
-                            className="h-9 border border-primary/50 aspect-square rounded object-cover object-center"
+                            className="h-9 border border-primary/50 aspect-square rounded object-cover object-center shrink-0"
                           />
-                          {value.label}
+                          <div className="font-normal text-balance text-left leading-tight">
+                            {value.label}
+                          </div>
                         </div>
-                        {layers === Number(key) && <Check />}
-                      </Button>
+                        {layers === Number(key) && (
+                          <Check className="shrink-0 size-4 ml-2" />
+                        )}
+                      </button>
                     </li>
                   ))}
                 </ul>

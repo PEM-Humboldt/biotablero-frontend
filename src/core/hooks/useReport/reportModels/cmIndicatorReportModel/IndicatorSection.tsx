@@ -8,7 +8,8 @@ import type {
   IndicatorTag,
   ReportMetadata,
 } from "@appTypes/report";
-import { LOCALE, REPORT_PAGE_SIZE } from "@config/monitoring";
+import { LOCALE } from "@config/global";
+import { REPORT_PAGE_SIZE } from "@config/monitoring";
 import { Fragment } from "react";
 import { documentInfo } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/documentInfo";
 

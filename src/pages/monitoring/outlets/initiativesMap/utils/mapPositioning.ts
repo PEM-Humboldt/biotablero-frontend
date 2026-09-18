@@ -1,7 +1,7 @@
 import L from "leaflet";
 
+import { COUNTRY_BOUNDS } from "@config/global";
 import {
-  COUNTRY_BOUNDS,
   INITIATIVES_MAP_PADDING_SM,
   INITIATIVES_MAP_PADDING_LG,
 } from "@config/monitoring";

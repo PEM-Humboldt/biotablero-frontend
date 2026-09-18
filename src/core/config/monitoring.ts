@@ -1,22 +1,7 @@
 import { type PageProps } from "@react-pdf/renderer";
 import type { ImageMimeType } from "@appTypes/formats";
 import type { ODataParams } from "@appTypes/odata";
-import type { LatLngBoundsLiteral } from "leaflet";
 import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
-
-// DEFINICIONES GENERALES
-export const SUPPORT_EMAIL = "biotablero@humboldt.org.co";
-export const LOCALE = "es-ES";
-export const COUNTRY_BOUNDS: LatLngBoundsLiteral = [
-  [-4.2316872, -82.1243666],
-  [16.0571269, -66.85119073],
-];
-export const GRAPH_ANIMATION_CONFIG = {
-  duration: 300,
-  // NOTE: EaseInOut Cuadratica
-  easing: (t: number) =>
-    t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2,
-};
 
 // Logs
 export const LOG_RECORDS_PER_PAGE = 20; // registrys on the logs summary
