@@ -46,7 +46,7 @@ export function CurrentInitiativeCTX({
   const [initiative, setInitiative] = useState<InitiativeCompleteInfo | null>(
     null,
   );
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { user } = useUserCTX();
   const { joinRequestsByInitiativeId } = useUserInMonitoringCTX();
   const { initiativeId } = useParams();

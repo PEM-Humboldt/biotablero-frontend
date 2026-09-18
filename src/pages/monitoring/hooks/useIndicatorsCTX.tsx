@@ -57,7 +57,7 @@ const dataTransformFunction = {
 export function IndicatorsCTX({ children }: { children: ReactNode }) {
   const { initiativeId, detailItem, indicatorId } = useParams();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [errors, setErrors] = useState<string[]>([]);
   const [searchParams, setSearchParams] = useState<ODataParams>({
     top: INDICATORS_PER_PAGE,
