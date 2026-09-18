@@ -33,38 +33,34 @@ export function RenderCompensation() {
   const handleSetHeaderNames = (names: Names) =>
     layoutDispatch({ type: LayoutUpdated.HEADER_NAMES, newHeader: names });
 
-  return (
-    <>
-      {!renderCompensation ? (
-        <div className="bg-grey-light h-full">
-          <section className="border-t-100 border-t-accent">
-            <div className="max-w-[1200px] px-4 py-8 mx-auto grid grid-cols-1 gap-4 md:py-16 md:grid-cols-2 md:gap-8">
-              <article
-                key={
-                  user?.username == null
-                    ? uiText.errors.restrictedAccess.title
-                    : uiText.errors.unauthorizedUser.title
-                }
-                className="bg-background p-8 rounded-xl"
-              >
-                <h3 className="flex gap-4 items-center text-primary">
-                  <TriangleAlert className="size-8" strokeWidth="1.5" />
-                  {user?.username == null
-                    ? uiText.errors.restrictedAccess.title
-                    : uiText.errors.unauthorizedUser.title}
-                </h3>
-                <p className="m-0!">
-                  {user?.username == null
-                    ? uiText.errors.restrictedAccess.description
-                    : uiText.errors.unauthorizedUser.description}
-                </p>
-              </article>
-            </div>
-          </section>
-        </div>
-      ) : (
-        <Compensation setHeaderNames={handleSetHeaderNames} user={user} />
-      )}
-    </>
-  );
+  return (!renderCompensation ? (
+      <div className="bg-grey-light h-full">
+        <section className="border-t-100 border-t-accent">
+          <div className="max-w-[1200px] px-4 py-8 mx-auto grid grid-cols-1 gap-4 md:py-16 md:grid-cols-2 md:gap-8">
+            <article
+              key={
+                user?.username == null
+                  ? uiText.errors.restrictedAccess.title
+                  : uiText.errors.unauthorizedUser.title
+              }
+              className="bg-background p-8 rounded-xl"
+            >
+              <h3 className="flex gap-4 items-center text-primary">
+                <TriangleAlert className="size-8" strokeWidth="1.5" />
+                {user?.username == null
+                  ? uiText.errors.restrictedAccess.title
+                  : uiText.errors.unauthorizedUser.title}
+              </h3>
+              <p className="m-0!">
+                {user?.username == null
+                  ? uiText.errors.restrictedAccess.description
+                  : uiText.errors.unauthorizedUser.description}
+              </p>
+            </article>
+          </div>
+        </section>
+      </div>
+    ) : (
+      <Compensation setHeaderNames={handleSetHeaderNames} user={user} />
+    ));
 }
