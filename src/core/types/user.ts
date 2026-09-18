@@ -11,7 +11,7 @@ export type UserProfile = {
   company?: {
     id: number;
     name: string;
-  }
+  };
 };
 
 export type UserKeycloak = {
