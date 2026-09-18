@@ -56,6 +56,7 @@ export type MetricTypesMap = {
 
   recordGaps: { id: string; frequency: number[]; bin_edges: number[] }[];
   recordGaps_averages: { id: string; average: number }[];
+  richness: { id: string; frequency: number[]; bin_edges: number[] };
   statsOnSpecies: {
     id: string;
     total: number;

@@ -1,5 +1,7 @@
 import type { CancelTokenSource } from "axios";
+import LayerAPI from "pages/search/api/layerAPI";
 import SearchAPI from "pages/search/api/searchAPI";
+import { MetricsUtils } from "pages/search/utils/metrics";
 
 export type ObservedRichnessDataType = {
   total: number;
@@ -19,7 +21,7 @@ const NATIONAL_AREA_ID_VALUE = 1;
 export class ObservedRichnessController {
   areaType: string = "";
   areaId: number = 0;
-  classes: string[] = ["recordGaps"];
+  classes: string[] = ["richness"];
   taxonomicGroup: string = "";
   activeRequests: Map<string, CancelTokenSource> = new Map();
 
@@ -40,9 +42,17 @@ export class ObservedRichnessController {
     this.activeRequests.set("ORichness-groups", source);
 
     return request
+      .then((res) => {
+        if (!Array.isArray(res)) {
+          return [];
+        }
+        return res;
+      })
       .catch((err) => {
-        console.error("Error original:", err);
-        throw new Error("Error getting data");
+        console.error(err);
+        throw new Error(
+          "Error getting Observed Richness taxonomic groups data",
+        );
       })
       .finally(() => {
         this.activeRequests.delete("ORichness-groups");
@@ -56,11 +66,11 @@ export class ObservedRichnessController {
    *
    * @returns a Promise resolving into a ObservedRichnessDataType
    */
-  private async getData(
+  private async getTableData(
     areaId: number,
     taxonomicGroup?: string,
   ): Promise<ObservedRichnessDataType> {
-    const requestKey = `gaps_data-${taxonomicGroup ?? "all"}`;
+    const requestKey = `observedRichness-${taxonomicGroup ?? "all"}`;
     const { request, source } = SearchAPI.requestMetricsValues(
       "statsOnSpecies",
       areaId,
@@ -70,6 +80,17 @@ export class ObservedRichnessController {
 
     return request
       .then((res) => {
+        if (typeof res === "string") {
+          return {
+            total: 0,
+            threatenedTotal: 0,
+            invasive: 0,
+            endemic: 0,
+            endemicThreatened: 0,
+            barValues: { CR: 0, EN: 0, VU: 0 },
+          };
+        }
+
         return {
           total: res.total,
           threatenedTotal: res.threatened_total,
@@ -84,8 +105,8 @@ export class ObservedRichnessController {
         };
       })
       .catch((err) => {
-        console.error("Error original:", err);
-        throw new Error("Error getting data");
+        console.error(err);
+        throw new Error("Error getting ObservedRichness tables data");
       })
       .finally(() => {
         this.activeRequests.delete(requestKey);
@@ -99,8 +120,8 @@ export class ObservedRichnessController {
    *
    * @returns a Promise resolving into a ObservedRichnessDataType
    */
-  async getCurrentData(taxonomicGroup?: string) {
-    return this.getData(this.areaId, taxonomicGroup);
+  async getAreaData(taxonomicGroup?: string) {
+    return this.getTableData(this.areaId, taxonomicGroup);
   }
 
   /**
@@ -111,21 +132,106 @@ export class ObservedRichnessController {
    * @returns a Promise resolving into a ObservedRichnessDataType
    */
   async getNationalData(taxonomicGroup?: string) {
-    return this.getData(NATIONAL_AREA_ID_VALUE, taxonomicGroup);
+    return this.getTableData(NATIONAL_AREA_ID_VALUE, taxonomicGroup);
+  }
+
+  async getRichnessSerie(taxonomicGroup?: string) {
+    const requestKey = "richnessSerie";
+    const { request, source } = SearchAPI.requestMetricsValues(
+      "richness",
+      this.areaId,
+      { params: taxonomicGroup ? { group: taxonomicGroup } : {} },
+    );
+    this.activeRequests.set(requestKey, source);
+
+    return request
+      .then((res) => {
+        if (typeof res !== "object") {
+          return { id: "", frequency: [], bin_edges: [] };
+        }
+        return res;
+      })
+      .catch((err) => {
+        console.error(err);
+        throw new Error("Error getting Richness data");
+      })
+      .finally(() => {
+        this.activeRequests.delete(requestKey);
+      });
+  }
+
+  async getRichnessLayer(taxonomicGroup?: string) {
+    if (this.areaId === 0) {
+      throw Error("Polygon and area undefined");
+    }
+
+    const { request, source } = SearchAPI.requestMetricsLayer(
+      "richness",
+      "2026",
+      "richness",
+      this.areaId,
+      taxonomicGroup,
+    );
+
+    this.activeRequests.set("2026", source);
+
+    const res = await Promise.all([request]);
+
+    this.classes.forEach((classId) => {
+      this.activeRequests.delete(classId);
+    });
+
+    if (res.some((result) => typeof result === "string")) {
+      throw new Error("request canceled");
+    }
+    const layersRequests: Array<Promise<Blob>> = [];
+
+    res.forEach((layerObj) => {
+      const { request, source } = LayerAPI.getLayerData(layerObj);
+      layersRequests.push(request);
+      this.activeRequests.set(layerObj.layer, source);
+    });
+
+    const layerResponses = await Promise.all(layersRequests);
+    res.forEach((layerObj) => {
+      this.activeRequests.delete(layerObj.layer);
+    });
+
+    if (layersRequests.some((result) => typeof result === "string")) {
+      throw new Error("request canceled");
+    }
+
+    const layersBase64Promises: Array<Promise<string>> = [];
+
+    layerResponses.forEach((response) => {
+      const layerBase64 = MetricsUtils.blobToBase64(response);
+      layersBase64Promises.push(layerBase64);
+    });
+
+    const layersBase64 = await Promise.all(layersBase64Promises);
+
+    return [...this.classes].map((classId, index) => ({
+      id: classId,
+      data: layersBase64[index],
+      selected: false,
+      paneLevel: 2,
+    }));
   }
 
   /**
    * Transforms the graph data into an object to for the CSV download
    *
-   * @param series - data array for recordsGaps graph
+   * @param data - object containig statsOnSpecies table values
+   * @param data.current - if current polygon is custom, null, otherwise the values for the current polygon
+   * @param data.national - the values for the national polygon for reference or null
    *
-   * @returns recordsGaps graph data transformed into an array to be downloaded in a csv file
+   * @returns observedRichness data transformed into an array to be downloaded in a csv file
    */
   getDownloadData(data: {
     current: ObservedRichnessDataType | null;
-    context: ObservedRichnessDataType | null;
+    national: ObservedRichnessDataType | null;
   }) {
-    return [data.current, data.context]
+    return [data.current, data.national]
       .filter((item): item is ObservedRichnessDataType => item !== null)
       .map((item: ObservedRichnessDataType) => ({
         total: item.total,

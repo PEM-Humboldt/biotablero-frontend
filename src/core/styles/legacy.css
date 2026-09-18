@@ -796,19 +796,7 @@ a#reset-filters {
   text-align: center;
   color: #424242;
 }
-.gradientLegend {
-  background-color: #fff;
-  font-size: 9px;
-  font-weight: 600;
-  color: #2a363b;
-  margin-top: 1px;
-  padding: 5px 8px 3px;
-}
-.gradientLegend > .text {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 0 auto;
-} /*Map container*/
+/*Map container*/
 .viewfinder {
   margin: 2px;
   padding: 5px;

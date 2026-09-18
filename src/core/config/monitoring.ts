@@ -153,7 +153,7 @@ export const INDICATOR_MAX_COUNT_OCUPATION_SPECIES = 3;
 export const INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY = 3;
 
 // Help
-export const HELP_YOUTUBE_VIDEO_URL = "www.youtube.com/watch?v=arZZw8NyPq8";
+export const HELP_YOUTUBE_VIDEO_URL = "www.youtube.com/watch?v=z2Ida2a2hHQ";
 
 // Report
 export const REPORT_NOTE_MAX_LENGTH = 250;
