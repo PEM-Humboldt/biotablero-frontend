@@ -199,7 +199,7 @@ export function Search() {
   return (
     <SearchCTX state={searchState} dispatch={searchDispatch}>
       <LegacyCTX>
-        <div className="flex h-full">
+        <div className="flex h-[calc(100vh-138px)] md:h-[calc(100vh-148px)] w-full overflow-hidden">
           <MapViewer
             bounds={bounds}
             polygon={null}
@@ -207,7 +207,7 @@ export function Search() {
             geoServerUrl={GeoServerAPI.getRequestURL()}
           />
 
-          <div className="flex-[1_1_40%] flex-col order-2">
+          <div className="flex-[1_1_40%] h-full min-h-0 flex flex-col order-2 overflow-hidden">
             {showDashboard ? (
               <Dashboard goBackClick={handleGoBackClick} />
             ) : (

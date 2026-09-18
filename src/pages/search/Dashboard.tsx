@@ -18,8 +18,8 @@ export function Dashboard({ goBackClick: handlerGoBack }: DashboardProps) {
   const { areaHa } = useSearchStateCTX();
 
   return (
-    <div className="informer">
-      <div className="drawer_header">
+    <div className="informer flex flex-col h-full min-h-0 overflow-hidden">
+      <div className="drawer_header shrink-0">
         <button className="geobtn" type="button" onClick={handlerGoBack}>
           <BackIcon />
         </button>
@@ -30,24 +30,27 @@ export function Dashboard({ goBackClick: handlerGoBack }: DashboardProps) {
           </h4>
         </div>
       </div>
-      <TabContainer
-        initialSelectedIndex={0}
-        titles={[
-          { label: "Ecosistemas", icon: <Ecosistemas /> },
-          { label: "Paisaje", icon: <Paisaje /> },
-          { label: "Especies", icon: <Especies /> },
-        ]}
-      >
-        <div>
-          <Ecosystems />
-        </div>
-        <div>
-          <Landscape />
-        </div>
-        <div>
-          <Species />
-        </div>
-      </TabContainer>
+
+      <div className="flex-1 min-h-0 overflow-y-auto scrollbar-custom">
+        <TabContainer
+          initialSelectedIndex={0}
+          titles={[
+            { label: "Ecosistemas", icon: <Ecosistemas /> },
+            { label: "Paisaje", icon: <Paisaje /> },
+            { label: "Especies", icon: <Especies /> },
+          ]}
+        >
+          <div>
+            <Ecosystems />
+          </div>
+          <div>
+            <Landscape />
+          </div>
+          <div>
+            <Species />
+          </div>
+        </TabContainer>
+      </div>
     </div>
   );
 }

@@ -47,6 +47,8 @@ const customColorMap: Record<number, string> = {
   2025: GRAPHS_EXTENDED_COLOR_PALETTE[29],
 };
 
+const recordGapsGradientColors = ["#3FBF9F", "#e4e890", "#CF324E"];
+
 type GapSerie = { id: string; data: { x: number; y: number }[] };
 
 type GapState = {
@@ -131,6 +133,7 @@ function gapReducer(state: GapState, action: GapAction): GapState {
       return {
         ...state,
         errors: isLoading ? [] : state.errors,
+        availableYears: isLoading ? [] : state.availableYears,
         isLoading,
       };
     }
@@ -326,11 +329,17 @@ export function Gap() {
       .getGapLayer(String(lastYear), groupReq)
       .then((layersRes) => {
         searchDispatch({
-          type: SearchUpdated.WILDCARD,
+          type: SearchUpdated.RASTER_LAYERS,
           payload: {
             rasterLayers: layersRes,
-            mapTitle: { name: `Vacíos · ${lastYear}` },
-            loadingLayer: false,
+            mapTitle: {
+              name: `Vacíos · ${lastYear}`,
+              gradientData: {
+                from: 0,
+                to: 1,
+                colors: recordGapsGradientColors,
+              },
+            },
           },
         });
       })
@@ -353,7 +362,7 @@ export function Gap() {
     [gap.seriesData, gap.activeYears],
   );
 
-  return !lastYear ? null : (
+  return (
     <div className="graphcontainer pt6 overflow-hidden">
       <h4>Índice de Vacíos por Registros (IVR) por km²</h4>
       <IconTooltip title="Interpretación">
@@ -372,7 +381,11 @@ export function Gap() {
       )}
 
       {gap.availableGroups.length > 1 && (
-        <Select value={gap.currentGroup} onValueChange={getGapData}>
+        <Select
+          value={gap.currentGroup}
+          onValueChange={getGapData}
+          disabled={gap.isLoading}
+        >
           <SelectTrigger id="gap-species-group" className="border-grey">
             <SelectValue placeholder="Grupo Taxonómico" />
           </SelectTrigger>
@@ -450,7 +463,7 @@ export function Gap() {
 
       <ErrorsList errorItems={gap.errors} />
 
-      {gap.isLoading ? (
+      {gap.isLoading || !lastYear ? (
         <div className="errorData">Cargando datos...</div>
       ) : (
         <>

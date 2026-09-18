@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef } from "react";
 
 import {
   Select,
@@ -18,7 +18,10 @@ import {
   ObservedRichnessController,
   type ObservedRichnessDataType,
 } from "pages/search/dashboard/species/ObservedRichnessController";
-import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
+import {
+  useSearchDispatchCTX,
+  useSearchStateCTX,
+} from "pages/search/hooks/SearchContext";
 import type { TextsObject } from "pages/search/types/texts";
 import { speciesGroupLabels } from "pages/search/dashboard/species/commonDictionaries";
 import { CircleAlert, LayersIcon, LeafIcon, MapPin } from "lucide-react";
@@ -29,149 +32,85 @@ import SmallStackedBar, {
   type SmallStackedBarData,
 } from "@composites/charts/SmallStackedBar";
 import { getMetricTexts } from "pages/search/utils/texts";
+import { ResponsiveLine } from "@nivo/line";
+import { SearchUpdated } from "pages/search/hooks/SearchReducer";
+import type { MetricTypesMap } from "pages/search/types/metrics";
+import { generateLinearTicks } from "@utils/ui";
 
 const OBSERVED_RICHNESS_GRAPH_KEYS = ["CR", "EN", "VU"];
-const customColorMap: Record<string, string> = {
+
+const threatenedSpeciesCustomColorMap: Record<string, string> = {
   CR: "#5c150c",
   EN: "#bc472b",
   VU: "#d98242",
 };
 
-export function ObservedRichness() {
-  const [isLoading, setIsLoading] = useState(0);
-  const [errors, setErrors] = useState<string[]>([]);
-  const [groupsAvailable, setGroupsAvailable] = useState<string[]>([]);
-  const [selectedGroup, setSelectedGroup] = useState("");
-  const [showInfoGraph, setShowInfoGraph] = useState(false);
-  const [renderData, setRenderData] = useState<{
-    current: ObservedRichnessDataType | null;
-    context: ObservedRichnessDataType | null;
-  }>({ current: null, context: null });
-  const [texts, setTexts] = useState<{ observedRichness: TextsObject }>({
-    observedRichness: { info: "", cons: "", meto: "", quote: "" },
-  });
+const observedRichnessGradientColors = ["#1B0C42", "#A6216E", "#FCB03D"];
 
-  const { areaType, areaId } = useSearchStateCTX();
-
-  const controller = useRef(new ObservedRichnessController());
-
-  if (areaType && areaId) {
-    controller.current.setArea(areaType.id, areaId.id);
-  }
-
-  useEffect(() => {
-    setIsLoading((old) => old + 1);
-    setErrors([]);
-
-    Promise.all([
-      controller.current.getORichnessTaxonomicGroups(),
-      getMetricTexts("statsOnSpecies"),
-    ])
-      .then(([groups, texts]) => {
-        setGroupsAvailable(groups);
-        setTexts({ observedRichness: texts });
-      })
-      .catch((err) => {
-        console.error(err);
-        setErrors(["No fue posible obtener los datos del indicador"]);
-      })
-      .finally(() => {
-        setIsLoading((old) => old - 1);
-      });
-  }, []);
-
-  useEffect(() => {
-    setIsLoading((old) => old + 1);
-    setErrors([]);
-
-    const groupFilter =
-      selectedGroup === "all" || selectedGroup === ""
-        ? undefined
-        : selectedGroup;
-
-    Promise.all([
-      controller.current.getCurrentData(groupFilter),
-      controller.current.getNationalData(groupFilter),
-    ])
-      .then(([current, context]) => {
-        setRenderData({ current, context });
-      })
-      .catch((err) => {
-        console.error(err);
-        setErrors(["No fue posible obtener los datos del indicador"]);
-      })
-      .finally(() => {
-        setIsLoading((old) => old - 1);
-      });
-  }, [selectedGroup]);
-
-  return (
-    <div className="graphcontainer pt6">
-      <h4>Número de especies</h4>
-      <IconTooltip title="Interpretación">
-        <InfoIcon
-          className={`metrics-info-icon${showInfoGraph ? " activeBox" : ""}`}
-          onClick={() => setShowInfoGraph((prev) => !prev)}
-        />
-      </IconTooltip>
-
-      {showInfoGraph && (
-        <ShortInfo
-          description={`<p>${texts.observedRichness.info}</p>`}
-          className="graphinfo2"
-          collapseButton={false}
-        />
-      )}
-
-      {Object.keys(groupsAvailable).length > 1 && (
-        <Select
-          value={selectedGroup}
-          onValueChange={(val) => setSelectedGroup(val)}
-        >
-          <SelectTrigger id="gap-species-group" className="border-grey">
-            <SelectValue placeholder="Grupo Taxonómico" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todos los grupos</SelectItem>
-            {groupsAvailable.map((group) => (
-              <SelectItem key={`selectGroup-${group}`} value={group}>
-                {speciesGroupLabels[group] ?? group}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      )}
-
-      <ErrorsList errorItems={errors} />
-
-      <div className="">
-        {isLoading ? (
-          <div className="errorData">Cargando datos...</div>
-        ) : (
-          <>
-            <ObservedRichnessTable data={renderData.current} />
-            <ObservedRichnessTable
-              data={renderData.context}
-              isNational={true}
-            />
-          </>
-        )}
-      </div>
-
-      <TextBoxes
-        consText={texts.observedRichness.cons}
-        metoText={texts.observedRichness.meto}
-        quoteText={texts.observedRichness.quote}
-        downloadData={controller.current.getDownloadData(renderData)}
-        downloadName={`cifrasRiquezaObservada_${areaType?.label}_${areaId?.name}_vs_contextoPaís.csv`}
-        isInfoOpen={showInfoGraph}
-        toggleInfo={() => setShowInfoGraph((prev) => !prev)}
-      />
-    </div>
-  );
+enum ObservedRichnessUpdated {
+  LOADING = "loading",
+  ERRORS = "errors",
+  STARTING_INFO = "loaded",
+  TAXONOMIC_GROUP = "taxonomicGroup",
+  SHOW_INFO = "showInfo",
 }
 
-function buildSmallStackedBarData(
+type ObservedRichnessGraphSerie = {
+  id: string;
+  data: { x: number; y: number }[];
+};
+
+type ObservedRichnessState = {
+  isLoading: boolean;
+  isInfoOpen: boolean;
+  errors: string[];
+  taxonomicGroupsAvailable: string[];
+  currentTaxonomicGroup: string;
+  nationalTableData: ObservedRichnessDataType | null;
+  areaTableData: ObservedRichnessDataType | null;
+  areaSerie: ObservedRichnessGraphSerie | null;
+  texts: TextsObject;
+};
+
+type ObservedRichnessAction =
+  | { type: ObservedRichnessUpdated.LOADING; isLoading: boolean }
+  | {
+      type: ObservedRichnessUpdated.ERRORS;
+      payload: { user: string[]; console: unknown };
+    }
+  | {
+      type: ObservedRichnessUpdated.STARTING_INFO;
+      payload: {
+        taxonomicGroupsAvailable: string[];
+        texts: TextsObject;
+        nationalData: ObservedRichnessDataType;
+        areaData: ObservedRichnessDataType | null;
+        areaSerie: MetricTypesMap["richness"];
+      };
+    }
+  | {
+      type: ObservedRichnessUpdated.TAXONOMIC_GROUP;
+      payload: {
+        taxonomicGroup: string;
+        nationalData: ObservedRichnessDataType;
+        areaData: ObservedRichnessDataType | null;
+        areaSerie: MetricTypesMap["richness"];
+      };
+    }
+  | { type: ObservedRichnessUpdated.SHOW_INFO; forceState?: boolean };
+
+function transformSerieToObservedRichnessSerie(
+  serie: MetricTypesMap["richness"],
+): ObservedRichnessGraphSerie {
+  const pairedData = serie.bin_edges.map((edge, idx) => ({
+    x: Number(edge.toFixed(2)),
+    y: serie.frequency[idx] ?? serie.frequency[idx - 1],
+  }));
+
+  return { id: String(serie.id), data: pairedData };
+}
+
+function transformDataToSmallStackedBarData(
   data: ObservedRichnessDataType,
 ): SmallStackedBarData[] {
   const totalThreatened = data.threatenedTotal || 1;
@@ -188,12 +127,401 @@ function buildSmallStackedBarData(
   });
 }
 
+function observedRichnessReducer(
+  state: ObservedRichnessState,
+  action: ObservedRichnessAction,
+): ObservedRichnessState {
+  switch (action.type) {
+    case ObservedRichnessUpdated.LOADING:
+      return { ...state, isLoading: action.isLoading };
+
+    case ObservedRichnessUpdated.ERRORS:
+      console.error(action.payload.console);
+      return { ...state, isLoading: false, errors: action.payload.user };
+
+    case ObservedRichnessUpdated.STARTING_INFO:
+      return {
+        ...state,
+        isLoading: false,
+        errors: [],
+        taxonomicGroupsAvailable: action.payload.taxonomicGroupsAvailable,
+        nationalTableData: action.payload.nationalData,
+        areaTableData: action.payload.areaData,
+        texts: action.payload.texts,
+        areaSerie: transformSerieToObservedRichnessSerie(
+          action.payload.areaSerie,
+        ),
+        currentTaxonomicGroup: "all",
+      };
+
+    case ObservedRichnessUpdated.TAXONOMIC_GROUP:
+      return {
+        ...state,
+        isLoading: false,
+        errors: [],
+        nationalTableData: action.payload.nationalData,
+        areaTableData: action.payload.areaData,
+        areaSerie: transformSerieToObservedRichnessSerie(
+          action.payload.areaSerie,
+        ),
+        currentTaxonomicGroup: action.payload.taxonomicGroup,
+      };
+
+    case ObservedRichnessUpdated.SHOW_INFO:
+      return {
+        ...state,
+        isInfoOpen:
+          action.forceState !== undefined
+            ? action.forceState
+            : !state.isInfoOpen,
+      };
+
+    default:
+      console.warn("Unknown requested observedRichnessReducer action");
+      return state;
+  }
+}
+
+const observedRichnessInitialState: ObservedRichnessState = {
+  isLoading: true,
+  isInfoOpen: false,
+  errors: [],
+  taxonomicGroupsAvailable: [],
+  currentTaxonomicGroup: "all",
+  nationalTableData: null,
+  areaTableData: null,
+  areaSerie: null,
+  texts: { info: "", cons: "", meto: "", quote: "" },
+};
+
+export function ObservedRichness() {
+  const [richness, updateRichness] = useReducer(
+    observedRichnessReducer,
+    observedRichnessInitialState,
+  );
+
+  const { areaType, areaId } = useSearchStateCTX();
+  const searchMapDispatch = useSearchDispatchCTX();
+
+  const controllerRef = useRef(new ObservedRichnessController());
+
+  if (areaType && areaId) {
+    controllerRef.current.setArea(areaType.id, areaId.id);
+  }
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = controllerRef.current;
+
+    updateRichness({ type: ObservedRichnessUpdated.LOADING, isLoading: true });
+    searchMapDispatch({
+      type: SearchUpdated.LOADING_LAYER,
+      loadingLayer: true,
+    });
+
+    Promise.all([
+      controller.getORichnessTaxonomicGroups(),
+      getMetricTexts("statsOnSpecies"),
+      areaType?.id !== "custom" ? controller.getAreaData() : null,
+      controller.getNationalData(),
+      controller.getRichnessSerie(),
+      controller.getRichnessLayer(),
+    ])
+      .then(
+        ([
+          groups,
+          texts,
+          areaData,
+          nationalData,
+          areaSerie,
+          areaRichnessMap,
+        ]) => {
+          if (!isMounted) {
+            return;
+          }
+
+          updateRichness({
+            type: ObservedRichnessUpdated.STARTING_INFO,
+            payload: {
+              taxonomicGroupsAvailable: groups,
+              texts: texts,
+              areaData: areaData,
+              nationalData: nationalData,
+              areaSerie: areaSerie,
+            },
+          });
+
+          const gradientMaxValue = areaSerie.bin_edges.at(-1);
+
+          searchMapDispatch({
+            type: SearchUpdated.RASTER_LAYERS,
+            payload: {
+              rasterLayers: areaRichnessMap,
+              mapTitle: {
+                name: `Riqueza observada en ${areaId?.name}`,
+                ...(gradientMaxValue !== undefined
+                  ? {
+                      gradientData: {
+                        from: 1,
+                        to: gradientMaxValue,
+                        colors: observedRichnessGradientColors,
+                      },
+                    }
+                  : {}),
+              },
+            },
+          });
+        },
+      )
+      .catch((err) => {
+        if (!isMounted) {
+          return;
+        }
+
+        updateRichness({
+          type: ObservedRichnessUpdated.ERRORS,
+          payload: {
+            user: ["No fue posible obtener los datos del indicador"],
+            console: err,
+          },
+        });
+
+        searchMapDispatch({
+          type: SearchUpdated.LAYER_ERROR,
+          layerError: err instanceof Error ? err.message : String(err),
+        });
+      });
+
+    return () => {
+      isMounted = false;
+      controller.cancelActiveRequests();
+    };
+  }, [areaType?.id, searchMapDispatch, areaId?.name]);
+
+  const handleTaxonomicGroupChange = useCallback(
+    (taxonomicGroup: string) => {
+      const controller = controllerRef.current;
+      const groupFilter =
+        taxonomicGroup === "all" || taxonomicGroup === ""
+          ? undefined
+          : taxonomicGroup;
+
+      updateRichness({
+        type: ObservedRichnessUpdated.LOADING,
+        isLoading: true,
+      });
+      searchMapDispatch({
+        type: SearchUpdated.LOADING_LAYER,
+        loadingLayer: true,
+      });
+
+      Promise.all([
+        areaType?.id !== "custom" ? controller.getAreaData(groupFilter) : null,
+        controller.getNationalData(groupFilter),
+        controller.getRichnessSerie(groupFilter),
+        controller.getRichnessLayer(groupFilter),
+      ])
+        .then(([current, context, graphData, areaRichnessMap]) => {
+          updateRichness({
+            type: ObservedRichnessUpdated.TAXONOMIC_GROUP,
+            payload: {
+              taxonomicGroup: taxonomicGroup,
+              nationalData: context,
+              areaData: current,
+              areaSerie: graphData,
+            },
+          });
+
+          const gradientMaxValue = graphData.bin_edges.at(-1);
+
+          searchMapDispatch({
+            type: SearchUpdated.RASTER_LAYERS,
+            payload: {
+              rasterLayers: areaRichnessMap,
+              mapTitle: {
+                name: groupFilter
+                  ? `Riqueza observada de ${groupFilter} en ${areaId?.name}`
+                  : `Riqueza observada en ${areaId?.name}`,
+                ...(gradientMaxValue !== undefined
+                  ? {
+                      gradientData: {
+                        from: 1,
+                        to: gradientMaxValue,
+                        colors: observedRichnessGradientColors,
+                      },
+                    }
+                  : {}),
+              },
+            },
+          });
+        })
+        .catch((err) => {
+          updateRichness({
+            type: ObservedRichnessUpdated.ERRORS,
+            payload: {
+              user: ["No fue posible obtener los datos del indicador"],
+              console: err,
+            },
+          });
+        });
+    },
+    [areaType?.id, areaId?.name, searchMapDispatch],
+  );
+
+  const graphSerieTicks = useMemo(() => {
+    if (!richness.areaSerie) {
+      return [];
+    }
+    const data = richness.areaSerie.data;
+    if (data.length === 0) {
+      return [];
+    }
+    return generateLinearTicks(0, data[data.length - 1].x, 10);
+  }, [richness.areaSerie]);
+
+  return (
+    <div className="graphcontainer pt6">
+      <h4>Número de especies</h4>
+      <IconTooltip title="Interpretación">
+        <InfoIcon
+          className={`metrics-info-icon${richness.isInfoOpen ? " activeBox" : ""}`}
+          onClick={() =>
+            updateRichness({
+              type: ObservedRichnessUpdated.SHOW_INFO,
+            })
+          }
+        />
+      </IconTooltip>
+
+      {richness.isInfoOpen && (
+        <ShortInfo
+          description={`<p>${richness.texts.info}</p>`}
+          className="graphinfo2"
+          collapseButton={false}
+        />
+      )}
+
+      {Object.keys(richness.taxonomicGroupsAvailable).length > 1 && (
+        <Select
+          value={richness.currentTaxonomicGroup}
+          onValueChange={(val) => handleTaxonomicGroupChange(val)}
+          disabled={richness.isLoading}
+        >
+          <SelectTrigger id="gap-species-group" className="border-grey">
+            <SelectValue placeholder="Grupo Taxonómico" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos los grupos</SelectItem>
+            {richness.taxonomicGroupsAvailable.map((group) => (
+              <SelectItem key={`selectGroup-${group}`} value={group}>
+                {speciesGroupLabels[group] ?? group}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
+
+      <ErrorsList errorItems={richness.errors} />
+
+      <div className="">
+        {richness.isLoading ? (
+          <div className="errorData">Cargando datos...</div>
+        ) : (
+          <>
+            <ObservedRichnessTable data={richness.areaTableData} />
+            <ObservedRichnessTable
+              data={richness.nationalTableData}
+              isReference={true}
+            />
+          </>
+        )}
+      </div>
+
+      {richness.areaSerie && (
+        <div className="graphcontainer pt6">
+          <h4 className="text-balance">
+            Número de especies registradas por km2 (LMSC)
+          </h4>
+          <div className="w-full aspect-video">
+            {richness.isLoading ? (
+              <div className="errorData">Cargando datos...</div>
+            ) : (
+              <ResponsiveLine
+                data={[richness.areaSerie]}
+                margin={{ top: 30, right: 20, bottom: 60, left: 60 }}
+                xScale={{
+                  type: "linear",
+                  min: 1,
+                  max: graphSerieTicks[graphSerieTicks.length - 1] + 1,
+                  nice: false,
+                }}
+                yScale={{ type: "linear", min: 0, max: "auto" }}
+                curve="monotoneX"
+                gridXValues={graphSerieTicks}
+                axisBottom={{
+                  legend: "Número de especies registradas (LMSC)",
+                  legendOffset: 36,
+                  legendPosition: "middle" as const,
+                  tickValues: graphSerieTicks,
+                }}
+                colors={observedRichnessGradientColors}
+                gridYValues={5}
+                axisLeft={{
+                  tickValues: 5,
+                  legend: "Frecuencia de unidades de 1km² (LMSC)",
+                  legendOffset: -50,
+                  format: (value: number) => `${value / 1000}k`,
+                }}
+                pointSize={7}
+                pointColor="#ffffff"
+                pointBorderWidth={2}
+                pointBorderColor={{ from: "seriesColor" }}
+                pointLabelYOffset={-12}
+                enableTouchCrosshair={true}
+                useMesh={true}
+                tooltip={(p) => (
+                  <div className="bg-background rounded-lg text-grey-dark px-4 py-2 text-sm text-nowrap shadow-2xl flex flex-col">
+                    <span
+                      style={{ color: p.point.seriesColor }}
+                      className="font-semibold"
+                    >
+                      {p.point.data.yFormatted}
+                    </span>
+                    <span>Especies</span>
+                  </div>
+                )}
+              />
+            )}
+          </div>
+        </div>
+      )}
+
+      <TextBoxes
+        consText={richness.texts.cons}
+        metoText={richness.texts.meto}
+        quoteText={richness.texts.quote}
+        downloadData={controllerRef.current.getDownloadData({
+          current: richness.areaTableData,
+          national: richness.nationalTableData,
+        })}
+        downloadName={`cifrasRiquezaObservada_${areaType?.label}_${areaId?.name}_vs_contextoPaís.csv`}
+        isInfoOpen={richness.isInfoOpen}
+        toggleInfo={() =>
+          updateRichness({
+            type: ObservedRichnessUpdated.SHOW_INFO,
+          })
+        }
+      />
+    </div>
+  );
+}
+
 function ObservedRichnessTable({
   data,
-  isNational = false,
+  isReference,
 }: {
   data: ObservedRichnessDataType | null;
-  isNational?: boolean;
+  isReference?: boolean;
 }) {
   const { areaId } = useSearchStateCTX();
 
@@ -201,14 +529,14 @@ function ObservedRichnessTable({
     if (!data) {
       return [];
     }
-    return buildSmallStackedBarData(data);
+    return transformDataToSmallStackedBarData(data);
   }, [data]);
 
   return !data ? null : (
     <div className="mb-4 border-b border-grey">
       <address className="flex gap-1 items-center text-sm text-grey-dark font-normal not-italic uppercase my-2">
         <MapPin size={16} />
-        {isNational ? "Colombia" : areaId?.name}
+        {isReference ? "Colombia" : areaId?.name}
       </address>
 
       <ul
@@ -222,7 +550,7 @@ function ObservedRichnessTable({
         <li
           className={cn(
             "w-full",
-            isNational ? "flex gap-2 justify-between" : "",
+            isReference ? "flex gap-2 justify-between" : "",
           )}
           title={"Total especies observadas"}
         >
@@ -230,7 +558,7 @@ function ObservedRichnessTable({
             <LeafIcon size={14} /> Total especies observadas
           </span>
           <span
-            className={cn("font-black", isNational ? "text-lg" : "text-4xl")}
+            className={cn("font-black", isReference ? "text-lg" : "text-4xl")}
           >
             {data.total.toLocaleString(LOCALE)}
           </span>
@@ -240,7 +568,7 @@ function ObservedRichnessTable({
             <MapPin size={14} /> Endémicas
           </span>
           <span
-            className={cn("font-black", isNational ? "text-base" : "text-xl")}
+            className={cn("font-black", isReference ? "text-base" : "text-xl")}
           >
             {data.endemic}
           </span>
@@ -250,7 +578,7 @@ function ObservedRichnessTable({
             <CircleAlert size={14} /> Amenazadas
           </span>
           <span
-            className={cn("font-black", isNational ? "text-base" : "text-xl")}
+            className={cn("font-black", isReference ? "text-base" : "text-xl")}
           >
             {data.threatenedTotal}
           </span>
@@ -260,7 +588,7 @@ function ObservedRichnessTable({
             <CircleAlert size={14} /> Endémicas amenazadas
           </span>
           <span
-            className={cn("font-black", isNational ? "text-base" : "text-xl")}
+            className={cn("font-black", isReference ? "text-base" : "text-xl")}
           >
             {data.endemicThreatened}
           </span>
@@ -270,7 +598,7 @@ function ObservedRichnessTable({
             <LayersIcon size={14} /> Invasoras
           </span>
           <span
-            className={cn("font-black", isNational ? "text-base" : "text-xl")}
+            className={cn("font-black", isReference ? "text-base" : "text-xl")}
           >
             {data.invasive}
           </span>
@@ -291,7 +619,7 @@ function ObservedRichnessTable({
             data={stackedData}
             height={24}
             units="especies"
-            colors={(key) => customColorMap[key] ?? "#FF0000"}
+            colors={(key) => threatenedSpeciesCustomColorMap[key] ?? "#FF0000"}
             padding={0}
             margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
             forceFullPercent={true}
@@ -300,7 +628,7 @@ function ObservedRichnessTable({
 
         <GraphLegend
           keys={OBSERVED_RICHNESS_GRAPH_KEYS}
-          customColorMap={customColorMap}
+          customColorMap={threatenedSpeciesCustomColorMap}
           renderValues={data.barValues}
           className="justify-start px-0 pt-1 text-[#888]!"
         />
