@@ -6,7 +6,7 @@ import { ResponsiveBar } from "@nivo/bar";
 import { hashStringToRange } from "@utils/format";
 import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
 
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
+import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
 import { type BarsData } from "pages/monitoring/types/observations";
 import {
   getContrastColor,
@@ -17,7 +17,7 @@ import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/indicato
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
 
 export function RelativeSpeciesUseByGroup() {
-  const { currentIndicator } = useIndicatorsCTX();
+  const { currentObservation: currentIndicator } = useObservationsCTX();
   const data = currentIndicator?.cleanData as BarsData;
 
   const groupsList = useMemo(() => [...(data.keys.parent ?? [])], [data]);

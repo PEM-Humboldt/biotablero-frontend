@@ -9,7 +9,7 @@ import { cn } from "@ui/shadCN/lib/utils";
 import { hashStringToRange } from "@utils/format";
 import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
 
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
+import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
 import { ConfidenceIntervalLayer } from "pages/monitoring/outlets/initiatives/indicators/card/utils/ConfidenceIntervalLayer";
 import type { LineData } from "pages/monitoring/types/observations";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
@@ -22,7 +22,7 @@ const customColorMap: Record<string, string> = {
 };
 
 export function DetectionProbabilityWithoutCovariables() {
-  const { currentIndicator } = useIndicatorsCTX();
+  const { currentObservation: currentIndicator } = useObservationsCTX();
   const [selectedSpecie, setSelectedSpecie] = useState<string>("");
 
   const speciesOptions = useMemo(

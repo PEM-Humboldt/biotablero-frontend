@@ -6,7 +6,7 @@ import { GRAPHS_CONTRAST_COLOR_PALETTE } from "@config/color";
 import { GRAPH_ANIMATION_CONFIG } from "@config/global";
 import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
 
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
+import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
 import { ConfidenceIntervalLayer } from "pages/monitoring/outlets/initiatives/indicators/card/utils/ConfidenceIntervalLayer";
 import type { LineData } from "pages/monitoring/types/observations";
 import { getSeriesColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
@@ -15,7 +15,7 @@ import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/indicato
 import { GraphLegend } from "@ui/GraphLegend";
 
 export function SpeciesDiversity() {
-  const { currentIndicator } = useIndicatorsCTX();
+  const { currentObservation: currentIndicator } = useObservationsCTX();
 
   const [selectedSpecie, setSelectedSpecie] = useState("");
   const [selectedIndex, setSelectedIndex] = useState("");

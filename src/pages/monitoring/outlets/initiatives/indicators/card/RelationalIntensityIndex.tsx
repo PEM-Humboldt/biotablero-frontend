@@ -6,14 +6,14 @@ import { GRAPH_ANIMATION_CONFIG } from "@config/global";
 import { INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY } from "@config/monitoring";
 import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
 
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
+import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
 import type { BarsData } from "pages/monitoring/types/observations";
 import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphInfoSelector";
 import { getContrastColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
 
 export function RelationalIntensityIndex() {
-  const { currentIndicator } = useIndicatorsCTX();
+  const { currentObservation: currentIndicator } = useObservationsCTX();
 
   const [selectedDates, setSelectedDates] = useState<string[]>([]);
 

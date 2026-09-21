@@ -15,13 +15,13 @@ import {
   InputGroupInput,
 } from "@ui/shadCN/component/input-group";
 
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
+import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
 import { IndicatorSmallCard } from "pages/monitoring/outlets/initiatives/indicators/search/indicatorSmallCard";
 import { fuzzySearch } from "pages/monitoring/utils/search";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
 
 export function Search() {
-  const { indicators: allInitiativeIndicators } = useIndicatorsCTX();
+  const { observations: allInitiativeIndicators } = useObservationsCTX();
   const [lookFor, setLookFor] = useState("");
   const [biologicalGroup, setBiologicalGroup] = useState("");
   const [ecosystem, setEcosystem] = useState("");

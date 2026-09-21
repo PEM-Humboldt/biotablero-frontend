@@ -8,14 +8,14 @@ import { cn } from "@ui/shadCN/lib/utils";
 import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
 import { hashStringToRange } from "@utils/format";
 
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
+import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
 import type { LineData } from "pages/monitoring/types/observations";
 import { getSeriesColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
 import { GraphLegend } from "@ui/GraphLegend";
 
 export function OccupationSpecies() {
-  const { currentIndicator } = useIndicatorsCTX();
+  const { currentObservation: currentIndicator } = useObservationsCTX();
   const [selectedSpecies, setSelectedSpecies] = useState<string[]>([]);
 
   const speciesOptions = useMemo(

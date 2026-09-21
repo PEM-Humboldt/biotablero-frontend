@@ -26,10 +26,10 @@ import type {
 } from "pages/monitoring/types/odataResponse";
 import { getColombianDepartments } from "pages/monitoring/utils/manageLocation";
 import { uiText } from "pages/monitoring/outlets/observationsSearch/layout/uiText";
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
+import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
 
 export function SearchInput() {
-  const { setSearchIndicators } = useIndicatorsCTX();
+  const { setSearchObservations: setSearchIndicators } = useObservationsCTX();
   const debouncedSearch = useRef(debouncer(setSearchIndicators)).current;
 
   const [searchObservation, setSearchObservation] = useState("");
@@ -242,7 +242,7 @@ export function SearchInput() {
                     )}
                     {MONITORING_YEARS_AVAILABLE.map((year) => (
                       <SelectItem
-                        key={`indicatorYear_${year}`}
+                        key={`observationYear_${year}`}
                         value={String(year)}
                       >
                         {year}

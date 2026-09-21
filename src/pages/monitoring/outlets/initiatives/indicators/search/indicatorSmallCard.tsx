@@ -7,7 +7,7 @@ import { Button } from "@ui/shadCN/component/button";
 import { LOCALE } from "@config/global";
 import { TAG_COLORS } from "@config/monitoring";
 
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
+import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
 import { TagsRender } from "pages/monitoring/ui/TagsRender";
 import type { ObservationMetadata } from "pages/monitoring/types/observations";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
@@ -18,7 +18,7 @@ export function IndicatorSmallCard({
 }: {
   indicator: ObservationMetadata;
 }) {
-  const { currentIndicator } = useIndicatorsCTX();
+  const { currentObservation: currentIndicator } = useObservationsCTX();
   const isCurrent =
     currentIndicator && indicator.id === currentIndicator.observationId;
 

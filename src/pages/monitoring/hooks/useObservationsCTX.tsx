@@ -1,22 +1,22 @@
 import {
   createContext,
-  useState,
-  type ReactNode,
-  useEffect,
-  useContext,
-  useRef,
-  type SetStateAction,
   type Dispatch,
+  type ReactNode,
+  type SetStateAction,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
 } from "react";
 import { useNavigate, useParams } from "react-router";
 
 import type { ODataParams } from "@appTypes/odata";
 
 import {
+  ObservationMetric,
   type CleanDataType,
   type ObservationData,
   type ObservationMetadata,
-  ObservationMetric,
 } from "pages/monitoring/types/observations";
 import {
   getObservationData,
@@ -25,26 +25,28 @@ import {
   getObservationsByInitiative,
 } from "pages/monitoring/api/services/observations";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import { INDICATORS_PER_PAGE } from "@config/monitoring";
+import { OBSERVATIONS_PER_PAGE } from "@config/monitoring";
 import {
   dataTransformBarGraph,
   dataTransformLineGraph,
 } from "pages/monitoring/utils/indicatorsTransformers";
 
 type ObservationContextValues = {
-  indicators: ObservationMetadata[];
+  observations: ObservationMetadata[];
   isLoading: boolean;
   errors: string[];
-  currentIndicator:
+  currentObservation:
     | (ObservationMetadata & ObservationData & CleanDataType)
     | null;
-  setSearchIndicators: Dispatch<SetStateAction<ODataParams>>;
+  setSearchObservations: Dispatch<SetStateAction<ODataParams>>;
   currentPage: number;
   setCurrentPage: (page: number) => void;
-  indicatorsAmount: number;
+  observationsAmount: number;
 };
 
-const IndicatorsContext = createContext<ObservationContextValues | null>(null);
+const ObservationsContext = createContext<ObservationContextValues | null>(
+  null,
+);
 
 const dataTransformFunction = {
   [ObservationMetric.OCCUPATION_SPECIES]: dataTransformLineGraph,
@@ -56,30 +58,30 @@ const dataTransformFunction = {
   [ObservationMetric.COLLECTIVE_ACTION_PARTICIPATION]: dataTransformBarGraph,
 };
 
-export function IndicatorsCTX({ children }: { children: ReactNode }) {
-  const { initiativeId, detailItem, indicatorId } = useParams();
+export function ObservationsCTX({ children }: { children: ReactNode }) {
+  const { initiativeId, detailItem } = useParams();
 
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [searchParams, setSearchParams] = useState<ODataParams>({
-    top: INDICATORS_PER_PAGE,
+    top: OBSERVATIONS_PER_PAGE,
   });
-  const [indicators, setIndicators] = useState<ObservationMetadata[]>([]);
-  const [currentIndicator, setCurrentIndicator] = useState<
+  const [observations, setObservations] = useState<ObservationMetadata[]>([]);
+  const [currentObservation, setCurrentObservation] = useState<
     (ObservationMetadata & ObservationData & CleanDataType) | null
   >(null);
   const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const indicatorsAmount = useRef(0);
+  const observationsAmount = useRef(0);
   const prevSearchParamsRef = useRef(searchParams);
 
-  const currentIndicatorId = detailItem || indicatorId;
+  const currentObservationId = detailItem;
   const isNewFilter = searchParams !== prevSearchParamsRef.current;
   const resolvedPage = isNewFilter ? 1 : currentPage;
 
   useEffect(() => {
-    const fetchIndicators = async () => {
+    const fetchObservations = async () => {
       setIsLoading(true);
       setErrors([]);
 
@@ -88,49 +90,49 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
         setIsLoading(false);
         if (isMonitoringAPIError(res)) {
           setErrors(res.data.map((err) => err.msg));
-          setIndicators([]);
+          setObservations([]);
           return;
         }
 
-        setIndicators(res.toSorted((a, b) => b.id - a.id));
-        indicatorsAmount.current = res.length;
+        setObservations(res.toSorted((a, b) => b.id - a.id));
+        observationsAmount.current = res.length;
       } else {
-        const skip = (resolvedPage - 1) * INDICATORS_PER_PAGE;
+        const skip = (resolvedPage - 1) * OBSERVATIONS_PER_PAGE;
         const res = await getObservations({
           ...searchParams,
           skip,
-          top: INDICATORS_PER_PAGE,
+          top: OBSERVATIONS_PER_PAGE,
         });
         setIsLoading(false);
         if (isMonitoringAPIError(res)) {
           setErrors(res.data.map((err) => err.msg));
-          setIndicators([]);
+          setObservations([]);
           return;
         }
 
-        setIndicators(res.value);
-        indicatorsAmount.current = res["@odata.count"];
+        setObservations(res.value);
+        observationsAmount.current = res["@odata.count"];
       }
     };
 
     prevSearchParamsRef.current = searchParams;
-    void fetchIndicators();
+    void fetchObservations();
   }, [searchParams, resolvedPage, initiativeId]);
 
   useEffect(() => {
-    if (!currentIndicatorId) {
-      setCurrentIndicator(null);
+    if (!currentObservationId) {
+      setCurrentObservation(null);
       return;
     }
 
-    const fetchIndicatorData = async () => {
+    const fetchObservationData = async () => {
       setIsLoading(true);
       setErrors([]);
 
-      const data = await getObservationData(Number(currentIndicatorId));
+      const data = await getObservationData(Number(currentObservationId));
       if (isMonitoringAPIError(data)) {
         setIsLoading(false);
-        setCurrentIndicator(null);
+        setCurrentObservation(null);
         setErrors(data.data.map((err) => err.msg));
         return;
       }
@@ -138,52 +140,54 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
       const metadata = await getObservationMetadata(data.observationId);
       if (isMonitoringAPIError(metadata)) {
         setIsLoading(false);
-        setCurrentIndicator(null);
+        setCurrentObservation(null);
         setErrors(metadata.data.map((err) => err.msg));
         return;
       }
 
       if (initiativeId && Number(initiativeId) !== metadata.initiativeId) {
         void navigate(
-          `/Monitoreo/Iniciativas/${metadata.initiativeId}/Indicadores/${currentIndicatorId}`,
+          `/Monitoreo/Iniciativas/${metadata.initiativeId}/Indicadores/${currentObservationId}`,
         );
         return;
       }
 
       setIsLoading(false);
-      setCurrentIndicator({
+      setCurrentObservation({
         ...metadata,
         ...data,
         cleanData: dataTransformFunction[metadata.topic.id](data),
       });
     };
 
-    void fetchIndicatorData();
-  }, [currentIndicatorId, navigate, initiativeId]);
+    void fetchObservationData();
+  }, [currentObservationId, navigate, initiativeId]);
 
   return (
-    <IndicatorsContext.Provider
+    <ObservationsContext.Provider
       value={{
-        indicators,
+        observations,
         isLoading,
         errors,
-        setSearchIndicators: setSearchParams,
-        currentIndicator,
+        setSearchObservations: setSearchParams,
+        currentObservation: currentObservation,
         currentPage,
         setCurrentPage,
-        indicatorsAmount: indicatorsAmount.current,
+        observationsAmount: observationsAmount.current,
       }}
     >
       {children}
-    </IndicatorsContext.Provider>
+    </ObservationsContext.Provider>
   );
 }
 
-export function useIndicatorsCTX() {
-  const context = useContext(IndicatorsContext);
+export function useObservationsCTX() {
+  const context = useContext(ObservationsContext);
 
   if (!context) {
-    throw new Error("useIndicatorsCTX must be used within the IndicatorsCTX");
+    throw new Error(
+      "useObservationsCTX must be used within the ObservationsCTX",
+    );
   }
 
   return context;
