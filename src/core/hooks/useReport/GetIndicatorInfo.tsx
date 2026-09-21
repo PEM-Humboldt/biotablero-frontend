@@ -3,7 +3,7 @@ import { useEffect, type ReactElement } from "react";
 import { useReport } from "@hooks/useReport";
 import type { IndicatorSection, IndicatorTag } from "@appTypes/report";
 
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
+import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
 
 export function GetIndicatorInfo({
   graphId,
@@ -18,7 +18,7 @@ export function GetIndicatorInfo({
   singleMap?: boolean;
   children: ReactElement;
 }) {
-  const { currentIndicator } = useIndicatorsCTX();
+  const { currentObservation: currentIndicator } = useObservationsCTX();
   const { setCurrentSectionPool } = useReport();
 
   useEffect(() => {

@@ -9,15 +9,19 @@ import {
   TabsContent,
 } from "@ui/shadCN/component/tabs";
 
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
+import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
 import type { ObservationMetadata } from "pages/monitoring/types/observations";
 import { GraphSelector } from "pages/monitoring/outlets/initiatives/indicators/card/GraphSelector";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
 import { AddMCIndicatorToReport } from "@ui/AddMCIndicatorToReport";
 
 export function Card() {
-  const { indicators, currentIndicator, isLoading, errors } =
-    useIndicatorsCTX();
+  const {
+    observations: indicators,
+    currentObservation: currentIndicator,
+    isLoading,
+    errors,
+  } = useObservationsCTX();
 
   const indicatorTabs = uiText.indicatorCard.tabs.reduce<
     { key: string; label: string; icon: LucideIcon; text: string }[]

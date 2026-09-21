@@ -5,7 +5,7 @@ import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
 import { GRAPH_ANIMATION_CONFIG } from "@config/global";
 import { ResponsiveBar } from "@nivo/bar";
 
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
+import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
 import type { BarsData } from "pages/monitoring/types/observations";
 import {
   getContrastColor,
@@ -27,7 +27,7 @@ const customColorMap: Record<string, string> = {
 };
 
 export function CollectiveActionParticipation() {
-  const { currentIndicator } = useIndicatorsCTX();
+  const { currentObservation: currentIndicator } = useObservationsCTX();
   const data = currentIndicator?.cleanData as BarsData;
 
   const { groups, keysByGroup, dataByDateByGroup } = useMemo(() => {

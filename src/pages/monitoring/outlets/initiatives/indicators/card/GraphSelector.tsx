@@ -1,4 +1,4 @@
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
+import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
 import { ObservationMetric } from "pages/monitoring/types/observations";
 import { OccupationSpecies } from "pages/monitoring/outlets/initiatives/indicators/card/OccupationSpecies";
 import { DetectionProbabilityWithoutCovariables } from "pages/monitoring/outlets/initiatives/indicators/card/DetectionProbabilityWithoutCovariables";
@@ -11,7 +11,7 @@ import { useReport } from "@hooks/useReport";
 import { useEffect } from "react";
 
 export function GraphSelector() {
-  const { currentIndicator } = useIndicatorsCTX();
+  const { currentObservation: currentIndicator } = useObservationsCTX();
   const { initiativeInfo } = useInitiativeCTX();
   const { reportContextResolver } = useReport();
 
