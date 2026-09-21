@@ -1,5 +1,5 @@
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
-import { IndicatorType } from "pages/monitoring/types/indicators";
+import { ObservationMetric } from "pages/monitoring/types/observations";
 import { OccupationSpecies } from "pages/monitoring/outlets/initiatives/indicators/card/OccupationSpecies";
 import { DetectionProbabilityWithoutCovariables } from "pages/monitoring/outlets/initiatives/indicators/card/DetectionProbabilityWithoutCovariables";
 import { SpeciesDiversity } from "pages/monitoring/outlets/initiatives/indicators/card/SpeciesDiversity";
@@ -26,23 +26,23 @@ export function GraphSelector() {
     return null;
   }
 
-  switch (currentIndicator.type.id) {
-    case IndicatorType.OCCUPATION_SPECIES:
+  switch (currentIndicator.topic.id) {
+    case ObservationMetric.OCCUPATION_SPECIES:
       return <OccupationSpecies />;
 
-    case IndicatorType.DETECTION_PROBABILITY_WITHOUT_COVARIABLES:
+    case ObservationMetric.DETECTION_PROBABILITY_WITHOUT_COVARIABLES:
       return <DetectionProbabilityWithoutCovariables />;
 
-    case IndicatorType.SPECIES_DIVERSITY:
+    case ObservationMetric.SPECIES_DIVERSITY:
       return <SpeciesDiversity />;
 
-    case IndicatorType.RELATIVE_SPECIES_USE_BY_GROUP:
+    case ObservationMetric.RELATIVE_SPECIES_USE_BY_GROUP:
       return <RelativeSpeciesUseByGroup />;
 
-    case IndicatorType.RELATIONAL_INTENSITY_INDEX:
+    case ObservationMetric.RELATIONAL_INTENSITY_INDEX:
       return <RelationalIntensityIndex />;
 
-    case IndicatorType.COLLECTIVE_ACTION_PARTICIPATION:
+    case ObservationMetric.COLLECTIVE_ACTION_PARTICIPATION:
       return <CollectiveActionParticipation />;
   }
 }

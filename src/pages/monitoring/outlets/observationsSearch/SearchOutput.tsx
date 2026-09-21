@@ -19,7 +19,7 @@ import { TablePager } from "@composites/TablePager";
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { TagsRender } from "pages/monitoring/ui/TagsRender";
 import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
-import { uiText } from "./layout/uiText";
+import { uiText } from "pages/monitoring/outlets/observationsSearch/layout/uiText";
 
 // TODO: Actualizar el componente para cuando Cesar haya realizado los ajustes
 // al back y que el objeto del odata contenga Locations e initiativeName
@@ -130,7 +130,7 @@ export function SearchOutput() {
             >
               <div className="relative mx-2 p-4">
                 <div className="pt-8">
-                  <h4 className="text-xl m-0">{indicator.type.name}</h4>
+                  <h4 className="text-xl m-0">{indicator.topic.name}</h4>
                 </div>
 
                 <time

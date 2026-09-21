@@ -15,7 +15,7 @@ import { InitiativesAdmin } from "pages/monitoring/outlets/InitiativesAdmin";
 import { MyProfile } from "pages/monitoring/outlets/MyProfile";
 import { TagsAdmin } from "pages/monitoring/outlets/TagsAdmin";
 import { Resources as MonitoringResources } from "pages/monitoring/outlets/Resources";
-import { IndicatorsSearch } from "pages/monitoring/outlets/IndicatorsSearch";
+import { ObservationsSearch } from "pages/monitoring/outlets/ObservationsSearch";
 import { Manager as ResourcesManager } from "pages/monitoring/outlets/resources/Manager";
 import { Help } from "pages/monitoring/outlets/Help";
 import { ToS } from "pages/TOS";
@@ -65,7 +65,7 @@ export const routes = createBrowserRouter([
           },
           {
             path: "Indicadores",
-            Component: IndicatorsSearch,
+            Component: ObservationsSearch,
           },
           {
             path: "Recursos",

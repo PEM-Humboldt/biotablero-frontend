@@ -14,16 +14,16 @@ import type { ODataParams } from "@appTypes/odata";
 
 import {
   type CleanDataType,
-  type IndicatorData,
-  type IndicatorMetadata,
-  IndicatorType,
-} from "pages/monitoring/types/indicators";
+  type ObservationData,
+  type ObservationMetadata,
+  ObservationMetric,
+} from "pages/monitoring/types/observations";
 import {
-  getIndicatorData,
-  getIndicatorMetadata,
-  getIndicators,
-  getIndicatorsByInitiative,
-} from "pages/monitoring/api/services/indicators";
+  getObservationData,
+  getObservationMetadata,
+  getObservations,
+  getObservationsByInitiative,
+} from "pages/monitoring/api/services/observations";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { INDICATORS_PER_PAGE } from "@config/monitoring";
 import {
@@ -31,27 +31,29 @@ import {
   dataTransformLineGraph,
 } from "pages/monitoring/utils/indicatorsTransformers";
 
-type IndicatorsContextValues = {
-  indicators: IndicatorMetadata[];
+type ObservationContextValues = {
+  indicators: ObservationMetadata[];
   isLoading: boolean;
   errors: string[];
-  currentIndicator: (IndicatorMetadata & IndicatorData & CleanDataType) | null;
+  currentIndicator:
+    | (ObservationMetadata & ObservationData & CleanDataType)
+    | null;
   setSearchIndicators: Dispatch<SetStateAction<ODataParams>>;
   currentPage: number;
   setCurrentPage: (page: number) => void;
   indicatorsAmount: number;
 };
 
-const IndicatorsContext = createContext<IndicatorsContextValues | null>(null);
+const IndicatorsContext = createContext<ObservationContextValues | null>(null);
 
 const dataTransformFunction = {
-  [IndicatorType.OCCUPATION_SPECIES]: dataTransformLineGraph,
-  [IndicatorType.DETECTION_PROBABILITY_WITHOUT_COVARIABLES]:
+  [ObservationMetric.OCCUPATION_SPECIES]: dataTransformLineGraph,
+  [ObservationMetric.DETECTION_PROBABILITY_WITHOUT_COVARIABLES]:
     dataTransformLineGraph,
-  [IndicatorType.SPECIES_DIVERSITY]: dataTransformLineGraph,
-  [IndicatorType.RELATIVE_SPECIES_USE_BY_GROUP]: dataTransformBarGraph,
-  [IndicatorType.RELATIONAL_INTENSITY_INDEX]: dataTransformBarGraph,
-  [IndicatorType.COLLECTIVE_ACTION_PARTICIPATION]: dataTransformBarGraph,
+  [ObservationMetric.SPECIES_DIVERSITY]: dataTransformLineGraph,
+  [ObservationMetric.RELATIVE_SPECIES_USE_BY_GROUP]: dataTransformBarGraph,
+  [ObservationMetric.RELATIONAL_INTENSITY_INDEX]: dataTransformBarGraph,
+  [ObservationMetric.COLLECTIVE_ACTION_PARTICIPATION]: dataTransformBarGraph,
 };
 
 export function IndicatorsCTX({ children }: { children: ReactNode }) {
@@ -62,9 +64,9 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
   const [searchParams, setSearchParams] = useState<ODataParams>({
     top: INDICATORS_PER_PAGE,
   });
-  const [indicators, setIndicators] = useState<IndicatorMetadata[]>([]);
+  const [indicators, setIndicators] = useState<ObservationMetadata[]>([]);
   const [currentIndicator, setCurrentIndicator] = useState<
-    (IndicatorMetadata & IndicatorData & CleanDataType) | null
+    (ObservationMetadata & ObservationData & CleanDataType) | null
   >(null);
   const navigate = useNavigate();
 
@@ -82,7 +84,7 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
       setErrors([]);
 
       if (initiativeId) {
-        const res = await getIndicatorsByInitiative(Number(initiativeId));
+        const res = await getObservationsByInitiative(Number(initiativeId));
         setIsLoading(false);
         if (isMonitoringAPIError(res)) {
           setErrors(res.data.map((err) => err.msg));
@@ -94,7 +96,7 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
         indicatorsAmount.current = res.length;
       } else {
         const skip = (resolvedPage - 1) * INDICATORS_PER_PAGE;
-        const res = await getIndicators({
+        const res = await getObservations({
           ...searchParams,
           skip,
           top: INDICATORS_PER_PAGE,
@@ -125,7 +127,7 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
       setIsLoading(true);
       setErrors([]);
 
-      const data = await getIndicatorData(Number(currentIndicatorId));
+      const data = await getObservationData(Number(currentIndicatorId));
       if (isMonitoringAPIError(data)) {
         setIsLoading(false);
         setCurrentIndicator(null);
@@ -133,7 +135,7 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
         return;
       }
 
-      const metadata = await getIndicatorMetadata(data.indicatorId);
+      const metadata = await getObservationMetadata(data.observationId);
       if (isMonitoringAPIError(metadata)) {
         setIsLoading(false);
         setCurrentIndicator(null);
@@ -152,7 +154,7 @@ export function IndicatorsCTX({ children }: { children: ReactNode }) {
       setCurrentIndicator({
         ...metadata,
         ...data,
-        cleanData: dataTransformFunction[metadata.type.id](data),
+        cleanData: dataTransformFunction[metadata.topic.id](data),
       });
     };
 
