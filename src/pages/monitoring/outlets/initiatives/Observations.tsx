@@ -1,9 +1,9 @@
-import { Search } from "pages/monitoring/outlets/initiatives/indicators/Search";
+import { Search } from "pages/monitoring/outlets/initiatives/observations/Search";
 import { ObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
-import { Card } from "pages/monitoring/outlets/initiatives/indicators/Card";
+import { Card } from "pages/monitoring/outlets/initiatives/observations/Card";
 import { ReportCTX } from "@hooks/useReport";
 
-export function Indicators() {
+export function Observations() {
   return (
     <ReportCTX>
       <ObservationsCTX>

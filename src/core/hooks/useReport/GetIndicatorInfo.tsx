@@ -5,7 +5,7 @@ import type { IndicatorSection, IndicatorTag } from "@appTypes/report";
 
 import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
 
-export function GetIndicatorInfo({
+export function GetObservationInfo({
   graphId,
   mapUrl,
   mapElementId,
@@ -18,16 +18,16 @@ export function GetIndicatorInfo({
   singleMap?: boolean;
   children: ReactElement;
 }) {
-  const { currentObservation: currentIndicator } = useObservationsCTX();
+  const { currentObservation } = useObservationsCTX();
   const { setCurrentSectionPool } = useReport();
 
   useEffect(() => {
-    if (!currentIndicator) {
+    if (!currentObservation) {
       setCurrentSectionPool(null);
       return;
     }
 
-    const tags = currentIndicator.tags.reduce<Record<number, IndicatorTag[]>>(
+    const tags = currentObservation.tags.reduce<Record<number, IndicatorTag[]>>(
       (all, current) => {
         const tag = current.tag;
         if (!all[tag.category.id]) {
@@ -45,24 +45,24 @@ export function GetIndicatorInfo({
       {},
     );
 
-    const lastVersion = currentIndicator.versions.at(-1);
-    const { name, topic: type, version } = currentIndicator;
+    const lastVersion = currentObservation.versions.at(-1);
+    const { name, topic: type, version } = currentObservation;
 
     const sectionInfo: Omit<IndicatorSection, "graphs" | "mapUrl"> = {
-      title: currentIndicator.name ?? currentIndicator.topic.name,
-      type: currentIndicator.topic.name,
-      creationDate: currentIndicator.creationDate,
-      lastUpdate: lastVersion?.creationDate ?? currentIndicator.creationDate,
-      version: currentIndicator.version,
+      title: currentObservation.name ?? currentObservation.topic.name,
+      type: currentObservation.topic.name,
+      creationDate: currentObservation.creationDate,
+      lastUpdate: lastVersion?.creationDate ?? currentObservation.creationDate,
+      version: currentObservation.version,
       BiologicalGroupTag: tags[3] ?? [],
       EcosystemTag: tags[4] ?? [],
-      description: currentIndicator.description,
+      description: currentObservation?.description ?? "",
       singleMap,
       card: {
-        methodology: currentIndicator.methodology,
-        interpretation: currentIndicator.interpretation,
-        considerations: currentIndicator.considerations,
-        authorship: currentIndicator.authorship,
+        methodology: currentObservation?.methodology ?? "",
+        interpretation: currentObservation?.interpretation ?? "",
+        considerations: currentObservation?.considerations ?? "",
+        authorship: currentObservation?.authorship ?? "",
       },
     };
 
@@ -73,7 +73,7 @@ export function GetIndicatorInfo({
       sectionInfo,
       mapUrl,
       mapElementId,
-      sectionUrl: `${window.location.origin}/Monitoreo/Iniciativas/${currentIndicator.initiativeId}/Indicadores/${currentIndicator.observationId}`,
+      sectionUrl: `${window.location.origin}/Monitoreo/Iniciativas/${currentObservation.initiativeId}/Indicadores/${currentObservation.observationId}`,
     });
 
     return () => {
@@ -85,7 +85,7 @@ export function GetIndicatorInfo({
     mapElementId,
     mapUrl,
     children,
-    currentIndicator,
+    currentObservation,
     setCurrentSectionPool,
   ]);
 
