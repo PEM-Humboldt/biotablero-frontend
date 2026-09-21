@@ -9,18 +9,18 @@ import { TAG_COLORS } from "@config/monitoring";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { TagsRender } from "pages/monitoring/ui/TagsRender";
-import type { IndicatorMetadata } from "pages/monitoring/types/indicators";
+import type { ObservationMetadata } from "pages/monitoring/types/observations";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
 import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
 
 export function IndicatorSmallCard({
   indicator,
 }: {
-  indicator: IndicatorMetadata;
+  indicator: ObservationMetadata;
 }) {
   const { currentIndicator } = useIndicatorsCTX();
   const isCurrent =
-    currentIndicator && indicator.id === currentIndicator.indicatorId;
+    currentIndicator && indicator.id === currentIndicator.observationId;
 
   const tagsGrouped = (indicator.tags || []).reduce<
     Record<number, { group: string; tags: string[] }>

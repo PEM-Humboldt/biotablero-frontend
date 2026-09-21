@@ -9,7 +9,7 @@ import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
 import { hashStringToRange } from "@utils/format";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
-import type { LineData } from "pages/monitoring/types/indicators";
+import type { LineData } from "pages/monitoring/types/observations";
 import { getSeriesColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
 import { GraphLegend } from "@ui/GraphLegend";

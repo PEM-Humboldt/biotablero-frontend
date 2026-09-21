@@ -22,15 +22,15 @@ import {
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import type { InitiativeByLocation } from "pages/monitoring/types/initiative";
 import { getInitiativeLocations } from "pages/monitoring/api/services/initiatives";
-import type { IndicatorMetadata } from "pages/monitoring/types/indicators";
-import { getIndicatorsByInitiative } from "pages/monitoring/api/services/indicators";
+import type { ObservationMetadata } from "pages/monitoring/types/observations";
+import { getObservationsByInitiative } from "pages/monitoring/api/services/observations";
 import { DataSheetSmallCard } from "pages/monitoring/outlets/initiativesMap/dataSheetAndNavigation/DataSheetSmallCard";
 import { uiText } from "pages/monitoring/outlets/initiativesMap/layout/uiText";
 
 export function CardsAttachment() {
   const { departmentId, initiativeId } = useParams();
   const [initiatives, setInitiatives] = useState<InitiativeByLocation[]>([]);
-  const [indicators, setIndicators] = useState<IndicatorMetadata[]>([]);
+  const [observations, setIndicators] = useState<ObservationMetadata[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [expanded, setExpanded] = useState(true);
@@ -66,7 +66,7 @@ export function CardsAttachment() {
       }
 
       setIsLoading(true);
-      const res = await getIndicatorsByInitiative(Number(initiativeId));
+      const res = await getObservationsByInitiative(Number(initiativeId));
 
       setIsLoading(false);
       if (isMonitoringAPIError(res)) {
@@ -99,7 +99,6 @@ export function CardsAttachment() {
         <LoadingDiv />
       ) : (
         <>
-          <ErrorsList errorItems={errors} />
           <Collapsible open={expanded} onOpenChange={setExpanded}>
             <section>
               <div
@@ -162,6 +161,11 @@ export function CardsAttachment() {
 
               <CollapsibleContent className="data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up overflow-hidden">
                 <div className="bg-grey-light rounded-b-lg p-3 space-y-3 border border-primary/50 h-auto max-h-60 lg:max-h-160 overflow-y-auto scrollbar-custom">
+                  <ErrorsList
+                    errorItems={errors}
+                    className="bg-accent/10 p-2 rounded-lg border border-accent"
+                  />
+
                   {!initiativeId &&
                     initiatives.length > 0 &&
                     initiatives.map((initiative) => {
@@ -204,30 +208,34 @@ export function CardsAttachment() {
                     })}
 
                   {initiativeId &&
-                    indicators.length > 0 &&
-                    indicators.map((indicator) => (
-                      <DataSheetSmallCard
-                        key={`indicatorsSmallCard_${indicator.id}`}
-                        title={indicator.type.name}
-                        tags={indicator.tags.map((t) => t.tag)}
-                        bottonLeftInfo={
-                          indicator.versions[indicator.versions.length - 1]
-                        }
-                        link={{
-                          href: `/Monitoreo/Iniciativas/${indicator.initiativeId}/Indicadores/${indicator.id}`,
-                          icon: ChevronRight,
-                          label:
-                            uiText.cardsAttachment.indicators.gotoBtn.label,
-                          title:
-                            uiText.cardsAttachment.indicators.gotoBtn.title,
-                        }}
-                      />
-                    ))}
+                    observations.length > 0 &&
+                    observations.map((observation) => {
+                      return (
+                        <DataSheetSmallCard
+                          key={`indicatorsSmallCard_${observation.id}`}
+                          title={observation.topic.name}
+                          tags={observation.tags.map((t) => t.tag)}
+                          bottonLeftInfo={
+                            observation.versions[
+                              observation.versions.length - 1
+                            ]
+                          }
+                          link={{
+                            href: `/Monitoreo/Iniciativas/${observation.initiativeId}/Indicadores/${observation.id}`,
+                            icon: ChevronRight,
+                            label:
+                              uiText.cardsAttachment.indicators.gotoBtn.label,
+                            title:
+                              uiText.cardsAttachment.indicators.gotoBtn.title,
+                          }}
+                        />
+                      );
+                    })}
 
                   {(departmentId &&
                     !initiativeId &&
                     initiatives.length === 0) ||
-                    (initiativeId && indicators.length === 0 && (
+                    (initiativeId && observations.length === 0 && (
                       <div className="bg-background border border-primary rounded-lg text-lg font-normal text-center text-primary p-4">
                         {uiText.cardsAttachment.noItems}
                       </div>

@@ -10,7 +10,7 @@ import {
 } from "@ui/shadCN/component/tabs";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
-import type { IndicatorMetadata } from "pages/monitoring/types/indicators";
+import type { ObservationMetadata } from "pages/monitoring/types/observations";
 import { GraphSelector } from "pages/monitoring/outlets/initiatives/indicators/card/GraphSelector";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
 import { AddMCIndicatorToReport } from "@ui/AddMCIndicatorToReport";
@@ -22,7 +22,7 @@ export function Card() {
   const indicatorTabs = uiText.indicatorCard.tabs.reduce<
     { key: string; label: string; icon: LucideIcon; text: string }[]
   >((all, current) => {
-    const value = currentIndicator?.[current.key as keyof IndicatorMetadata];
+    const value = currentIndicator?.[current.key as keyof ObservationMetadata];
 
     if (value && typeof value === "string") {
       all.push({ ...current, text: value });
@@ -52,7 +52,7 @@ export function Card() {
             )}
 
             <h3 className="m-0 flex flex-col flex-wrap flex-1 text-primary-foreground font-normal">
-              <span>{currentIndicator.type.name}</span>
+              <span>{currentIndicator.topic.name}</span>
 
               <span className="text-base italic" title="Etiquetas">
                 {currentIndicator.tags.map((t) => t.tag.name).join(" - ")}
@@ -74,7 +74,7 @@ export function Card() {
           <div className="flex flex-wrap flex-col md:flex-row gap-4 p-4">
             <section className="flex-2 xl:flex-3 w-full h-full bg-background rounded-lg p-2 shadow-2xl">
               <h4 className="sr-only">
-                Gráfica de {currentIndicator.type.name}
+                Gráfica de {currentIndicator.topic.name}
               </h4>
               <GraphSelector />
             </section>

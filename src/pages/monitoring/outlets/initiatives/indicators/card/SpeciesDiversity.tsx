@@ -8,7 +8,7 @@ import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
 
 import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 import { ConfidenceIntervalLayer } from "pages/monitoring/outlets/initiatives/indicators/card/utils/ConfidenceIntervalLayer";
-import type { LineData } from "pages/monitoring/types/indicators";
+import type { LineData } from "pages/monitoring/types/observations";
 import { getSeriesColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
 import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
 import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphInfoSelector";
@@ -46,8 +46,9 @@ export function SpeciesDiversity() {
       return [];
     }
 
+    console.log(currentGroup);
     const uniqueIndex = new Set<string>(
-      currentGroup.values.map((value) => value.measureUnit.name),
+      currentGroup.values.map((value) => value.indicatorType.name),
     );
 
     return [...uniqueIndex];

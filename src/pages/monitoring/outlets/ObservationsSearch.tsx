@@ -1,9 +1,9 @@
 import { PageTitleUpdater } from "@ui/PageTitleUpdater";
-import { SearchInput } from "pages/monitoring/outlets/indicatorsSearch/SearchInput";
-import { SearchOutput } from "pages/monitoring/outlets/indicatorsSearch/SearchOutput";
+import { SearchInput } from "pages/monitoring/outlets/observationsSearch/SearchInput";
+import { SearchOutput } from "pages/monitoring/outlets/observationsSearch/SearchOutput";
 import { IndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
 
-export function IndicatorsSearch() {
+export function ObservationsSearch() {
   return (
     <IndicatorsCTX>
       <main className="w-full h-full bg-grey-form">

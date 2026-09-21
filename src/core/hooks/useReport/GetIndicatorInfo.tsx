@@ -46,11 +46,11 @@ export function GetIndicatorInfo({
     );
 
     const lastVersion = currentIndicator.versions.at(-1);
-    const { name, type, version } = currentIndicator;
+    const { name, topic: type, version } = currentIndicator;
 
     const sectionInfo: Omit<IndicatorSection, "graphs" | "mapUrl"> = {
-      title: currentIndicator.name ?? currentIndicator.type.name,
-      type: currentIndicator.type.name,
+      title: currentIndicator.name ?? currentIndicator.topic.name,
+      type: currentIndicator.topic.name,
       creationDate: currentIndicator.creationDate,
       lastUpdate: lastVersion?.creationDate ?? currentIndicator.creationDate,
       version: currentIndicator.version,
@@ -73,7 +73,7 @@ export function GetIndicatorInfo({
       sectionInfo,
       mapUrl,
       mapElementId,
-      sectionUrl: `${window.location.origin}/Monitoreo/Iniciativas/${currentIndicator.initiativeId}/Indicadores/${currentIndicator.indicatorId}`,
+      sectionUrl: `${window.location.origin}/Monitoreo/Iniciativas/${currentIndicator.initiativeId}/Indicadores/${currentIndicator.observationId}`,
     });
 
     return () => {
