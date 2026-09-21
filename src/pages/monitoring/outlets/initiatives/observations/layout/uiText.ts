@@ -45,9 +45,9 @@ export const uiText = {
     },
   },
 
-  indicatorCard: {
+  observationCard: {
     noSelection: "Selecciona un indicador",
-    noIndicators: "Esta iniciativa todavía no tiene indicadores asociados",
+    noObservations: "Esta iniciativa todavía no tiene indicadores asociados",
     titleBar: {
       tagsTitle: "Etiquetas",
       lastUpdate: (dateString: string) =>

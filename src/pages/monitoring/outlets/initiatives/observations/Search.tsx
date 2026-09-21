@@ -16,19 +16,19 @@ import {
 } from "@ui/shadCN/component/input-group";
 
 import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
-import { IndicatorSmallCard } from "pages/monitoring/outlets/initiatives/indicators/search/indicatorSmallCard";
+import { ObseervationSmallCard } from "pages/monitoring/outlets/initiatives/observations/search/ObservationSmallCard";
 import { fuzzySearch } from "pages/monitoring/utils/search";
-import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
+import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
 
 export function Search() {
-  const { observations: allInitiativeIndicators } = useObservationsCTX();
+  const { observations: allInitiativeObservations } = useObservationsCTX();
   const [lookFor, setLookFor] = useState("");
   const [biologicalGroup, setBiologicalGroup] = useState("");
   const [ecosystem, setEcosystem] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
 
   const {
-    sortedIndicators,
+    sortedObservations,
     presentBiologicalGroups,
     presentEcosystems,
     presentYears,
@@ -37,39 +37,41 @@ export function Search() {
     const ecosystems: Record<number, string> = {};
     const years = new Set<number>();
 
-    const indicatorsWithMaxDate = allInitiativeIndicators.map((indicator) => {
-      let maxTimestamp = 0;
+    const observationsWithMaxDate = allInitiativeObservations.map(
+      (observation) => {
+        let maxTimestamp = 0;
 
-      for (const v of indicator.versions) {
-        const dateObj = new Date(v.creationDate);
-        years.add(dateObj.getFullYear());
+        for (const v of observation.versions) {
+          const dateObj = new Date(v.creationDate);
+          years.add(dateObj.getFullYear());
 
-        const time = dateObj.getTime();
-        if (time > maxTimestamp) {
-          maxTimestamp = time;
+          const time = dateObj.getTime();
+          if (time > maxTimestamp) {
+            maxTimestamp = time;
+          }
         }
-      }
 
-      for (const { tag } of indicator.tags) {
-        if (tag.category.id === 3 && !biologicalGroups[tag.id]) {
-          biologicalGroups[tag.id] = tag.name;
-        } else if (tag.category.id === 4 && !ecosystems[tag.id]) {
-          ecosystems[tag.id] = tag.name;
+        for (const { tag } of observation.tags) {
+          if (tag.category.id === 3 && !biologicalGroups[tag.id]) {
+            biologicalGroups[tag.id] = tag.name;
+          } else if (tag.category.id === 4 && !ecosystems[tag.id]) {
+            ecosystems[tag.id] = tag.name;
+          }
         }
-      }
 
-      return { indicator, maxTimestamp };
-    });
+        return { observation, maxTimestamp };
+      },
+    );
 
-    indicatorsWithMaxDate.sort((a, b) => b.maxTimestamp - a.maxTimestamp);
+    observationsWithMaxDate.sort((a, b) => b.maxTimestamp - a.maxTimestamp);
 
     return {
-      sortedIndicators: indicatorsWithMaxDate.map((i) => i.indicator),
+      sortedObservations: observationsWithMaxDate.map((i) => i.observation),
       presentBiologicalGroups: biologicalGroups,
       presentEcosystems: ecosystems,
       presentYears: years,
     };
-  }, [allInitiativeIndicators]);
+  }, [allInitiativeObservations]);
 
   const sanitizedLookFor = useMemo(
     () =>
@@ -86,9 +88,9 @@ export function Search() {
     Object.keys(presentEcosystems).length && ecosystem !== "";
   const filterByYear = presentYears.size && selectedYear !== "";
 
-  const filteredIndicators = useMemo(() => {
-    return sortedIndicators.filter((indicator) => {
-      const sanitizedName = indicator.name
+  const filteredObservations = useMemo(() => {
+    return sortedObservations.filter((observation) => {
+      const sanitizedName = observation.name
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .toLocaleLowerCase();
@@ -96,13 +98,13 @@ export function Search() {
       return (
         fuzzySearch(sanitizedLookFor, sanitizedName) &&
         (!filterByBiologicalGroups ||
-          indicator.tags.some(
+          observation.tags.some(
             (tag) => tag.tag.id === Number(biologicalGroup),
           )) &&
         (!filterByEcosystem ||
-          indicator.tags.some((tag) => tag.tag.id === Number(ecosystem))) &&
+          observation.tags.some((tag) => tag.tag.id === Number(ecosystem))) &&
         (!filterByYear ||
-          indicator.versions.some(
+          observation.versions.some(
             (version) =>
               new Date(version.creationDate).getFullYear() ===
               Number(selectedYear),
@@ -110,7 +112,7 @@ export function Search() {
       );
     });
   }, [
-    sortedIndicators,
+    sortedObservations,
     sanitizedLookFor,
     filterByBiologicalGroups,
     biologicalGroup,
@@ -127,7 +129,7 @@ export function Search() {
     setSelectedYear("");
   };
 
-  if (allInitiativeIndicators.length === 0) {
+  if (allInitiativeObservations.length === 0) {
     return null;
   }
 
@@ -204,10 +206,10 @@ export function Search() {
       </div>
 
       <div className="flex-1 flex flex-col p-2 gap-4 overflow-auto scrollbar-custom">
-        {filteredIndicators.map((indicator) => (
-          <IndicatorSmallCard
-            key={`smallCartIndicator_${indicator.id}`}
-            indicator={indicator}
+        {filteredObservations.map((observation) => (
+          <ObseervationSmallCard
+            key={`smallCartObservation_${observation.id}`}
+            observation={observation}
           />
         ))}
       </div>

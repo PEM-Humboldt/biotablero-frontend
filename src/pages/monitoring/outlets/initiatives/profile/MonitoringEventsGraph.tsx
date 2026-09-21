@@ -20,7 +20,7 @@ import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import type { InitiativeMonitoringEvent } from "pages/monitoring/types/stats";
 import { getLocaleMonthString } from "pages/monitoring/utils/formatters";
 import { uiText } from "pages/monitoring/outlets/initiatives/layout/uiText";
-import { getContrastColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
+import { getContrastColor } from "pages/monitoring/outlets/initiatives/observations/card/utils/colors";
 
 export function MonitoringEventsGraph() {
   const { initiativeId } = useInitiativeCTX();

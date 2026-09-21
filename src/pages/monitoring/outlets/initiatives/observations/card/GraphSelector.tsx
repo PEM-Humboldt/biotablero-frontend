@@ -1,17 +1,17 @@
 import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
 import { ObservationMetric } from "pages/monitoring/types/observations";
-import { OccupationSpecies } from "pages/monitoring/outlets/initiatives/indicators/card/OccupationSpecies";
-import { DetectionProbabilityWithoutCovariables } from "pages/monitoring/outlets/initiatives/indicators/card/DetectionProbabilityWithoutCovariables";
-import { SpeciesDiversity } from "pages/monitoring/outlets/initiatives/indicators/card/SpeciesDiversity";
-import { RelativeSpeciesUseByGroup } from "pages/monitoring/outlets/initiatives/indicators/card/RelativeSpeciesUseByGroup";
-import { RelationalIntensityIndex } from "pages/monitoring/outlets/initiatives/indicators/card/RelationalIntensityIndex";
-import { CollectiveActionParticipation } from "pages/monitoring/outlets/initiatives/indicators/card/CollectiveActionParticipation";
+import { OccupationSpecies } from "pages/monitoring/outlets/initiatives/observations/card/OccupationSpecies";
+import { DetectionProbabilityWithoutCovariables } from "pages/monitoring/outlets/initiatives/observations/card/DetectionProbabilityWithoutCovariables";
+import { SpeciesDiversity } from "pages/monitoring/outlets/initiatives/observations/card/SpeciesDiversity";
+import { RelativeSpeciesUseByGroup } from "pages/monitoring/outlets/initiatives/observations/card/RelativeSpeciesUseByGroup";
+import { RelationalIntensityIndex } from "pages/monitoring/outlets/initiatives/observations/card/RelationalIntensityIndex";
+import { CollectiveActionParticipation } from "pages/monitoring/outlets/initiatives/observations/card/CollectiveActionParticipation";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { useReport } from "@hooks/useReport";
 import { useEffect } from "react";
 
 export function GraphSelector() {
-  const { currentObservation: currentIndicator } = useObservationsCTX();
+  const { currentObservation } = useObservationsCTX();
   const { initiativeInfo } = useInitiativeCTX();
   const { reportContextResolver } = useReport();
 
@@ -22,11 +22,11 @@ export function GraphSelector() {
     reportContextResolver(initiativeInfo);
   }, [initiativeInfo, reportContextResolver]);
 
-  if (!currentIndicator) {
+  if (!currentObservation) {
     return null;
   }
 
-  switch (currentIndicator.topic.id) {
+  switch (currentObservation.topic.id) {
     case ObservationMetric.OCCUPATION_SPECIES:
       return <OccupationSpecies />;
 
