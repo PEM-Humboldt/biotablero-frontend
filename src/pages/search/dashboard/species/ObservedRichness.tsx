@@ -37,6 +37,10 @@ import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 import type { MetricTypesMap } from "pages/search/types/metrics";
 import { generateLinearTicks } from "@utils/ui";
 
+import { GetSearchIndicatorInfo } from "@hooks/useReport/GetSearchIndicatorInfo";
+import { ButtonGroup } from "@mui/material";
+import { AddSearchIndicatorToReportBtn } from "@ui/AddSearchIndicatorToReport";
+
 const OBSERVED_RICHNESS_GRAPH_KEYS = ["CR", "EN", "VU"];
 
 const threatenedSpeciesCustomColorMap: Record<string, string> = {
@@ -438,64 +442,77 @@ export function ObservedRichness() {
       </div>
 
       {richness.areaSerie && (
-        <div className="graphcontainer pt6">
-          <h4 className="text-balance">
-            Número de especies registradas por km² (LMSC)
-          </h4>
-          <div className="w-full aspect-video">
-            {richness.isLoading ? (
-              <div className="errorData">Cargando datos...</div>
-            ) : (
-              <ResponsiveLine
-                data={[richness.areaSerie]}
-                margin={{ top: 30, right: 20, bottom: 60, left: 60 }}
-                xScale={{
-                  type: "linear",
-                  min: 1,
-                  max: graphSerieTicks[graphSerieTicks.length - 1] + 1,
-                  nice: false,
-                }}
-                yScale={{ type: "linear", min: 0, max: "auto" }}
-                curve="monotoneX"
-                gridXValues={graphSerieTicks}
-                axisBottom={{
-                  legend: "Número de especies registradas (LMSC)",
-                  legendOffset: 36,
-                  legendPosition: "middle" as const,
-                  tickValues: graphSerieTicks,
-                }}
-                colors={observedRichnessGradientColors}
-                gridYValues={5}
-                axisLeft={{
-                  tickValues: 5,
-                  legend: "Frecuencia de unidades de 1km² (LMSC)",
-                  legendOffset: -50,
-                  format: (value: number) => `${value / 1000}k`,
-                }}
-                pointSize={7}
-                pointColor="#ffffff"
-                pointBorderWidth={2}
-                pointBorderColor={{ from: "seriesColor" }}
-                pointLabelYOffset={-12}
-                enableTouchCrosshair={true}
-                useMesh={true}
-                tooltip={(p) => (
-                  <div className="bg-background rounded-lg text-grey-dark px-4 py-2 text-sm text-nowrap shadow-2xl flex flex-col">
-                    <span
-                      style={{ color: p.point.seriesColor }}
-                      className="font-semibold"
-                    >
-                      {p.point.data.yFormatted}
-                    </span>
-                    <span>Especies</span>
-                  </div>
-                )}
-              />
-            )}
+        <GetSearchIndicatorInfo
+          title="2"
+          description=""
+          graphInfo={{}}
+          tableData={[]}
+          graphId=""
+        >
+          <div className="graphcontainer pt6">
+            <h4 className="text-balance">
+              Número de especies registradas por km² (LMSC)
+            </h4>
+            <div className="w-full aspect-video">
+              {richness.isLoading ? (
+                <div className="errorData">Cargando datos...</div>
+              ) : (
+                <ResponsiveLine
+                  data={[richness.areaSerie]}
+                  margin={{ top: 30, right: 20, bottom: 60, left: 60 }}
+                  xScale={{
+                    type: "linear",
+                    min: 1,
+                    max: graphSerieTicks[graphSerieTicks.length - 1],
+                    nice: false,
+                  }}
+                  yScale={{ type: "linear", min: 0, max: "auto" }}
+                  curve="monotoneX"
+                  gridXValues={graphSerieTicks}
+                  axisBottom={{
+                    legend: "Número de especies registradas (LMSC)",
+                    legendOffset: 36,
+                    legendPosition: "middle" as const,
+                    tickValues: graphSerieTicks,
+                  }}
+                  colors={observedRichnessGradientColors}
+                  gridYValues={5}
+                  axisLeft={{
+                    tickValues: 5,
+                    legend: "Frecuencia de unidades de 1km² (LMSC)",
+                    legendOffset: -50,
+                    format: (value: number) => `${value / 1000}k`,
+                  }}
+                  pointSize={7}
+                  pointColor="#ffffff"
+                  pointBorderWidth={2}
+                  pointBorderColor={{ from: "seriesColor" }}
+                  pointLabelYOffset={-12}
+                  enableTouchCrosshair={true}
+                  useMesh={true}
+                  tooltip={(p) => (
+                    <div className="bg-background rounded-lg text-grey-dark px-4 py-2 text-sm text-nowrap shadow-2xl flex flex-col">
+                      <span
+                        style={{ color: p.point.seriesColor }}
+                        className="font-semibold"
+                      >
+                        {p.point.data.yFormatted}
+                      </span>
+                      <span>Especies</span>
+                    </div>
+                  )}
+                />
+              )}
+            </div>
           </div>
-        </div>
+        </GetSearchIndicatorInfo>
       )}
 
+      <ButtonGroup>
+        <AddSearchIndicatorToReportBtn wrapperId="1" />
+        <AddSearchIndicatorToReportBtn wrapperId="2" />
+        <AddSearchIndicatorToReportBtn wrapperId="3" />
+      </ButtonGroup>
       <TextBoxes
         consText={richness.texts.cons}
         metoText={richness.texts.meto}
