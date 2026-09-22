@@ -8,20 +8,21 @@ export type GraphDTO = {
 };
 
 // Consultas
+type CsvCell = string | number | boolean | null | undefined;
+export type CsvRow = Record<string, CsvCell>;
+
 export type SearchSection = {
   title: string;
   description: string;
   graphInfo?: Record<string, string>;
   graphs: GraphDTO[];
+  rawData?: CsvRow[];
 };
 
 export type SearchContext = {
-  location: {
-    type: string;
-    name: string;
-    id: number;
-  };
-  customPolygon: boolean;
+  areaType: string;
+  name?: string;
+  polygonId: number;
   searchUrl: string;
 };
 

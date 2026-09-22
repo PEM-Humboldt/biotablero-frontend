@@ -17,6 +17,7 @@ import {
   searchReducer,
   SearchUpdated,
 } from "pages/search/hooks/SearchReducer";
+import { ReportCTX } from "@hooks/useReport";
 
 export function Search() {
   const { layoutDispatch } = useOutletContext<UiManager>();
@@ -209,7 +210,9 @@ export function Search() {
 
           <div className="flex-[1_1_40%] h-full min-h-0 flex flex-col order-2 overflow-hidden">
             {showDashboard ? (
-              <Dashboard goBackClick={handleGoBackClick} />
+              <ReportCTX>
+                <Dashboard goBackClick={handleGoBackClick} />
+              </ReportCTX>
             ) : (
               <Selector showDrawControls={handleShowDrawControls} />
             )}

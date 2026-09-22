@@ -9,6 +9,7 @@ import { Species } from "pages/search/dashboard/Species";
 import { Ecosystems } from "pages/search/dashboard/Ecosystems";
 import { formatNumber } from "@utils/format";
 import TabContainer from "@ui/TabContainer";
+import { OpenReportEditorBtn } from "@ui/OpenReportEditorBtn";
 
 type DashboardProps = {
   goBackClick: () => void;
@@ -29,6 +30,7 @@ export function Dashboard({ goBackClick: handlerGoBack }: DashboardProps) {
             <b>{`${formatNumber(areaHa || 0, 0)}`}</b>
           </h4>
         </div>
+        <OpenReportEditorBtn />
       </div>
 
       <div className="flex-1 min-h-0 overflow-y-auto scrollbar-custom">
