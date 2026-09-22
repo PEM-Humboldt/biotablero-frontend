@@ -84,6 +84,8 @@ type ReportContextType = {
   setCurrentSectionPool: (section: SectionInfo | null) => void;
   hasSections: boolean;
   addSection: (userNote?: string) => Promise<void>;
+  wrapperIdToCapture: string;
+  setWrapperIdToCapture: (id: string) => void;
   removeGraph: (sectionId: string, graphId: string) => void;
   removeSection: (sectionId: string) => void;
   removeReport: () => void;
@@ -143,12 +145,15 @@ export function ReportCTX({ children }: { children: ReactNode }) {
   );
 
   const currentSectionInfoPool = useRef<SectionInfo | null>(null);
+
   const [docContext, setDocContext] = useState<
     IndicatorContext | SearchContext | null
   >(null);
   const [docSections, setDocSections] = useState<
     Map<string, SearchSection | IndicatorSection>
   >(new Map());
+
+  const [wrapperIdToCapture, setWrapperIdToCapture] = useState("");
 
   const [whyDownload, setWhyDownload] = useState("");
 
@@ -168,9 +173,18 @@ export function ReportCTX({ children }: { children: ReactNode }) {
   }, [pathname]);
 
   const addSection = async (userNote?: string) => {
-    if (!user || !currentSectionInfoPool.current || !reportContextRef.current) {
+    console.log(
+      -1,
+      "pool",
+      currentSectionInfoPool.current,
+      "ctx",
+      reportContextRef.current,
+    );
+    if (!user || !currentSectionInfoPool.current) {
       return;
     }
+
+    console.log(0);
 
     setIsLoading(true);
     setErrors([]);
@@ -201,6 +215,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
 
     const currentSection = docSections.get(sectionId);
 
+    console.log(1);
     let newMapUrl: string | null = mapUrl;
     if (!newMapUrl && mapElementId) {
       const buildtMap = await makeMapImg(mapElementId, {
@@ -217,6 +232,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       newMapUrl = buildtMap.map;
     }
 
+    console.log(2);
     const buildtGraph = await makeGraphImg(graphComponent, {
       scale: 2,
       workerUrl,
@@ -228,6 +244,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       return;
     }
 
+    console.log(3);
     const newGraph: GraphDTO = {
       id: graphId,
       blobUrl: buildtGraph.graph.blobUrl,
@@ -566,6 +583,8 @@ export function ReportCTX({ children }: { children: ReactNode }) {
         removeSection,
         removeReport,
         updateNote,
+        wrapperIdToCapture,
+        setWrapperIdToCapture,
         toggleEditor,
         whyDownload,
         setWhyDownload,

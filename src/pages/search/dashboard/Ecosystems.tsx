@@ -419,7 +419,6 @@ export function Ecosystems() {
           messages={messages.pa}
           areaIdStr={`${areaIdId}`}
         />
-
         <StrategicEcosystems
           areaTypeId={areaTypeId!}
           areaIdId={areaIdId!}
