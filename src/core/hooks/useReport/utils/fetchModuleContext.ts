@@ -1,4 +1,9 @@
-import type { IndicatorContext, IndicatorTag } from "@appTypes/report";
+import {
+  type IndicatorContext,
+  type IndicatorTag,
+  type FetchReportContext,
+  ReportType,
+} from "@appTypes/report";
 import { LOCALE } from "@config/global";
 import {
   getInitiativeMonitoringEvents,
@@ -7,15 +12,60 @@ import {
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
 import { makeLocationsString } from "@hooks/useReport/utils/formatters";
+import type { SearchState } from "pages/search/hooks/SearchReducer";
 
-type FetchIndicatorContextReturn = {
-  data: IndicatorContext | null;
-  errors: string[];
+export const fetchContext = async (
+  reportType: ReportType,
+  context: InitiativeCompleteInfo | SearchState | undefined | null,
+) => {
+  if (!context) {
+    return { data: null, errors: ["No report context found"] };
+  }
+
+  switch (reportType) {
+    case ReportType.MONITORING_INDICATORS:
+      return await fetchInitiativeContext(context as InitiativeCompleteInfo);
+
+    case ReportType.SEARCH_INDICATORS:
+      return fetchSearchContext(context as SearchState);
+
+    case ReportType.NONE:
+    default:
+      return { data: null, errors: ["Unknown report type"] };
+  }
 };
 
-export async function fetchInitiativeContext(
+function fetchSearchContext(searchInfo: SearchState): FetchReportContext {
+  if (
+    !searchInfo.areaType?.label ||
+    !searchInfo.areaHa ||
+    !searchInfo.areaId?.id
+  ) {
+    return {
+      data: null,
+      errors: ["Missing params building Search Report Context"],
+    };
+  }
+
+  return {
+    data: {
+      searchType: searchInfo.searchType,
+      area: {
+        type: searchInfo.areaType.label,
+        name: searchInfo.areaId.name,
+        polygonId: searchInfo.areaId.id,
+        size: searchInfo.areaHa,
+        bbox: searchInfo.areaLayer.json.bbox,
+      },
+      searchUrl: window.location.href,
+    },
+    errors: [],
+  };
+}
+
+async function fetchInitiativeContext(
   initiativeInfo: InitiativeCompleteInfo,
-): Promise<FetchIndicatorContextReturn> {
+): Promise<FetchReportContext> {
   const [initiativeStats, monitoringEvents] = await Promise.all([
     getInitiativeStats(initiativeInfo.id),
     getInitiativeMonitoringEvents(initiativeInfo.id),

@@ -6,11 +6,11 @@ export function AddSearchIndicatorToReportBtn({
 }: {
   wrapperId: string;
 }) {
-  const { setWrapperIdToCapture } = useReport();
+  const { addSectionFromRegistryToReport } = useReport();
   return (
     <Button
       onClick={() => {
-        setWrapperIdToCapture(wrapperId);
+        addSectionFromRegistryToReport(wrapperId, "");
       }}
     ></Button>
   );

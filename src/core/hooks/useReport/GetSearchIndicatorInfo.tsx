@@ -18,20 +18,9 @@ export function GetSearchIndicatorInfo({
   mapElementId?: string;
   children: ReactElement;
 }) {
-  const {
-    setCurrentSectionPool,
-    wrapperIdToCapture,
-    setWrapperIdToCapture,
-    addSection,
-  } = useReport();
+  const { addSectionToRegistry, removeSectionFromRegistry } = useReport();
 
   useEffect(() => {
-    if (title !== wrapperIdToCapture) {
-      return;
-    }
-
-    console.log("salio el", title);
-
     const sectionInfo: Omit<SearchSection, "graphs"> = {
       title,
       description,
@@ -39,7 +28,7 @@ export function GetSearchIndicatorInfo({
       rawData: tableData,
     };
 
-    setCurrentSectionPool({
+    addSectionToRegistry(title, {
       sectionId: title,
       graphId,
       graphComponent: children,
@@ -49,9 +38,9 @@ export function GetSearchIndicatorInfo({
       sectionUrl: window.location.href,
     });
 
-    console.log("aca");
-    void addSection();
-    setWrapperIdToCapture("");
+    return () => {
+      removeSectionFromRegistry(title);
+    };
   }, [
     title,
     children,
@@ -59,10 +48,8 @@ export function GetSearchIndicatorInfo({
     graphId,
     graphInfo,
     tableData,
-    addSection,
-    wrapperIdToCapture,
-    setWrapperIdToCapture,
-    setCurrentSectionPool,
+    addSectionToRegistry,
+    removeSectionFromRegistry,
   ]);
 
   return children;
