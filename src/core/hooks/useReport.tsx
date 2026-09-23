@@ -42,13 +42,13 @@ import { ReportDocumentTree } from "@hooks/useReport/reportModels/ReportDocument
 import { Button } from "@ui/shadCN/component/button";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import {
-  type ReportModelProps,
   ReportType,
   type GraphDTO,
   type IndicatorContext,
   type IndicatorSection,
   type ReportContextType,
   type ReportMetadata,
+  type ReportModelProps,
   type SearchContext,
   type SearchSection,
   type SectionInfo,
@@ -264,14 +264,14 @@ export function ReportCTX({ children }: { children: ReactNode }) {
   }, []);
 
   const addSectionFromRegistryToReport = useCallback(
-    (id: string, userNote?: string) => {
+    async (id: string, userNote?: string) => {
       const sectionToAdd = sectionRegistryRef.current.get(id);
       if (!sectionToAdd) {
         console.warn(`'${id}' doesn't exist in the registry pool`);
         return;
       }
 
-      void addSection(userNote, sectionToAdd);
+      await addSection(userNote, sectionToAdd);
     },
     [addSection],
   );
