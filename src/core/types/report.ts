@@ -23,6 +23,19 @@ export enum ReportType {
   MONITORING_INDICATORS,
 }
 
+export type MCReportModelProps = {
+  metadata: ReportMetadata;
+  context: IndicatorContext;
+  sections: Map<string, IndicatorSection>;
+};
+export type SearchReportModelProps = {
+  metadata: ReportMetadata;
+  context: SearchContext;
+  sections: Map<string, SearchSection>;
+};
+
+export type ReportModelProps = MCReportModelProps | SearchReportModelProps;
+
 export type ReportContextType = {
   isLoading: boolean;
   errors: string[];
@@ -68,6 +81,7 @@ export type SearchSection = {
   graphInfo?: Record<string, string>;
   graphs: GraphDTO[];
   rawData?: CsvRow[];
+  url: string;
 };
 
 export type SearchContext = {
@@ -100,6 +114,7 @@ export type IndicatorSection = {
   graphs: GraphDTO[];
   singleMap: boolean;
   description: string;
+  url: string;
   card: {
     methodology: string;
     interpretation: string;
