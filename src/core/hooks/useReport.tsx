@@ -11,10 +11,7 @@ import {
 } from "lucide-react";
 import {
   createContext,
-  type Dispatch,
-  type ReactElement,
   type ReactNode,
-  type SetStateAction,
   useCallback,
   useContext,
   useEffect,
@@ -34,7 +31,7 @@ import {
 } from "@config/monitoring";
 import { inputWarnColor } from "@utils/ui";
 import { useUserCTX } from "@hooks/UserCTX";
-import { fetchInitiativeContext } from "@hooks/useReport/utils/fetchInitiativeContext";
+import { fetchContext } from "@hooks/useReport/utils/fetchModuleContext";
 import { makeMapImg } from "@hooks/useReport/utils/makeMapImg";
 import { makeGraphImg } from "@hooks/useReport/utils/makeGraphImg";
 import { CMIndicatorReportModel } from "@hooks/useReport/reportModels/CMIndicatorReportModel";
@@ -42,13 +39,16 @@ import { LOCALE } from "@config/global";
 import { ReportDocumentTree } from "@hooks/useReport/reportModels/ReportDocumentTree";
 import { Button } from "@ui/shadCN/component/button";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
-import type {
-  SearchSection,
-  IndicatorContext,
-  SearchContext,
-  ReportMetadata,
-  IndicatorSection,
-  GraphDTO,
+import {
+  type SearchSection,
+  type IndicatorContext,
+  type SearchContext,
+  type ReportMetadata,
+  type IndicatorSection,
+  type GraphDTO,
+  type SectionInfo,
+  ReportType,
+  type ReportContextType,
 } from "@appTypes/report";
 import {
   Sheet,
@@ -75,32 +75,8 @@ import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 import { uiText } from "@hooks/useReport/layout/uiText";
 import { StrValidator } from "@utils/strValidator";
 import { sendReportDownloadReason } from "pages/monitoring/api/services/report";
-
-type ReportContextType = {
-  isLoading: boolean;
-  errors: string[];
-  reportContextResolver: (context: InitiativeCompleteInfo) => void;
-  reportDownloaded: boolean;
-  setCurrentSectionPool: (section: SectionInfo | null) => void;
-  hasSections: boolean;
-  addSection: (userNote?: string) => Promise<void>;
-  wrapperIdToCapture: string;
-  setWrapperIdToCapture: (id: string) => void;
-  removeGraph: (sectionId: string, graphId: string) => void;
-  removeSection: (sectionId: string) => void;
-  removeReport: () => void;
-  updateNote: (sectionId: string, graphId: string, newNote?: string) => void;
-  toggleEditor: (forceState?: boolean) => void;
-  whyDownload: string;
-  setWhyDownload: Dispatch<SetStateAction<string>>;
-  moveElement: (
-    direction: "prev" | "next",
-    sectionId: string,
-    graphStateId?: string,
-  ) => void;
-  downloadReport: () => Promise<void>;
-  documentSections: Map<string, SearchSection | IndicatorSection>;
-};
+import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
+import type { SearchState } from "pages/search/hooks/SearchReducer";
 
 const ReportContext = createContext<ReportContextType | null>(null);
 
@@ -114,38 +90,27 @@ const revokeGraphUrls = (graph: GraphDTO) => {
   }
 };
 
-type SectionInfo = {
-  sectionId: string;
-  graphId: string;
-  sectionInfo:
-    | Omit<SearchSection, "graphs" | "mapUrl">
-    | Omit<IndicatorSection, "graphs" | "mapUrl">;
-  graphComponent: ReactElement;
-  mapUrl: string | null;
-  mapElementId: string | null;
-  sectionUrl: string;
-};
-
 export function ReportCTX({ children }: { children: ReactNode }) {
+  // Contextos
   const { pathname } = useLocation();
+  const { user } = useUserCTX();
+  const searchState = useSearchStateCTX();
+
+  // Referencias
+  const currentSectionInfoPool = useRef<SectionInfo | null>(null);
+  const sectionRegistryRef = useRef<Map<string, SectionInfo>>(new Map());
+  const reportContextRef = useRef<InitiativeCompleteInfo | SearchState | null>(
+    null,
+  );
+
+  // Estados locales
   const [isLoading, setIsLoading] = useState(false);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [reportDownloaded, setReportDownloaded] = useState(true);
 
-  const { user } = useUserCTX();
-  // TODO: Complementar el type cuando se incorpore consultas
-  const reportContextRef = useRef<InitiativeCompleteInfo | null>(null);
-
-  const reportContextResolver = useCallback(
-    (context: InitiativeCompleteInfo) => {
-      reportContextRef.current = context;
-    },
-    [],
-  );
-
-  const currentSectionInfoPool = useRef<SectionInfo | null>(null);
-
+  // Estados de integración
+  const [whyDownload, setWhyDownload] = useState("");
   const [docContext, setDocContext] = useState<
     IndicatorContext | SearchContext | null
   >(null);
@@ -153,130 +118,151 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     Map<string, SearchSection | IndicatorSection>
   >(new Map());
 
-  const [wrapperIdToCapture, setWrapperIdToCapture] = useState("");
-
-  const [whyDownload, setWhyDownload] = useState("");
+  // Funcionalidad
 
   const reportType = useMemo(() => {
     const segments = pathname.split("/").filter(Boolean);
     const firstSegment = segments[0];
 
     if (firstSegment === searchComponents[0]) {
-      return "Search";
+      return ReportType.SEARCH_INDICATORS;
     }
 
     const fullPath = mcIndicatorPathComponents.every((required) =>
       segments.includes(required),
     );
 
-    return fullPath ? "InitiativeIndicator" : null;
+    return fullPath ? ReportType.MONITORING_INDICATORS : ReportType.NONE;
   }, [pathname]);
 
-  const addSection = async (userNote?: string) => {
-    console.log(
-      -1,
-      "pool",
-      currentSectionInfoPool.current,
-      "ctx",
-      reportContextRef.current,
-    );
-    if (!user || !currentSectionInfoPool.current) {
-      return;
-    }
+  const reportContextResolver = useCallback(
+    (context: InitiativeCompleteInfo | SearchState) => {
+      reportContextRef.current = context;
+    },
+    [],
+  );
 
-    console.log(0);
-
-    setIsLoading(true);
-    setErrors([]);
-
-    if (!docContext) {
-      const { data, errors: ctxErrors } =
-        reportType === "InitiativeIndicator"
-          ? await fetchInitiativeContext(reportContextRef.current)
-          : { data: null, errors: [] };
-
-      if (ctxErrors.length > 0) {
-        setErrors(ctxErrors);
+  const addSection = useCallback(
+    async (userNote?: string, selectedSection?: SectionInfo) => {
+      const sectionToAddInfo =
+        selectedSection || currentSectionInfoPool.current;
+      if (!user || !sectionToAddInfo) {
         return;
       }
 
-      setDocContext(data);
-    }
+      setIsLoading(true);
+      setErrors([]);
 
-    const {
-      sectionId,
-      graphId,
-      sectionInfo,
-      graphComponent,
-      mapElementId,
-      mapUrl,
-      sectionUrl,
-    } = currentSectionInfoPool.current;
+      if (!docContext) {
+        const { data, errors: ctxErrors } = await fetchContext(
+          reportType,
+          reportContextRef.current,
+        );
 
-    const currentSection = docSections.get(sectionId);
+        if (ctxErrors.length > 0) {
+          setErrors(ctxErrors);
+          return;
+        }
 
-    console.log(1);
-    let newMapUrl: string | null = mapUrl;
-    if (!newMapUrl && mapElementId) {
-      const buildtMap = await makeMapImg(mapElementId, {
+        setDocContext(data);
+      }
+
+      const {
+        sectionId,
+        graphId,
+        sectionInfo,
+        graphComponent,
+        mapElementId,
+        mapUrl,
+        // FIX: es borrable?
+        // sectionUrl,
+      } = sectionToAddInfo;
+
+      const currentSection = docSections.get(sectionId);
+
+      let newMapUrl: string | null = mapUrl;
+      if (!newMapUrl && mapElementId) {
+        const buildtMap = await makeMapImg(mapElementId, {
+          scale: 2,
+          workerUrl,
+          timeout: 10000,
+        });
+
+        if (buildtMap.errors.length > 0 || !buildtMap.map) {
+          setErrors(buildtMap.errors);
+          setIsLoading(false);
+          return;
+        }
+        newMapUrl = buildtMap.map;
+      }
+
+      const buildtGraph = await makeGraphImg(graphComponent, {
         scale: 2,
         workerUrl,
         timeout: 10000,
       });
-
-      if (buildtMap.errors.length > 0 || !buildtMap.map) {
-        setErrors(buildtMap.errors);
-        setIsLoading(false);
+      setIsLoading(false);
+      if (buildtGraph.errors.length > 0 || !buildtGraph.graph) {
+        setErrors(buildtGraph.errors);
         return;
       }
-      newMapUrl = buildtMap.map;
-    }
 
-    console.log(2);
-    const buildtGraph = await makeGraphImg(graphComponent, {
-      scale: 2,
-      workerUrl,
-      timeout: 10000,
-    });
-    setIsLoading(false);
-    if (buildtGraph.errors.length > 0 || !buildtGraph.graph) {
-      setErrors(buildtGraph.errors);
-      return;
-    }
+      const newGraph: GraphDTO = {
+        id: graphId,
+        blobUrl: buildtGraph.graph.blobUrl,
+        userNote: userNote ? StrValidator.sanitize(userNote) : undefined,
+        mapUrl: newMapUrl ?? undefined,
+      };
 
-    console.log(3);
-    const newGraph: GraphDTO = {
-      id: graphId,
-      blobUrl: buildtGraph.graph.blobUrl,
-      userNote: userNote ? StrValidator.sanitize(userNote) : undefined,
-      mapUrl: newMapUrl ?? undefined,
-    };
+      const updatedSection: SearchSection | IndicatorSection = {
+        ...(currentSection ?? {}),
+        ...sectionInfo,
+        // FIX: es borrable?
+        // url: sectionUrl,
+        graphs: [
+          ...(currentSection?.graphs.filter((g) => g.id !== graphId) ?? []),
+          newGraph,
+        ],
+      };
 
-    const updatedSection: SearchSection | IndicatorSection = {
-      ...(currentSection ?? {}),
-      ...sectionInfo,
-      url: sectionUrl,
-      graphs: [
-        ...(currentSection?.graphs.filter((g) => g.id !== graphId) ?? []),
-        newGraph,
-      ],
-    };
+      setReportDownloaded(false);
+      setDocSections((oldSections) =>
+        new Map(oldSections).set(sectionId, updatedSection),
+      );
 
-    setReportDownloaded(false);
-    setDocSections((oldSections) =>
-      new Map(oldSections).set(sectionId, updatedSection),
-    );
+      toast(uiText.context.addSectionToastSuccess.title, {
+        position: "bottom-right",
+        description: uiText.context.addSectionToastSuccess.description(
+          sectionToAddInfo.sectionInfo.title,
+        ),
+        icon: <FileCheck className="size-8 text-primary" />,
+        className: "px-6! gap-6! border-2! border-primary!",
+        duration: 4 * 1000,
+      });
+    },
+    [docContext, docSections, reportType, user],
+  );
 
-    toast(uiText.context.addSectionToastSuccess.title, {
-      position: "bottom-right",
-      description: uiText.context.addSectionToastSuccess.description(
-        currentSectionInfoPool.current.sectionInfo.title,
-      ),
-      icon: <FileCheck className="size-8 text-primary" />,
-      className: "px-6! gap-6! border-2! border-primary!",
-      duration: 4 * 1000,
-    });
-  };
+  const addSectionToRegistry = useCallback((id: string, info: SectionInfo) => {
+    sectionRegistryRef.current.set(id, info);
+  }, []);
+
+  const removeSectionFromRegistry = useCallback((id: string) => {
+    sectionRegistryRef.current.delete(id);
+  }, []);
+
+  const addSectionFromRegistryToReport = useCallback(
+    (id: string, userNote?: string) => {
+      const sectionToAdd = sectionRegistryRef.current.get(id);
+      if (!sectionToAdd) {
+        console.warn(`'${id}' doesn't exist in the registry pool`);
+        return;
+      }
+
+      void addSection(userNote, sectionToAdd);
+    },
+    [addSection],
+  );
 
   const removeElements = useCallback(
     ({
@@ -520,7 +506,11 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     );
   };
 
-  useEffect(() => {}, [docSections]);
+  useEffect(() => {
+    if (reportType === ReportType.SEARCH_INDICATORS) {
+      reportContextResolver(searchState);
+    }
+  }, [reportType, searchState, reportContextResolver]);
 
   useEffect(() => {
     return () => {
@@ -583,8 +573,9 @@ export function ReportCTX({ children }: { children: ReactNode }) {
         removeSection,
         removeReport,
         updateNote,
-        wrapperIdToCapture,
-        setWrapperIdToCapture,
+        addSectionToRegistry,
+        removeSectionFromRegistry,
+        addSectionFromRegistryToReport,
         toggleEditor,
         whyDownload,
         setWhyDownload,
