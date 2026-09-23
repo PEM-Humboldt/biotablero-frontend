@@ -1,15 +1,5 @@
-import { toast } from "sonner";
 import {
-  ChartLine,
-  CircleSlash,
-  FileCheck,
-  FileDown,
-  FileXCorner,
-  FileXIcon,
-  type LucideIcon,
-  Shredder,
-} from "lucide-react";
-import {
+  type ComponentType,
   createContext,
   type ReactNode,
   useCallback,
@@ -19,36 +9,49 @@ import {
   useRef,
   useState,
 } from "react";
+import {
+  ChartLine,
+  CircleSlash,
+  FileCheck,
+  FileDown,
+  FileXCorner,
+  FileXIcon,
+  Shredder,
+  type LucideIcon,
+} from "lucide-react";
 import workerUrl from "modern-screenshot/worker?url";
+import { toast } from "sonner";
 import { useBlocker, useLocation } from "react-router";
-import { pdf } from "@react-pdf/renderer";
 import { AnimatePresence } from "motion/react";
 import TextareaAutosize from "react-textarea-autosize";
+import { pdf } from "@react-pdf/renderer";
 
 import {
   REPORT_DOWNLOAD_NAME_PREFIX,
   REPORT_NOTE_MAX_LENGTH,
-} from "@config/monitoring";
+} from "@config/report";
 import { inputWarnColor } from "@utils/ui";
 import { useUserCTX } from "@hooks/UserCTX";
 import { fetchContext } from "@hooks/useReport/utils/fetchModuleContext";
 import { makeMapImg } from "@hooks/useReport/utils/makeMapImg";
 import { makeGraphImg } from "@hooks/useReport/utils/makeGraphImg";
 import { CMIndicatorReportModel } from "@hooks/useReport/reportModels/CMIndicatorReportModel";
+import { SearchIndicatorReportModel } from "@hooks/useReport/reportModels/SearchIndicatorReportModel";
 import { LOCALE } from "@config/global";
 import { ReportDocumentTree } from "@hooks/useReport/reportModels/ReportDocumentTree";
 import { Button } from "@ui/shadCN/component/button";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import {
-  type SearchSection,
-  type IndicatorContext,
-  type SearchContext,
-  type ReportMetadata,
-  type IndicatorSection,
-  type GraphDTO,
-  type SectionInfo,
+  type ReportModelProps,
   ReportType,
+  type GraphDTO,
+  type IndicatorContext,
+  type IndicatorSection,
   type ReportContextType,
+  type ReportMetadata,
+  type SearchContext,
+  type SearchSection,
+  type SectionInfo,
 } from "@appTypes/report";
 import {
   Sheet,
@@ -69,26 +72,37 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@ui/shadCN/component/alert-dialog";
-
-import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
-import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 import { uiText } from "@hooks/useReport/layout/uiText";
 import { StrValidator } from "@utils/strValidator";
+import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
+
+// TODO: revisar estas importaciones desde pages
+import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
 import { sendReportDownloadReason } from "pages/monitoring/api/services/report";
 import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
 import type { SearchState } from "pages/search/hooks/SearchReducer";
-
-const ReportContext = createContext<ReportContextType | null>(null);
 
 const mcIndicatorPathComponents = ["Monitoreo", "Iniciativas", "Indicadores"];
 const searchComponents = ["Consultas"];
 
 const revokeGraphUrls = (graph: GraphDTO) => {
   URL.revokeObjectURL(graph.blobUrl);
+
   if (graph.mapUrl) {
     URL.revokeObjectURL(graph.mapUrl);
   }
 };
+
+const documentModels: Partial<
+  Record<ReportType, ComponentType<ReportModelProps>>
+> = {
+  [ReportType.MONITORING_INDICATORS]:
+    CMIndicatorReportModel as ComponentType<ReportModelProps>,
+  [ReportType.SEARCH_INDICATORS]:
+    SearchIndicatorReportModel as ComponentType<ReportModelProps>,
+};
+
+const ReportContext = createContext<ReportContextType | null>(null);
 
 export function ReportCTX({ children }: { children: ReactNode }) {
   // Contextos
@@ -174,8 +188,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
         graphComponent,
         mapElementId,
         mapUrl,
-        // FIX: es borrable?
-        // sectionUrl,
+        sectionUrl,
       } = sectionToAddInfo;
 
       const currentSection = docSections.get(sectionId);
@@ -217,8 +230,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       const updatedSection: SearchSection | IndicatorSection = {
         ...(currentSection ?? {}),
         ...sectionInfo,
-        // FIX: es borrable?
-        // url: sectionUrl,
+        url: sectionUrl,
         graphs: [
           ...(currentSection?.graphs.filter((g) => g.id !== graphId) ?? []),
           newGraph,
@@ -449,21 +461,25 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       }
       setIsLoading(true);
 
-      // TODO: el siguiente segmento debe ser adecuado para cuando
-      // mas secciones de biotablero requieran reportes.
-      // let blob: Blob;
-      // let fileName: string;
-      // esta condicion es para indicadores de iniciativa
-      // if (reportType === "InitiativeIndicator") ...
+      const DocumentModelComponent = documentModels[reportType];
+      const namePrefix = REPORT_DOWNLOAD_NAME_PREFIX[reportType];
+      if (!DocumentModelComponent || !namePrefix) {
+        setErrors(["No document model for the report"]);
+        return;
+      }
+
+      const fileName = `${namePrefix}_${docMetadata.creationDate}.pdf`;
       const blob = await pdf(
-        <CMIndicatorReportModel
+        <DocumentModelComponent
           metadata={docMetadata}
           context={docContext as IndicatorContext}
           sections={docSections as Map<string, IndicatorSection>}
         />,
       ).toBlob();
-      const fileName = `${REPORT_DOWNLOAD_NAME_PREFIX}_${docMetadata.creationDate}.pdf`;
-      // TODO: fin del segmento
+      if (!blob) {
+        setErrors(["No fue posible crear el PDF"]);
+        return;
+      }
 
       const pdfUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");

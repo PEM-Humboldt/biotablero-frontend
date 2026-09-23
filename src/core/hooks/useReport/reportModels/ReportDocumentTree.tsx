@@ -19,7 +19,7 @@ import {
 } from "@ui/shadCN/component/popover";
 import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 import TextareaAutosize from "react-textarea-autosize";
-import { REPORT_NOTE_MAX_LENGTH } from "@config/monitoring";
+import { REPORT_NOTE_MAX_LENGTH } from "@config/report";
 import { inputWarnColor } from "@utils/ui";
 import { motion, AnimatePresence } from "motion/react";
 

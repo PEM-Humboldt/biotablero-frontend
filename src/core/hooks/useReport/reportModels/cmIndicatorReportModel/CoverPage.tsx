@@ -10,7 +10,7 @@ import {
   HumboldtLogo,
 } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/branding";
 import { documentInfo } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/documentInfo";
-import { REPORT_PAGE_SIZE } from "@config/monitoring";
+import { REPORT_PAGE_SIZE } from "@config/report";
 
 export function CoverPage({
   context,
