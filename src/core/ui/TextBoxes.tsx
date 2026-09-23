@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import AnnouncementIcon from "@mui/icons-material/Announcement";
 import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
@@ -7,6 +7,7 @@ import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import { ShortInfo } from "@composites/ShortInfo";
 import DownloadCSV from "@ui/DownloadCSV";
 import { IconTooltip } from "@ui/Tooltips";
+import { AddSearchIndicatorToReportBtn } from "@ui/AddSearchIndicatorToReport";
 
 interface TextBoxProps {
   downloadData?: Array<unknown>;
@@ -16,6 +17,7 @@ interface TextBoxProps {
   consText: string;
   toggleInfo: () => void;
   isInfoOpen: boolean;
+  addToReportWrapperId?: string;
 }
 
 type boxValues = "meto" | "cons" | "quote" | null;
@@ -29,6 +31,7 @@ function TextBoxes({
   consText,
   toggleInfo,
   isInfoOpen,
+  addToReportWrapperId,
 }: TextBoxProps) {
   const [boxShown, setBoxShown] = useState<boxValues>(null);
   const [activeBox, setActiveBox] = useState<boxValues>(null);
@@ -55,36 +58,43 @@ function TextBoxes({
 
   return (
     <>
-      <h3 className="textBoxes">
+      <div className="flex items-centera py-1 px-2 text-grey *:hover:text-accent">
+        {addToReportWrapperId && (
+          <IconTooltip title="Agregar a reporte">
+            <span>
+              <AddSearchIndicatorToReportBtn
+                wrapperId={addToReportWrapperId}
+                inButtonGroup={true}
+              />
+            </span>
+          </IconTooltip>
+        )}
         {metoText !== "" && (
-          <IconTooltip title="Metodología">
+          <button onClick={() => clickOnBox("meto")} title="Metodología">
             <CollectionsBookmarkIcon
               className={`graphinfo3${
                 activeBox === "meto" ? " activeBox" : ""
               }`}
-              onClick={() => clickOnBox("meto")}
             />
-          </IconTooltip>
+          </button>
         )}
         {consText !== "" && (
-          <IconTooltip title="Consideraciones">
+          <button onClick={() => clickOnBox("cons")} title="Consideraciones">
             <AnnouncementIcon
               className={`graphinfo3${
                 activeBox === "cons" ? " activeBox" : ""
               }`}
-              onClick={() => clickOnBox("cons")}
             />
-          </IconTooltip>
+          </button>
         )}
         {quoteText !== "" && (
-          <IconTooltip title="Autoría">
+          <button onClick={() => clickOnBox("quote")} title="Consideraciones">
             <FormatQuoteIcon
               className={`graphinfo3${
                 activeBox === "quote" ? " activeBox" : ""
               }`}
-              onClick={() => clickOnBox("quote")}
             />
-          </IconTooltip>
+          </button>
         )}
         {downloadData?.length !== 0 && (
           <DownloadCSV
@@ -93,7 +103,8 @@ function TextBoxes({
             filename={downloadName}
           />
         )}
-      </h3>
+      </div>
+
       {boxShown === "quote" && (
         <ShortInfo
           description={`<p>${quoteText}</p>`}

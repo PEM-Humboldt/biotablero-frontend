@@ -47,7 +47,10 @@ export type ReportContextType = {
 
   addSectionToRegistry: (id: string, info: SectionInfo) => void;
   removeSectionFromRegistry: (id: string) => void;
-  addSectionFromRegistryToReport: (id: string, userNote: string) => void;
+  addSectionFromRegistryToReport: (
+    id: string,
+    userNote: string,
+  ) => Promise<void>;
   removeGraph: (sectionId: string, graphId: string) => void;
   removeSection: (sectionId: string) => void;
   removeReport: () => void;
