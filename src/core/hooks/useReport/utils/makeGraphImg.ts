@@ -3,6 +3,7 @@ import { domToBlob, type Options } from "modern-screenshot";
 import { createRoot } from "react-dom/client";
 import { GRAPH_ANIMATION_CONFIG } from "@config/global";
 import { uiText } from "@hooks/useReport/layout/uiText";
+import { waitForAnimations } from "./waitForAnimations";
 
 export async function makeGraphImg(
   graphComponent: ReactElement,
@@ -21,9 +22,10 @@ export async function makeGraphImg(
   try {
     root.render(graphComponent);
 
-    await new Promise((resolve) =>
-      setTimeout(resolve, GRAPH_ANIMATION_CONFIG.duration + 200),
-    );
+    await waitForAnimations(tempContainer, {
+      quietMs: 150,
+      timeoutMs: GRAPH_ANIMATION_CONFIG.duration + 1000,
+    });
 
     const graphBlob = await domToBlob(tempContainer, screenshotOptions);
     root.unmount();
