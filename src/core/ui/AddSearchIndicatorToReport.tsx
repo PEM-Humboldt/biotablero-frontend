@@ -14,6 +14,11 @@ import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 import { REPORT_NOTE_MAX_LENGTH } from "@config/report";
 import { inputWarnColor } from "@utils/ui";
 import { uiText } from "@ui/addMCIndicatorToReport/layout/uiText";
+import {
+  useSearchDispatchCTX,
+  useSearchStateCTX,
+} from "pages/search/hooks/SearchContext";
+import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 
 export function AddSearchIndicatorToReportBtn({
   wrapperId,
@@ -24,6 +29,7 @@ export function AddSearchIndicatorToReportBtn({
 }) {
   const { addSectionFromRegistryToReport, isLoading } = useReport();
   const { user } = useUserCTX();
+  const dispatchSearchMap = useSearchDispatchCTX();
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [noteText, setNoteText] = useState("");
@@ -42,7 +48,14 @@ export function AddSearchIndicatorToReportBtn({
       open={isPopoverOpen}
       onOpenChange={(open) => setIsPopoverOpen(open)}
     >
-      <PopoverTrigger asChild>
+      <PopoverTrigger
+        onClick={() =>
+          dispatchSearchMap({
+            type: SearchUpdated.RECENTER_MAP,
+          })
+        }
+        asChild
+      >
         {inButtonGroup ? (
           <button
             disabled={!user || isLoading}

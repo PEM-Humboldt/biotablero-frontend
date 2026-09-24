@@ -1,5 +1,7 @@
 import { domToBlob, type Options } from "modern-screenshot";
+
 import { uiText } from "@hooks/useReport/layout/uiText";
+import { waitForAnimations } from "@hooks/useReport/utils/waitForAnimations";
 
 export async function makeMapImg(
   leafletElementId: string,
@@ -17,6 +19,8 @@ export async function makeMapImg(
   }
 
   try {
+    await waitForAnimations(mapElement);
+
     const mapBlob = await domToBlob(mapElement, screenshotOptions);
 
     return {
