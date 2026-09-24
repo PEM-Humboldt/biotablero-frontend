@@ -1,14 +1,14 @@
 import { Document } from "@react-pdf/renderer";
-import { CoverPage } from "@hooks/useReport/reportModels/cmIndicatorReportModel/CoverPage";
+import { CoverPage } from "@hooks/useReport/reportModels/searchIndicatorReportModel/CoverPage";
 import type {
   ReportMetadata,
   SearchContext,
   SearchSection as SearchSectionType,
 } from "@appTypes/report";
-import { InitiativeSection } from "@hooks/useReport/reportModels/cmIndicatorReportModel/AboutInitiative";
-import { IndicatorSection } from "@hooks/useReport/reportModels/cmIndicatorReportModel/IndicatorSection";
-import { Credits } from "@hooks/useReport/reportModels/cmIndicatorReportModel/Credits";
-import { documentInfo } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/documentInfo";
+import { SearchPolygonSection } from "@hooks/useReport/reportModels/searchIndicatorReportModel/AboutSearchPolygon";
+import { SearchSection } from "@hooks/useReport/reportModels/searchIndicatorReportModel/SearchSection";
+import { Credits } from "@hooks/useReport/reportModels/searchIndicatorReportModel/Credits";
+import { documentInfo } from "@hooks/useReport/reportModels/searchIndicatorReportModel/layout/documentInfo";
 
 export function SearchIndicatorReportModel({
   context,
@@ -21,7 +21,7 @@ export function SearchIndicatorReportModel({
 }) {
   return (
     <Document
-      title={documentInfo.title(context.initiativeName)}
+      title={documentInfo.title(context.area.name ?? "Polígono personalizado")}
       author={documentInfo.author(metadata.madeBy.name, metadata.madeBy.email)}
       subject={documentInfo.subject}
     >
@@ -31,10 +31,10 @@ export function SearchIndicatorReportModel({
         indicatorsAmount={sections.size}
       />
 
-      <InitiativeSection context={context} metadata={metadata} />
+      <SearchPolygonSection context={context} metadata={metadata} />
 
       {[...sections.entries()].map(([key, section]) => (
-        <IndicatorSection key={key} section={section} metadata={metadata} />
+        <SearchSection key={key} section={section} metadata={metadata} />
       ))}
 
       <Credits metadata={metadata} />
