@@ -1,27 +1,51 @@
 import BackIcon from "@mui/icons-material/FirstPage";
 import Ecosistemas from "@mui/icons-material/Nature";
-import Paisaje from "@mui/icons-material/FilterHdr";
 import Especies from "@mui/icons-material/FilterVintage";
+import Paisaje from "@mui/icons-material/FilterHdr";
 
-import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
+import {
+  useSearchDispatchCTX,
+  useSearchStateCTX,
+} from "pages/search/hooks/SearchContext";
 import Landscape from "pages/search/dashboard/Landscape";
-import { Species } from "pages/search/dashboard/Species";
-import { Ecosystems } from "pages/search/dashboard/Ecosystems";
-import { formatNumber } from "@utils/format";
 import TabContainer from "@ui/TabContainer";
+import { Ecosystems } from "pages/search/dashboard/Ecosystems";
+import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 import { OpenReportEditorBtn } from "@ui/OpenReportEditorBtn";
+import { SearchUpdated } from "pages/search/hooks/SearchReducer";
+import { Species } from "pages/search/dashboard/Species";
+import { formatNumber } from "@utils/format";
+import { type UiManager } from "core/layout/MainLayout";
+import { useEffect } from "react";
+import { useLocation, useNavigate, useOutletContext } from "react-router";
+import { useReport } from "@hooks/useReport";
 
-type DashboardProps = {
-  goBackClick: () => void;
-};
-
-export function Dashboard({ goBackClick: handlerGoBack }: DashboardProps) {
+export function Dashboard() {
   const { areaHa } = useSearchStateCTX();
+  const { addLeaveCallback } = useReport();
+  const { layoutDispatch } = useOutletContext<UiManager>();
+  const searchMapDispatch = useSearchDispatchCTX();
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    return addLeaveCallback(() => {
+      layoutDispatch({
+        type: LayoutUpdated.HEADER_NAMES,
+        newHeader: { title: "", subtitle: "" },
+      });
+      searchMapDispatch({ type: SearchUpdated.GO_BACK });
+    });
+  }, [addLeaveCallback, layoutDispatch, searchMapDispatch]);
+
+  const handleGoBackClick = () => {
+    void navigate({ pathname, search: "" }, { replace: true });
+  };
 
   return (
     <div className="informer flex flex-col h-full min-h-0 overflow-hidden">
       <div className="drawer_header shrink-0">
-        <button className="geobtn" type="button" onClick={handlerGoBack}>
+        <button className="geobtn" type="button" onClick={handleGoBackClick}>
           <BackIcon />
         </button>
         <div className="HAgen">

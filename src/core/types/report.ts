@@ -65,6 +65,7 @@ export type ReportContextType = {
   ) => void;
   downloadReport: () => Promise<void>;
   documentSections: Map<string, SearchSection | IndicatorSection>;
+  addLeaveCallback: (callback: () => void) => void;
 };
 
 export type GraphDTO = {

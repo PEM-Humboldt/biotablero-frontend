@@ -112,7 +112,8 @@ export function ReportCTX({ children }: { children: ReactNode }) {
 
   // Referencias
   const currentSectionInfoPool = useRef<SectionInfo | null>(null);
-  const sectionRegistryRef = useRef<Map<string, SectionInfo>>(new Map());
+  const sectionsRegistryRef = useRef<Map<string, SectionInfo>>(new Map());
+  const leaveCallbackRef = useRef<(() => void) | null>(null);
   const reportContextRef = useRef<InitiativeCompleteInfo | SearchState | null>(
     null,
   );
@@ -256,16 +257,16 @@ export function ReportCTX({ children }: { children: ReactNode }) {
   );
 
   const addSectionToRegistry = useCallback((id: string, info: SectionInfo) => {
-    sectionRegistryRef.current.set(id, info);
+    sectionsRegistryRef.current.set(id, info);
   }, []);
 
   const removeSectionFromRegistry = useCallback((id: string) => {
-    sectionRegistryRef.current.delete(id);
+    sectionsRegistryRef.current.delete(id);
   }, []);
 
   const addSectionFromRegistryToReport = useCallback(
     async (id: string, userNote?: string) => {
-      const sectionToAdd = sectionRegistryRef.current.get(id);
+      const sectionToAdd = sectionsRegistryRef.current.get(id);
       if (!sectionToAdd) {
         console.warn(`'${id}' doesn't exist in the registry pool`);
         return;
@@ -522,18 +523,6 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     );
   };
 
-  useEffect(() => {
-    if (reportType === ReportType.SEARCH_INDICATORS) {
-      reportContextResolver(searchState);
-    }
-  }, [reportType, searchState, reportContextResolver]);
-
-  useEffect(() => {
-    return () => {
-      removeElements({});
-    };
-  }, [removeElements]);
-
   const updateNote = (sectionId: string, graphId: string, newNote?: string) => {
     setDocSections((oldSections) => {
       const newSections = new Map(oldSections);
@@ -556,24 +545,54 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     });
   };
 
-  const blocker = useBlocker(
-    !reportDownloaded
-      ? ({ currentLocation, nextLocation }) => {
-          const currentPath = currentLocation.pathname
-            .split("/")
-            .filter(Boolean)
-            .slice(0, -1)
-            .join("/");
-          const nextPath = nextLocation.pathname
-            .split("/")
-            .filter(Boolean)
-            .slice(0, -1)
-            .join("/");
+  const addLeaveCallback = useCallback((callback: () => void) => {
+    leaveCallbackRef.current = callback;
+    return () => {
+      leaveCallbackRef.current = null; // cleanup
+    };
+  }, []);
 
-          return currentPath !== nextPath;
-        }
-      : false,
-  );
+  const blocker = useBlocker(({ currentLocation, nextLocation }) => {
+    const currentPath = currentLocation.pathname
+      .split("/")
+      .filter(Boolean)
+      .slice(0, -1)
+      .join("/");
+    const nextPath = nextLocation.pathname
+      .split("/")
+      .filter(Boolean)
+      .slice(0, -1)
+      .join("/");
+
+    const pathChange = currentPath !== nextPath;
+    const searchChange = currentLocation.search !== nextLocation.search;
+
+    return (
+      (ReportType.SEARCH_INDICATORS === reportType && searchChange) ||
+      pathChange
+    );
+  });
+
+  useEffect(() => {
+    if (reportType === ReportType.SEARCH_INDICATORS) {
+      reportContextResolver(searchState);
+    }
+  }, [reportType, searchState, reportContextResolver]);
+
+  useEffect(() => {
+    if (blocker.state === "blocked" && reportDownloaded) {
+      blocker.proceed();
+      if (leaveCallbackRef.current) {
+        leaveCallbackRef.current();
+      }
+    }
+  }, [blocker, reportDownloaded]);
+
+  useEffect(() => {
+    return () => {
+      removeElements({});
+    };
+  }, [removeElements]);
 
   return (
     <ReportContext.Provider
@@ -598,6 +617,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
         moveElement,
         downloadReport,
         documentSections: docSections,
+        addLeaveCallback,
       }}
     >
       <Sheet open={isEditorOpen} onOpenChange={setIsEditorOpen}>
@@ -716,7 +736,14 @@ export function ReportCTX({ children }: { children: ReactNode }) {
             <AlertDialogCancel onClick={() => blocker.reset?.()}>
               {uiText.leaveAlert.cancel}
             </AlertDialogCancel>
-            <AlertDialogAction onClick={() => blocker.proceed?.()}>
+            <AlertDialogAction
+              onClick={() => {
+                blocker.proceed?.();
+                if (leaveCallbackRef.current) {
+                  leaveCallbackRef.current();
+                }
+              }}
+            >
               {uiText.leaveAlert.confirm}
             </AlertDialogAction>
           </AlertDialogFooter>
