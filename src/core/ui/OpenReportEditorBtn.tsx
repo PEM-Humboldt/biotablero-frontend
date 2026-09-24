@@ -20,14 +20,15 @@ export function OpenReportEditorBtn() {
   return !texts ? null : (
     <Button
       disabled={!user || !hasSections}
-      variant="outline"
-      size="sm"
+      variant="ghost"
       onClick={() => toggleEditor(true)}
       title={texts.title}
       aria-label={texts.sr}
+      className="ml-auto mr-2 text-background hover:text-accent hover:bg-background"
+      size="sm"
     >
-      <ClipboardPen />
       {texts.label}
+      <ClipboardPen className="size-5" />
     </Button>
   );
 }
