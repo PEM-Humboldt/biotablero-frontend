@@ -448,7 +448,11 @@ export function ObservedRichness() {
               description=""
               graphInfo={richness.texts}
               tableData={[]}
-              graphId={richness.currentTaxonomicGroup}
+              graphId={
+                richness.currentTaxonomicGroup === "all"
+                  ? "Todos los grupos"
+                  : richness.currentTaxonomicGroup
+              }
               includesMap={false}
             >
               <>
@@ -482,7 +486,11 @@ export function ObservedRichness() {
               description=""
               graphInfo={richness.texts}
               tableData={[]}
-              graphId={richness.currentTaxonomicGroup}
+              graphId={
+                richness.currentTaxonomicGroup === "all"
+                  ? "Todos los grupos"
+                  : richness.currentTaxonomicGroup
+              }
               includesMap={true}
             >
               <div className="w-full aspect-video">
