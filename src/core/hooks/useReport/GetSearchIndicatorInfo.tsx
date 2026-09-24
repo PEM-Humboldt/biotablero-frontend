@@ -47,15 +47,16 @@ export function GetSearchIndicatorInfo({
       removeSectionFromRegistry(title);
     };
   }, [
-    wrapperId,
-    title,
+    addSectionToRegistry,
     children,
     description,
     graphId,
     graphInfo,
-    tableData,
-    addSectionToRegistry,
+    includesMap,
     removeSectionFromRegistry,
+    tableData,
+    title,
+    wrapperId,
   ]);
 
   return children;
