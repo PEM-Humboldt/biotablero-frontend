@@ -76,11 +76,12 @@ import { uiText } from "@hooks/useReport/layout/uiText";
 import { StrValidator } from "@utils/strValidator";
 import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 
-// TODO: revisar estas importaciones desde pages
+// TODO: revisar estas importaciones de tipos desde pages
 import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
-import { sendReportDownloadReason } from "pages/monitoring/api/services/report";
-import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
 import type { SearchState } from "pages/search/hooks/SearchReducer";
+
+// TODO: crear el back de Consultas para poder manejar sus propias métricas, de momento está enlazado a Monitoreo
+import { sendReportDownloadReason } from "pages/monitoring/api/services/report";
 
 const mcIndicatorPathComponents = ["Monitoreo", "Iniciativas", "Indicadores"];
 const searchComponents = ["Consultas"];
@@ -108,7 +109,6 @@ export function ReportCTX({ children }: { children: ReactNode }) {
   // Contextos
   const { pathname } = useLocation();
   const { user } = useUserCTX();
-  const searchState = useSearchStateCTX();
 
   // Referencias
   const currentSectionInfoPool = useRef<SectionInfo | null>(null);
@@ -572,12 +572,6 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       pathChange
     );
   });
-
-  useEffect(() => {
-    if (reportType === ReportType.SEARCH_INDICATORS) {
-      reportContextResolver(searchState);
-    }
-  }, [reportType, searchState, reportContextResolver]);
 
   useEffect(() => {
     if (blocker.state === "blocked" && reportDownloaded) {

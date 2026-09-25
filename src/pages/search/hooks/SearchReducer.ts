@@ -72,7 +72,10 @@ export type SearchActions =
   | { type: SearchUpdated.AREA_HA; areaHa: number | undefined }
   | {
       type: SearchUpdated.AREA_LAYER;
-      payload: { areaLayerJSON: geojson.GeoJsonObject; areaType?: AreaType };
+      payload: {
+        areaLayerJSON: geojson.GeoJsonObject | undefined;
+        areaType?: AreaType;
+      };
     } // handleAreaLayerUpdate
   | { type: SearchUpdated.SHAPE_LAYERS; shapeLayers: ShapeLayer[] }
   | { type: SearchUpdated.RASTER_LAYERS_PARTIAL; rasterLayers: RasterLayer[] } // LEGACY
