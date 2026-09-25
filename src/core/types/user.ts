@@ -8,6 +8,10 @@ export type UserProfile = {
   picture: string;
   gender: string;
   organization: string;
+  company?: {
+    id: number;
+    name: string;
+  };
 };
 
 export type UserKeycloak = {

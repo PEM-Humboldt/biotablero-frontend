@@ -26,7 +26,7 @@ type UserContextType = {
 const UserContext = createContext<UserContextType | null>(null);
 
 export function generateUserFromKeycloak(userKC: UserKeycloak): UserProfile {
-  return {
+  const userProfile: UserProfile = {
     username: userKC.username,
     email: userKC.email,
     firstName: userKC.firstName,
@@ -37,6 +37,15 @@ export function generateUserFromKeycloak(userKC: UserKeycloak): UserProfile {
     gender: userKC.genero,
     organization: userKC.organizacion,
   };
+
+  if (userProfile.username === "geb") {
+    userProfile.company = {
+      id: 1,
+      name: "Grupo Energía Bogotá",
+    };
+  }
+
+  return userProfile;
 }
 
 const refreshTokenTimeSeconds = Number(

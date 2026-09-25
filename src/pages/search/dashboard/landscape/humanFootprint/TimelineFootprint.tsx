@@ -8,7 +8,7 @@ import { IconTooltip } from "@ui/Tooltips";
 import TextBoxes from "@ui/TextBoxes";
 import { Lines } from "@composites/charts/Lines";
 import { GraphLegend } from "@ui/GraphLegend";
-import { LOCALE } from "@config/monitoring";
+import { LOCALE } from "@config/global";
 
 import type { TimelineHF } from "pages/search/types/humanFootprint";
 import type { TextsObject } from "pages/search/types/texts";

@@ -21,6 +21,7 @@ import { useUserCTX } from "@hooks/UserCTX";
 import { COLOMBIA_BOUNDS } from "pages/utils/settings";
 import { OnLoadingModal } from "@ui/OnLoadingModal";
 import { CssMaskRasterOverlay } from "./mapViewer/CssMaskRasterOverlay";
+import { GradientLegend } from "@ui/GradientLegend";
 
 const config = {
   params: {
@@ -98,12 +99,13 @@ export function MapViewer({
 
   return (
     <MapContainer id="map" ref={mapRef} bounds={config.params.colombia}>
-      {/* TODO: agrega componente para el gradiente */}
-
       {titleName && (
         <>
           <div className="mapsTitle">
             <div className="title">{titleName}</div>
+            {mapTitle.gradientData && (
+              <GradientLegend {...mapTitle.gradientData} />
+            )}
           </div>
         </>
       )}

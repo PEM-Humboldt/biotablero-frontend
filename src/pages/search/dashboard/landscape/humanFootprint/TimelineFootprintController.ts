@@ -72,8 +72,8 @@ export class TimelineFootprintController {
 
     return request
       .catch((err) => {
-        console.error("Error original:", err);
-        throw new Error("Error getting data");
+        console.error(err);
+        throw new Error("Error getting TimelineHF data");
       })
       .finally(() => {
         this.activeRequests.delete("timelineData");
