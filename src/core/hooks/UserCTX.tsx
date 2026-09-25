@@ -25,8 +25,8 @@ type UserContextType = {
 
 const UserContext = createContext<UserContextType | null>(null);
 
-function generateUserFromKeycloak(userKC: UserKeycloak): UserProfile {
-  var userProfile: UserProfile = {
+export function generateUserFromKeycloak(userKC: UserKeycloak): UserProfile {
+  const userProfile: UserProfile = {
     username: userKC.username,
     email: userKC.email,
     firstName: userKC.firstName,

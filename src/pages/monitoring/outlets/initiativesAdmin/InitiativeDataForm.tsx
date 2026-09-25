@@ -39,6 +39,7 @@ import { uiText as componentText } from "pages/monitoring/ui/initiativesAdmin/la
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
 import { addTagToInitiative } from "pages/monitoring/api/services/tags";
 import { PageTitleUpdater } from "@ui/PageTitleUpdater";
+import { ImageUploadInfo } from "pages/monitoring/api/types/definitions";
 
 export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
   const [formID, setformID] = useState(0);
@@ -106,12 +107,12 @@ export function InitiativeDataForm({ onSuccess }: { onSuccess: () => void }) {
       }
     });
 
-    const imagesToUpload = [
-      { file: images.imageUrl, path: `initiative/UploadImage/${res.id}` },
-      { file: images.bannerUrl, path: `initiative/UploadBanner/${res.id}` },
+    const imagesToUpload: ImageUploadInfo[] = [
+      { type: "image", action: "add", file: images.imageUrl },
+      { type: "banner", action: "add", file: images.bannerUrl },
     ];
 
-    const imageUploadErrors = await uploadImages(imagesToUpload);
+    const imageUploadErrors = await uploadImages(imagesToUpload, res.id);
 
     if (imageUploadErrors?.length > 0) {
       setErrors((oldErr) => ({

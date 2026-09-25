@@ -22,7 +22,7 @@ export async function makeGraphImg(
     root.render(graphComponent);
 
     await new Promise((resolve) =>
-      setTimeout(resolve, GRAPH_ANIMATION_CONFIG.duration + 200),
+      setTimeout(resolve, GRAPH_ANIMATION_CONFIG.duration + 400),
     );
 
     const graphBlob = await domToBlob(tempContainer, screenshotOptions);

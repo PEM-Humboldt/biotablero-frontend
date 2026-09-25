@@ -13,7 +13,7 @@ export async function fetchAndMakeLocationObj(
   if (!info) {
     return null;
   }
-  const isMunicipality = !!info.parent;
+  const isMunicipality = info.level === 3;
 
   return {
     id: info.id,
@@ -29,7 +29,7 @@ export function makeLocationObj(
   locationInfo: LocationCompleteInfo,
 ): LocationObj {
   const { location, locality } = locationInfo;
-  const isMunicipality = !!location.parent;
+  const isMunicipality = location.level === 3;
 
   return {
     id: locationInfo.id,

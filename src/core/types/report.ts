@@ -1,5 +1,3 @@
-import type { LocationCompleteInfo } from "pages/monitoring/types/odataResponse";
-
 export type GraphDTO = {
   id: string;
   blobUrl: string;
@@ -13,6 +11,7 @@ export type SearchSection = {
   description: string;
   graphInfo?: Record<string, string>;
   graphs: GraphDTO[];
+  url: string;
 };
 
 export type SearchContext = {
@@ -43,6 +42,7 @@ export type IndicatorSection = {
   graphs: GraphDTO[];
   singleMap: boolean;
   description: string;
+  url: string;
   card: {
     methodology: string;
     interpretation: string;

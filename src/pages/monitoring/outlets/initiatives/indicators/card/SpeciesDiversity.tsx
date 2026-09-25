@@ -114,7 +114,11 @@ export function SpeciesDiversity() {
           uiText={uiText.indicatorCard.speciesDiversity.groupSelector}
           options={speciesList}
           currentSelection={selectedSpecie}
-          updateCurrent={setSelectedSpecie}
+          updateCurrent={(newValue: string | string[]) => {
+            if (typeof newValue === "string") {
+              setSelectedSpecie(newValue);
+            }
+          }}
           colorFromOptionHash={true}
           highContrast={true}
         />
@@ -123,7 +127,11 @@ export function SpeciesDiversity() {
           uiText={uiText.indicatorCard.speciesDiversity.indexSelector}
           options={indexesList}
           currentSelection={selectedIndex}
-          updateCurrent={setSelectedIndex}
+          updateCurrent={(newValue: string | string[]) => {
+            if (typeof newValue === "string") {
+              setSelectedIndex(newValue);
+            }
+          }}
         />
       </div>
 

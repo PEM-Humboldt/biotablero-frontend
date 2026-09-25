@@ -38,7 +38,6 @@ import type {
 import { PlainInputContainer } from "pages/monitoring/ui/initiativesAdmin/initiativeDataForm/PlainInputContainer";
 import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 
-const setInitialImageInfo = (e: unknown) => (e instanceof File ? e : null);
 const setInitialImagePrv = (e: unknown) => (typeof e === "string" ? e : null);
 
 export function ImagesInput({
@@ -57,8 +56,8 @@ export function ImagesInput({
     | ((value: boolean) => void);
 }) {
   const [imagesInfo, setImagesInfo] = useState<ImagesData>({
-    imageUrl: setInitialImageInfo(sectionInfo.imageUrl),
-    bannerUrl: setInitialImageInfo(sectionInfo.bannerUrl),
+    imageUrl: sectionInfo.imageUrl ?? null,
+    bannerUrl: sectionInfo.bannerUrl ?? null,
   });
   const [imagesPreview, setImagesPreview] = useState<{
     [K in keyof ImagesData]?: string | null;
@@ -74,10 +73,7 @@ export function ImagesInput({
   const bannerUrlRef = useRef(null);
 
   useEffect(() => {
-    const infoClean = Object.fromEntries(
-      Object.entries(imagesInfo).filter(([_, value]) => Boolean(value)),
-    );
-    sectionUpdater(infoClean);
+    sectionUpdater(imagesInfo);
   }, [imagesInfo, sectionUpdater]);
 
   useEffect(() => {
