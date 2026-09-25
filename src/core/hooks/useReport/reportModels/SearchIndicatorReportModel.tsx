@@ -5,7 +5,6 @@ import type {
   SearchContext,
   SearchSection as SearchSectionType,
 } from "@appTypes/report";
-import { SearchPolygonSection } from "@hooks/useReport/reportModels/searchIndicatorReportModel/AboutSearchPolygon";
 import { SearchSection } from "@hooks/useReport/reportModels/searchIndicatorReportModel/SearchSection";
 import { Credits } from "@hooks/useReport/reportModels/searchIndicatorReportModel/Credits";
 import { documentInfo } from "@hooks/useReport/reportModels/searchIndicatorReportModel/layout/documentInfo";
@@ -31,13 +30,11 @@ export function SearchIndicatorReportModel({
         indicatorsAmount={sections.size}
       />
 
-      <SearchPolygonSection context={context} metadata={metadata} />
-
       {[...sections.entries()].map(([key, section]) => (
         <SearchSection key={key} section={section} metadata={metadata} />
       ))}
 
-      <Credits metadata={metadata} />
+      <Credits metadata={metadata} context={context} />
     </Document>
   );
 }

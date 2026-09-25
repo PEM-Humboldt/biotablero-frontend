@@ -1,6 +1,6 @@
 import { View, Text } from "@react-pdf/renderer";
-import { styles } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/styles";
-import { Wordmark } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/branding";
+import { styles } from "@hooks/useReport/reportModels/searchIndicatorReportModel/layout/styles";
+import { Wordmark } from "@hooks/useReport/reportModels/searchIndicatorReportModel/layout/branding";
 import type { ReportMetadata } from "@appTypes/report";
 
 export function Footer({ metadata }: { metadata: ReportMetadata }) {

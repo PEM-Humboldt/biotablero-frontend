@@ -485,7 +485,10 @@ export function ObservedRichness() {
               title="Número de especies registradas por km² (LMSC)"
               description=""
               graphInfo={richness.texts}
-              tableData={[]}
+              tableData={controllerRef.current.getDownloadData({
+                current: richness.areaTableData,
+                national: richness.nationalTableData,
+              })}
               graphId={
                 richness.currentTaxonomicGroup === "all"
                   ? "Todos los grupos"

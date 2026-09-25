@@ -1,12 +1,18 @@
-import { Page, View, Text } from "@react-pdf/renderer";
+import { Page, View, Text, Link } from "@react-pdf/renderer";
 import { REPORT_PAGE_SIZE } from "@config/report";
-import type { ReportMetadata } from "@appTypes/report";
+import type { ReportMetadata, SearchContext } from "@appTypes/report";
 import { styles } from "@hooks/useReport/reportModels/searchIndicatorReportModel/layout/styles";
 import { colors } from "@hooks/useReport/reportModels/searchIndicatorReportModel/layout/theme";
 import { Footer } from "@hooks/useReport/reportModels/searchIndicatorReportModel/layout/footer";
 import { documentInfo } from "@hooks/useReport/reportModels/searchIndicatorReportModel/layout/documentInfo";
 
-export function Credits({ metadata }: { metadata: ReportMetadata }) {
+export function Credits({
+  metadata,
+  context,
+}: {
+  metadata: ReportMetadata;
+  context: SearchContext;
+}) {
   return (
     <Page
       size={REPORT_PAGE_SIZE}
@@ -15,16 +21,29 @@ export function Credits({ metadata }: { metadata: ReportMetadata }) {
     >
       <View style={{ marginTop: 4 }}>
         <Text style={styles.disclaimerLabel}>{documentInfo.credits.about}</Text>
+
+        <View style={styles.kvRow}>
+          <Text style={styles.kvKey}>{documentInfo.credits.searchUrl}</Text>
+          <Text style={[styles.kvVal, { color: colors.coral }]}>
+            <Link src={context.searchUrl} style={{ color: colors.coral }}>
+              {context.searchUrl}
+            </Link>
+          </Text>
+        </View>
+
         <View style={styles.kvRow}>
           <Text style={styles.kvKey}>{documentInfo.credits.madeBy}</Text>
-          <Text style={styles.kvVal}>
-            {metadata.madeBy.name} ({metadata.madeBy.username})
-          </Text>
+          <Text style={styles.kvVal}>{metadata.madeBy.name}</Text>
         </View>
         <View style={styles.kvRow}>
           <Text style={styles.kvKey}>{documentInfo.credits.contact}</Text>
           <Text style={[styles.kvVal, { color: colors.coral }]}>
-            {metadata.madeBy.email}
+            <Link
+              src={`mailto:${metadata.madeBy.email}`}
+              style={{ color: colors.coral }}
+            >
+              {metadata.madeBy.email}
+            </Link>
           </Text>
         </View>
         <View style={[styles.disclaimerBox, { marginTop: 12 }]}>

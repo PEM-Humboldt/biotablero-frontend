@@ -4,7 +4,7 @@ import { type SrchType } from "pages/search/hooks/SearchContext";
 import { type ReactElement, type Dispatch, type SetStateAction } from "react";
 
 import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
-import { type SearchState } from "pages/search/hooks/SearchReducer";
+import { SearchState } from "pages/search/hooks/SearchReducer";
 
 export type SectionInfo = {
   sectionId: string;

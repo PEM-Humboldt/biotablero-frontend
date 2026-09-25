@@ -1,5 +1,6 @@
 import { StyleSheet } from "@react-pdf/renderer";
-import { colors } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/theme";
+import { colors } from "@hooks/useReport/reportModels/searchIndicatorReportModel/layout/theme";
+import { MAX_INDICATOR_IMAGE_HEIGHT } from "@config/report";
 
 export const styles = StyleSheet.create({
   // ---- Páginas ----
@@ -53,6 +54,13 @@ export const styles = StyleSheet.create({
     fontWeight: 700,
     marginBottom: 10,
   },
+  titleAreaType: {
+    fontSize: 11,
+    fontWeight: 300,
+    color: colors.navy,
+    marginBottom: 0,
+    lineHeight: 1.1,
+  },
   titleGeneral: {
     fontSize: 27,
     fontWeight: 900,
@@ -86,7 +94,13 @@ export const styles = StyleSheet.create({
     color: colors.textMuted,
     marginBottom: 2,
   },
-  coverMetaValue: { fontSize: 10, fontWeight: 700, color: colors.slate },
+  coverMetaValue: {
+    fontSize: 10,
+    fontWeight: 700,
+    lineHeight: 2,
+    color: colors.slate,
+  },
+
   coverBrandRow: {
     position: "absolute",
     bottom: 40,
@@ -104,16 +118,30 @@ export const styles = StyleSheet.create({
     paddingVertical: 9,
     paddingHorizontal: 12,
     marginBottom: 14,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
   },
   sectionHeaderTitle: {
     color: colors.white,
     fontSize: 13,
     fontWeight: 700,
-    flexShrink: 1,
-    paddingRight: 8,
+  },
+
+  sectionHeaderMetaRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingTop: 5,
+  },
+  sectionHeaderMetaValue: {
+    fontSize: 9,
+    fontWeight: 300,
+    color: colors.white,
+  },
+  sectionHeaderMetaCounter: {
+    fontSize: 8,
+    fontWeight: 300,
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
+    color: colors.white,
   },
 
   // ---- Bloques de contenido ----
@@ -255,6 +283,8 @@ export const styles = StyleSheet.create({
 
   indicatorMap: {
     width: "100%",
+    height: "auto",
+    maxHeight: MAX_INDICATOR_IMAGE_HEIGHT,
     objectFit: "contain",
     objectPosition: "center",
     borderRadius: 6,
@@ -264,6 +294,9 @@ export const styles = StyleSheet.create({
 
   indicatorImage: {
     width: "100%",
+    height: "auto",
+    maxHeight: MAX_INDICATOR_IMAGE_HEIGHT,
+    objectFit: "contain",
     borderRadius: 6,
     marginBottom: 10,
   },
@@ -308,5 +341,55 @@ export const styles = StyleSheet.create({
     right: 0,
     top: 0,
     color: colors.textMuted,
+  },
+
+  // ---- Tablas ----
+  tableContainer: {
+    width: "100%",
+    borderWidth: 1,
+    borderColor: colors.line,
+    borderRadius: 4,
+    backgroundColor: colors.white,
+    marginBottom: 10,
+    overflow: "hidden",
+  },
+  tableHeaderRow: {
+    flexDirection: "row",
+    backgroundColor: colors.slate,
+  },
+  tableRow: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderBottomColor: colors.line,
+  },
+  tableCellHeader: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingVertical: 5,
+    paddingHorizontal: 4,
+    minHeight: 12,
+  },
+  tableCell: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    paddingVertical: 5,
+    paddingHorizontal: 4,
+    minHeight: 16,
+  },
+  tableHeaderText: {
+    fontSize: 6,
+    fontWeight: 700,
+    lineHeight: 1,
+    color: colors.white,
+  },
+  tableCellText: {
+    fontSize: 7.5,
+    lineHeight: 1,
+    color: colors.text,
+    wordBreak: "break-word",
   },
 });

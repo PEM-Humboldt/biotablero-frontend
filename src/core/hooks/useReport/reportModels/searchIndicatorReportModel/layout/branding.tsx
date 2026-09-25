@@ -1,5 +1,5 @@
 import { Text, Svg, Path } from "@react-pdf/renderer";
-import { colors } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/theme";
+import { colors } from "@hooks/useReport/reportModels/searchIndicatorReportModel/layout/theme";
 import {
   HUMBOLDT_LOGO_PATHS,
   HUMBOLDT_LOGO_RATIO,
