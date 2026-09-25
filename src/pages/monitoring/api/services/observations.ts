@@ -7,7 +7,7 @@ import type {
 } from "pages/monitoring/types/observations";
 
 /**
- * Fetches indicators metadata from the "Observation" endpoint of the Monitoring API using odataParams.
+ * Fetches the observatios metadata from the "Observation" endpoint using odataParams.
  *
  * @param odataParams Optional OData query parameters
  *
@@ -24,7 +24,7 @@ export const getObservations =
  * @param initiativeId - The initiative identifier in db
  *
  * @returns A `Promise` resolving to:
- * - On success: An array of `IndicatorMetadata` objects
+ * - On success: An array of `ObservationMetadata` objects
  * - On failure: A `ApiRequestError` object.
  */
 export async function getObservationsByInitiative(initiativeId: number) {
