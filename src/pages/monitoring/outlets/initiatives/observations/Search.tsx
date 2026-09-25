@@ -16,7 +16,7 @@ import {
 } from "@ui/shadCN/component/input-group";
 
 import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
-import { ObseervationSmallCard } from "pages/monitoring/outlets/initiatives/observations/search/ObservationSmallCard";
+import { ObservationSmallCard } from "pages/monitoring/outlets/initiatives/observations/search/ObservationSmallCard";
 import { fuzzySearch } from "pages/monitoring/utils/search";
 import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
 
@@ -207,7 +207,7 @@ export function Search() {
 
       <div className="flex-1 flex flex-col p-2 gap-4 overflow-auto scrollbar-custom">
         {filteredObservations.map((observation) => (
-          <ObseervationSmallCard
+          <ObservationSmallCard
             key={`smallCartObservation_${observation.id}`}
             observation={observation}
           />

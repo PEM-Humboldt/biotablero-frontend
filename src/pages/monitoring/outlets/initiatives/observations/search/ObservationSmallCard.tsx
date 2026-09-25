@@ -13,7 +13,7 @@ import type { ObservationMetadata } from "pages/monitoring/types/observations";
 import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
 import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
 
-export function ObseervationSmallCard({
+export function ObservationSmallCard({
   observation,
 }: {
   observation: ObservationMetadata;
