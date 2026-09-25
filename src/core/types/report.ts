@@ -4,6 +4,7 @@ import { type SrchType } from "pages/search/hooks/SearchContext";
 import { type ReactElement, type Dispatch, type SetStateAction } from "react";
 
 import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
+import { type SearchState } from "pages/search/hooks/SearchReducer";
 
 export type SectionInfo = {
   sectionId: string;
@@ -39,7 +40,9 @@ export type ReportModelProps = MCReportModelProps | SearchReportModelProps;
 export type ReportContextType = {
   isLoading: boolean;
   errors: string[];
-  reportContextResolver: (context: InitiativeCompleteInfo) => void;
+  reportContextResolver: (
+    context: InitiativeCompleteInfo | SearchState,
+  ) => void;
   reportDownloaded: boolean;
   setCurrentSectionPool: (section: SectionInfo | null) => void;
   hasSections: boolean;

@@ -173,8 +173,14 @@ export function LegacyCTX({ children }: { children: ReactNode }) {
       setAreaId: (areaId?: AreaIdBasic) =>
         searchDispatch({ type: SearchUpdated.AREA_ID, areaId }),
 
-      setAreaLayer: (areaLayerJSON: geojson.GeoJsonObject | undefined) =>
-        searchDispatch({ type: SearchUpdated.AREA_LAYER, areaLayerJSON }),
+      setAreaLayer: (
+        areaLayerJSON: geojson.GeoJsonObject | undefined,
+        areaType?: AreaType,
+      ) =>
+        searchDispatch({
+          type: SearchUpdated.AREA_LAYER,
+          payload: { areaLayerJSON, areaType },
+        }),
 
       setShapeLayers: (shapeLayers: ShapeLayer[]) =>
         searchDispatch({ type: SearchUpdated.SHAPE_LAYERS, shapeLayers }),

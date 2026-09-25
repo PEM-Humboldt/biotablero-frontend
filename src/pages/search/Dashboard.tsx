@@ -21,12 +21,18 @@ import { useLocation, useNavigate, useOutletContext } from "react-router";
 import { useReport } from "@hooks/useReport";
 
 export function Dashboard() {
-  const { areaHa } = useSearchStateCTX();
-  const { addLeaveCallback } = useReport();
+  const searchState = useSearchStateCTX();
+  const { addLeaveCallback, reportContextResolver } = useReport();
   const { layoutDispatch } = useOutletContext<UiManager>();
   const searchMapDispatch = useSearchDispatchCTX();
   const { pathname } = useLocation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (searchState) {
+      reportContextResolver(searchState);
+    }
+  }, [searchState, reportContextResolver]);
 
   useEffect(() => {
     return addLeaveCallback(() => {
@@ -51,7 +57,7 @@ export function Dashboard() {
         <div className="HAgen">
           <h4>
             hectáreas totales
-            <b>{`${formatNumber(areaHa || 0, 0)}`}</b>
+            <b>{`${formatNumber(searchState.areaHa || 0, 0)}`}</b>
           </h4>
         </div>
         <OpenReportEditorBtn />
