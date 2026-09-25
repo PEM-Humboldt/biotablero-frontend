@@ -8,6 +8,7 @@ export const documentInfo = {
     subject: "Reporte de indicadores · Consultas Geográficas",
     madeInDate: "Generado",
     madeInBy: "Elaborado por",
+    madeInByContact: "Contacto",
     indicatorsAmount: "Indicadores",
   },
 
@@ -23,10 +24,9 @@ export const documentInfo = {
 
   SearchSection: {
     indicatorMapLabel: "Mapa del indicador",
-    grapMapLabel: (graphName: string) =>
-      `Mapa del indicador para los valores de ${graphName}`,
-    metricsInGraphLabel: (graphName: string) =>
-      `Gráfica del indicador para los valores '${graphName}'`,
+    grapMapLabel: (graphName: string) => `Mapa para ${graphName}`,
+    metricsInGraphLabel: (graphName: string) => `Gráfica para '${graphName}'`,
+    dataInLabel: (graphName: string) => `Datos para '${graphName}'`,
     userNoteTitleLabel: (userName: string) => `Anotación de ${userName}`,
     sectionDescriptionLabel: "¿Qué dice este indicador?",
     methodologyLabel: "Metodología",
@@ -38,6 +38,7 @@ export const documentInfo = {
   credits: {
     about: "Información sobre el reporte",
     madeBy: "Elaborado por:",
+    searchUrl: "Enlace al polígono consultado",
     contact: "Contacto",
     disclaimer: {
       title: "Aviso legal",

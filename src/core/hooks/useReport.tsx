@@ -473,7 +473,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       const blob = await pdf(
         <DocumentModelComponent
           metadata={docMetadata}
-          context={docContext as IndicatorContext}
+          context={docContext}
           sections={docSections as Map<string, IndicatorSection>}
         />,
       ).toBlob();

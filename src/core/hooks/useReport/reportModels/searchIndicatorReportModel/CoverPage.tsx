@@ -11,6 +11,7 @@ import {
 } from "@hooks/useReport/reportModels/searchIndicatorReportModel/layout/branding";
 import { documentInfo } from "@hooks/useReport/reportModels/searchIndicatorReportModel/layout/documentInfo";
 import { REPORT_PAGE_SIZE } from "@config/report";
+import { LOCALE } from "@config/global";
 
 export function CoverPage({
   context,
@@ -36,8 +37,13 @@ export function CoverPage({
 
       <View style={styles.coverBody}>
         <Text style={styles.coverKicker}>{documentInfo.coverPage.subject}</Text>
+        <Text style={styles.titleAreaType}>
+          Consulta de {context.area.type}
+        </Text>
         <Text style={styles.titleGeneral}>
-          {context.area?.name ? context.area.name : "Polígono Personalizado"}
+          {context.area?.name
+            ? context.area.name
+            : `id: ${context.area.polygonId}`}
         </Text>
 
         <View style={styles.coverMetaRow}>
@@ -52,6 +58,10 @@ export function CoverPage({
               {documentInfo.coverPage.madeInBy}
             </Text>
             <Text style={styles.coverMetaValue}>{metadata.madeBy.name}</Text>
+
+            <Text style={styles.coverMetaLabel}>
+              {documentInfo.coverPage.madeInByContact}
+            </Text>
             <Text style={styles.coverMetaValue}>
               <Link
                 src={`mailto:${metadata.madeBy.email}`}
@@ -62,6 +72,18 @@ export function CoverPage({
             </Text>
           </View>
           <View style={styles.coverMetaItem}>
+            <Text style={styles.coverMetaLabel}>
+              {documentInfo.aboutSearch.stats.areaLabel}
+            </Text>
+            <Text style={styles.coverMetaValue}>
+              {Math.round(context.area.size).toLocaleString(LOCALE)}
+              {context.area.type ? (
+                <Text style={styles.metricUnit}>
+                  {documentInfo.aboutSearch.stats.areaUnit}
+                </Text>
+              ) : null}
+            </Text>
+
             <Text style={styles.coverMetaLabel}>
               {documentInfo.coverPage.indicatorsAmount}
             </Text>
