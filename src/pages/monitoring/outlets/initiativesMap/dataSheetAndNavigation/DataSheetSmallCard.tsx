@@ -5,7 +5,7 @@ import { cn } from "@ui/shadCN/lib/utils";
 import { Button } from "@ui/shadCN/component/button";
 import type { LucideIcon } from "lucide-react";
 import { TAG_COLORS } from "@config/monitoring";
-import type { IndicatorVersion } from "pages/monitoring/types/indicators";
+import type { ObservationVersion } from "pages/monitoring/types/observations";
 
 export function DataSheetSmallCard({
   title,
@@ -17,7 +17,7 @@ export function DataSheetSmallCard({
   title: string;
   tags?: Omit<ODataTag, "categoryName">[];
   location?: string;
-  bottonLeftInfo?: Date | IndicatorVersion;
+  bottonLeftInfo?: Date | ObservationVersion;
   link: {
     href: string;
     label?: string;

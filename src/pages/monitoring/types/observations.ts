@@ -3,7 +3,7 @@ import type {
   TagInIndicator,
 } from "pages/monitoring/types/odataResponse";
 
-export enum IndicatorType {
+export enum ObservationMetric {
   OCCUPATION_SPECIES = 1,
   DETECTION_PROBABILITY_WITHOUT_COVARIABLES = 2,
   SPECIES_DIVERSITY = 3,
@@ -12,21 +12,21 @@ export enum IndicatorType {
   COLLECTIVE_ACTION_PARTICIPATION = 6,
 }
 
-export type indicatorDescription = { id: IndicatorType; name: string };
-export type IndicatorVersion = {
+export type ObservationDescription = { id: ObservationMetric; name: string };
+export type ObservationVersion = {
   id: number;
   creationDate: string;
   version: number;
 };
 
-export interface IndicatorMetadata {
+export interface ObservationMetadata {
   id: number;
   name: string;
   initiativeId: number;
   initiativeName?: string;
-  type: indicatorDescription;
+  topic: ObservationDescription;
   locations: LocationCompleteInfo[];
-  versions: IndicatorVersion[];
+  versions: ObservationVersion[];
   tags: TagInIndicator[];
 }
 
@@ -43,14 +43,14 @@ export interface IndicatorMetadata {
  *  measureUnit: {name: string, representation?: string}
  *  no lo necesitan 11 y 12
  */
-type IndicatorValue = {
+type ObservationValue = {
   id: number;
   date: { year: number; month: number };
   dateEnd?: { year: number; month: number };
   value: number;
   upperLimit?: number;
   lowerLimit?: number;
-  measureUnit: { name: string; representation?: string };
+  indicatorType: { name: string; representation?: string };
 };
 
 /* NOTE:
@@ -61,7 +61,7 @@ type IndicatorValue = {
  *  parent?: {id: number, name: string}
  *  los necesita 1,2,4,5,6
  */
-export type IndicatorGroup = {
+export type ObservationGroup = {
   id: number;
   category: {
     id: number;
@@ -69,12 +69,12 @@ export type IndicatorGroup = {
     description?: string;
     parent?: { id: number; name: string };
   };
-  values: IndicatorValue[];
+  values: ObservationValue[];
 };
 
-export interface IndicatorData {
+export interface ObservationData {
   id: number;
-  indicatorId: number;
+  observationId: number;
   creationDate: string;
   version: number;
   description?: string;
@@ -82,7 +82,7 @@ export interface IndicatorData {
   interpretation?: string;
   considerations?: string;
   authorship?: string;
-  groups: IndicatorGroup[];
+  groups: ObservationGroup[];
 }
 
 export type LineDataValues = {

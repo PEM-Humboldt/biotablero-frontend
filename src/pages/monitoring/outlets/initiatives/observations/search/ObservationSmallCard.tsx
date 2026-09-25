@@ -7,22 +7,22 @@ import { Button } from "@ui/shadCN/component/button";
 import { LOCALE } from "@config/global";
 import { TAG_COLORS } from "@config/monitoring";
 
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
+import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
 import { TagsRender } from "pages/monitoring/ui/TagsRender";
-import type { IndicatorMetadata } from "pages/monitoring/types/indicators";
-import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
+import type { ObservationMetadata } from "pages/monitoring/types/observations";
+import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
 import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
 
-export function IndicatorSmallCard({
-  indicator,
+export function ObservationSmallCard({
+  observation,
 }: {
-  indicator: IndicatorMetadata;
+  observation: ObservationMetadata;
 }) {
-  const { currentIndicator } = useIndicatorsCTX();
+  const { currentObservation } = useObservationsCTX();
   const isCurrent =
-    currentIndicator && indicator.id === currentIndicator.indicatorId;
+    currentObservation && observation.id === currentObservation.observationId;
 
-  const tagsGrouped = (indicator.tags || []).reduce<
+  const tagsGrouped = (observation.tags || []).reduce<
     Record<number, { group: string; tags: string[] }>
   >((all, tag) => {
     if (!all[tag.tag.category.id]) {
@@ -38,12 +38,12 @@ export function IndicatorSmallCard({
 
   const { since, until } = useMemo(
     () =>
-      indicator.versions.length === 1
+      observation.versions.length === 1
         ? {
-            since: new Date(indicator.versions[0].creationDate),
+            since: new Date(observation.versions[0].creationDate),
             until: null,
           }
-        : indicator.versions.reduce(
+        : observation.versions.reduce(
             (acc, v) => {
               const current = new Date(v.creationDate);
               if (current < acc.since) {
@@ -55,11 +55,11 @@ export function IndicatorSmallCard({
               return acc;
             },
             {
-              since: new Date(indicator.versions[0].creationDate),
-              until: new Date(indicator.versions[0].creationDate),
+              since: new Date(observation.versions[0].creationDate),
+              until: new Date(observation.versions[0].creationDate),
             },
           ),
-    [indicator.versions],
+    [observation.versions],
   );
 
   return (
@@ -69,7 +69,7 @@ export function IndicatorSmallCard({
         isCurrent ? "bg-muted outline-primary" : "bg-background shadow-2xl",
       )}
     >
-      <h4 className="mb-1">{indicator.name}</h4>
+      <h4 className="mb-1">{observation.name}</h4>
       <div className="flex flex-wrap m-1 ml-0 gap-2">
         {Object.values(tagsGrouped).map((tags, i) => {
           const colorValues = TAG_COLORS[i % TAG_COLORS.length];
@@ -99,7 +99,7 @@ export function IndicatorSmallCard({
           {!isCurrent && (
             <Button variant="ghost-clean" className="px-1!" asChild>
               <Link
-                to={`/Monitoreo/Iniciativas/${indicator.initiativeId}/Indicadores/${indicator.versions[0].id}`}
+                to={`/Monitoreo/Iniciativas/${observation.initiativeId}/Indicadores/${observation.versions[0].id}`}
                 title={uiText.search.card.gotoBtn.title}
                 aria-label={uiText.search.card.gotoBtn.sr}
               >
@@ -114,7 +114,7 @@ export function IndicatorSmallCard({
           <dl className="text-sm mb-2 flex justify-between gap-2 *:m-0! *:flex *:flex-col text-center *:items-center">
             <div>
               <dt>{uiText.search.card.nVersions.title}</dt>
-              <dd className="font-normal">{indicator.versions.length}</dd>
+              <dd className="font-normal">{observation.versions.length}</dd>
             </div>
 
             <div>
@@ -136,14 +136,14 @@ export function IndicatorSmallCard({
             </div>
           </dl>
 
-          {indicator.versions
+          {observation.versions
             .toSorted((a, b) => a.version - b.version)
             .map((v) => {
               const date = new Date(v.creationDate);
 
               return (
                 <div
-                  key={`version_${indicator.id}_${v.version}`}
+                  key={`version_${observation.id}_${v.version}`}
                   className="flex gap-2 justify-between p-1 rounded items-center hover:bg-muted"
                 >
                   <div className="text-sm flex flex-col *:m-0!">
@@ -152,10 +152,10 @@ export function IndicatorSmallCard({
                       {date.toLocaleDateString(LOCALE)}
                     </time>
                   </div>
-                  {!(isCurrent && currentIndicator.version === v.version) && (
+                  {!(isCurrent && currentObservation.version === v.version) && (
                     <Button variant="ghost-clean" className="px-1!" asChild>
                       <Link
-                        to={`/Monitoreo/Iniciativas/${indicator.initiativeId}/Indicadores/${v.id}`}
+                        to={`/Monitoreo/Iniciativas/${observation.initiativeId}/Indicadores/${v.id}`}
                         title={uiText.search.card.gotoBtn.title}
                         aria-label={uiText.search.card.gotoBtn.sr}
                       >

@@ -4,20 +4,20 @@ import { type BarDatum, ResponsiveBar } from "@nivo/bar";
 import { GRAPHS_GRADIENT_COLOR_PALETTE } from "@config/color";
 import { GRAPH_ANIMATION_CONFIG } from "@config/global";
 import { INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY } from "@config/monitoring";
-import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
+import { GetObservationInfo } from "@hooks/useReport/GetIndicatorInfo";
 
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
-import type { BarsData } from "pages/monitoring/types/indicators";
-import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphInfoSelector";
-import { getContrastColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
-import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
+import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
+import type { BarsData } from "pages/monitoring/types/observations";
+import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/observations/card/ui/GraphInfoSelector";
+import { getContrastColor } from "pages/monitoring/outlets/initiatives/observations/card/utils/colors";
+import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
 
 export function RelationalIntensityIndex() {
-  const { currentIndicator } = useIndicatorsCTX();
+  const { currentObservation } = useObservationsCTX();
 
   const [selectedDates, setSelectedDates] = useState<string[]>([]);
 
-  const data = currentIndicator?.cleanData as BarsData;
+  const data = currentObservation?.cleanData as BarsData;
 
   const { dataByDate, allDates } = useMemo(() => {
     const dataByDate: Record<string, { actor: string; value: number }[]> = {};
@@ -44,7 +44,7 @@ export function RelationalIntensityIndex() {
         dataByDate[date].length;
 
       dataByDate[date].push({
-        actor: uiText.indicatorCard.relationalIntensityIndex.averageLabel,
+        actor: uiText.observationCard.relationalIntensityIndex.averageLabel,
         value: Number(average.toFixed(2)),
       });
     }
@@ -83,11 +83,13 @@ export function RelationalIntensityIndex() {
       <div className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300">
         <GraphInfoSelector
           uiText={{
-            title: uiText.indicatorCard.relationalIntensityIndex.selector.title,
-            label: uiText.indicatorCard.relationalIntensityIndex.selector.label,
+            title:
+              uiText.observationCard.relationalIntensityIndex.selector.title,
+            label:
+              uiText.observationCard.relationalIntensityIndex.selector.label,
             instruction:
               allDates.length > INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY
-                ? uiText.indicatorCard.relationalIntensityIndex.selector.maxSelection(
+                ? uiText.observationCard.relationalIntensityIndex.selector.maxSelection(
                     INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY,
                   )
                 : undefined,
@@ -103,7 +105,7 @@ export function RelationalIntensityIndex() {
         />
       </div>
 
-      <GetIndicatorInfo
+      <GetObservationInfo
         graphId={selectedDates.toReversed().join(", ")}
         mapElementId={null}
         mapUrl={null}
@@ -141,7 +143,7 @@ export function RelationalIntensityIndex() {
 
             {selectedDates.toReversed().map((date) => (
               <div
-                key={`indicatorSection_${date}`}
+                key={`observationSection_${date}`}
                 className="flex-1 hover:bg-grey-light rounded"
               >
                 <ResponsiveBar
@@ -157,7 +159,8 @@ export function RelationalIntensityIndex() {
                   colors={(bar) => {
                     if (
                       bar.indexValue ===
-                      uiText.indicatorCard.relationalIntensityIndex.averageLabel
+                      uiText.observationCard.relationalIntensityIndex
+                        .averageLabel
                     ) {
                       return GRAPHS_GRADIENT_COLOR_PALETTE[0];
                     }
@@ -210,10 +213,10 @@ export function RelationalIntensityIndex() {
             ))}
           </div>
           <p className="text-sm italic mb-4 text-center">
-            {uiText.indicatorCard.relationalIntensityIndex.bottomLegend}
+            {uiText.observationCard.relationalIntensityIndex.bottomLegend}
           </p>
         </>
-      </GetIndicatorInfo>
+      </GetObservationInfo>
     </>
   );
 }

@@ -1,20 +1,11 @@
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
-import indicatorsSearchBkg from "@assets/indicatorsSearchBKG.jpg";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { SearchIcon, Trash2 } from "lucide-react";
+
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@ui/shadCN/component/input-group";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { SearchIcon, Trash2 } from "lucide-react";
-import { debouncer } from "@utils/debouncer";
-import { StableComboboxOData } from "@ui/ComboboxOData";
-import type {
-  ODataInitiativeShort,
-  ODataTag,
-} from "pages/monitoring/types/odataResponse";
-import { Combobox } from "@ui/ComboBox";
-import { getColombianDepartments } from "pages/monitoring/utils/manageLocation";
 import {
   Select,
   SelectContent,
@@ -22,15 +13,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@ui/shadCN/component/select";
+import observationsSearchBkg from "@assets/indicatorsSearchBKG.jpg";
 import { Button } from "@ui/shadCN/component/button";
+import { Combobox } from "@ui/ComboBox";
 import { MONITORING_YEARS_AVAILABLE } from "@config/monitoring";
-import { uiText } from "pages/monitoring/outlets/indicatorsSearch/layout/uiText";
+import { StableComboboxOData } from "@ui/ComboboxOData";
+import { debouncer } from "@utils/debouncer";
+
+import type {
+  ODataInitiativeShort,
+  ODataTag,
+} from "pages/monitoring/types/odataResponse";
+import { getColombianDepartments } from "pages/monitoring/utils/manageLocation";
+import { uiText } from "pages/monitoring/outlets/observationsSearch/layout/uiText";
+import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
 
 export function SearchInput() {
-  const { setSearchIndicators } = useIndicatorsCTX();
+  const { setSearchObservations: setSearchIndicators } = useObservationsCTX();
   const debouncedSearch = useRef(debouncer(setSearchIndicators)).current;
 
-  const [searchIndicator, setSearchIndicator] = useState("");
+  const [searchObservation, setSearchObservation] = useState("");
   const [filterInitiative, setFilterInitiative] = useState("");
   const [filterEcosystem, setFilterEcosystem] = useState("");
   const [filterBiologicalGroup, setFilterBiologicalGroup] = useState("");
@@ -50,14 +52,14 @@ export function SearchInput() {
   }, []);
 
   const searchFilter = useMemo(() => {
-    const lower = searchIndicator.toLocaleLowerCase();
+    const lower = searchObservation.toLocaleLowerCase();
 
     const filterMap = {
-      [searchIndicator]: `contains(tolower(name), '${lower}') or contains(tolower(type/name), '${lower}')`,
+      [searchObservation]: `contains(tolower(name), '${lower}') or contains(tolower(topic/name), '${lower}')`,
       [filterInitiative]: `initiativeId eq ${filterInitiative}`,
-      [filterEcosystem]: `IndicatorTags/any(l: l/tag/id eq ${filterEcosystem})`,
-      [filterBiologicalGroup]: `IndicatorTags/any(l: l/tag/id eq ${filterBiologicalGroup})`,
-      [filterDepartment]: `IndicatorLocations/any(l: l/location/parent/id eq ${filterDepartment})`,
+      [filterEcosystem]: `ObservationTags/any(l: l/tag/id eq ${filterEcosystem})`,
+      [filterBiologicalGroup]: `ObservationTags/any(l: l/tag/id eq ${filterBiologicalGroup})`,
+      [filterDepartment]: `ObservationLocations/any(l: l/location/parent/id eq ${filterDepartment})`,
       [filterYear]: `Versions/any(l: year(l/creationDate) eq ${filterYear})`,
     };
 
@@ -68,7 +70,7 @@ export function SearchInput() {
       return filter ? `${filter} and ${query}` : query;
     }, "");
   }, [
-    searchIndicator,
+    searchObservation,
     filterInitiative,
     filterEcosystem,
     filterBiologicalGroup,
@@ -82,7 +84,7 @@ export function SearchInput() {
   }, [searchFilter]);
 
   const handleReset = () => {
-    setSearchIndicator("");
+    setSearchObservation("");
     setFilterInitiative("");
     setFilterEcosystem("");
     setFilterBiologicalGroup("");
@@ -93,7 +95,7 @@ export function SearchInput() {
   return (
     <header
       className="w-full p-8 bg-cover bg-center"
-      style={{ backgroundImage: `url(${indicatorsSearchBkg})` }}
+      style={{ backgroundImage: `url(${observationsSearchBkg})` }}
     >
       <div className="max-w-[1600px] mx-auto">
         <div className="w-full lg:w-[60%] lg:max-w-[600px] rounded-xl outline-2 -outline-offset-1 overflow-hidden outline-primary">
@@ -109,16 +111,16 @@ export function SearchInput() {
                 htmlFor="searchIndicator"
                 className="text-primary-foreground font-normal"
               >
-                {uiText.searchInput.indicatorSearch.label}
+                {uiText.searchInput.observationSearch.label}
               </label>
               <InputGroup>
                 <InputGroupInput
                   id="searchIndicator"
                   type="text"
-                  value={searchIndicator}
-                  onChange={(e) => setSearchIndicator(e.target.value)}
+                  value={searchObservation}
+                  onChange={(e) => setSearchObservation(e.target.value)}
                   className="placeholder:text-foreground"
-                  placeholder={uiText.searchInput.indicatorSearch.placeholder}
+                  placeholder={uiText.searchInput.observationSearch.placeholder}
                 />
                 <InputGroupAddon align="inline-end">
                   <SearchIcon className="text-accent" />
@@ -240,7 +242,7 @@ export function SearchInput() {
                     )}
                     {MONITORING_YEARS_AVAILABLE.map((year) => (
                       <SelectItem
-                        key={`indicatorYear_${year}`}
+                        key={`observationYear_${year}`}
                         value={String(year)}
                       >
                         {year}

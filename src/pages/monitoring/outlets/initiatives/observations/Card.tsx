@@ -9,20 +9,21 @@ import {
   TabsContent,
 } from "@ui/shadCN/component/tabs";
 
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
-import type { IndicatorMetadata } from "pages/monitoring/types/indicators";
-import { GraphSelector } from "pages/monitoring/outlets/initiatives/indicators/card/GraphSelector";
-import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
+import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
+import type { ObservationMetadata } from "pages/monitoring/types/observations";
+import { GraphSelector } from "pages/monitoring/outlets/initiatives/observations/card/GraphSelector";
+import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
 import { AddMCIndicatorToReport } from "@ui/AddMCIndicatorToReport";
 
 export function Card() {
-  const { indicators, currentIndicator, isLoading, errors } =
-    useIndicatorsCTX();
+  const { observations, currentObservation, isLoading, errors } =
+    useObservationsCTX();
 
-  const indicatorTabs = uiText.indicatorCard.tabs.reduce<
+  const indicatorTabs = uiText.observationCard.tabs.reduce<
     { key: string; label: string; icon: LucideIcon; text: string }[]
   >((all, current) => {
-    const value = currentIndicator?.[current.key as keyof IndicatorMetadata];
+    const value =
+      currentObservation?.[current.key as keyof ObservationMetadata];
 
     if (value && typeof value === "string") {
       all.push({ ...current, text: value });
@@ -38,11 +39,11 @@ export function Card() {
         className="m-2 p-4 bg-accent/10 border border-accent rounded-lg"
       />
 
-      {!currentIndicator ? (
+      {!currentObservation ? (
         <div className="m-8 p-4 text-2xl bg-primary/10 text-primary rounded-lg border border-primary font-normal">
-          {indicators.length === 0
-            ? uiText.indicatorCard.noIndicators
-            : uiText.indicatorCard.noSelection}
+          {observations.length === 0
+            ? uiText.observationCard.noObservations
+            : uiText.observationCard.noSelection}
         </div>
       ) : (
         <div className="max-w-[1400px] mx-auto">
@@ -52,21 +53,21 @@ export function Card() {
             )}
 
             <h3 className="m-0 flex flex-col flex-wrap flex-1 text-primary-foreground font-normal">
-              <span>{currentIndicator.type.name}</span>
+              <span>{currentObservation.topic.name}</span>
 
               <span className="text-base italic" title="Etiquetas">
-                {currentIndicator.tags.map((t) => t.tag.name).join(" - ")}
+                {currentObservation.tags.map((t) => t.tag.name).join(" - ")}
               </span>
 
               <AddMCIndicatorToReport />
             </h3>
 
             <time
-              dateTime={new Date(currentIndicator.creationDate).toISOString()}
+              dateTime={new Date(currentObservation.creationDate).toISOString()}
               className="text-primary-foreground border border-accent-foreground/20 rounded self-start px-2 py-1 italic text-sm font-normal"
             >
-              {uiText.indicatorCard.titleBar.lastUpdate(
-                currentIndicator.creationDate,
+              {uiText.observationCard.titleBar.lastUpdate(
+                currentObservation.creationDate,
               )}
             </time>
           </header>
@@ -74,12 +75,12 @@ export function Card() {
           <div className="flex flex-wrap flex-col md:flex-row gap-4 p-4">
             <section className="flex-2 xl:flex-3 w-full h-full bg-background rounded-lg p-2 shadow-2xl">
               <h4 className="sr-only">
-                Gráfica de {currentIndicator.type.name}
+                Gráfica de {currentObservation.topic.name}
               </h4>
               <GraphSelector />
             </section>
 
-            {currentIndicator?.description && (
+            {currentObservation?.description && (
               <section className="flex-1 p-4 bg-background md:min-w-[200px] rounded-lg shadow-2xl">
                 <h4 className="flex gap-1 items-center">
                   <BadgeCheck className="text-accent" />
@@ -87,7 +88,7 @@ export function Card() {
                   {isLoading && <Spinner className="text-primary ml-2" />}
                 </h4>
 
-                {currentIndicator.description.split("\n").map((par, i) => (
+                {currentObservation.description.split("\n").map((par, i) => (
                   <p key={`currentDescription_${i}`}>{par}</p>
                 ))}
               </section>

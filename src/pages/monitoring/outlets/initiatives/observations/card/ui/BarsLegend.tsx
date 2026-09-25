@@ -1,7 +1,7 @@
 import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
 import { hashStringToRange } from "@utils/format";
 
-import { getSeriesColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
+import { getSeriesColor } from "pages/monitoring/outlets/initiatives/observations/card/utils/colors";
 
 export function BarsLegend({
   keys,

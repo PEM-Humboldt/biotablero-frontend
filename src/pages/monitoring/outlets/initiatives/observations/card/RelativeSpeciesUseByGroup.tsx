@@ -4,21 +4,21 @@ import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
 import { GRAPH_ANIMATION_CONFIG } from "@config/global";
 import { ResponsiveBar } from "@nivo/bar";
 import { hashStringToRange } from "@utils/format";
-import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
+import { GetObservationInfo } from "@hooks/useReport/GetIndicatorInfo";
 
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
-import { type BarsData } from "pages/monitoring/types/indicators";
+import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
+import { type BarsData } from "pages/monitoring/types/observations";
 import {
   getContrastColor,
   getSeriesColor,
-} from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
+} from "pages/monitoring/outlets/initiatives/observations/card/utils/colors";
 import { GraphLegend } from "@ui/GraphLegend";
-import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphInfoSelector";
-import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
+import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/observations/card/ui/GraphInfoSelector";
+import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
 
 export function RelativeSpeciesUseByGroup() {
-  const { currentIndicator } = useIndicatorsCTX();
-  const data = currentIndicator?.cleanData as BarsData;
+  const { currentObservation } = useObservationsCTX();
+  const data = currentObservation?.cleanData as BarsData;
 
   const groupsList = useMemo(() => [...(data.keys.parent ?? [])], [data]);
   const [selectedParent, setSelectedParent] = useState("");
@@ -77,7 +77,7 @@ export function RelativeSpeciesUseByGroup() {
     <>
       <div className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300">
         <GraphInfoSelector
-          uiText={uiText.indicatorCard.relativeSpeciesUseByGroup.selector}
+          uiText={uiText.observationCard.relativeSpeciesUseByGroup.selector}
           options={groupsList}
           currentSelection={selectedParent}
           updateCurrent={(val: string | string[]) => {
@@ -88,7 +88,7 @@ export function RelativeSpeciesUseByGroup() {
         />
       </div>
 
-      <GetIndicatorInfo
+      <GetObservationInfo
         graphId={selectedParent}
         mapElementId={null}
         mapUrl={null}
@@ -158,7 +158,7 @@ export function RelativeSpeciesUseByGroup() {
 
           <GraphLegend keys={displayKeys} />
         </>
-      </GetIndicatorInfo>
+      </GetObservationInfo>
     </>
   );
 }

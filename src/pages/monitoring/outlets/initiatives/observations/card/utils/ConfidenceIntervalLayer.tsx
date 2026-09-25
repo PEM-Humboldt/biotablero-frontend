@@ -3,7 +3,7 @@ import { area, curveLinear } from "d3-shape";
 import type {
   LineData,
   LineDataValues,
-} from "pages/monitoring/types/indicators";
+} from "pages/monitoring/types/observations";
 
 interface ComputedPoint {
   data: LineDataValues;

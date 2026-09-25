@@ -7,14 +7,14 @@ import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
 import { Combobox } from "@ui/ComboBox";
 import { cn } from "@ui/shadCN/lib/utils";
 import { hashStringToRange } from "@utils/format";
-import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
+import { GetObservationInfo } from "@hooks/useReport/GetIndicatorInfo";
 
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
-import { ConfidenceIntervalLayer } from "pages/monitoring/outlets/initiatives/indicators/card/utils/ConfidenceIntervalLayer";
-import type { LineData } from "pages/monitoring/types/indicators";
-import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
+import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
+import { ConfidenceIntervalLayer } from "pages/monitoring/outlets/initiatives/observations/card/utils/ConfidenceIntervalLayer";
+import type { LineData } from "pages/monitoring/types/observations";
+import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
 import { GraphLegend } from "@ui/GraphLegend";
-import { getSeriesColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
+import { getSeriesColor } from "pages/monitoring/outlets/initiatives/observations/card/utils/colors";
 
 const customColorMap: Record<string, string> = {
   "Probabilidad de detección": GRAPHS_EXTENDED_COLOR_PALETTE[2],
@@ -22,12 +22,12 @@ const customColorMap: Record<string, string> = {
 };
 
 export function DetectionProbabilityWithoutCovariables() {
-  const { currentIndicator } = useIndicatorsCTX();
+  const { currentObservation } = useObservationsCTX();
   const [selectedSpecie, setSelectedSpecie] = useState<string>("");
 
   const speciesOptions = useMemo(
     () =>
-      (currentIndicator?.groups ?? []).map((group) => {
+      (currentObservation?.groups ?? []).map((group) => {
         const commonName = group.category?.description
           ? `${group.category?.description}, `
           : "";
@@ -36,25 +36,25 @@ export function DetectionProbabilityWithoutCovariables() {
           label: `${commonName}${group.category.name}`,
         };
       }),
-    [currentIndicator?.groups],
+    [currentObservation?.groups],
   );
 
   const { renderIndicatorInfo, keys } = useMemo(() => {
-    if (!currentIndicator) {
+    if (!currentObservation) {
       return { renderIndicatorInfo: [], keys: [] };
     }
 
     const renderIndicatorInfo: (LineData & { id: string })[] = [];
     const keys: string[] = [];
 
-    ((currentIndicator.cleanData ?? []) as LineData[]).forEach((serie) => {
+    ((currentObservation.cleanData ?? []) as LineData[]).forEach((serie) => {
       const key = serie.metricName || serie.id;
       renderIndicatorInfo.push({ ...serie, id: key });
       keys.push(key);
     });
 
     return { renderIndicatorInfo, keys };
-  }, [currentIndicator]);
+  }, [currentObservation]);
 
   const filteredData = useMemo(
     () =>
@@ -65,7 +65,7 @@ export function DetectionProbabilityWithoutCovariables() {
   );
 
   const selectedSpecieTitle = useMemo(() => {
-    const current = currentIndicator?.groups.find(
+    const current = currentObservation?.groups.find(
       (specie) => specie.category.name === selectedSpecie,
     );
 
@@ -75,17 +75,17 @@ export function DetectionProbabilityWithoutCovariables() {
           commonName: current.category.description,
         }
       : { name: undefined, commonName: undefined };
-  }, [currentIndicator?.groups, selectedSpecie]);
+  }, [currentObservation?.groups, selectedSpecie]);
 
   useEffect(() => {
-    if (!currentIndicator) {
+    if (!currentObservation) {
       return;
     }
 
     setSelectedSpecie(speciesOptions[0].value ?? "");
-  }, [currentIndicator, speciesOptions]);
+  }, [currentObservation, speciesOptions]);
 
-  return !currentIndicator ? null : (
+  return !currentObservation ? null : (
     <>
       <div className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300">
         {speciesOptions.length > 1 && (
@@ -93,7 +93,7 @@ export function DetectionProbabilityWithoutCovariables() {
             items={speciesOptions ?? []}
             value={selectedSpecie}
             setValue={setSelectedSpecie}
-            uiText={uiText.indicatorCard.detectionProbabilityWCov.selector}
+            uiText={uiText.observationCard.detectionProbabilityWCov.selector}
             icon={SearchIcon}
             keys={{ forLabel: "label", forValue: "value" }}
           />
@@ -118,7 +118,7 @@ export function DetectionProbabilityWithoutCovariables() {
         </h4>
       </div>
 
-      <GetIndicatorInfo
+      <GetObservationInfo
         graphId={
           selectedSpecieTitle.commonName
             ? `${selectedSpecieTitle.commonName}, ${selectedSpecieTitle.name}`
@@ -189,7 +189,10 @@ export function DetectionProbabilityWithoutCovariables() {
                       <tbody>
                         <tr>
                           <td>
-                            {uiText.indicatorCard.rangedTooltip.upperLimitTitle}
+                            {
+                              uiText.observationCard.rangedTooltip
+                                .upperLimitTitle
+                            }
                           </td>
                           <td>{point.data?.upperLimit ?? data}</td>
                         </tr>
@@ -199,7 +202,10 @@ export function DetectionProbabilityWithoutCovariables() {
                         </tr>
                         <tr>
                           <td>
-                            {uiText.indicatorCard.rangedTooltip.lowerLimitTitle}
+                            {
+                              uiText.observationCard.rangedTooltip
+                                .lowerLimitTitle
+                            }
                           </td>
                           <td>{point.data?.lowerLimit ?? data}</td>
                         </tr>
@@ -217,7 +223,7 @@ export function DetectionProbabilityWithoutCovariables() {
             isBar={false}
           />
         </>
-      </GetIndicatorInfo>
+      </GetObservationInfo>
     </>
   );
 }

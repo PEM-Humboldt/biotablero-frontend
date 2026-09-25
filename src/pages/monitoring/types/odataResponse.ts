@@ -5,7 +5,7 @@ import type {
   VideoObjectTS,
 } from "pages/monitoring/types/territoryStory";
 import type { SendedJoinInitiativeInvitation } from "pages/monitoring/types/userJoinRequest";
-import type { IndicatorMetadata } from "pages/monitoring/types/indicators";
+import type { ObservationMetadata } from "pages/monitoring/types/observations";
 
 // NOTE: Logs
 export interface ODataLogEntryShort extends HasId {
@@ -194,4 +194,4 @@ export type ODataResourceType = ODataResponse<ResourceType>;
 export type ODataMonitoringResources = ODataResponse<MonitoringResourceShort>;
 export type ODataSendedInvitations =
   ODataResponse<SendedJoinInitiativeInvitation>;
-export type ODataIndicators = ODataResponse<IndicatorMetadata>;
+export type ODataObservations = ODataResponse<ObservationMetadata>;

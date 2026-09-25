@@ -5,16 +5,16 @@ import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
 import { GRAPH_ANIMATION_CONFIG } from "@config/global";
 import { ResponsiveBar } from "@nivo/bar";
 
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
-import type { BarsData } from "pages/monitoring/types/indicators";
+import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
+import type { BarsData } from "pages/monitoring/types/observations";
 import {
   getContrastColor,
   getSeriesColor,
-} from "pages/monitoring/outlets/initiatives/indicators/card//utils/colors";
+} from "pages/monitoring/outlets/initiatives/observations/card//utils/colors";
 import { GraphLegend } from "@ui/GraphLegend";
-import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/indicators/card/ui/GraphInfoSelector";
-import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
-import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
+import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/observations/card/ui/GraphInfoSelector";
+import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
+import { GetObservationInfo } from "@hooks/useReport/GetIndicatorInfo";
 
 const customColorMap: Record<string, string> = {
   Mujeres: GRAPHS_EXTENDED_COLOR_PALETTE[10],
@@ -27,8 +27,8 @@ const customColorMap: Record<string, string> = {
 };
 
 export function CollectiveActionParticipation() {
-  const { currentIndicator } = useIndicatorsCTX();
-  const data = currentIndicator?.cleanData as BarsData;
+  const { currentObservation } = useObservationsCTX();
+  const data = currentObservation?.cleanData as BarsData;
 
   const { groups, keysByGroup, dataByDateByGroup } = useMemo(() => {
     const keysByGroup = new Map<string, Set<string>>();
@@ -65,7 +65,7 @@ export function CollectiveActionParticipation() {
     dataByDateByGroup.forEach((datesMap, parentKey) => {
       datesMap.forEach((dataMap) => {
         const amountKey =
-          uiText.indicatorCard.collectiveActionParticipation.amountKey;
+          uiText.observationCard.collectiveActionParticipation.amountKey;
         const total = dataMap[amountKey] as number;
 
         if (total > 0) {
@@ -110,7 +110,7 @@ export function CollectiveActionParticipation() {
     <>
       <div className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300">
         <GraphInfoSelector
-          uiText={uiText.indicatorCard.collectiveActionParticipation.selector}
+          uiText={uiText.observationCard.collectiveActionParticipation.selector}
           options={groups}
           currentSelection={currentGroup}
           updateCurrent={(val: string | string[]) => {
@@ -121,7 +121,7 @@ export function CollectiveActionParticipation() {
         />
       </div>
 
-      <GetIndicatorInfo
+      <GetObservationInfo
         graphId={currentGroup}
         mapElementId={null}
         mapUrl={null}
@@ -179,7 +179,7 @@ export function CollectiveActionParticipation() {
                         x={-5}
                         y={8}
                       >
-                        {uiText.indicatorCard.collectiveActionParticipation.amountLabel(
+                        {uiText.observationCard.collectiveActionParticipation.amountLabel(
                           Number(total),
                         )}
                       </text>
@@ -215,7 +215,7 @@ export function CollectiveActionParticipation() {
 
           <GraphLegend keys={displayKeys} customColorMap={customColorMap} />
         </>
-      </GetIndicatorInfo>
+      </GetObservationInfo>
     </>
   );
 }
