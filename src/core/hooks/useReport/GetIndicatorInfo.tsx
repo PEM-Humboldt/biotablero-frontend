@@ -58,6 +58,7 @@ export function GetObservationInfo({
       EcosystemTag: tags[4] ?? [],
       description: currentObservation?.description ?? "",
       singleMap,
+      url: "",
       card: {
         methodology: currentObservation?.methodology ?? "",
         interpretation: currentObservation?.interpretation ?? "",

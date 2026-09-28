@@ -1,5 +1,4 @@
 import {
-  type ComponentType,
   createContext,
   type ReactNode,
   useCallback,
@@ -48,7 +47,6 @@ import {
   type IndicatorSection,
   type ReportContextType,
   type ReportMetadata,
-  type ReportModelProps,
   type SearchContext,
   type SearchSection,
   type SectionInfo,
@@ -94,14 +92,37 @@ const revokeGraphUrls = (graph: GraphDTO) => {
   }
 };
 
-const documentModels: Partial<
-  Record<ReportType, ComponentType<ReportModelProps>>
-> = {
-  [ReportType.MONITORING_INDICATORS]:
-    CMIndicatorReportModel as ComponentType<ReportModelProps>,
-  [ReportType.SEARCH_INDICATORS]:
-    SearchIndicatorReportModel as ComponentType<ReportModelProps>,
-};
+function getDocumentModel(
+  reportType: ReportType,
+  metadata: ReportMetadata,
+  context: IndicatorContext | SearchContext,
+  sections: Map<string, IndicatorSection | SearchSection>,
+) {
+  switch (reportType) {
+    case ReportType.MONITORING_INDICATORS:
+      return (
+        <CMIndicatorReportModel
+          metadata={metadata}
+          context={context as IndicatorContext}
+          sections={sections as Map<string, IndicatorSection>}
+        />
+      );
+
+    case ReportType.SEARCH_INDICATORS:
+      return (
+        <SearchIndicatorReportModel
+          metadata={metadata}
+          context={context as SearchContext}
+          sections={sections as Map<string, SearchSection>}
+        />
+      );
+
+    case ReportType.NONE:
+    default:
+      console.error("Unknown report type");
+      return null;
+  }
+}
 
 const ReportContext = createContext<ReportContextType | null>(null);
 
@@ -228,7 +249,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
         mapUrl: newMapUrl ?? undefined,
       };
 
-      const updatedSection: SearchSection | IndicatorSection = {
+      const updatedSection = {
         ...(currentSection ?? {}),
         ...sectionInfo,
         url: sectionUrl,
@@ -462,21 +483,20 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       }
       setIsLoading(true);
 
-      const DocumentModelComponent = documentModels[reportType];
       const namePrefix = REPORT_DOWNLOAD_NAME_PREFIX[reportType];
-      if (!DocumentModelComponent || !namePrefix) {
-        setErrors(["No document model for the report"]);
-        return;
+
+      const documentModel = getDocumentModel(
+        reportType,
+        docMetadata,
+        docContext,
+        docSections,
+      );
+      if (!documentModel) {
+        throw new Error("No se pudo generar el PDF: tipo de reporte no válido");
       }
 
       const fileName = `${namePrefix}_${docMetadata.creationDate}.pdf`;
-      const blob = await pdf(
-        <DocumentModelComponent
-          metadata={docMetadata}
-          context={docContext}
-          sections={docSections as Map<string, IndicatorSection>}
-        />,
-      ).toBlob();
+      const blob = await pdf(documentModel).toBlob();
       if (!blob) {
         setErrors(["No fue posible crear el PDF"]);
         return;

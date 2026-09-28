@@ -53,7 +53,9 @@ export function AddMCIndicatorToReport() {
               }
             >
               <ClipboardPlus />
-              {uiText.addToReportBtn.label(isLoading)}
+              {isLoading
+                ? uiText.addToReportBtn.label.loading
+                : uiText.addToReportBtn.label.ready}
             </Button>
           </PopoverTrigger>
 

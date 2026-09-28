@@ -14,18 +14,19 @@ import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 import { REPORT_NOTE_MAX_LENGTH } from "@config/report";
 import { inputWarnColor } from "@utils/ui";
 import { uiText } from "@ui/addMCIndicatorToReport/layout/uiText";
-import {
-  useSearchDispatchCTX,
-  useSearchStateCTX,
-} from "pages/search/hooks/SearchContext";
+import { useSearchDispatchCTX } from "pages/search/hooks/SearchContext";
 import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 
 export function AddSearchIndicatorToReportBtn({
   wrapperId,
+  overWriteLabel,
   inButtonGroup = false,
+  className,
 }: {
   wrapperId: string;
+  overWriteLabel?: string;
   inButtonGroup?: boolean;
+  className?: string;
 }) {
   const { addSectionFromRegistryToReport, isLoading } = useReport();
   const { user } = useUserCTX();
@@ -43,6 +44,16 @@ export function AddSearchIndicatorToReportBtn({
     setNoteText("");
   };
 
+  const labelReady = overWriteLabel || uiText.addToReportBtn.label.ready;
+
+  const sr = !user
+    ? uiText.addToReportBtn.sr.notLogged
+    : uiText.addToReportBtn.sr.logged;
+  const title = !user
+    ? uiText.addToReportBtn.title.notLogged
+    : uiText.addToReportBtn.title.logged;
+  const label = isLoading ? uiText.addToReportBtn.label.loading : labelReady;
+
   return (
     <Popover
       open={isPopoverOpen}
@@ -57,19 +68,7 @@ export function AddSearchIndicatorToReportBtn({
         asChild
       >
         {inButtonGroup ? (
-          <button
-            disabled={!user || isLoading}
-            title={
-              !user
-                ? uiText.addToReportBtn.title.notLogged
-                : uiText.addToReportBtn.title.logged
-            }
-            aria-label={
-              !user
-                ? uiText.addToReportBtn.sr.notLogged
-                : uiText.addToReportBtn.sr.logged
-            }
-          >
+          <button disabled={!user || isLoading} title={title} aria-label={sr}>
             <FilePlus2 className="mr-2 mb-1" strokeWidth={2} />
           </button>
         ) : (
@@ -77,19 +76,12 @@ export function AddSearchIndicatorToReportBtn({
             disabled={!user || isLoading}
             variant="outline"
             size="sm"
-            title={
-              !user
-                ? uiText.addToReportBtn.title.notLogged
-                : uiText.addToReportBtn.title.logged
-            }
-            aria-label={
-              !user
-                ? uiText.addToReportBtn.sr.notLogged
-                : uiText.addToReportBtn.sr.logged
-            }
+            title={title}
+            aria-label={sr}
+            className={className}
           >
             <ClipboardPlus />
-            {uiText.addToReportBtn.label(isLoading)}
+            {label}
           </Button>
         )}
       </PopoverTrigger>
@@ -99,7 +91,7 @@ export function AddSearchIndicatorToReportBtn({
         className="w-80 p-2 space-y-2 rounded-xl bg-muted"
       >
         <label htmlFor="description" className="font-normal text-primary">
-          {uiText.addToReportBtn.label(isLoading)}
+          {label}
         </label>
         <InputGroup className="mt-2">
           <TextareaAutosize
