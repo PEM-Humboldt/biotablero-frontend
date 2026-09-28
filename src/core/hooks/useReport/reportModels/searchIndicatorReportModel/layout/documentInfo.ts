@@ -23,7 +23,6 @@ export const documentInfo = {
   },
 
   SearchSection: {
-    indicatorMapLabel: "Mapa del indicador",
     grapMapLabel: (graphName: string) => `Mapa para ${graphName}`,
     metricsInGraphLabel: (graphName: string) => `Gráfica para '${graphName}'`,
     dataInLabel: (graphName: string) => `Datos para '${graphName}'`,

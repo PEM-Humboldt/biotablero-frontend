@@ -25,6 +25,7 @@ import { getMetricTexts } from "pages/search/utils/texts";
 import colorPalettes from "pages/search/utils/colorPalettes";
 import { formatNumber } from "@utils/format";
 import { SearchUpdated } from "pages/search/hooks/SearchReducer";
+import { GetSearchIndicatorInfo } from "@hooks/useReport/GetSearchIndicatorInfo";
 
 interface State {
   showInfoGraph: boolean;
@@ -158,11 +159,15 @@ export function CurrentFootprint() {
     controller
       .getCurrentHFAverage()
       .then((res) => {
-        if (!isCurrent) return;
+        if (!isCurrent) {
+          return;
+        }
         dispatch({ type: "AVERAGE_SUCCEEDED", payload: res });
       })
       .catch((e) => {
-        if (!isCurrent) return;
+        if (!isCurrent) {
+          return;
+        }
         if (String(e).includes("Error: request canceled")) {
           dispatchSearchMap({
             type: SearchUpdated.LAYER_ERROR,
@@ -174,11 +179,15 @@ export function CurrentFootprint() {
     controller
       .getCurrentHFValues()
       .then((currentHFValues) => {
-        if (!isCurrent) return;
+        if (!isCurrent) {
+          return;
+        }
         controller
           .getCurrentHFLayers()
           .then((layersRes) => {
-            if (!isCurrent) return;
+            if (!isCurrent) {
+              return;
+            }
             dispatch({
               type: "CURRENTHF_LAYERS_SUCCEEDED",
               payload: layersRes,
@@ -213,7 +222,9 @@ export function CurrentFootprint() {
         });
       })
       .catch(() => {
-        if (!isCurrent) return;
+        if (!isCurrent) {
+          return;
+        }
         dispatch({ type: "CURRENTHF_VALUES_FAILED" });
         dispatchSearchMap({
           type: SearchUpdated.LOADING_LAYER,
@@ -223,14 +234,18 @@ export function CurrentFootprint() {
 
     getMetricTexts("currentHF")
       .then((res) => {
-        if (!isCurrent) return;
+        if (!isCurrent) {
+          return;
+        }
         dispatch({
           type: "SET_TEXTS",
           payload: res,
         });
       })
       .catch(() => {
-        if (!isCurrent) return;
+        if (!isCurrent) {
+          return;
+        }
         dispatch({
           type: "SET_TEXTS",
           payload: { info: "", cons: "", meto: "", quote: "" },
@@ -284,35 +299,47 @@ export function CurrentFootprint() {
         />
       )}
 
-      <div>
-        <h6>Huella humana promedio · {period}</h6>
-        <h5
-          style={{
-            backgroundColor:
-              matchColor("hfCurrent")(hfCurrentCategory) ||
-              colorPalettes.default[0],
-          }}
-        >
-          {formatNumber(hfCurrentValue, 2)}
-        </h5>
-      </div>
+      <GetSearchIndicatorInfo
+        wrapperId="CurrentFootprint"
+        title="Huella Humana Actual"
+        graphInfo={texts.hfCurrent}
+        tableData={hfCurrent as unknown as Record<string, string | number>[]}
+        graphId=""
+        includesMap={true}
+      >
+        <>
+          <div>
+            <h6>Huella humana promedio · {period}</h6>
+            <h5
+              style={{
+                backgroundColor:
+                  matchColor("hfCurrent")(hfCurrentCategory) ||
+                  colorPalettes.default[0],
+              }}
+            >
+              {formatNumber(hfCurrentValue, 2)}
+            </h5>
+          </div>
 
-      <h6>Natural, Baja, Media, Alta y Muy Alta</h6>
+          <h6>Natural, Baja, Media, Alta y Muy Alta</h6>
 
-      <LargeStackedBar
-        loadStatus={message}
-        data={hfCurrent}
-        labelX="Hectáreas"
-        labelY="Huella Humana Actual"
-        units="ha"
-        colors={(key) =>
-          matchColor("hfCurrent")(key) || colorPalettes.default[0]
-        }
-        padding={0.25}
-        onClickGraphHandler={clickOnGraph}
-      />
+          <LargeStackedBar
+            loadStatus={message}
+            data={hfCurrent}
+            labelX="Hectáreas"
+            labelY="Huella Humana Actual"
+            units="ha"
+            colors={(key) =>
+              matchColor("hfCurrent")(key) || colorPalettes.default[0]
+            }
+            padding={0.25}
+            onClickGraphHandler={clickOnGraph}
+          />
+        </>
+      </GetSearchIndicatorInfo>
 
       <TextBoxes
+        addToReportWrapperId="CurrentFootprint"
         consText={texts.hfCurrent.cons}
         metoText={texts.hfCurrent.meto}
         quoteText={texts.hfCurrent.quote}
