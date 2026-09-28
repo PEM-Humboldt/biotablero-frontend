@@ -3,7 +3,7 @@ import { domToBlob, type Options } from "modern-screenshot";
 import { createRoot } from "react-dom/client";
 import { GRAPH_ANIMATION_CONFIG } from "@config/global";
 import { uiText } from "@hooks/useReport/layout/uiText";
-import { waitForAnimations } from "./waitForAnimations";
+import { waitForAnimations } from "@hooks/useReport/utils/waitForAnimations";
 
 export async function makeGraphImg(
   graphComponent: ReactElement,
