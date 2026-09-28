@@ -38,7 +38,9 @@ export function SearchSection({
               <View style={styles.graphStateRow}>
                 <View style={styles.graphStateItem}>
                   <Text style={styles.h4}>
-                    {documentInfo.SearchSection.grapMapLabel(graph.id)}
+                    {documentInfo.SearchSection.grapMapLabel(
+                      graph.id !== "" ? graph.id : section.title,
+                    )}
                   </Text>
                 </View>
               </View>
@@ -50,7 +52,9 @@ export function SearchSection({
             <View style={styles.graphStateRow}>
               <View style={styles.graphStateItem}>
                 <Text style={styles.h4}>
-                  {documentInfo.SearchSection.metricsInGraphLabel(graph.id)}
+                  {documentInfo.SearchSection.metricsInGraphLabel(
+                    graph.id !== "" ? graph.id : section.title,
+                  )}
                 </Text>
               </View>
             </View>
@@ -60,7 +64,9 @@ export function SearchSection({
           {section.rawData && section.rawData.length > 0 && (
             <View style={styles.chartBox}>
               <Text style={styles.h4} minPresenceAhead={100}>
-                {documentInfo.SearchSection.dataInLabel(graph.id)}
+                {documentInfo.SearchSection.dataInLabel(
+                  graph.id !== "" ? graph.id : section.title,
+                )}
               </Text>
               <DynamicPdfTable data={section.rawData} />
             </View>
@@ -112,7 +118,7 @@ export function LabeledBlock({
   }
 
   return (
-    <View style={styles.block} wrap={false}>
+    <View style={styles.block}>
       <Text style={styles.h4}>{label}</Text>
       <Text style={styles.paragraph}>{children}</Text>
     </View>

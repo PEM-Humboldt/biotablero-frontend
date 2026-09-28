@@ -20,6 +20,7 @@ import type { RasterLayer } from "pages/search/types/layers";
 import colorPalettes from "pages/search/utils/colorPalettes";
 import { getMetricTexts } from "pages/search/utils/texts";
 import { SearchUpdated } from "pages/search/hooks/SearchReducer";
+import { GetSearchIndicatorInfo } from "@hooks/useReport/GetSearchIndicatorInfo";
 
 export function ForestLossPersistence() {
   const { areaType, areaId } = useSearchStateCTX();
@@ -105,7 +106,9 @@ export function ForestLossPersistence() {
     controller
       .getForestLPData()
       .then((data) => {
-        if (!isCurrent) return;
+        if (!isCurrent) {
+          return;
+        }
 
         const nextPeriod = data.forestLP[data.forestLP.length - 1]?.id || "";
         setCurrentPeriod(nextPeriod);
@@ -123,7 +126,9 @@ export function ForestLossPersistence() {
         }
       })
       .catch(() => {
-        if (!isCurrent) return;
+        if (!isCurrent) {
+          return;
+        }
         setMessage("no-data");
         dispatchSearchMap({
           type: SearchUpdated.LOADING_LAYER,
@@ -133,7 +138,9 @@ export function ForestLossPersistence() {
 
     getMetricTexts("lossPersistence")
       .then((res) => {
-        if (!isCurrent) return;
+        if (!isCurrent) {
+          return;
+        }
         setTexts({ forestLP: res });
       })
       .catch(() => {});
@@ -168,63 +175,77 @@ export function ForestLossPersistence() {
           collapseButton={false}
         />
       )}
-      <div>
-        <h6>Cobertura actual</h6>
-        <h5
-          style={{
-            backgroundColor:
-              matchColor("forestLP")("Persistencia") ||
-              colorPalettes.default[0],
-          }}
-        >
-          {`${formatNumber(currentPersistence, 0)} ha `}
-        </h5>
-      </div>
-      <div>
-        <h6>Cobertura de bosque en el tiempo</h6>
-      </div>
-      <div>
-        <SmallBars
-          data={graphData.transformedData}
-          keys={graphData.keys}
-          tooltips={graphData.tooltips}
-          loadStatus={message}
-          margin={{
-            left: 100,
-            bottom: 50,
-          }}
-          axisY={{
-            enabled: true,
-            legend: "Periodo",
-          }}
-          axisX={{
-            enabled: true,
-            legend: "Hectáreas",
-            format: ".2s",
-          }}
-          colors={(key: string) =>
-            matchColor("forestLP")(key) || colorPalettes.default[0]
-          }
-          onClickHandler={(period, category) => {
-            if (period === currentPeriod) {
-              dispatchSearchMap({
-                type: SearchUpdated.RASTER_LAYERS,
-                payload: {
-                  rasterLayers: layers.map((layer) => ({
-                    ...layer,
-                    selected: layer.id === category,
-                  })),
-                },
-              });
-            } else {
-              setCurrentPeriod(period);
-              switchLayer(period);
-            }
-          }}
-          selectedIndexValue={currentPeriod}
-        />
-      </div>
+
+      <GetSearchIndicatorInfo
+        wrapperId="ForestLossPersistence"
+        title="Pérdida y persistencia de los bosques"
+        graphInfo={texts.forestLP}
+        tableData={controllerRef.current.getDownloadData(forestLP)}
+        graphId={currentPeriod}
+        includesMap={true}
+      >
+        <>
+          <div>
+            <h6>Cobertura actual</h6>
+            <h5
+              style={{
+                backgroundColor:
+                  matchColor("forestLP")("Persistencia") ||
+                  colorPalettes.default[0],
+              }}
+            >
+              {`${formatNumber(currentPersistence, 0)} ha `}
+            </h5>
+          </div>
+          <div>
+            <h6>Cobertura de bosque en el tiempo</h6>
+          </div>
+
+          <div>
+            <SmallBars
+              data={graphData.transformedData}
+              keys={graphData.keys}
+              tooltips={graphData.tooltips}
+              loadStatus={message}
+              margin={{
+                left: 100,
+                bottom: 50,
+              }}
+              axisY={{
+                enabled: true,
+                legend: "Periodo",
+              }}
+              axisX={{
+                enabled: true,
+                legend: "Hectáreas",
+                format: ".2s",
+              }}
+              colors={(key: string) =>
+                matchColor("forestLP")(key) || colorPalettes.default[0]
+              }
+              onClickHandler={(period, category) => {
+                if (period === currentPeriod) {
+                  dispatchSearchMap({
+                    type: SearchUpdated.RASTER_LAYERS,
+                    payload: {
+                      rasterLayers: layers.map((layer) => ({
+                        ...layer,
+                        selected: layer.id === category,
+                      })),
+                    },
+                  });
+                } else {
+                  setCurrentPeriod(period);
+                  switchLayer(period);
+                }
+              }}
+              selectedIndexValue={currentPeriod}
+            />
+          </div>
+        </>
+      </GetSearchIndicatorInfo>
       <TextBoxes
+        addToReportWrapperId="ForestLossPersistence"
         consText={texts.forestLP.cons}
         metoText={texts.forestLP.meto}
         quoteText={texts.forestLP.quote}

@@ -6,7 +6,6 @@ import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 
 import { ShortInfo } from "@composites/ShortInfo";
 import DownloadCSV from "@ui/DownloadCSV";
-import { IconTooltip } from "@ui/Tooltips";
 import { AddSearchIndicatorToReportBtn } from "@ui/AddSearchIndicatorToReport";
 
 interface TextBoxProps {
@@ -60,14 +59,10 @@ function TextBoxes({
     <>
       <div className="flex items-centera py-1 px-2 text-grey *:hover:text-accent">
         {addToReportWrapperId && (
-          <IconTooltip title="Agregar a reporte">
-            <span>
-              <AddSearchIndicatorToReportBtn
-                wrapperId={addToReportWrapperId}
-                inButtonGroup={true}
-              />
-            </span>
-          </IconTooltip>
+          <AddSearchIndicatorToReportBtn
+            wrapperId={addToReportWrapperId}
+            inButtonGroup={true}
+          />
         )}
         {metoText !== "" && (
           <button onClick={() => clickOnBox("meto")} title="Metodología">
