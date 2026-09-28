@@ -17,7 +17,7 @@ export function GetSearchIndicatorInfo({
   title: string;
   description: string;
   graphInfo?: Record<string, string>;
-  tableData: GraphDTO[];
+  tableData: GraphDTO[] | Record<string, string | number>[];
   graphId: string;
   mapElementId?: string;
   includesMap: boolean;
@@ -31,6 +31,8 @@ export function GetSearchIndicatorInfo({
       description,
       graphInfo,
       rawData: tableData,
+      // NOTE: actualizar el enlace cuando el estado de seccion dependa de url
+      url: window.location.href,
     };
 
     addSectionToRegistry(wrapperId, {

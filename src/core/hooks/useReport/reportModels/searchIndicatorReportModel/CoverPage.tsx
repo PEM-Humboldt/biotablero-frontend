@@ -1,5 +1,5 @@
 import { Page, View, Text, Image, Link } from "@react-pdf/renderer";
-import InitiativeReportCover from "@assets/InitiativeReportCover.png";
+import SearchReportCover from "@assets/SearchReportCover.png";
 
 import type { ReportMetadata, SearchContext } from "@appTypes/report";
 
@@ -32,7 +32,7 @@ export function CoverPage({
       }}
     >
       <View style={styles.coverImageBox}>
-        <Image src={InitiativeReportCover} style={styles.coverImage} />
+        <Image src={SearchReportCover} style={styles.coverImage} />
       </View>
 
       <View style={styles.coverBody}>

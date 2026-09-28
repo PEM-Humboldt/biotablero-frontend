@@ -38,6 +38,7 @@ import type { MetricTypesMap } from "pages/search/types/metrics";
 
 import InfoIcon from "@mui/icons-material/Info";
 import { IconTooltip } from "@ui/Tooltips";
+import { capitalize } from "@utils/format";
 
 const OBSERVED_RICHNESS_GRAPH_KEYS = ["CR", "EN", "VU"];
 
@@ -149,9 +150,7 @@ function observedRichnessReducer(
         taxonomicGroupsAvailable: action.payload.taxonomicGroupsAvailable
           .reduce<string[]>((all, current) => {
             if (current !== "total") {
-              all.push(
-                `${current[0].toLocaleUpperCase(LOCALE)}${current.slice(1)}`,
-              );
+              all.push(capitalize(current));
             }
             return all;
           }, [])
@@ -269,7 +268,7 @@ export function ObservedRichness() {
             payload: {
               rasterLayers: areaRichnessMap,
               mapTitle: {
-                name: `Riqueza observada en ${areaId?.name}`,
+                name: `Riqueza observada en ${capitalize(areaId?.name)}`,
                 ...(gradientMaxValue !== undefined
                   ? {
                       gradientData: {
@@ -351,8 +350,8 @@ export function ObservedRichness() {
               rasterLayers: areaRichnessMap,
               mapTitle: {
                 name: groupFilter
-                  ? `Riqueza observada de ${groupFilter} en ${areaId?.name}`
-                  : `Riqueza observada en ${areaId?.name}`,
+                  ? `Riqueza observada de ${groupFilter} en ${capitalize(areaId?.name)}`
+                  : `Riqueza observada en ${capitalize(areaId?.name)}`,
                 ...(gradientMaxValue !== undefined
                   ? {
                       gradientData: {
@@ -467,7 +466,12 @@ export function ObservedRichness() {
                 />
               </>
             </GetSearchIndicatorInfo>
-            <AddSearchIndicatorToReportBtn wrapperId="StatsOnSpecies" />
+
+            <AddSearchIndicatorToReportBtn
+              wrapperId="StatsOnSpecies"
+              overWriteLabel="Agregar tablas"
+              className="w-full"
+            />
           </>
         )}
       </div>

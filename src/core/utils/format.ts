@@ -24,3 +24,14 @@ export function hashStringToRange(str: string, range: number = 10): number {
 
   return Math.abs(hash) % (range + 1);
 }
+
+export function capitalize(name?: string) {
+  if (!name) {
+    return "";
+  }
+
+  return name
+    .split(" ")
+    .map((w) => `${w.toLocaleUpperCase(LOCALE)}${w.toLocaleLowerCase(LOCALE)}`)
+    .join(" ");
+}

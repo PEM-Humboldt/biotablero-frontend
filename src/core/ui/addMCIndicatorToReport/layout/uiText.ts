@@ -8,8 +8,10 @@ export const uiText = {
       notLogged: "Inicia sesión para crear reportes",
       logged: `Hacer anotacion y agregar a mi reporte`,
     },
-    label: (isLoading: boolean) =>
-      isLoading ? "Agregando..." : "Agregar a mi reporte",
+    label: {
+      loading: "Agregando...",
+      ready: "Agregar a mi reporte",
+    },
   },
   editReportBtn: {
     title: "Abrir panel de edicion",
