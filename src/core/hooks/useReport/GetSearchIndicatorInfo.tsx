@@ -1,12 +1,12 @@
 import { type ReactElement, useEffect } from "react";
 
 import type { GraphDTO, SearchSection } from "@appTypes/report";
+import type { TextsObject } from "pages/search/types/texts";
 import { useReport } from "@hooks/useReport";
 
 export function GetSearchIndicatorInfo({
   wrapperId,
   title,
-  description,
   graphInfo,
   tableData,
   graphId,
@@ -15,8 +15,7 @@ export function GetSearchIndicatorInfo({
 }: {
   wrapperId: string;
   title: string;
-  description: string;
-  graphInfo?: Record<string, string>;
+  graphInfo?: TextsObject;
   tableData: GraphDTO[] | Record<string, string | number>[];
   graphId: string;
   mapElementId?: string;
@@ -26,10 +25,11 @@ export function GetSearchIndicatorInfo({
   const { addSectionToRegistry, removeSectionFromRegistry } = useReport();
 
   useEffect(() => {
+    const { info, ...otherInfo } = graphInfo ?? {};
     const sectionInfo: Omit<SearchSection, "graphs"> = {
       title,
-      description,
-      graphInfo,
+      description: info ?? "",
+      graphInfo: otherInfo,
       rawData: tableData,
       // NOTE: actualizar el enlace cuando el estado de seccion dependa de url
       url: window.location.href,
@@ -51,7 +51,6 @@ export function GetSearchIndicatorInfo({
   }, [
     addSectionToRegistry,
     children,
-    description,
     graphId,
     graphInfo,
     includesMap,
