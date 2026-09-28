@@ -1,38 +1,43 @@
-import { useEffect, useRef, useState } from "react";
+import { type Dispatch, useEffect, useRef, useState } from "react";
 
 import SmallStackedBar, {
-  SmallStackedBarData,
+  type SmallStackedBarData,
 } from "@composites/charts/SmallStackedBar";
 import colorPalettes from "pages/search/utils/colorPalettes";
 
-import {
-  useSearchDispatchCTX,
-  useSearchStateCTX,
-} from "pages/search/hooks/SearchContext";
-
 import { StrategicEcosystemsDistributionController } from "pages/search/dashboard/ecosystems/StrategicEcosystemsDistributionController";
 import { matchColor } from "pages/search/utils/matchColor";
-import { SEKey, SELabels } from "pages/search/types/ecosystems";
-import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
-import { SearchUpdated } from "pages/search/hooks/SearchReducer";
+import { type SEKey, SELabels } from "pages/search/types/ecosystems";
+import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
+import {
+  type SearchActions,
+  type SearchState,
+  SearchUpdated,
+} from "pages/search/hooks/SearchReducer";
 
 interface Props {
   SEType: SEKey;
+  contextData: {
+    state: SearchState;
+    dispatch: Dispatch<SearchActions>;
+  };
 }
 
 type ChartStatus = "loading" | "ready" | "error";
 
-export function StrategicEcosystemsDistribution({ SEType }: Props) {
+export function StrategicEcosystemsDistribution({
+  SEType,
+  contextData,
+}: Props) {
   const [distributionData, setDistributionData] = useState<
     SmallStackedBarData[]
   >([]);
   const [chartStatus, setChartStatus] = useState<ChartStatus>("loading");
 
-  const { areaType, areaId, rasterLayers: layers } = useSearchStateCTX();
-  const dispatchSearchMap = useSearchDispatchCTX();
+  const { areaType, areaId, rasterLayers: layers } = contextData.state;
+  const dispatchSearchMap = contextData.dispatch;
 
   const controllerRef = useRef(new StrategicEcosystemsDistributionController());
-  const controller = controllerRef.current;
 
   let loadStatus: MessageWrapperType = null;
 
@@ -58,6 +63,7 @@ export function StrategicEcosystemsDistribution({ SEType }: Props) {
   };
 
   useEffect(() => {
+    const controller = controllerRef.current;
     let isCurrent = true;
 
     if (!areaTypeId || !areaIdId) {
@@ -85,14 +91,18 @@ export function StrategicEcosystemsDistribution({ SEType }: Props) {
         const distributionDataRes =
           await controller.getStrategicEcosystemsDistributionValues(SEType);
 
-        if (!isCurrent) return;
+        if (!isCurrent) {
+          return;
+        }
         setDistributionData(distributionDataRes);
         setChartStatus("ready");
 
         const layersRes =
           await controller.getStrategicEcosystemsDistributionLayers(SEType);
 
-        if (!isCurrent) return;
+        if (!isCurrent) {
+          return;
+        }
 
         dispatchSearchMap({
           type: SearchUpdated.RASTER_LAYERS,
@@ -107,8 +117,9 @@ export function StrategicEcosystemsDistribution({ SEType }: Props) {
           error instanceof Error ? error.message : String(error);
         const isCanceled = errorMessage.includes("request canceled");
 
-        if (!isCurrent || isCanceled) return;
-
+        if (!isCurrent || isCanceled) {
+          return;
+        }
         setDistributionData([]);
         setChartStatus("error");
         dispatchSearchMap({
@@ -124,7 +135,7 @@ export function StrategicEcosystemsDistribution({ SEType }: Props) {
       isCurrent = false;
       controller.cancelActiveRequests();
     };
-  }, [areaTypeId, areaIdId, SEType]);
+  }, [areaTypeId, areaIdId, SEType, dispatchSearchMap]);
 
   return (
     <>

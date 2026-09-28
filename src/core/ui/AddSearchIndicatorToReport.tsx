@@ -68,7 +68,12 @@ export function AddSearchIndicatorToReportBtn({
         asChild
       >
         {inButtonGroup ? (
-          <button disabled={!user || isLoading} title={title} aria-label={sr}>
+          <button
+            disabled={!user || isLoading}
+            title={title}
+            aria-label={sr}
+            className="cursor-pointer"
+          >
             <FilePlus2 className="mr-2 mb-1" strokeWidth={2} />
           </button>
         ) : (

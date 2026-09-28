@@ -9,7 +9,7 @@ import TextBoxes from "@ui/TextBoxes";
 import { StrategicEcosystemsController } from "pages/search/dashboard/ecosystems/StrategicEcosystemsController";
 import SmallStackedBar from "@composites/charts/SmallStackedBar";
 
-import { SEData, SELabels } from "pages/search/types/ecosystems";
+import { type SEData, SELabels } from "pages/search/types/ecosystems";
 import { formatNumber } from "@utils/format";
 
 import {
@@ -22,6 +22,11 @@ import colorPalettes from "pages/search/utils/colorPalettes";
 
 import { StrategicEcosystemsDistribution } from "pages/search/dashboard/ecosystems/StrategicEcosystemsDistribution";
 import { ProtectedAreasDistribution } from "pages/search/dashboard/ecosystems/ProtectedAreasDistribution";
+import { GetSearchIndicatorInfo } from "@hooks/useReport/GetSearchIndicatorInfo";
+import {
+  useSearchDispatchCTX,
+  useSearchStateCTX,
+} from "pages/search/hooks/SearchContext";
 
 type State = {
   SEAreas: SEData[];
@@ -89,12 +94,15 @@ export function StrategicEcosystems({
 }: Props) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  const searchState = useSearchStateCTX();
+  const searchDispatch = useSearchDispatchCTX();
+
   const { SEAreas, SETotalArea, loading, noData, showInfoGraph } = state;
 
   const controllerRef = useRef(new StrategicEcosystemsController());
-  const controller = controllerRef.current;
 
   useEffect(() => {
+    const controller = controllerRef.current;
     controller.setArea(areaTypeId, areaIdId);
 
     controller
@@ -118,11 +126,6 @@ export function StrategicEcosystems({
     (areaHa > 0 ? (SETotalArea * 100) / areaHa : 0).toFixed(2),
   );
 
-  /**
-   * Toggles the display of a specific help section.
-   *
-   * @param {TextSection} value - Section id
-   */
   const toggleInfo = () => {
     dispatch({ type: "TOGGLE_INFO_GRAPH" });
   };
@@ -167,61 +170,82 @@ export function StrategicEcosystems({
       {!loading && noData && "No hay información"}
 
       {!loading && !noData && (
-        <div className="ecosystems">
-          {SEAreas.map((SEValues) => {
-            const hasArea = SEValues.area > 0;
-            const SEChartData = transformSEValues(SEValues, SETotalArea);
+        <GetSearchIndicatorInfo
+          wrapperId="StrategicEcosistem"
+          title="Ecosistemas estratégicos"
+          graphInfo={texts}
+          tableData={[]}
+          graphId={activeSE ?? "none"}
+          includesMap={true}
+        >
+          <div className="ecosystems">
+            {SEAreas.map((SEValues) => {
+              const hasArea = SEValues.area > 0;
+              const SEChartData = transformSEValues(SEValues, SETotalArea);
 
-            return (
-              <div className="mb10" key={SEValues.type}>
-                <div className="singleeco">{SELabels[SEValues.type]}</div>
+              return (
+                <div className="mb10" key={SEValues.type}>
+                  <div className="singleeco">{SELabels[SEValues.type]}</div>
 
-                <div className="singleeco2">
-                  {formatNumber(SEValues.area, 0)} ha
-                </div>
+                  <div className="singleeco2">
+                    {formatNumber(SEValues.area, 0)} ha
+                  </div>
 
-                {hasArea && (
-                  <button
-                    className={`icongraph2 rotate-${
-                      activeSE === SEValues.type ? "false" : "true"
-                    }`}
-                    type="button"
-                    onClick={() => {
-                      const isClosingDetail = activeSE === SEValues.type;
-                      onToggleSEDetail(SEValues.type);
-                      if (isClosingDetail) {
-                        onSEDetailClose?.();
+                  {hasArea && (
+                    <button
+                      className={`icongraph2 rotate-${
+                        activeSE === SEValues.type ? "false" : "true"
+                      }`}
+                      type="button"
+                      onClick={() => {
+                        const isClosingDetail = activeSE === SEValues.type;
+                        onToggleSEDetail(SEValues.type);
+                        if (isClosingDetail) {
+                          onSEDetailClose?.();
+                        }
+                      }}
+                    >
+                      <ExpandMoreIcon />
+                    </button>
+                  )}
+
+                  {hasArea && (
+                    <SmallStackedBar
+                      loadStatus={null}
+                      data={SEChartData}
+                      units="ha"
+                      colors={(key) =>
+                        matchColor("se")(key) || colorPalettes.default[0]
                       }
-                    }}
-                  >
-                    <ExpandMoreIcon />
-                  </button>
-                )}
+                    />
+                  )}
 
-                {hasArea && (
-                  <SmallStackedBar
-                    loadStatus={null}
-                    data={SEChartData}
-                    units="ha"
-                    colors={(key) =>
-                      matchColor("se")(key) || colorPalettes.default[0]
-                    }
-                  />
-                )}
-
-                {hasArea && activeSE === SEValues.type && (
-                  <>
-                    <StrategicEcosystemsDistribution SEType={SEValues.type} />
-                    <ProtectedAreasDistribution SEType={SEValues.type} />
-                  </>
-                )}
-              </div>
-            );
-          })}
-        </div>
+                  {hasArea && activeSE === SEValues.type && (
+                    <>
+                      <StrategicEcosystemsDistribution
+                        SEType={SEValues.type}
+                        contextData={{
+                          state: searchState,
+                          dispatch: searchDispatch,
+                        }}
+                      />
+                      <ProtectedAreasDistribution
+                        SEType={SEValues.type}
+                        contextData={{
+                          state: searchState,
+                        }}
+                      />
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </GetSearchIndicatorInfo>
       )}
 
       <TextBoxes
+        addToReportWrapperId="StrategicEcosistem"
         downloadData={SEAreas}
         downloadName={`eco_strategic_ecosystems_${areaIdId}.csv`}
         quoteText={texts.quote}

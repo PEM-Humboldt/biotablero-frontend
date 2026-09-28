@@ -1,33 +1,34 @@
 import { useEffect, useRef, useState } from "react";
 
 import SmallStackedBar, {
-  SmallStackedBarData,
+  type SmallStackedBarData,
 } from "@composites/charts/SmallStackedBar";
 import colorPalettes from "pages/search/utils/colorPalettes";
 
-import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
-
 import { ProtectedAreasDistributionController } from "pages/search/dashboard/ecosystems/ProtectedAreasDistributionController";
 import { matchColor } from "pages/search/utils/matchColor";
-import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
-import { SEKey } from "pages/search/types/ecosystems";
+import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
+import type { SEKey } from "pages/search/types/ecosystems";
+import { type SearchState } from "pages/search/hooks/SearchReducer";
 
 type ChartStatus = "loading" | "ready" | "error";
 
 interface Props {
   SEType: SEKey;
+  contextData: {
+    state: SearchState;
+  };
 }
 
-export function ProtectedAreasDistribution({ SEType }: Props) {
+export function ProtectedAreasDistribution({ SEType, contextData }: Props) {
   const [distributionData, setDistributionData] = useState<
     SmallStackedBarData[]
   >([]);
   const [chartStatus, setChartStatus] = useState<ChartStatus>("loading");
 
-  const { areaType, areaId, areaHa } = useSearchStateCTX();
+  const { areaType, areaId, areaHa } = contextData.state;
 
   const controllerRef = useRef(new ProtectedAreasDistributionController());
-  const controller = controllerRef.current;
   const protectedAreasColors = matchColor("pa", true);
 
   let loadStatus: MessageWrapperType = null;
@@ -43,6 +44,7 @@ export function ProtectedAreasDistribution({ SEType }: Props) {
 
   useEffect(() => {
     let isCurrent = true;
+    const controller = controllerRef.current;
 
     if (!areaTypeId || !areaIdId) {
       return () => {
@@ -58,12 +60,16 @@ export function ProtectedAreasDistribution({ SEType }: Props) {
     controller
       .getProtectedAreasDistributionValues(SEType, areaHa ?? 0)
       .then((distributionDataRes) => {
-        if (!isCurrent) return;
+        if (!isCurrent) {
+          return;
+        }
         setDistributionData(distributionDataRes);
         setChartStatus("ready");
       })
       .catch((error) => {
-        if (!isCurrent) return;
+        if (!isCurrent) {
+          return;
+        }
 
         const errorMessage =
           error instanceof Error ? error.message : String(error);
