@@ -22,14 +22,12 @@ export async function waitForAnimations(
     childList: true,
     attributes: true,
     characterData: true,
-    // attributeFilter: ["style", "class"],
   });
 
   try {
-    // Revisar, esperar, revisar hasta que todo melo
+    // Revisar dom, esperar, revisar carga de imagenes hasta que todo melo
 
     while (performance.now() < deadline) {
-      // Esperar que las animaciones sucedan...
       const running = element
         .getAnimations({ subtree: true })
         .filter(
@@ -47,7 +45,6 @@ export async function waitForAnimations(
         continue;
       }
 
-      // esperar que carguen las teselas...
       const loading = Array.from(element.querySelectorAll("img")).filter(
         (img) => !img.complete,
       );
