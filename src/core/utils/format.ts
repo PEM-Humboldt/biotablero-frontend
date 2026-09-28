@@ -32,6 +32,9 @@ export function capitalize(name?: string) {
 
   return name
     .split(" ")
-    .map((w) => `${w.toLocaleUpperCase(LOCALE)}${w.toLocaleLowerCase(LOCALE)}`)
+    .map(
+      (w) =>
+        `${w[0].toLocaleUpperCase(LOCALE)}${w.slice(1).toLocaleLowerCase(LOCALE)}`,
+    )
     .join(" ");
 }

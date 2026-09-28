@@ -53,7 +53,7 @@ const observedRichnessGradientColors = ["#1B0C42", "#A6216E", "#FCB03D"];
 enum ObservedRichnessUpdated {
   LOADING = "loading",
   ERRORS = "errors",
-  STARTING_INFO = "loaded",
+  INITIAL_DATA = "loaded",
   TAXONOMIC_GROUP = "taxonomicGroup",
   SHOW_INFO = "showInfo",
 }
@@ -82,7 +82,7 @@ type ObservedRichnessAction =
       payload: { user: string[]; console: unknown };
     }
   | {
-      type: ObservedRichnessUpdated.STARTING_INFO;
+      type: ObservedRichnessUpdated.INITIAL_DATA;
       payload: {
         taxonomicGroupsAvailable: string[];
         texts: TextsObject;
@@ -142,7 +142,7 @@ function observedRichnessReducer(
       console.error(action.payload.console);
       return { ...state, isLoading: false, errors: action.payload.user };
 
-    case ObservedRichnessUpdated.STARTING_INFO:
+    case ObservedRichnessUpdated.INITIAL_DATA:
       return {
         ...state,
         isLoading: false,
@@ -251,7 +251,7 @@ export function ObservedRichness() {
           }
 
           updateRichness({
-            type: ObservedRichnessUpdated.STARTING_INFO,
+            type: ObservedRichnessUpdated.INITIAL_DATA,
             payload: {
               taxonomicGroupsAvailable: groups.filter((e) => e !== "total"),
               texts: texts,
@@ -444,8 +444,6 @@ export function ObservedRichness() {
             <GetSearchIndicatorInfo
               wrapperId="StatsOnSpecies"
               title="Número de especies"
-              description=""
-              graphInfo={richness.texts}
               tableData={[]}
               graphId={
                 richness.currentTaxonomicGroup === "all"
@@ -486,8 +484,7 @@ export function ObservedRichness() {
           ) : (
             <GetSearchIndicatorInfo
               wrapperId="ObservedRichness"
-              title="Número de especies registradas por km² (LMSC)"
-              description=""
+              title="Número de especies registradas por km²"
               graphInfo={richness.texts}
               tableData={controllerRef.current.getDownloadData({
                 current: richness.areaTableData,
@@ -514,7 +511,7 @@ export function ObservedRichness() {
                   curve="monotoneX"
                   gridXValues={graphSerieTicks}
                   axisBottom={{
-                    legend: "Número de especies registradas (LMSC)",
+                    legend: "Número de especies registradas",
                     legendOffset: 36,
                     legendPosition: "middle" as const,
                     tickValues: graphSerieTicks,
@@ -523,7 +520,7 @@ export function ObservedRichness() {
                   gridYValues={5}
                   axisLeft={{
                     tickValues: 5,
-                    legend: "Frecuencia de unidades de 1km² (LMSC)",
+                    legend: "Frecuencia de unidades de 1km²",
                     legendOffset: -50,
                     format: (value: number) => `${value / 1000}k`,
                   }}
