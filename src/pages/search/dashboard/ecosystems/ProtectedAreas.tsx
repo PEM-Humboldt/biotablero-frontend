@@ -7,6 +7,7 @@ import { matchColor } from "pages/search/utils/matchColor";
 import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { formatNumber } from "@utils/format";
 import colorPalettes from "pages/search/utils/colorPalettes";
+import { GetSearchIndicatorInfo } from "@hooks/useReport/GetSearchIndicatorInfo";
 
 /**
  * Calculate percentage for a given value according to total
@@ -83,18 +84,28 @@ export function ProtectedAreas({
         />
       )}
 
-      <div className="graficaeco">
-        <h6>Distribución por áreas protegidas:</h6>
-        <SmallStackedBar
-          loadStatus={messages}
-          data={PAAreas}
-          units="ha"
-          colors={(key: string) => paColor(key) || colorPalettes.default[0]}
-          scaleType={PADivergentData ? "symlog" : "linear"}
-        />
-      </div>
+      <GetSearchIndicatorInfo
+        wrapperId="ProtectedAreas"
+        title="Áreas protegidas"
+        graphInfo={texts}
+        tableData={PAAreas as unknown as Record<string, string | number>[]}
+        graphId=""
+        includesMap={false}
+      >
+        <div className="graficaeco">
+          <h6>Distribución por áreas protegidas:</h6>
+          <SmallStackedBar
+            loadStatus={messages}
+            data={PAAreas}
+            units="ha"
+            colors={(key: string) => paColor(key) || colorPalettes.default[0]}
+            scaleType={PADivergentData ? "symlog" : "linear"}
+          />
+        </div>
+      </GetSearchIndicatorInfo>
 
       <TextBoxes
+        addToReportWrapperId="ProtectedAreas"
         downloadData={PAAreas}
         downloadName={`eco_protected_areas_${areaIdStr}.csv`}
         quoteText={texts.quote}

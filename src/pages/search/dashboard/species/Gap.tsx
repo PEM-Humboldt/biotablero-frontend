@@ -33,7 +33,7 @@ import { ShortInfo } from "@composites/ShortInfo";
 import { getMetricTexts } from "pages/search/utils/texts";
 import { capitalize } from "@utils/format";
 import { GetSearchIndicatorInfo } from "@hooks/useReport/GetSearchIndicatorInfo";
-import { Square, SquareCheckBig } from "lucide-react";
+import { Square, SquareCheck, SquareCheckBig } from "lucide-react";
 import { LOCALE } from "@config/global";
 
 const GAP_GRAPH_MAX_YEARS_VISUALIZATION_AMOUTN = 5;

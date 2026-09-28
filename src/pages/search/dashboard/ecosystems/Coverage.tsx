@@ -8,6 +8,7 @@ import TextBoxes from "@ui/TextBoxes";
 import { matchColor } from "pages/search/utils/matchColor";
 import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import colorPalettes from "pages/search/utils/colorPalettes";
+import { GetSearchIndicatorInfo } from "@hooks/useReport/GetSearchIndicatorInfo";
 
 interface Props {
   coverage: SmallStackedBarData[];
@@ -67,24 +68,36 @@ export function Coverage({
         )}
       </div>
 
-      <h6>Natural, Secundaria y Transformada:</h6>
+      <GetSearchIndicatorInfo
+        wrapperId="Coverage"
+        title="Cobertura"
+        graphInfo={texts}
+        tableData={coverage as unknown as Record<string, string | number>[]}
+        graphId=""
+        includesMap={true}
+      >
+        <>
+          <h6>Natural, Secundaria y Transformada:</h6>
 
-      <div className="graficaeco">
-        <div className="svgPointer">
-          <SmallStackedBar
-            loadStatus={messages}
-            data={coverage}
-            units="ha"
-            colors={(key: string) =>
-              matchColor("coverage")(key) || colorPalettes.default[0]
-            }
-            onClickGraphHandler={onCoverageClick}
-            forceFullPercent={true}
-          />
-        </div>
-      </div>
+          <div className="graficaeco">
+            <div className="svgPointer">
+              <SmallStackedBar
+                loadStatus={messages}
+                data={coverage}
+                units="ha"
+                colors={(key: string) =>
+                  matchColor("coverage")(key) || colorPalettes.default[0]
+                }
+                onClickGraphHandler={onCoverageClick}
+                forceFullPercent={true}
+              />
+            </div>
+          </div>
+        </>
+      </GetSearchIndicatorInfo>
 
       <TextBoxes
+        addToReportWrapperId="Coverage"
         downloadData={coverage}
         downloadName={`eco_coverages_${areaIdStr}.csv`}
         quoteText={texts.quote}
