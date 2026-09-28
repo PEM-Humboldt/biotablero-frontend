@@ -155,6 +155,7 @@ export function Help() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={uiText.search.placeholder}
+              autoComplete="off"
             />
             <InputGroupAddon align="inline-end">
               <SearchIcon />
@@ -165,6 +166,7 @@ export function Help() {
             disabled={search.length === 0}
             title={uiText.search.cleanBtn.title}
             aria-label={uiText.search.cleanBtn.sr}
+            onClick={() => setSearch("")}
           >
             <RotateCcw />
           </Button>
@@ -194,7 +196,7 @@ export function Help() {
                       <AccordionTrigger className="bg-transparent! text-primary! hover:bg-transparent! hover:text-accent! data-[state=open]:bg-transparent! data-[state=open]:text-primary! px-0">
                         {question.title}
                       </AccordionTrigger>
-                      <AccordionContent className="pb-4">
+                      <AccordionContent className="pb-4 markdown-renderer">
                         {question.description}
                       </AccordionContent>
                     </AccordionItem>
