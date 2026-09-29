@@ -22,7 +22,7 @@ interface TextBoxProps {
 type boxValues = "meto" | "cons" | "quote" | null;
 
 // TODO: Actualizar los íconos al nuevo look&feel
-function TextBoxes({
+export function TextBoxes({
   downloadData,
   downloadName,
   quoteText,
@@ -124,5 +124,3 @@ function TextBoxes({
     </>
   );
 }
-
-export default TextBoxes;

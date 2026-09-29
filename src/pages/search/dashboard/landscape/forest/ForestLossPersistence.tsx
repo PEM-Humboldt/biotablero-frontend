@@ -9,7 +9,7 @@ import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
 import { matchColor } from "pages/search/utils/matchColor";
 import { formatNumber } from "@utils/format";
-import TextBoxes from "@ui/TextBoxes";
+import { TextBoxes } from "@ui/TextBoxes";
 
 import type { ForestLPExt } from "pages/search/types/forest";
 import { SmallBars } from "@composites/charts/SmallBars";

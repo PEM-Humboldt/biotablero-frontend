@@ -5,7 +5,7 @@ import { type CartesianMarkerProps } from "@nivo/core";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
-import TextBoxes from "@ui/TextBoxes";
+import { TextBoxes } from "@ui/TextBoxes";
 import { Lines } from "@composites/charts/Lines";
 import { GraphLegend } from "@ui/GraphLegend";
 import { LOCALE } from "@config/global";

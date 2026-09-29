@@ -12,7 +12,7 @@ import {
 import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 
 import { matchColor } from "pages/search/utils/matchColor";
-import TextBoxes from "@ui/TextBoxes";
+import { TextBoxes } from "@ui/TextBoxes";
 
 import { type DPC } from "pages/search/types/connectivity";
 import type { TextsObject } from "pages/search/types/texts";

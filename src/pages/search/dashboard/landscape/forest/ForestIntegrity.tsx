@@ -4,7 +4,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import { PointFilledLegend, SquareBorderLegend } from "@ui/CssLegends";
 import DownloadCSV from "@ui/DownloadCSV";
 import { ShortInfo } from "@composites/ShortInfo";
-import TextBoxes from "@ui/TextBoxes";
+import { TextBoxes } from "@ui/TextBoxes";
 import { IconTooltip } from "@ui/Tooltips";
 
 import { matchColor } from "pages/search/utils/matchColor";

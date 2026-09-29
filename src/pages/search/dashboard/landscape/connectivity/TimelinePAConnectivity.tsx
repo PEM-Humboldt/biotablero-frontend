@@ -9,7 +9,7 @@ import {
 } from "pages/search/hooks/SearchContext";
 import { matchColor } from "pages/search/utils/matchColor";
 import { processLineSeriesDataToCsv } from "pages/search/utils/processDataCsv";
-import TextBoxes from "@ui/TextBoxes";
+import { TextBoxes } from "@ui/TextBoxes";
 import type {
   timelinePAConn,
   timeLinePAConnValues,
