@@ -4,7 +4,7 @@ import { ShortInfo } from "@composites/ShortInfo";
 import SmallStackedBar, {
   SmallStackedBarData,
 } from "@composites/charts/SmallStackedBar";
-import TextBoxes from "@ui/TextBoxes";
+import { TextBoxes } from "@ui/TextBoxes";
 import { matchColor } from "pages/search/utils/matchColor";
 import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import colorPalettes from "pages/search/utils/colorPalettes";

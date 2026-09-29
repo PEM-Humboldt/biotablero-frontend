@@ -4,7 +4,7 @@ import InfoIcon from "@mui/icons-material/Info";
 
 import { IconTooltip } from "@ui/Tooltips";
 import { ShortInfo } from "@composites/ShortInfo";
-import TextBoxes from "@ui/TextBoxes";
+import { TextBoxes } from "@ui/TextBoxes";
 
 import { StrategicEcosystemsController } from "pages/search/dashboard/ecosystems/StrategicEcosystemsController";
 import SmallStackedBar from "@composites/charts/SmallStackedBar";

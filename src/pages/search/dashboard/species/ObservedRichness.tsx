@@ -11,7 +11,7 @@ import {
 import SmallStackedBar, {
   type SmallStackedBarData,
 } from "@composites/charts/SmallStackedBar";
-import TextBoxes from "@ui/TextBoxes";
+import { TextBoxes } from "@ui/TextBoxes";
 import { AddSearchIndicatorToReportBtn } from "@ui/AddSearchIndicatorToReport";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { GetSearchIndicatorInfo } from "@hooks/useReport/GetSearchIndicatorInfo";

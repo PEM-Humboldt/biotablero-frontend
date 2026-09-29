@@ -10,7 +10,7 @@ import {
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
 import { matchColor } from "pages/search/utils/matchColor";
-import TextBoxes from "@ui/TextBoxes";
+import { TextBoxes } from "@ui/TextBoxes";
 
 import {
   LargeStackedBar,

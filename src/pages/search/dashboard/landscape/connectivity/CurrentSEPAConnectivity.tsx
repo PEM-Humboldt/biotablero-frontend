@@ -11,7 +11,7 @@ import {
 import { formatNumber } from "@utils/format";
 import { matchColor } from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
-import TextBoxes from "@ui/TextBoxes";
+import { TextBoxes } from "@ui/TextBoxes";
 
 import {
   currentSEPAConn,
