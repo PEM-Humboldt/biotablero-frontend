@@ -106,11 +106,11 @@ export function ProtectedAreas({
 
       <TextBoxes
         addToReportWrapperId="ProtectedAreas"
-        downloadData={PAAreas}
-        downloadName={`eco_protected_areas_${areaIdStr}.csv`}
-        quoteText={texts.quote}
-        metoText={texts.meto}
-        consText={texts.cons}
+        texts={texts}
+        download={{
+          data: PAAreas,
+          filename: `eco_protected_areas_${areaIdStr}.csv`,
+        }}
         toggleInfo={toggleInfo}
         isInfoOpen={infoOpen}
       />

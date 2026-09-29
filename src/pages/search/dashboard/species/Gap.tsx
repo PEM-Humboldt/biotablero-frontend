@@ -515,11 +515,11 @@ export function Gap() {
 
           <TextBoxes
             addToReportWrapperId="Gaps"
-            consText={gap.texts.cons}
-            metoText={gap.texts.meto}
-            quoteText={gap.texts.quote}
-            downloadData={controllerRef.current.getDownloadData(renderData)}
-            downloadName={`índiceVacíos_${areaType?.label}_${areaId?.name}.csv`}
+            texts={gap.texts}
+            download={{
+              data: controllerRef.current.getDownloadData(renderData),
+              filename: `índiceVacíos_${areaType?.label}_${areaId?.name}.csv`,
+            }}
             isInfoOpen={gap.showInfo}
             toggleInfo={() => updateGap({ type: GapsUpdated.SHOW_INFO })}
           />
