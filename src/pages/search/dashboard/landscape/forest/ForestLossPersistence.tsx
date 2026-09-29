@@ -246,11 +246,11 @@ export function ForestLossPersistence() {
       </GetSearchIndicatorInfo>
       <TextBoxes
         addToReportWrapperId="ForestLossPersistence"
-        consText={texts.forestLP.cons}
-        metoText={texts.forestLP.meto}
-        quoteText={texts.forestLP.quote}
-        downloadData={controllerRef.current.getDownloadData(forestLP)}
-        downloadName={`forest_loss_persistence_${areaTypeId}_${areaIdStr}.csv`}
+        texts={texts.forestLP}
+        download={{
+          data: controllerRef.current.getDownloadData(forestLP),
+          filename: `forest_loss_persistence_${areaTypeId}_${areaIdStr}.csv`,
+        }}
         isInfoOpen={showInfoGraph}
         toggleInfo={toggleInfoGraph}
       />

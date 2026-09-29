@@ -340,11 +340,11 @@ export function CurrentFootprint() {
 
       <TextBoxes
         addToReportWrapperId="CurrentFootprint"
-        consText={texts.hfCurrent.cons}
-        metoText={texts.hfCurrent.meto}
-        quoteText={texts.hfCurrent.quote}
-        downloadData={hfCurrent}
-        downloadName={`hf_current_${areaTypeId}_${areaIdId}.csv`}
+        texts={texts.hfCurrent}
+        download={{
+          data: hfCurrent,
+          filename: `hf_current_${areaTypeId}_${areaIdId}.csv`,
+        }}
         isInfoOpen={showInfoGraph}
         toggleInfo={toggleInfoGraph}
       />

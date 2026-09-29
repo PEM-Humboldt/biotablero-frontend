@@ -370,11 +370,11 @@ export function TimelineFootprint() {
 
         <TextBoxes
           addToReportWrapperId="TimelineFootprint"
-          consText={texts.hfTimeline.cons}
-          metoText={texts.hfTimeline.meto}
-          quoteText={texts.hfTimeline.quote}
-          downloadData={processLineSeriesDataToCsv(timelineData)}
-          downloadName={`timeline_hf_${areaType.id}_${areaId.id}.csv`}
+          texts={texts.hfTimeline}
+          download={{
+            data: processLineSeriesDataToCsv(timelineData),
+            filename: `timeline_hf_${areaType.id}_${areaId.id}.csv`,
+          }}
           isInfoOpen={showInfoGraph}
           toggleInfo={toggleInfoGraph}
         />

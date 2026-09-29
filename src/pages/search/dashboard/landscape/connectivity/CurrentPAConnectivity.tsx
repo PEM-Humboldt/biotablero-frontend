@@ -381,11 +381,11 @@ export function CurrentPAConnectivity() {
 
         <TextBoxes
           addToReportWrapperId="PAConnectivity"
-          consText={texts.protConn.cons}
-          metoText={texts.protConn.meto}
-          quoteText={texts.protConn.quote}
-          downloadData={currentPAConnData}
-          downloadName={`conn_pa_current_${areaTypeId}_${areaIdId}.csv`}
+          texts={texts.protConn}
+          download={{
+            data: currentPAConnData,
+            filename: `conn_pa_current_${areaTypeId}_${areaIdId}.csv`,
+          }}
           isInfoOpen={infoShown.has("protConn")}
           toggleInfo={() => toggleInfo("protConn")}
         />

@@ -246,11 +246,11 @@ export function StrategicEcosystems({
 
       <TextBoxes
         addToReportWrapperId="StrategicEcosistem"
-        downloadData={SEAreas}
-        downloadName={`eco_strategic_ecosystems_${areaIdId}.csv`}
-        quoteText={texts.quote}
-        metoText={texts.meto}
-        consText={texts.cons}
+        texts={texts}
+        download={{
+          data: SEAreas,
+          filename: `eco_strategic_ecosystems_${areaIdId}.csv`,
+        }}
         toggleInfo={toggleInfo}
         isInfoOpen={showInfoGraph}
       />
