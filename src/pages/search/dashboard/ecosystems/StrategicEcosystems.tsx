@@ -158,10 +158,7 @@ export function StrategicEcosystems({
       )}
 
       {showInfoGraph && (
-        <ShortInfo
-          description={`<p>${texts.info}</p>`}
-          className="graphinfo2"
-        />
+        <ShortInfo description={texts.info} className="graphinfo2" />
       )}
 
       {loading && "Cargando..."}

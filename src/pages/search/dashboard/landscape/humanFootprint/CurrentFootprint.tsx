@@ -292,10 +292,7 @@ export function CurrentFootprint() {
       </h2>
 
       {showInfoGraph && (
-        <ShortInfo
-          description={`<p>${texts.hfCurrent.info}</p>`}
-          className="graphinfo2"
-        />
+        <ShortInfo description={texts.hfCurrent.info} className="graphinfo2" />
       )}
 
       <GetSearchIndicatorInfo

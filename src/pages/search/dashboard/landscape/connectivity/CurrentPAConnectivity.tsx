@@ -347,10 +347,7 @@ export function CurrentPAConnectivity() {
         </IconTooltip>
 
         {infoShown.has("protConn") && (
-          <ShortInfo
-            description={`<p>${texts.protConn.info}</p>`}
-            className="graphinfo2"
-          />
+          <ShortInfo description={texts.protConn.info} className="graphinfo2" />
         )}
 
         <GetSearchIndicatorInfo
@@ -432,7 +429,7 @@ export function CurrentPAConnectivity() {
         </div>
         {infoShown.has("dpc") && (
           <ShortInfo
-            description={`<p>${texts.paConnDPC.info}</p>`}
+            description={texts.paConnDPC.info}
             className="graphinfo2"
           />
         )}

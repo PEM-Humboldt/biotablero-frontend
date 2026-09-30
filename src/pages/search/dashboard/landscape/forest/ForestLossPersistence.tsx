@@ -169,10 +169,7 @@ export function ForestLossPersistence() {
         </IconTooltip>
       </h2>
       {showInfoGraph && (
-        <ShortInfo
-          description={`<p>${texts.forestLP.info}</p>`}
-          className="graphinfo2"
-        />
+        <ShortInfo description={texts.forestLP.info} className="graphinfo2" />
       )}
 
       <GetSearchIndicatorInfo

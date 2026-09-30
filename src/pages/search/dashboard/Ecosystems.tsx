@@ -389,10 +389,7 @@ export function Ecosystems() {
       </h2>
 
       {showInfoMain && (
-        <ShortInfo
-          description={`<p>${texts.coverage.helper}</p>`}
-          className="graphinfo2"
-        />
+        <ShortInfo description={texts.coverage.helper} className="graphinfo2" />
       )}
 
       <div className="graphcontainer pt5">

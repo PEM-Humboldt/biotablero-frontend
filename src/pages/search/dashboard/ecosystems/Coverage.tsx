@@ -60,10 +60,7 @@ export function Coverage({
         </IconTooltip>
 
         {infoOpen && (
-          <ShortInfo
-            description={`<p>${texts.info}</p>`}
-            className="graphinfo3"
-          />
+          <ShortInfo description={texts.info} className="graphinfo3" />
         )}
       </div>
 
