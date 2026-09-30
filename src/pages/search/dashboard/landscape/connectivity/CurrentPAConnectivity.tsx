@@ -486,11 +486,11 @@ export function CurrentPAConnectivity() {
 
         <TextBoxes
           addToReportWrapperId="dpcPAConnectivity"
-          consText={texts.paConnDPC.cons}
-          metoText={texts.paConnDPC.meto}
-          quoteText={texts.paConnDPC.quote}
-          downloadData={dpcData}
-          downloadName={`conn_dpc_${areaTypeId}_${areaIdId}.csv`}
+          texts={texts.paConnDPC}
+          download={{
+            data: dpcData,
+            filename: `conn_dpc_${areaTypeId}_${areaIdId}.csv`,
+          }}
           isInfoOpen={infoShown.has("dpc")}
           toggleInfo={() => toggleInfo("dpc")}
         />
