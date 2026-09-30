@@ -68,7 +68,6 @@ export function TextBoxes<T>({
       toggleInfo();
     }
   };
-  console.log(texts);
 
   const textsAvailable = textsToDisplay.filter(
     (t) => texts?.[t] !== undefined && texts[t] !== "" && keyTitleDictionary[t],
