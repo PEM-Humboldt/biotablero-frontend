@@ -392,7 +392,6 @@ export function Ecosystems() {
         <ShortInfo
           description={`<p>${texts.coverage.helper}</p>`}
           className="graphinfo2"
-          collapseButton={false}
         />
       )}
 

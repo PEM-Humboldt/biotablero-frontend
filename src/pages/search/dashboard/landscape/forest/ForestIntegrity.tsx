@@ -273,7 +273,6 @@ class ForestIntegrity extends React.Component<Props, FIState> {
           <ShortInfo
             description={`<p>${texts.forestSCIHF.info}</p>`}
             className="graphinfo2"
-            collapseButton={false}
           />
         )}
         <h3 className="inlineb">

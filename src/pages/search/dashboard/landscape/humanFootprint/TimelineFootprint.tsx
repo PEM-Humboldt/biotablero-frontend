@@ -309,7 +309,6 @@ export function TimelineFootprint() {
         <ShortInfo
           description={`<p>${texts.hfTimeline.info}</p>`}
           className="graphinfo2"
-          collapseButton={false}
         />
       )}
 

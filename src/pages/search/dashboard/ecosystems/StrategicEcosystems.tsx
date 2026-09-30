@@ -161,7 +161,6 @@ export function StrategicEcosystems({
         <ShortInfo
           description={`<p>${texts.info}</p>`}
           className="graphinfo2"
-          collapseButton={false}
         />
       )}
 

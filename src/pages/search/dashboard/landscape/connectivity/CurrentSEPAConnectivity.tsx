@@ -270,7 +270,6 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
           <ShortInfo
             description={`<p>${texts.paConnSE.info}</p>`}
             className="graphinfo2"
-            collapseButton={false}
           />
         )}
         <div>

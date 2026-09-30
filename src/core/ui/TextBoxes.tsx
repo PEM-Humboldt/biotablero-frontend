@@ -64,7 +64,6 @@ export function TextBoxes<T>({
 
   const clickOnBox = (name: boxValues) => {
     setActiveBox((prev) => (prev === name ? null : name));
-
     if (isInfoOpen) {
       toggleInfo();
     }
@@ -112,9 +111,8 @@ export function TextBoxes<T>({
 
       {activeBox !== null && (
         <ShortInfo
-          description={`<p>${texts[activeBox]}</p>`}
+          description={texts[activeBox] ?? ""}
           className="graphinfo2"
-          collapseButton={false}
         />
       )}
     </>

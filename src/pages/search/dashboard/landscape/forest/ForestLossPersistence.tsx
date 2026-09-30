@@ -172,7 +172,6 @@ export function ForestLossPersistence() {
         <ShortInfo
           description={`<p>${texts.forestLP.info}</p>`}
           className="graphinfo2"
-          collapseButton={false}
         />
       )}
 
