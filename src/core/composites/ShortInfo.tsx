@@ -10,7 +10,7 @@ export function ShortInfo({
   className = "hidden",
 }: ShortInfoTypes) {
   return (
-    <div className={`${className}-${true}`}>
+    <div className={`${className}-true markdown-ShortInfo`}>
       {description === "" ? "Cargando..." : parseSimpleMarkdown(description)}
     </div>
   );

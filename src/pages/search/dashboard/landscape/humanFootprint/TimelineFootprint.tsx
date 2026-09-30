@@ -306,10 +306,7 @@ export function TimelineFootprint() {
       </h2>
 
       {showInfoGraph && (
-        <ShortInfo
-          description={`<p>${texts.hfTimeline.info}</p>`}
-          className="graphinfo2"
-        />
+        <ShortInfo description={texts.hfTimeline.info} className="graphinfo2" />
       )}
 
       <h6>Huella humana en el tiempo comparada con EE</h6>

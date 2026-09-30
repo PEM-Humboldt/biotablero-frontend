@@ -267,10 +267,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
           </IconTooltip>
         </h2>
         {showInfoGraph && (
-          <ShortInfo
-            description={`<p>${texts.paConnSE.info}</p>`}
-            className="graphinfo2"
-          />
+          <ShortInfo description={texts.paConnSE.info} className="graphinfo2" />
         )}
         <div>
           <h3>Haz clic en la gráfica para seleccionar un EE</h3>

@@ -404,10 +404,7 @@ export function ObservedRichness() {
       </IconTooltip>
 
       {richness.isInfoOpen && (
-        <ShortInfo
-          description={`<p>${richness.texts.info}</p>`}
-          className="graphinfo2"
-        />
+        <ShortInfo description={richness.texts.info} className="graphinfo2" />
       )}
 
       {Object.keys(richness.taxonomicGroupsAvailable).length > 1 && (

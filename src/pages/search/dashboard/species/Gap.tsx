@@ -383,10 +383,7 @@ export function Gap() {
       </IconTooltip>
 
       {gap.showInfo && (
-        <ShortInfo
-          description={`<p>${gap.texts.info}</p>`}
-          className="graphinfo2"
-        />
+        <ShortInfo description={gap.texts.info} className="graphinfo2" />
       )}
 
       {gap.availableGroups.length > 1 && (

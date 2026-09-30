@@ -77,10 +77,7 @@ export function ProtectedAreas({
       <h5 className="pa-percentage">{`${protectedAreasPercentage} %`}</h5>
 
       {infoOpen && (
-        <ShortInfo
-          description={`<p>${texts.info}</p>`}
-          className="graphinfo3"
-        />
+        <ShortInfo description={texts.info} className="graphinfo3" />
       )}
 
       <GetSearchIndicatorInfo
