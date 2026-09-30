@@ -63,7 +63,6 @@ export function Coverage({
           <ShortInfo
             description={`<p>${texts.info}</p>`}
             className="graphinfo3"
-            collapseButton={false}
           />
         )}
       </div>

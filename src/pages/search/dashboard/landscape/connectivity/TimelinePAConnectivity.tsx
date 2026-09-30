@@ -185,7 +185,6 @@ class TimelinePAConnectivity extends React.Component<
           <ShortInfo
             description={`<p>${texts.paConnTimeline.info}</p>`}
             className="graphinfo2"
-            collapseButton={false}
           />
         )}
         <div>

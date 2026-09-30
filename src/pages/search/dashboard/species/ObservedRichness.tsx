@@ -407,7 +407,6 @@ export function ObservedRichness() {
         <ShortInfo
           description={`<p>${richness.texts.info}</p>`}
           className="graphinfo2"
-          collapseButton={false}
         />
       )}
 

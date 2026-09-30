@@ -386,7 +386,6 @@ export function Gap() {
         <ShortInfo
           description={`<p>${gap.texts.info}</p>`}
           className="graphinfo2"
-          collapseButton={false}
         />
       )}
 

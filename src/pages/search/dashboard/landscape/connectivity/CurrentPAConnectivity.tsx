@@ -350,7 +350,6 @@ export function CurrentPAConnectivity() {
           <ShortInfo
             description={`<p>${texts.protConn.info}</p>`}
             className="graphinfo2"
-            collapseButton={false}
           />
         )}
 
@@ -435,7 +434,6 @@ export function CurrentPAConnectivity() {
           <ShortInfo
             description={`<p>${texts.paConnDPC.info}</p>`}
             className="graphinfo2"
-            collapseButton={false}
           />
         )}
         <h3 className="innerInfoH3">

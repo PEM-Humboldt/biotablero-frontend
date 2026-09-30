@@ -155,7 +155,6 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
           <ShortInfo
             description={`<p>${texts.hfPersistence.info}</p>`}
             className="graphinfo2"
-            collapseButton={false}
           />
         )}
         <h6>Estable natural, Dinámica, Estable alta</h6>

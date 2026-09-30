@@ -295,7 +295,6 @@ export function CurrentFootprint() {
         <ShortInfo
           description={`<p>${texts.hfCurrent.info}</p>`}
           className="graphinfo2"
-          collapseButton={false}
         />
       )}
 

@@ -80,7 +80,6 @@ export function ProtectedAreas({
         <ShortInfo
           description={`<p>${texts.info}</p>`}
           className="graphinfo3"
-          collapseButton={false}
         />
       )}
 

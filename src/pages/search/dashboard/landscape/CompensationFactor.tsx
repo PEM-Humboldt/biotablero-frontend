@@ -249,7 +249,6 @@ class CompensationFactor extends React.Component<
               <ShortInfo
                 description={`<p>${texts.cf.info}</p>`}
                 className="graphinfo2"
-                collapseButton={false}
               />
             )}
           </div>
@@ -284,7 +283,6 @@ class CompensationFactor extends React.Component<
             <ShortInfo
               description={`<p>${texts.biomes.info}</p>`}
               className="graphinfo3"
-              collapseButton={false}
             />
           )}
           <LargeStackedBar
@@ -318,7 +316,6 @@ class CompensationFactor extends React.Component<
             <ShortInfo
               description={`<p>${texts.bioticRegions.info}</p>`}
               className="graphinfo3"
-              collapseButton={false}
             />
           )}
           <LargeStackedBar
