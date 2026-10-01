@@ -2,7 +2,7 @@ import { Page, View, Text, Link } from "@react-pdf/renderer";
 import { REPORT_PAGE_SIZE } from "@config/report";
 import type { ReportMetadata, SearchContext } from "@appTypes/report";
 import { styles } from "@hooks/useReport/reportModels/searchIndicatorReportModel/layout/styles";
-import { colors } from "@hooks/useReport/reportModels/searchIndicatorReportModel/layout/theme";
+import { colors } from "@hooks/useReport/layout/theme";
 import { Footer } from "@hooks/useReport/reportModels/searchIndicatorReportModel/layout/footer";
 import { documentInfo } from "@hooks/useReport/reportModels/searchIndicatorReportModel/layout/documentInfo";
 

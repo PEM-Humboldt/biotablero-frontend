@@ -2,7 +2,7 @@ import { Page, View, Text } from "@react-pdf/renderer";
 import { REPORT_PAGE_SIZE } from "@config/report";
 import type { ReportMetadata } from "@appTypes/report";
 import { styles } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/styles";
-import { colors } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/theme";
+import { colors } from "@hooks/useReport/layout/theme";
 import { Footer } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/footer";
 import { documentInfo } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/documentInfo";
 
