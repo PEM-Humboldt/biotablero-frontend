@@ -1,5 +1,6 @@
 import { ExternalRequests } from "@utils/externalRequests";
 
+// TODO: verificar si todavía son requeridos los featureFlags
 export const isFlagEnabled = (id: string) =>
   ExternalRequests.requestFeaturesFlags()
     .then((res) => {
