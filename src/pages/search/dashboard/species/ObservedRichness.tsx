@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef } from "react";
+import { CircleAlert, LayersIcon, LeafIcon, MapPin } from "lucide-react";
 
 import {
   Select,
@@ -7,12 +8,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@ui/shadCN/component/select";
-import { ShortInfo } from "@composites/ShortInfo";
+import SmallStackedBar, {
+  type SmallStackedBarData,
+} from "@composites/charts/SmallStackedBar";
 import TextBoxes from "@ui/TextBoxes";
+import { AddSearchIndicatorToReportBtn } from "@ui/AddSearchIndicatorToReport";
 import { ErrorsList } from "@ui/LabelingWithErrors";
-
-import InfoIcon from "@mui/icons-material/Info";
-import { IconTooltip } from "@ui/Tooltips";
+import { GetSearchIndicatorInfo } from "@hooks/useReport/GetSearchIndicatorInfo";
+import { GraphLegend } from "@ui/GraphLegend";
+import { LOCALE } from "@config/global";
+import { ResponsiveLine } from "@nivo/line";
+import { ShortInfo } from "@composites/ShortInfo";
+import { cn } from "@ui/shadCN/lib/utils";
+import { generateLinearTicks } from "@utils/ui";
 
 import {
   ObservedRichnessController,
@@ -23,19 +31,14 @@ import {
   useSearchStateCTX,
 } from "pages/search/hooks/SearchContext";
 import type { TextsObject } from "pages/search/types/texts";
-import { speciesGroupLabels } from "pages/search/dashboard/species/commonDictionaries";
-import { CircleAlert, LayersIcon, LeafIcon, MapPin } from "lucide-react";
-import { LOCALE } from "@config/global";
-import { cn } from "@ui/shadCN/lib/utils";
-import { GraphLegend } from "@ui/GraphLegend";
-import SmallStackedBar, {
-  type SmallStackedBarData,
-} from "@composites/charts/SmallStackedBar";
 import { getMetricTexts } from "pages/search/utils/texts";
-import { ResponsiveLine } from "@nivo/line";
 import { SearchUpdated } from "pages/search/hooks/SearchReducer";
+import type { AreaIdBasic } from "pages/search/types/dashboard";
 import type { MetricTypesMap } from "pages/search/types/metrics";
-import { generateLinearTicks } from "@utils/ui";
+
+import InfoIcon from "@mui/icons-material/Info";
+import { IconTooltip } from "@ui/Tooltips";
+import { capitalize } from "@utils/format";
 
 const OBSERVED_RICHNESS_GRAPH_KEYS = ["CR", "EN", "VU"];
 
@@ -50,7 +53,7 @@ const observedRichnessGradientColors = ["#1B0C42", "#A6216E", "#FCB03D"];
 enum ObservedRichnessUpdated {
   LOADING = "loading",
   ERRORS = "errors",
-  STARTING_INFO = "loaded",
+  INITIAL_DATA = "loaded",
   TAXONOMIC_GROUP = "taxonomicGroup",
   SHOW_INFO = "showInfo",
 }
@@ -79,7 +82,7 @@ type ObservedRichnessAction =
       payload: { user: string[]; console: unknown };
     }
   | {
-      type: ObservedRichnessUpdated.STARTING_INFO;
+      type: ObservedRichnessUpdated.INITIAL_DATA;
       payload: {
         taxonomicGroupsAvailable: string[];
         texts: TextsObject;
@@ -139,12 +142,19 @@ function observedRichnessReducer(
       console.error(action.payload.console);
       return { ...state, isLoading: false, errors: action.payload.user };
 
-    case ObservedRichnessUpdated.STARTING_INFO:
+    case ObservedRichnessUpdated.INITIAL_DATA:
       return {
         ...state,
         isLoading: false,
         errors: [],
-        taxonomicGroupsAvailable: action.payload.taxonomicGroupsAvailable,
+        taxonomicGroupsAvailable: action.payload.taxonomicGroupsAvailable
+          .reduce<string[]>((all, current) => {
+            if (current !== "total") {
+              all.push(capitalize(current));
+            }
+            return all;
+          }, [])
+          .toSorted(),
         nationalTableData: action.payload.nationalData,
         areaTableData: action.payload.areaData,
         texts: action.payload.texts,
@@ -241,9 +251,9 @@ export function ObservedRichness() {
           }
 
           updateRichness({
-            type: ObservedRichnessUpdated.STARTING_INFO,
+            type: ObservedRichnessUpdated.INITIAL_DATA,
             payload: {
-              taxonomicGroupsAvailable: groups,
+              taxonomicGroupsAvailable: groups.filter((e) => e !== "total"),
               texts: texts,
               areaData: areaData,
               nationalData: nationalData,
@@ -258,7 +268,7 @@ export function ObservedRichness() {
             payload: {
               rasterLayers: areaRichnessMap,
               mapTitle: {
-                name: `Riqueza observada en ${areaId?.name}`,
+                name: `Riqueza observada en ${capitalize(areaId?.name)}`,
                 ...(gradientMaxValue !== undefined
                   ? {
                       gradientData: {
@@ -340,8 +350,8 @@ export function ObservedRichness() {
               rasterLayers: areaRichnessMap,
               mapTitle: {
                 name: groupFilter
-                  ? `Riqueza observada de ${groupFilter} en ${areaId?.name}`
-                  : `Riqueza observada en ${areaId?.name}`,
+                  ? `Riqueza observada de ${groupFilter} en ${capitalize(areaId?.name)}`
+                  : `Riqueza observada en ${capitalize(areaId?.name)}`,
                 ...(gradientMaxValue !== undefined
                   ? {
                       gradientData: {
@@ -413,8 +423,11 @@ export function ObservedRichness() {
           <SelectContent>
             <SelectItem value="all">Todos los grupos</SelectItem>
             {richness.taxonomicGroupsAvailable.map((group) => (
-              <SelectItem key={`selectGroup-${group}`} value={group}>
-                {speciesGroupLabels[group] ?? group}
+              <SelectItem
+                key={`selectGroup-${group}`}
+                value={group.toLocaleLowerCase(LOCALE)}
+              >
+                {group}
               </SelectItem>
             ))}
           </SelectContent>
@@ -428,10 +441,34 @@ export function ObservedRichness() {
           <div className="errorData">Cargando datos...</div>
         ) : (
           <>
-            <ObservedRichnessTable data={richness.areaTableData} />
-            <ObservedRichnessTable
-              data={richness.nationalTableData}
-              isReference={true}
+            <GetSearchIndicatorInfo
+              wrapperId="StatsOnSpecies"
+              title="Número de especies"
+              tableData={[]}
+              graphId={
+                richness.currentTaxonomicGroup === "all"
+                  ? "Todos los grupos"
+                  : richness.currentTaxonomicGroup
+              }
+              includesMap={false}
+            >
+              <>
+                <ObservedRichnessTable
+                  data={richness.areaTableData}
+                  areaId={areaId}
+                />
+                <ObservedRichnessTable
+                  data={richness.nationalTableData}
+                  areaId={areaId}
+                  isReference={true}
+                />
+              </>
+            </GetSearchIndicatorInfo>
+
+            <AddSearchIndicatorToReportBtn
+              wrapperId="StatsOnSpecies"
+              overWriteLabel="Agregar tablas"
+              className="w-full"
             />
           </>
         )}
@@ -440,63 +477,80 @@ export function ObservedRichness() {
       {richness.areaSerie && (
         <div className="graphcontainer pt6">
           <h4 className="text-balance">
-            Número de especies registradas por km2 (LMSC)
+            Número de especies registradas por km² (LMSC)
           </h4>
-          <div className="w-full aspect-video">
-            {richness.isLoading ? (
-              <div className="errorData">Cargando datos...</div>
-            ) : (
-              <ResponsiveLine
-                data={[richness.areaSerie]}
-                margin={{ top: 30, right: 20, bottom: 60, left: 60 }}
-                xScale={{
-                  type: "linear",
-                  min: 1,
-                  max: graphSerieTicks[graphSerieTicks.length - 1] + 1,
-                  nice: false,
-                }}
-                yScale={{ type: "linear", min: 0, max: "auto" }}
-                curve="monotoneX"
-                gridXValues={graphSerieTicks}
-                axisBottom={{
-                  legend: "Número de especies registradas (LMSC)",
-                  legendOffset: 36,
-                  legendPosition: "middle" as const,
-                  tickValues: graphSerieTicks,
-                }}
-                colors={observedRichnessGradientColors}
-                gridYValues={5}
-                axisLeft={{
-                  tickValues: 5,
-                  legend: "Frecuencia de unidades de 1km² (LMSC)",
-                  legendOffset: -50,
-                  format: (value: number) => `${value / 1000}k`,
-                }}
-                pointSize={7}
-                pointColor="#ffffff"
-                pointBorderWidth={2}
-                pointBorderColor={{ from: "seriesColor" }}
-                pointLabelYOffset={-12}
-                enableTouchCrosshair={true}
-                useMesh={true}
-                tooltip={(p) => (
-                  <div className="bg-background rounded-lg text-grey-dark px-4 py-2 text-sm text-nowrap shadow-2xl flex flex-col">
-                    <span
-                      style={{ color: p.point.seriesColor }}
-                      className="font-semibold"
-                    >
-                      {p.point.data.yFormatted}
-                    </span>
-                    <span>Especies</span>
-                  </div>
-                )}
-              />
-            )}
-          </div>
+          {richness.isLoading ? (
+            <div className="errorData">Cargando datos...</div>
+          ) : (
+            <GetSearchIndicatorInfo
+              wrapperId="ObservedRichness"
+              title="Número de especies registradas por km²"
+              graphInfo={richness.texts}
+              tableData={controllerRef.current.getDownloadData({
+                current: richness.areaTableData,
+                national: richness.nationalTableData,
+              })}
+              graphId={
+                richness.currentTaxonomicGroup === "all"
+                  ? "Todos los grupos"
+                  : richness.currentTaxonomicGroup
+              }
+              includesMap={true}
+            >
+              <div className="w-full aspect-video">
+                <ResponsiveLine
+                  data={[richness.areaSerie]}
+                  margin={{ top: 30, right: 20, bottom: 60, left: 60 }}
+                  xScale={{
+                    type: "linear",
+                    min: 1,
+                    max: graphSerieTicks[graphSerieTicks.length - 1],
+                    nice: false,
+                  }}
+                  yScale={{ type: "linear", min: 0, max: "auto" }}
+                  curve="monotoneX"
+                  gridXValues={graphSerieTicks}
+                  axisBottom={{
+                    legend: "Número de especies registradas",
+                    legendOffset: 36,
+                    legendPosition: "middle" as const,
+                    tickValues: graphSerieTicks,
+                  }}
+                  colors={observedRichnessGradientColors}
+                  gridYValues={5}
+                  axisLeft={{
+                    tickValues: 5,
+                    legend: "Frecuencia de unidades de 1km²",
+                    legendOffset: -50,
+                    format: (value: number) => `${value / 1000}k`,
+                  }}
+                  pointSize={7}
+                  pointColor="#ffffff"
+                  pointBorderWidth={2}
+                  pointBorderColor={{ from: "seriesColor" }}
+                  pointLabelYOffset={-12}
+                  enableTouchCrosshair={true}
+                  useMesh={true}
+                  tooltip={(p) => (
+                    <div className="bg-background rounded-lg text-grey-dark px-4 py-2 text-sm text-nowrap shadow-2xl flex flex-col">
+                      <span
+                        style={{ color: p.point.seriesColor }}
+                        className="font-semibold"
+                      >
+                        {p.point.data.yFormatted}
+                      </span>
+                      <span>Especies</span>
+                    </div>
+                  )}
+                />
+              </div>
+            </GetSearchIndicatorInfo>
+          )}
         </div>
       )}
 
       <TextBoxes
+        addToReportWrapperId="ObservedRichness"
         consText={richness.texts.cons}
         metoText={richness.texts.meto}
         quoteText={richness.texts.quote}
@@ -519,12 +573,12 @@ export function ObservedRichness() {
 function ObservedRichnessTable({
   data,
   isReference,
+  areaId,
 }: {
   data: ObservedRichnessDataType | null;
   isReference?: boolean;
+  areaId?: AreaIdBasic;
 }) {
-  const { areaId } = useSearchStateCTX();
-
   const stackedData = useMemo(() => {
     if (!data) {
       return [];

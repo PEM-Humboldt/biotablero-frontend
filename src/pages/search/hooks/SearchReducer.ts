@@ -24,6 +24,7 @@ export enum SearchUpdated {
   SHAPE_LAYERS = "shapeLayers",
   RASTER_LAYERS_PARTIAL = "rasterLayersPartial",
   RASTER_LAYERS = "rasterLayers",
+  RECENTER_MAP = "recenterMap",
   MAP_TITLE = "mapTitle",
   LOADING_LAYER = "loadingLayer",
   LAYER_ERROR = "layerError",
@@ -71,7 +72,10 @@ export type SearchActions =
   | { type: SearchUpdated.AREA_HA; areaHa: number | undefined }
   | {
       type: SearchUpdated.AREA_LAYER;
-      payload: { areaLayerJSON: geojson.GeoJsonObject; areaType?: AreaType };
+      payload: {
+        areaLayerJSON: geojson.GeoJsonObject | undefined;
+        areaType?: AreaType;
+      };
     } // handleAreaLayerUpdate
   | { type: SearchUpdated.SHAPE_LAYERS; shapeLayers: ShapeLayer[] }
   | { type: SearchUpdated.RASTER_LAYERS_PARTIAL; rasterLayers: RasterLayer[] } // LEGACY
@@ -84,6 +88,7 @@ export type SearchActions =
         forceLoadState?: boolean;
       };
     } // handleShapeLayersUpdate
+  | { type: SearchUpdated.RECENTER_MAP }
   | { type: SearchUpdated.MAP_TITLE; mapTitle: MapTitle }
   | { type: SearchUpdated.LOADING_LAYER; loadingLayer: boolean }
   | { type: SearchUpdated.LAYER_ERROR; layerError: string | undefined } // handleSetLayerError
@@ -225,6 +230,14 @@ export function searchReducer(
             : false,
         layerError: false,
       };
+
+    case SearchUpdated.RECENTER_MAP:
+      if (!state.areaLayer || state.areaLayer.id !== "geofence") {
+        return state;
+      }
+
+      return { ...state, areaLayer: { ...state.areaLayer } };
+
     case SearchUpdated.RASTER_LAYERS_PARTIAL:
       return {
         ...state,

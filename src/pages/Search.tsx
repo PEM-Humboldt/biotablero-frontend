@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer, useRef } from "react";
+import { useCallback, useEffect, useReducer } from "react";
 import { useNavigate, useLocation, useOutletContext } from "react-router";
 import L from "leaflet";
 import type * as geojson from "geojson";
@@ -9,7 +9,7 @@ import type { AreaIdBasic } from "pages/search/types/dashboard";
 import { MapViewer } from "pages/search/MapViewer";
 import GeoServerAPI from "@api/geoServer";
 import { Dashboard } from "pages/search/Dashboard";
-import Selector from "pages/search/Selector";
+import { Selector } from "pages/search/Selector";
 import type { UiManager } from "core/layout/MainLayout";
 import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 import {
@@ -17,6 +17,7 @@ import {
   searchReducer,
   SearchUpdated,
 } from "pages/search/hooks/SearchReducer";
+import { ReportCTX } from "@hooks/useReport";
 
 export function Search() {
   const { layoutDispatch } = useOutletContext<UiManager>();
@@ -26,7 +27,9 @@ export function Search() {
   );
   const navigate = useNavigate();
   const { search, pathname } = useLocation();
-  const skipURLRead = useRef(false);
+  const query = new URLSearchParams(search);
+  const areaTypeURL = query.get("area_type");
+  const areaIdURL = query.get("area_id");
 
   useEffect(() => {
     layoutDispatch({
@@ -40,18 +43,20 @@ export function Search() {
   }, [layoutDispatch]);
 
   useEffect(() => {
-    if (skipURLRead.current) {
-      skipURLRead.current = false;
+    if (searchState.searchType !== "definedArea") {
       return;
     }
 
-    const query = new URLSearchParams(search);
-    const areaTypeURL = query.get("area_type");
-    const areaIdURL = query.get("area_id");
-
-    if (searchState.searchType !== "definedArea" || areaTypeURL === null) {
+    if (areaTypeURL === null) {
+      layoutDispatch({
+        type: LayoutUpdated.HEADER_NAMES,
+        newHeader: { title: "", subtitle: "" },
+      });
+      searchDispatch({ type: SearchUpdated.GO_BACK });
       return;
     }
+
+    let cancelled = false;
 
     const syncSearchConsole = async () => {
       try {
@@ -59,6 +64,10 @@ export function Search() {
           SearchAPI.requestAreaTypes(),
           SearchAPI.requestAreaIds(areaTypeURL),
         ]);
+        if (cancelled) {
+          return;
+        }
+
         const typeObj = areaTypes.find(({ id }) => id === areaTypeURL);
         const headerNames = { subtitle: typeObj?.label ?? "" };
 
@@ -78,6 +87,9 @@ export function Search() {
 
         const areaInfo = await SearchAPI.requestAreaInfo(areaIdURL);
         const idObj = areaIds.find(({ id }) => id === areaInfo.id);
+        if (cancelled) {
+          return;
+        }
 
         layoutDispatch({
           type: LayoutUpdated.HEADER_NAMES,
@@ -99,7 +111,11 @@ export function Search() {
     };
 
     void syncSearchConsole();
-  }, [search, layoutDispatch, searchState.searchType]);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [areaTypeURL, areaIdURL, searchState.searchType, layoutDispatch]);
 
   useEffect(() => {
     if (
@@ -143,19 +159,11 @@ export function Search() {
   }, [searchState.areaId, searchState.areaLayer.json, searchState.areaType]);
 
   useEffect(() => {
-    if (skipURLRead.current) {
-      return;
-    }
-
     if (!searchState.areaType) {
-      if (search !== "") {
-        void navigate({ pathname, search: "" }, { replace: true });
-      }
       return;
     }
 
     let params = `?area_type=${searchState.areaType.id}`;
-
     if (searchState.areaId) {
       params += `&area_id=${searchState.areaId.id}`;
     }
@@ -163,18 +171,7 @@ export function Search() {
     if (params !== search) {
       void navigate({ pathname, search: params }, { replace: true });
     }
-  }, [searchState.areaType, searchState.areaId, search, navigate, pathname]);
-
-  const handleGoBackClick = () => {
-    skipURLRead.current = true;
-
-    layoutDispatch({
-      type: LayoutUpdated.HEADER_NAMES,
-      newHeader: { title: "", subtitle: "" },
-    });
-    searchDispatch({ type: SearchUpdated.GO_BACK });
-    void navigate({ pathname, search: "" }, { replace: true });
-  };
+  }, [searchState.areaType, searchState.areaId, navigate, pathname, search]);
 
   const handleShowDrawControls = useCallback(
     (show: boolean) => {
@@ -199,7 +196,7 @@ export function Search() {
   return (
     <SearchCTX state={searchState} dispatch={searchDispatch}>
       <LegacyCTX>
-        <div className="flex h-[calc(100vh-138px)] md:h-[calc(100vh-148px)] w-full overflow-hidden">
+        <div className="flex h-[calc(100vh-138px)] md:h-[calc(100vh-148px)] w-full">
           <MapViewer
             bounds={bounds}
             polygon={null}
@@ -207,9 +204,11 @@ export function Search() {
             geoServerUrl={GeoServerAPI.getRequestURL()}
           />
 
-          <div className="flex-[1_1_40%] h-full min-h-0 flex flex-col order-2 overflow-hidden">
+          <div className="flex-[1_1_40%] h-full min-h-0 flex flex-col order-2">
             {showDashboard ? (
-              <Dashboard goBackClick={handleGoBackClick} />
+              <ReportCTX>
+                <Dashboard />
+              </ReportCTX>
             ) : (
               <Selector showDrawControls={handleShowDrawControls} />
             )}

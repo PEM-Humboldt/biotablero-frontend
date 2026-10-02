@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 
 import EditIcon from "@mui/icons-material/Edit";
 
-import Accordion from "pages/search/Accordion";
-import isFlagEnabled from "@utils/isFlagEnabled";
+import { SearchAccordion } from "@ui/SearchAccordion";
+import { isFlagEnabled } from "@utils/isFlagEnabled";
 import {
   ErrorMessage,
   LoadingMessage,
@@ -33,7 +33,7 @@ const AREA_ERROR_MESSAGES: Record<AreasErrorType, string> = {
   "empty-result": "No se encontraron áreas disponibles para consultar.",
 };
 
-function Selector({ showDrawControls }: SelectorProps) {
+export function Selector({ showDrawControls }: SelectorProps) {
   const [drawPolygonFlag, setDrawPolygonFlag] = useState(true);
   const [areaTypes, setAreaTypes] = useState<Array<AreaType>>([]);
   const [areasError, setAreasError] = useState<AreasErrorType>("none");
@@ -56,6 +56,7 @@ function Selector({ showDrawControls }: SelectorProps) {
         setAreaTypes(selectableAreaTypes);
         setAreasError("none");
       } catch (err) {
+        console.error(err);
         setAreasError("request-failed");
       } finally {
         setIsLoadingAreaTypes(false);
@@ -157,7 +158,7 @@ function Selector({ showDrawControls }: SelectorProps) {
           <i>3</i> Sube tu propio <b>polígono</b> (usuarios registrados)
         </p>
       </div>
-      <Accordion
+      <SearchAccordion
         componentsArray={sections}
         classNameDefault="m0b"
         classNameSelected="m0b selector-expanded"
@@ -167,5 +168,3 @@ function Selector({ showDrawControls }: SelectorProps) {
     </div>
   );
 }
-
-export default Selector;

@@ -1,4 +1,4 @@
-import Accordion from "pages/search/Accordion";
+import { SearchAccordion } from "@ui/SearchAccordion";
 import ForestIntegrity from "pages/search/dashboard/landscape/forest/ForestIntegrity";
 import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
 import { ForestLossPersistence } from "pages/search/dashboard/landscape/forest/ForestLossPersistence";
@@ -42,7 +42,7 @@ export function Forest(props: ComponentProps) {
   );
   return (
     <div style={{ width: "100%" }}>
-      <Accordion
+      <SearchAccordion
         componentsArray={componentsArray}
         classNameDefault="m1"
         classNameSelected="m1 accordionSelected"
