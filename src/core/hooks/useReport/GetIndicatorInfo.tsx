@@ -56,13 +56,14 @@ export function GetIndicatorInfo({
       version: currentIndicator.version,
       BiologicalGroupTag: tags[3] ?? [],
       EcosystemTag: tags[4] ?? [],
-      description: currentIndicator.description,
+      description: currentIndicator?.description ?? "",
       singleMap,
+      url: `${window.location.origin}/Monitoreo/Iniciativas/${currentIndicator.initiativeId}/Indicadores/${currentIndicator.indicatorId}`,
       card: {
-        methodology: currentIndicator.methodology,
-        interpretation: currentIndicator.interpretation,
-        considerations: currentIndicator.considerations,
-        authorship: currentIndicator.authorship,
+        methodology: currentIndicator?.methodology ?? "",
+        interpretation: currentIndicator?.interpretation ?? "",
+        considerations: currentIndicator?.considerations ?? "",
+        authorship: currentIndicator?.authorship ?? "",
       },
     };
 

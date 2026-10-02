@@ -86,7 +86,8 @@ export function CardsAttachment() {
       role="status"
       aria-live="polite"
       aria-hidden={!departmentId}
-      inert={!departmentId ? "" : undefined}
+      // NOTE: para que no sea accesible al teclado cuando está oculto
+      {...(!departmentId ? { inert: "" } : {})}
       className={cn(
         "absolute z-10 w-74 bottom-1 left-1 lg:top-16 lg:left-112 rounded-lg shadow-2xl h-fit",
         "transition-all duration-300 ease-in-out",
