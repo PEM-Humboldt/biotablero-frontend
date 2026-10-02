@@ -10,7 +10,7 @@ import {
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
 import { matchColor } from "pages/search/utils/matchColor";
-import TextBoxes from "@ui/TextBoxes";
+import { TextBoxes } from "@ui/TextBoxes";
 
 import {
   LargeStackedBar,
@@ -292,11 +292,7 @@ export function CurrentFootprint() {
       </h2>
 
       {showInfoGraph && (
-        <ShortInfo
-          description={`<p>${texts.hfCurrent.info}</p>`}
-          className="graphinfo2"
-          collapseButton={false}
-        />
+        <ShortInfo description={texts.hfCurrent.info} className="graphinfo2" />
       )}
 
       <GetSearchIndicatorInfo
@@ -340,11 +336,11 @@ export function CurrentFootprint() {
 
       <TextBoxes
         addToReportWrapperId="CurrentFootprint"
-        consText={texts.hfCurrent.cons}
-        metoText={texts.hfCurrent.meto}
-        quoteText={texts.hfCurrent.quote}
-        downloadData={hfCurrent}
-        downloadName={`hf_current_${areaTypeId}_${areaIdId}.csv`}
+        texts={texts.hfCurrent}
+        download={{
+          data: hfCurrent,
+          filename: `hf_current_${areaTypeId}_${areaIdId}.csv`,
+        }}
         isInfoOpen={showInfoGraph}
         toggleInfo={toggleInfoGraph}
       />

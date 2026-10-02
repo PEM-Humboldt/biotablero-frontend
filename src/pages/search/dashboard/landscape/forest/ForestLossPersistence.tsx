@@ -9,7 +9,7 @@ import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
 import { matchColor } from "pages/search/utils/matchColor";
 import { formatNumber } from "@utils/format";
-import TextBoxes from "@ui/TextBoxes";
+import { TextBoxes } from "@ui/TextBoxes";
 
 import type { ForestLPExt } from "pages/search/types/forest";
 import { SmallBars } from "@composites/charts/SmallBars";
@@ -169,11 +169,7 @@ export function ForestLossPersistence() {
         </IconTooltip>
       </h2>
       {showInfoGraph && (
-        <ShortInfo
-          description={`<p>${texts.forestLP.info}</p>`}
-          className="graphinfo2"
-          collapseButton={false}
-        />
+        <ShortInfo description={texts.forestLP.info} className="graphinfo2" />
       )}
 
       <GetSearchIndicatorInfo
@@ -246,11 +242,11 @@ export function ForestLossPersistence() {
       </GetSearchIndicatorInfo>
       <TextBoxes
         addToReportWrapperId="ForestLossPersistence"
-        consText={texts.forestLP.cons}
-        metoText={texts.forestLP.meto}
-        quoteText={texts.forestLP.quote}
-        downloadData={controllerRef.current.getDownloadData(forestLP)}
-        downloadName={`forest_loss_persistence_${areaTypeId}_${areaIdStr}.csv`}
+        texts={texts.forestLP}
+        download={{
+          data: controllerRef.current.getDownloadData(forestLP),
+          filename: `forest_loss_persistence_${areaTypeId}_${areaIdStr}.csv`,
+        }}
         isInfoOpen={showInfoGraph}
         toggleInfo={toggleInfoGraph}
       />

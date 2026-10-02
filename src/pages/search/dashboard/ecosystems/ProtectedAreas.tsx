@@ -2,7 +2,7 @@ import InfoIcon from "@mui/icons-material/Info";
 import { IconTooltip } from "@ui/Tooltips";
 import { ShortInfo } from "@composites/ShortInfo";
 import SmallStackedBar from "@composites/charts/SmallStackedBar";
-import TextBoxes from "@ui/TextBoxes";
+import { TextBoxes } from "@ui/TextBoxes";
 import { matchColor } from "pages/search/utils/matchColor";
 import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { formatNumber } from "@utils/format";
@@ -77,11 +77,7 @@ export function ProtectedAreas({
       <h5 className="pa-percentage">{`${protectedAreasPercentage} %`}</h5>
 
       {infoOpen && (
-        <ShortInfo
-          description={`<p>${texts.info}</p>`}
-          className="graphinfo3"
-          collapseButton={false}
-        />
+        <ShortInfo description={texts.info} className="graphinfo3" />
       )}
 
       <GetSearchIndicatorInfo
@@ -106,11 +102,11 @@ export function ProtectedAreas({
 
       <TextBoxes
         addToReportWrapperId="ProtectedAreas"
-        downloadData={PAAreas}
-        downloadName={`eco_protected_areas_${areaIdStr}.csv`}
-        quoteText={texts.quote}
-        metoText={texts.meto}
-        consText={texts.cons}
+        texts={texts}
+        download={{
+          data: PAAreas,
+          filename: `eco_protected_areas_${areaIdStr}.csv`,
+        }}
         toggleInfo={toggleInfo}
         isInfoOpen={infoOpen}
       />

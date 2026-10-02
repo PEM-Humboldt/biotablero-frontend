@@ -56,7 +56,6 @@ export async function getTagById(id: number) {
  * - On failure: A `ApiRequestError` object.
  */
 export async function addTag(data: TagDataForm) {
-  console.log(data);
   const res = await monitoringAPI<TagDataForm>({
     type: "post",
     endpoint: "Tag",

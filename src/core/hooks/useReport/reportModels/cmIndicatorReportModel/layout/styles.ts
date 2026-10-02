@@ -1,5 +1,5 @@
 import { StyleSheet } from "@react-pdf/renderer";
-import { colors } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/theme";
+import { colors } from "@hooks/useReport/layout/theme";
 
 export const styles = StyleSheet.create({
   // ---- Páginas ----

@@ -1,5 +1,5 @@
 import { StyleSheet } from "@react-pdf/renderer";
-import { colors } from "@hooks/useReport/reportModels/searchIndicatorReportModel/layout/theme";
+import { colors } from "@hooks/useReport/layout/theme";
 import { MAX_INDICATOR_IMAGE_HEIGHT } from "@config/report";
 
 export const styles = StyleSheet.create({

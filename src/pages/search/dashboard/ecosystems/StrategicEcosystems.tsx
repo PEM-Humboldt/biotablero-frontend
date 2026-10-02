@@ -4,7 +4,7 @@ import InfoIcon from "@mui/icons-material/Info";
 
 import { IconTooltip } from "@ui/Tooltips";
 import { ShortInfo } from "@composites/ShortInfo";
-import TextBoxes from "@ui/TextBoxes";
+import { TextBoxes } from "@ui/TextBoxes";
 
 import { StrategicEcosystemsController } from "pages/search/dashboard/ecosystems/StrategicEcosystemsController";
 import SmallStackedBar from "@composites/charts/SmallStackedBar";
@@ -158,11 +158,7 @@ export function StrategicEcosystems({
       )}
 
       {showInfoGraph && (
-        <ShortInfo
-          description={`<p>${texts.info}</p>`}
-          className="graphinfo2"
-          collapseButton={false}
-        />
+        <ShortInfo description={texts.info} className="graphinfo2" />
       )}
 
       {loading && "Cargando..."}
@@ -246,11 +242,11 @@ export function StrategicEcosystems({
 
       <TextBoxes
         addToReportWrapperId="StrategicEcosistem"
-        downloadData={SEAreas}
-        downloadName={`eco_strategic_ecosystems_${areaIdId}.csv`}
-        quoteText={texts.quote}
-        metoText={texts.meto}
-        consText={texts.cons}
+        texts={texts}
+        download={{
+          data: SEAreas,
+          filename: `eco_strategic_ecosystems_${areaIdId}.csv`,
+        }}
         toggleInfo={toggleInfo}
         isInfoOpen={showInfoGraph}
       />

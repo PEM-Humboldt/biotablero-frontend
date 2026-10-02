@@ -12,7 +12,7 @@ import {
 import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 
 import { matchColor } from "pages/search/utils/matchColor";
-import TextBoxes from "@ui/TextBoxes";
+import { TextBoxes } from "@ui/TextBoxes";
 
 import { type DPC } from "pages/search/types/connectivity";
 import type { TextsObject } from "pages/search/types/texts";
@@ -347,11 +347,7 @@ export function CurrentPAConnectivity() {
         </IconTooltip>
 
         {infoShown.has("protConn") && (
-          <ShortInfo
-            description={`<p>${texts.protConn.info}</p>`}
-            className="graphinfo2"
-            collapseButton={false}
-          />
+          <ShortInfo description={texts.protConn.info} className="graphinfo2" />
         )}
 
         <GetSearchIndicatorInfo
@@ -381,11 +377,11 @@ export function CurrentPAConnectivity() {
 
         <TextBoxes
           addToReportWrapperId="PAConnectivity"
-          consText={texts.protConn.cons}
-          metoText={texts.protConn.meto}
-          quoteText={texts.protConn.quote}
-          downloadData={currentPAConnData}
-          downloadName={`conn_pa_current_${areaTypeId}_${areaIdId}.csv`}
+          texts={texts.protConn}
+          download={{
+            data: currentPAConnData,
+            filename: `conn_pa_current_${areaTypeId}_${areaIdId}.csv`,
+          }}
           isInfoOpen={infoShown.has("protConn")}
           toggleInfo={() => toggleInfo("protConn")}
         />
@@ -433,9 +429,8 @@ export function CurrentPAConnectivity() {
         </div>
         {infoShown.has("dpc") && (
           <ShortInfo
-            description={`<p>${texts.paConnDPC.info}</p>`}
+            description={texts.paConnDPC.info}
             className="graphinfo2"
-            collapseButton={false}
           />
         )}
         <h3 className="innerInfoH3">
@@ -491,11 +486,11 @@ export function CurrentPAConnectivity() {
 
         <TextBoxes
           addToReportWrapperId="dpcPAConnectivity"
-          consText={texts.paConnDPC.cons}
-          metoText={texts.paConnDPC.meto}
-          quoteText={texts.paConnDPC.quote}
-          downloadData={dpcData}
-          downloadName={`conn_dpc_${areaTypeId}_${areaIdId}.csv`}
+          texts={texts.paConnDPC}
+          download={{
+            data: dpcData,
+            filename: `conn_dpc_${areaTypeId}_${areaIdId}.csv`,
+          }}
           isInfoOpen={infoShown.has("dpc")}
           toggleInfo={() => toggleInfo("dpc")}
         />

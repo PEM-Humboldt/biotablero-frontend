@@ -1,128 +1,120 @@
+import {
+  InfoIcon,
+  type LucideIcon,
+  MessageCircleQuestionMark,
+} from "lucide-react";
 import { useEffect, useState } from "react";
-
-import AnnouncementIcon from "@mui/icons-material/Announcement";
-import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
-import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 
 import { ShortInfo } from "@composites/ShortInfo";
 import DownloadCSV from "@ui/DownloadCSV";
 import { AddSearchIndicatorToReportBtn } from "@ui/AddSearchIndicatorToReport";
 
-interface TextBoxProps {
-  downloadData?: Array<unknown>;
-  downloadName: string;
-  quoteText: string;
-  metoText: string;
-  consText: string;
-  toggleInfo: () => void;
-  isInfoOpen: boolean;
-  addToReportWrapperId?: string;
+import type { TextsObject } from "pages/search/types/texts";
+
+// NOTE: Merecemos mejor que material, borrar apenas se
+// se actualice Search a la nueva UI
+import AnnouncementIcon from "@mui/icons-material/Announcement";
+import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";
+import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
+import { type OverridableComponent } from "@mui/material/OverridableComponent";
+import { type SvgIconTypeMap } from "@mui/material";
+
+type boxValues = keyof TextsObject | null;
+interface DownloadProps<T = Record<string, unknown>> {
+  data: T[];
+  filename: string;
 }
 
-type boxValues = "meto" | "cons" | "quote" | null;
+const keyTitleDictionary: Record<
+  keyof TextsObject,
+  {
+    title: string;
+    icon: OverridableComponent<SvgIconTypeMap<unknown, "svg">> | LucideIcon;
+  }
+> = {
+  info: { title: "Información", icon: InfoIcon },
+  meto: { title: "Metodología", icon: CollectionsBookmarkIcon },
+  cons: { title: "Consideraciones", icon: AnnouncementIcon },
+  quote: { title: "Autoría", icon: FormatQuoteIcon },
+  helper: { title: "Ayuda", icon: MessageCircleQuestionMark },
+};
 
-// TODO: Actualizar los íconos al nuevo look&feel
-function TextBoxes({
-  downloadData,
-  downloadName,
-  quoteText,
-  metoText,
-  consText,
+export function TextBoxes<T>({
+  addToReportWrapperId,
+  texts,
+  textsToDisplay = ["meto", "cons", "quote"],
   toggleInfo,
   isInfoOpen,
-  addToReportWrapperId,
-}: TextBoxProps) {
-  const [boxShown, setBoxShown] = useState<boxValues>(null);
+  download,
+}: {
+  addToReportWrapperId?: string;
+  texts: Partial<TextsObject>;
+  textsToDisplay?: (keyof TextsObject)[];
+  toggleInfo: () => void;
+  isInfoOpen: boolean;
+  download: DownloadProps<T>;
+}) {
   const [activeBox, setActiveBox] = useState<boxValues>(null);
 
   useEffect(() => {
     if (isInfoOpen) {
-      setBoxShown(null);
       setActiveBox(null);
     }
   }, [isInfoOpen]);
 
   const clickOnBox = (name: boxValues) => {
-    if (name === boxShown) {
-      setBoxShown(null);
-      setActiveBox(null);
-    } else {
-      setBoxShown(name);
-      setActiveBox(name);
-    }
+    setActiveBox((prev) => (prev === name ? null : name));
     if (isInfoOpen) {
       toggleInfo();
     }
   };
 
+  const textsAvailable = textsToDisplay.filter(
+    (t) => texts?.[t] !== undefined && texts[t] !== "" && keyTitleDictionary[t],
+  );
+
   return (
     <>
-      <div className="flex items-centera py-1 px-2 text-grey *:hover:text-accent">
+      <div className="flex items-center py-1 px-2 text-grey *:hover:text-accent">
         {addToReportWrapperId && (
           <AddSearchIndicatorToReportBtn
             wrapperId={addToReportWrapperId}
             inButtonGroup={true}
           />
         )}
-        {metoText !== "" && (
-          <button onClick={() => clickOnBox("meto")} title="Metodología">
-            <CollectionsBookmarkIcon
-              className={`graphinfo3${
-                activeBox === "meto" ? " activeBox" : ""
-              }`}
-            />
-          </button>
-        )}
-        {consText !== "" && (
-          <button onClick={() => clickOnBox("cons")} title="Consideraciones">
-            <AnnouncementIcon
-              className={`graphinfo3${
-                activeBox === "cons" ? " activeBox" : ""
-              }`}
-            />
-          </button>
-        )}
-        {quoteText !== "" && (
-          <button onClick={() => clickOnBox("quote")} title="Consideraciones">
-            <FormatQuoteIcon
-              className={`graphinfo3${
-                activeBox === "quote" ? " activeBox" : ""
-              }`}
-            />
-          </button>
-        )}
-        {downloadData?.length !== 0 && (
+
+        {textsAvailable.map((textKey) => {
+          const { title, icon: Icon } = keyTitleDictionary[textKey];
+          return (
+            <button
+              key={`indicatorHelper_${textKey}`}
+              onClick={() => clickOnBox(textKey)}
+              title={title}
+            >
+              <Icon
+                className={`graphinfo3${
+                  activeBox === textKey ? " activeBox" : ""
+                }`}
+              />
+            </button>
+          );
+        })}
+
+        {download && download.data.length > 0 && (
           <DownloadCSV
             className="downBtnSpecial"
-            data={downloadData}
-            filename={downloadName}
+            data={download.data}
+            filename={download.filename}
           />
         )}
       </div>
 
-      {boxShown === "quote" && (
+      {activeBox !== null && (
         <ShortInfo
-          description={`<p>${quoteText}</p>`}
+          description={texts[activeBox] ?? ""}
           className="graphinfo2"
-          collapseButton={false}
-        />
-      )}
-      {boxShown === "meto" && (
-        <ShortInfo
-          description={`<p>${metoText}</p>`}
-          className="graphinfo2"
-          collapseButton={false}
-        />
-      )}
-      {boxShown === "cons" && (
-        <ShortInfo
-          description={`<p>${consText}</p>`}
-          className="graphinfo2"
-          collapseButton={false}
         />
       )}
     </>
   );
 }
-
-export default TextBoxes;

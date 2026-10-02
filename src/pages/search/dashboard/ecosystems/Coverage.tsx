@@ -2,11 +2,11 @@ import InfoIcon from "@mui/icons-material/Info";
 import { IconTooltip } from "@ui/Tooltips";
 import { ShortInfo } from "@composites/ShortInfo";
 import SmallStackedBar, {
-  SmallStackedBarData,
+  type SmallStackedBarData,
 } from "@composites/charts/SmallStackedBar";
-import TextBoxes from "@ui/TextBoxes";
+import { TextBoxes } from "@ui/TextBoxes";
 import { matchColor } from "pages/search/utils/matchColor";
-import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
+import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import colorPalettes from "pages/search/utils/colorPalettes";
 import { GetSearchIndicatorInfo } from "@hooks/useReport/GetSearchIndicatorInfo";
 
@@ -60,11 +60,7 @@ export function Coverage({
         </IconTooltip>
 
         {infoOpen && (
-          <ShortInfo
-            description={`<p>${texts.info}</p>`}
-            className="graphinfo3"
-            collapseButton={false}
-          />
+          <ShortInfo description={texts.info} className="graphinfo3" />
         )}
       </div>
 
@@ -98,11 +94,11 @@ export function Coverage({
 
       <TextBoxes
         addToReportWrapperId="Coverage"
-        downloadData={coverage}
-        downloadName={`eco_coverages_${areaIdStr}.csv`}
-        quoteText={texts.quote}
-        metoText={texts.meto}
-        consText={texts.cons}
+        texts={texts}
+        download={{
+          data: coverage,
+          filename: `eco_coverages_${areaIdStr}.csv`,
+        }}
         toggleInfo={toggleInfo}
         isInfoOpen={infoOpen}
       />

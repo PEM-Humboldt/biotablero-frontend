@@ -9,7 +9,7 @@ import {
 } from "pages/search/hooks/SearchContext";
 import { matchColor } from "pages/search/utils/matchColor";
 import { processLineSeriesDataToCsv } from "pages/search/utils/processDataCsv";
-import TextBoxes from "@ui/TextBoxes";
+import { TextBoxes } from "@ui/TextBoxes";
 import type {
   timelinePAConn,
   timeLinePAConnValues,
@@ -183,9 +183,8 @@ class TimelinePAConnectivity extends React.Component<
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            description={`<p>${texts.paConnTimeline.info}</p>`}
+            description={texts.paConnTimeline.info}
             className="graphinfo2"
-            collapseButton={false}
           />
         )}
         <div>

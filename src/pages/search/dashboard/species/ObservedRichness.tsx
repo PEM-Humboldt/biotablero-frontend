@@ -11,7 +11,7 @@ import {
 import SmallStackedBar, {
   type SmallStackedBarData,
 } from "@composites/charts/SmallStackedBar";
-import TextBoxes from "@ui/TextBoxes";
+import { TextBoxes } from "@ui/TextBoxes";
 import { AddSearchIndicatorToReportBtn } from "@ui/AddSearchIndicatorToReport";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { GetSearchIndicatorInfo } from "@hooks/useReport/GetSearchIndicatorInfo";
@@ -404,11 +404,7 @@ export function ObservedRichness() {
       </IconTooltip>
 
       {richness.isInfoOpen && (
-        <ShortInfo
-          description={`<p>${richness.texts.info}</p>`}
-          className="graphinfo2"
-          collapseButton={false}
-        />
+        <ShortInfo description={richness.texts.info} className="graphinfo2" />
       )}
 
       {Object.keys(richness.taxonomicGroupsAvailable).length > 1 && (
@@ -551,14 +547,14 @@ export function ObservedRichness() {
 
       <TextBoxes
         addToReportWrapperId="ObservedRichness"
-        consText={richness.texts.cons}
-        metoText={richness.texts.meto}
-        quoteText={richness.texts.quote}
-        downloadData={controllerRef.current.getDownloadData({
-          current: richness.areaTableData,
-          national: richness.nationalTableData,
-        })}
-        downloadName={`cifrasRiquezaObservada_${areaType?.label}_${areaId?.name}_vs_contextoPaís.csv`}
+        texts={richness.texts}
+        download={{
+          data: controllerRef.current.getDownloadData({
+            current: richness.areaTableData,
+            national: richness.nationalTableData,
+          }),
+          filename: `cifrasRiquezaObservada_${areaType?.label}_${areaId?.name}_vs_contextoPaís.csv`,
+        }}
         isInfoOpen={richness.isInfoOpen}
         toggleInfo={() =>
           updateRichness({

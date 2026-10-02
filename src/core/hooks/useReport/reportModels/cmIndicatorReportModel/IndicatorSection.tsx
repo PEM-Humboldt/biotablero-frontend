@@ -1,5 +1,5 @@
 import { View, Page, Text, Image, Link } from "@react-pdf/renderer";
-import { colors } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/theme";
+import { colors } from "@hooks/useReport/layout/theme";
 import { styles } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/styles";
 import { Header } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/header";
 import { Footer } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/footer";
