@@ -4,9 +4,10 @@ import { parseSimpleMarkdown } from "@utils/textParser";
 import { useStats } from "pages/monitoring/outlets/initiativesMap/hooks/useStats";
 import { MonitorignOverviewBars } from "pages/monitoring/outlets/initiativesMap/ui/MonitoringOverviewBars";
 import { uiText } from "pages/monitoring/outlets/initiativesMap/layout/uiText";
+import { LoadingDiv } from "@ui/LoadingDiv";
 
 export function IndicatorsStats() {
-  const { errors, stats } = useStats("Indicators");
+  const { errors, stats, isLoading } = useStats("Indicators");
 
   const totalIndicators = stats
     ? Object.values(stats).reduce((all, current) => {
@@ -14,7 +15,9 @@ export function IndicatorsStats() {
       }, 0)
     : 0;
 
-  return !stats ? null : (
+  return isLoading ? (
+    <LoadingDiv />
+  ) : (
     <>
       <ErrorsList
         errorItems={errors}
@@ -25,10 +28,10 @@ export function IndicatorsStats() {
         {parseSimpleMarkdown(uiText.stats.indicators.preTextMd)}
       </div>
 
-      {stats.indicatorsByScale.length > 0 ? (
+      {stats && stats.observationsByScale.length > 0 ? (
         <>
           <MonitorignOverviewBars
-            data={stats.indicatorsByScale}
+            data={stats.observationsByScale}
             keysForValues={["value"]}
             keyForLeftAxisLabel="key"
             bottomAxisLabel="Personas"
