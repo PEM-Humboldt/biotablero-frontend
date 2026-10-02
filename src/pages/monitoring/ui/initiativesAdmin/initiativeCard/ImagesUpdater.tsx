@@ -20,17 +20,9 @@ import { Button } from "@ui/shadCN/component/button";
 import { uploadImages } from "pages/monitoring/api/services/assets";
 import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 import { useInitiativeDataCTX } from "pages/monitoring/ui/initiativesAdmin/hooks/useAdminUpdateContext";
+import type { ImageUploadInfo } from "pages/monitoring/api/types/definitions";
 
-type ImagesUpdaterProps = {
-  title: string;
-  backEndpointImage: string;
-  backEndpointBanner: string;
-};
-export function ImagesUpdater({
-  title,
-  backEndpointImage,
-  backEndpointBanner,
-}: ImagesUpdaterProps) {
+export function ImagesUpdater({ title }: { title: string }) {
   const { initiative, updater, currentEdit, setCurrentEdit } =
     useInitiativeDataCTX();
   const [isLoading, setIsLoading] = useState(false);
@@ -44,6 +36,7 @@ export function ImagesUpdater({
   const reset = useCallback(() => {
     sectionInfo.current = initiative ? { ...initiative.images } : null;
     setForceRender((n) => n + 1);
+    setErrors({});
   }, [initiative]);
 
   useEffect(() => {
@@ -57,26 +50,48 @@ export function ImagesUpdater({
     }
 
     setIsLoading(true);
+    const imagesToUpload: ImageUploadInfo[] = [];
 
-    const imagesToUpload = [
-      {
+    if (sectionInfo.current.imageUrl instanceof File) {
+      imagesToUpload.push({
+        type: "image",
+        action: "add",
         file: sectionInfo.current.imageUrl,
-        path: `${backEndpointImage}/${initiativeId}`,
-      },
-      {
-        file: sectionInfo.current.bannerUrl,
-        path: `${backEndpointBanner}/${initiativeId}`,
-      },
-    ];
+      });
+    } else if (
+      sectionInfo.current.imageUrl === null &&
+      initiative?.images.imageUrl
+    ) {
+      imagesToUpload.push({
+        type: "image",
+        action: "remove",
+      });
+    }
 
-    const imageUploadErrors = await uploadImages(imagesToUpload);
+    if (sectionInfo.current.bannerUrl instanceof File) {
+      imagesToUpload.push({
+        type: "banner",
+        action: "add",
+        file: sectionInfo.current.bannerUrl,
+      });
+    } else if (
+      sectionInfo.current.bannerUrl === null &&
+      initiative?.images.bannerUrl
+    ) {
+      imagesToUpload.push({
+        type: "banner",
+        action: "remove",
+      });
+    }
+
+    const imageUploadErrors = await uploadImages(imagesToUpload, initiativeId);
+    setIsLoading(false);
 
     if (imageUploadErrors?.length > 0) {
       setErrors((oldErr) => ({
         ...oldErr,
         images: { root: imageUploadErrors },
       }));
-      setIsLoading(false);
       return;
     }
 
@@ -116,7 +131,10 @@ export function ImagesUpdater({
       </div>
 
       {!editThis ? (
-        <div className="flex gap-x-8 gap-y-4 flex-wrap items-end *:flex-[1_1_350px]">
+        <div
+          key={`preview_${forceRender}`}
+          className="flex gap-x-8 gap-y-4 flex-wrap items-end *:flex-[1_1_350px]"
+        >
           <ImagePreview
             title={uiText.initiative.module.images.imageUrl.title}
             imageUrl={sectionInfo.current?.imageUrl}
@@ -133,7 +151,7 @@ export function ImagesUpdater({
       ) : (
         <form aria-labelledby={`${initiativeId}_${"images"}`}>
           <ImagesInput
-            key={forceRender}
+            key={`form_${forceRender}`}
             sectionInfo={sectionInfo.current!}
             sectionUpdater={updateInfo}
             validationErrorsObj={errors.images ?? {}}

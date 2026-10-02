@@ -35,6 +35,8 @@ export type InitiativeByLocation = {
 export type ImagesData = {
   imageUrl?: File | string | null;
   bannerUrl?: File | string | null;
+  imageId?: number;
+  bannerId?: number;
 };
 
 export type TagData = {

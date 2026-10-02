@@ -141,7 +141,7 @@ function ImageGallery({ images }: { images: ImageObjectTS[] }) {
           key={`carousel-at-${selectedIndex}`}
           opts={{ startIndex: selectedIndex }}
         >
-          <CarouselContent className="">
+          <CarouselContent className=" max-h-[70dvh]">
             {images.map((image, index) => (
               <CarouselItem key={`full-${index}`}>
                 <div className="flex flex-col h-full items-center justify-center">
