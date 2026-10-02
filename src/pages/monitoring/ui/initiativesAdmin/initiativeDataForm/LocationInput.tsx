@@ -133,9 +133,11 @@ export function LocationInput<T extends LocationDataBasic>({
       }));
       return;
     }
+
     if (!isLocalityValid()) {
       return;
     }
+
     const newLocation: LocationDataBasic = {
       locationId: Number(municipality) || Number(currentDepartment),
     };

@@ -11,7 +11,7 @@ import { InitiativeError } from "pages/monitoring/outlets/initiatives/Initiative
 import { PageTitleUpdater } from "@ui/PageTitleUpdater";
 
 export function Initiatives() {
-  const { initiativeInfo } = useInitiativeCTX();
+  const { initiativeInfo, isLoading } = useInitiativeCTX();
   const navigate = useNavigate();
   const params = useParams();
 
@@ -25,7 +25,7 @@ export function Initiatives() {
     );
   };
 
-  if (!initiativeInfo && params.initiativeId) {
+  if (!isLoading && !initiativeInfo && params.initiativeId) {
     return (
       <InitiativeError msg="La iniciativa que buscas ya no se encuentra en este enlace" />
     );
