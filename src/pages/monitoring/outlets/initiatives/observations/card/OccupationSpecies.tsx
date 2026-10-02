@@ -3,24 +3,24 @@ import { ResponsiveLine } from "@nivo/line";
 
 import { GRAPHS_CONTRAST_COLOR_PALETTE } from "@config/color";
 import { GRAPH_ANIMATION_CONFIG } from "@config/global";
-import { INDICATOR_MAX_COUNT_OCUPATION_SPECIES } from "@config/monitoring";
+import { OBSERVATION_MAX_COUNT_OCUPATION_SPECIES } from "@config/monitoring";
 import { cn } from "@ui/shadCN/lib/utils";
-import { GetIndicatorInfo } from "@hooks/useReport/GetIndicatorInfo";
+import { GetObservationInfo } from "@hooks/useReport/GetIndicatorInfo";
 import { hashStringToRange } from "@utils/format";
 
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
-import type { LineData } from "pages/monitoring/types/indicators";
-import { getSeriesColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
-import { uiText } from "pages/monitoring/outlets/initiatives/indicators/layout/uiText";
+import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
+import type { LineData } from "pages/monitoring/types/observations";
+import { getSeriesColor } from "pages/monitoring/outlets/initiatives/observations/card/utils/colors";
+import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
 import { GraphLegend } from "@ui/GraphLegend";
 
 export function OccupationSpecies() {
-  const { currentIndicator } = useIndicatorsCTX();
+  const { currentObservation } = useObservationsCTX();
   const [selectedSpecies, setSelectedSpecies] = useState<string[]>([]);
 
   const speciesOptions = useMemo(
     () =>
-      (currentIndicator?.groups ?? []).map((group) => ({
+      (currentObservation?.groups ?? []).map((group) => ({
         commonName: group.category.description,
         name: group.category.name,
         color: getSeriesColor(
@@ -30,18 +30,18 @@ export function OccupationSpecies() {
           GRAPHS_CONTRAST_COLOR_PALETTE,
         ),
       })),
-    [currentIndicator?.groups],
+    [currentObservation?.groups],
   );
 
-  const renderIndicatorInfo = useMemo(() => {
-    if (!currentIndicator) {
+  const renderObservationInfo = useMemo(() => {
+    if (!currentObservation) {
       return [];
     }
 
-    const rawSeries = (currentIndicator.cleanData ?? []) as LineData[];
+    const rawSeries = (currentObservation.cleanData ?? []) as LineData[];
 
     return rawSeries.map((line) => {
-      const matchedGroup = currentIndicator.groups.find(
+      const matchedGroup = currentObservation.groups.find(
         (g) => g.category.name === line.scientificName,
       );
 
@@ -54,14 +54,14 @@ export function OccupationSpecies() {
 
       return { ...line, color };
     });
-  }, [currentIndicator]);
+  }, [currentObservation]);
 
-  const filteredIndicator = useMemo(
+  const filteredObservation = useMemo(
     () =>
-      renderIndicatorInfo.filter((i) =>
+      renderObservationInfo.filter((i) =>
         selectedSpecies.includes(i.scientificName),
       ),
-    [renderIndicatorInfo, selectedSpecies],
+    [renderObservationInfo, selectedSpecies],
   );
 
   const handleSelect = (item: string) => {
@@ -72,7 +72,7 @@ export function OccupationSpecies() {
 
     setSelectedSpecies((oldList) => {
       const newList = [...oldList, item];
-      if (newList.length > INDICATOR_MAX_COUNT_OCUPATION_SPECIES) {
+      if (newList.length > OBSERVATION_MAX_COUNT_OCUPATION_SPECIES) {
         newList.shift();
       }
       return newList;
@@ -80,14 +80,14 @@ export function OccupationSpecies() {
   };
 
   useEffect(() => {
-    if (!currentIndicator) {
+    if (!currentObservation) {
       return;
     }
 
     setSelectedSpecies(() => {
       const loadSpecies: string[] = [];
-      for (const specie of currentIndicator.groups) {
-        if (loadSpecies.length === INDICATOR_MAX_COUNT_OCUPATION_SPECIES) {
+      for (const specie of currentObservation.groups) {
+        if (loadSpecies.length === OBSERVATION_MAX_COUNT_OCUPATION_SPECIES) {
           break;
         }
 
@@ -95,19 +95,19 @@ export function OccupationSpecies() {
       }
       return loadSpecies;
     });
-  }, [currentIndicator]);
+  }, [currentObservation]);
 
-  return !currentIndicator ? null : (
+  return !currentObservation ? null : (
     <>
       <div
         className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300"
-        title={uiText.indicatorCard.ocupationSpecies.title}
+        title={uiText.observationCard.ocupationSpecies.title}
       >
-        {currentIndicator.groups.length >
-          INDICATOR_MAX_COUNT_OCUPATION_SPECIES && (
+        {currentObservation.groups.length >
+          OBSERVATION_MAX_COUNT_OCUPATION_SPECIES && (
           <span className="italic text-sm text-primary">
-            {uiText.indicatorCard.ocupationSpecies.maxSelection(
-              INDICATOR_MAX_COUNT_OCUPATION_SPECIES,
+            {uiText.observationCard.ocupationSpecies.maxSelection(
+              OBSERVATION_MAX_COUNT_OCUPATION_SPECIES,
             )}
           </span>
         )}
@@ -142,7 +142,7 @@ export function OccupationSpecies() {
         </ul>
       </div>
 
-      <GetIndicatorInfo
+      <GetObservationInfo
         graphId={selectedSpecies.toSorted().join(", ")}
         mapElementId={null}
         mapUrl={null}
@@ -150,7 +150,7 @@ export function OccupationSpecies() {
         <>
           <div className="w-full h-full aspect-video">
             <ResponsiveLine
-              data={filteredIndicator}
+              data={filteredObservation}
               margin={{ top: 20, right: 30, bottom: 30, left: 30 }}
               motionConfig={GRAPH_ANIMATION_CONFIG}
               xScale={{ type: "point" }}
@@ -190,14 +190,14 @@ export function OccupationSpecies() {
           </div>
 
           <GraphLegend
-            keys={filteredIndicator.map(
+            keys={filteredObservation.map(
               (i) => `${i.commonName}, ${i.scientificName}`,
             )}
             customColorList={GRAPHS_CONTRAST_COLOR_PALETTE}
             isBar={false}
           />
         </>
-      </GetIndicatorInfo>
+      </GetObservationInfo>
     </>
   );
 }

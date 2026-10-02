@@ -9,29 +9,26 @@ import {
 } from "lucide-react";
 
 import { LOCALE } from "@config/global";
-import { INDICATORS_PER_PAGE, TAG_COLORS } from "@config/monitoring";
+import { OBSERVATIONS_PER_PAGE, TAG_COLORS } from "@config/monitoring";
 import { Button } from "@ui/shadCN/component/button";
 import { cn } from "@ui/shadCN/lib/utils";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import type { ODataParams } from "@appTypes/odata";
 import { TablePager } from "@composites/TablePager";
 
-import { useIndicatorsCTX } from "pages/monitoring/hooks/useIndicatorsCTX";
+import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
 import { TagsRender } from "pages/monitoring/ui/TagsRender";
 import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
-import { uiText } from "./layout/uiText";
-
-// TODO: Actualizar el componente para cuando Cesar haya realizado los ajustes
-// al back y que el objeto del odata contenga Locations e initiativeName
+import { uiText } from "pages/monitoring/outlets/observationsSearch/layout/uiText";
 
 export function SearchOutput() {
   const {
-    indicators,
-    indicatorsAmount,
+    observations,
+    observationsAmount,
     currentPage,
     setCurrentPage,
-    setSearchIndicators,
-  } = useIndicatorsCTX();
+    setSearchObservations,
+  } = useObservationsCTX();
 
   const [sortDate, setSortDate] = useState(0);
   const [sortName, setSortName] = useState(0);
@@ -41,14 +38,14 @@ export function SearchOutput() {
     const sortNameStr = ["", "name asc", "name desc"];
     const sortStr = sortNameStr[sortName] + sortDateStr[sortDate];
 
-    setSearchIndicators({ orderby: sortStr as ODataParams["orderby"] });
-  }, [sortDate, sortName, setSearchIndicators]);
+    setSearchObservations({ orderby: sortStr as ODataParams["orderby"] });
+  }, [sortDate, sortName, setSearchObservations]);
 
   return (
     <div className="max-w-[1600px] w-full space-y-4 mx-auto p-8">
       <div className="flex gap-2 items-center">
         <div className="text-primary">
-          {uiText.searchOutput.searchResults(indicatorsAmount)}
+          {uiText.searchOutput.searchResults(observationsAmount)}
         </div>
         <ButtonGroup>
           <Button
@@ -95,12 +92,12 @@ export function SearchOutput() {
       </div>
 
       <ul className="grid grid-cols-[repeat(auto-fill,minmax(350px,1fr))] gap-4">
-        {indicators.map((indicator) => {
+        {observations.map((observation) => {
           const lastUpdate = new Date(
-            indicator.versions[indicator.versions.length - 1].creationDate,
+            observation.versions[observation.versions.length - 1].creationDate,
           );
 
-          const initiativeLocations = (indicator?.locations ?? [])
+          const initiativeLocations = (observation?.locations ?? [])
             .map((l) => {
               const municipality = l.locality !== null ? `, ${l.locality}` : "";
               const locality = l.locality !== null ? ` - ${l.locality}` : "";
@@ -109,7 +106,7 @@ export function SearchOutput() {
             })
             .join(" / ");
 
-          const tagsGrouped = (indicator.tags || []).reduce<
+          const tagsGrouped = (observation.tags || []).reduce<
             Record<number, { group: string; tags: string[] }>
           >((all, tag) => {
             if (!all[tag.tag.category.id]) {
@@ -125,12 +122,12 @@ export function SearchOutput() {
 
           return (
             <li
-              key={`indicator_card${indicator.id}`}
+              key={`observation_card${observation.id}`}
               className="relative flex flex-col gap-4 bg-background shadow-2xl outline outline-transparent hover:outline-primary rounded-xl overflow-hidden transition-colors duration-300"
             >
               <div className="relative mx-2 p-4">
                 <div className="pt-8">
-                  <h4 className="text-xl m-0">{indicator.type.name}</h4>
+                  <h4 className="text-xl m-0">{observation.topic.name}</h4>
                 </div>
 
                 <time
@@ -153,8 +150,8 @@ export function SearchOutput() {
                   title={uiText.searchOutput.card.initiative}
                   className="text-base/4 font-normal mb-0 px-2"
                 >
-                  {indicator?.initiativeName ??
-                    `id: ${indicator.initiativeId}, Nombre de la iniciativa`}
+                  {observation?.initiativeName ??
+                    `id: ${observation.initiativeId}, Nombre de la iniciativa`}
                 </div>
                 <div
                   title={uiText.searchOutput.card.location}
@@ -165,21 +162,23 @@ export function SearchOutput() {
                     : "ubicación"}
                 </div>
 
-                <div className="flex flex-col m-1 gap-2">
-                  {Object.values(tagsGrouped).map((tags, i) => {
-                    const colorValues = TAG_COLORS[i % TAG_COLORS.length];
-                    const colorSet = `${colorValues.bg} ${colorValues.fg}`;
+                {Object.keys(tagsGrouped).length > 0 && (
+                  <div className="flex flex-col m-1 gap-2">
+                    {Object.values(tagsGrouped).map((tags, i) => {
+                      const colorValues = TAG_COLORS[i % TAG_COLORS.length];
+                      const colorSet = `${colorValues.bg} ${colorValues.fg}`;
 
-                    return (
-                      <TagsRender
-                        key={`tags_${tags.group}_${i}`}
-                        tags={tags.tags}
-                        srTitle={tags.group}
-                        className={cn(colorSet, "font-normal")}
-                      />
-                    );
-                  })}
-                </div>
+                      return (
+                        <TagsRender
+                          key={`tags_${tags.group}_${i}`}
+                          tags={tags.tags}
+                          srTitle={tags.group}
+                          className={cn(colorSet, "font-normal")}
+                        />
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               <div className="text-right mt-auto">
@@ -191,7 +190,7 @@ export function SearchOutput() {
                   asChild
                 >
                   <Link
-                    to={`/Monitoreo/Iniciativas/${indicator.initiativeId}/Indicadores/${indicator.id}`}
+                    to={`/Monitoreo/Iniciativas/${observation.initiativeId}/Indicadores/${observation.id}`}
                     title={uiText.searchOutput.card.gotoBtn.title}
                     aria-label={uiText.searchOutput.card.gotoBtn.sr}
                   >
@@ -207,9 +206,9 @@ export function SearchOutput() {
 
       <TablePager
         currentPage={currentPage}
-        recordsAvailable={indicatorsAmount}
+        recordsAvailable={observationsAmount}
         onPageChange={setCurrentPage}
-        recordsPerPage={INDICATORS_PER_PAGE}
+        recordsPerPage={OBSERVATIONS_PER_PAGE}
         paginated={5}
         className="py-4"
       />

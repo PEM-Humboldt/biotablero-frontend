@@ -2,7 +2,7 @@ export const uiText = {
   searchInput: {
     title: "Encuentra un indicador",
 
-    indicatorSearch: {
+    observationSearch: {
       label: "Nombre o tipo del indicador",
       placeholder: "Excribe una palabra clave",
     },

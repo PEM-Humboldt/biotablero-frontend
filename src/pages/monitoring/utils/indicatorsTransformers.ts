@@ -1,9 +1,9 @@
 import type {
   BarsData,
   BarDataValues,
-  IndicatorData,
+  ObservationData,
   LineData,
-} from "pages/monitoring/types/indicators";
+} from "pages/monitoring/types/observations";
 import { indicatorsDateFormatter } from "pages/monitoring/utils/formatters";
 
 /**
@@ -16,7 +16,7 @@ import { indicatorsDateFormatter } from "pages/monitoring/utils/formatters";
  *
  * @returns An array of series formatted for line charts, or an empty array if no groups are present.
  */
-export function dataTransformLineGraph(data: IndicatorData) {
+export function dataTransformLineGraph(data: ObservationData) {
   if (!data?.groups) {
     return [];
   }
@@ -25,8 +25,8 @@ export function dataTransformLineGraph(data: IndicatorData) {
 
   data.groups.forEach((group) => {
     group.values.forEach((value) => {
-      const metricName = value.measureUnit?.name
-        ? `, ${value.measureUnit.name}`
+      const metricName = value.indicatorType?.name
+        ? `, ${value.indicatorType.name}`
         : "";
       const seriesDescription = group.category?.description
         ? `, ${group.category.description}`
@@ -38,7 +38,7 @@ export function dataTransformLineGraph(data: IndicatorData) {
           id: seriesId,
           scientificName: group.category?.name || `Group ${group.id}`,
           commonName: group.category?.description || "",
-          metricName: value.measureUnit?.name || "",
+          metricName: value.indicatorType?.name || "",
           data: [],
         });
       }
@@ -85,7 +85,7 @@ export function dataTransformLineGraph(data: IndicatorData) {
  *
  * @returns An object containing the sorted bar dataset and the array of unique category keys.
  */
-export function dataTransformBarGraph(data: IndicatorData): BarsData {
+export function dataTransformBarGraph(data: ObservationData): BarsData {
   if (!data?.groups) {
     return { values: [], keys: {} };
   }

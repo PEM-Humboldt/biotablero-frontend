@@ -5,7 +5,7 @@ import {
 } from "@config/monitoring";
 import { type BarDatum, ResponsiveBar } from "@nivo/bar";
 
-import { getContrastColor } from "pages/monitoring/outlets/initiatives/indicators/card/utils/colors";
+import { getContrastColor } from "pages/monitoring/outlets/initiatives/observations/card/utils/colors";
 
 export function MonitorignOverviewBars<T extends Record<string, unknown>>({
   data,
