@@ -37,10 +37,10 @@ export function StrategicEcosystemsStats() {
   const hasEcosystemsAssociated =
     Object.keys(ecosystemsAndDefinitions).length > 0;
 
-  return (
+  return isLoading ? (
+    <LoadingDiv />
+  ) : (
     <div className="space-y-2">
-      {isLoading && <LoadingDiv />}
-
       <ErrorsList
         errorItems={errors}
         className="bg-accent/10 border border-accent p-4 rounded-lg"

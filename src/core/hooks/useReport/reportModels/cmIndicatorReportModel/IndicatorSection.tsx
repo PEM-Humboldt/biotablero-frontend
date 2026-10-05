@@ -137,7 +137,7 @@ export function IndicatorSection({
         </Fragment>
       ))}
 
-      {section.description ? (
+      {section?.description ? (
         <View style={styles.quoteBox} wrap={false}>
           <Text style={styles.h4}>
             {documentInfo.indicatorSection.sectionDescriptionLabel}
@@ -146,18 +146,29 @@ export function IndicatorSection({
         </View>
       ) : null}
 
-      <LabeledBlock label={documentInfo.indicatorSection.methodologyLabel}>
-        {section.card.methodology}
-      </LabeledBlock>
-      <LabeledBlock label={documentInfo.indicatorSection.interpretationLabel}>
-        {section.card.interpretation}
-      </LabeledBlock>
-      <LabeledBlock label={documentInfo.indicatorSection.considerationsLabel}>
-        {section.card.considerations}
-      </LabeledBlock>
-      <LabeledBlock label={documentInfo.indicatorSection.authorshipLabel}>
-        {section.card.authorship}
-      </LabeledBlock>
+      {section?.card?.methodology ? (
+        <LabeledBlock label={documentInfo.indicatorSection.methodologyLabel}>
+          {section.card.methodology}
+        </LabeledBlock>
+      ) : null}
+
+      {section?.card?.interpretation ? (
+        <LabeledBlock label={documentInfo.indicatorSection.interpretationLabel}>
+          {section.card.interpretation}
+        </LabeledBlock>
+      ) : null}
+
+      {section?.card?.considerations ? (
+        <LabeledBlock label={documentInfo.indicatorSection.considerationsLabel}>
+          {section.card.considerations}
+        </LabeledBlock>
+      ) : null}
+
+      {section?.card?.authorship ? (
+        <LabeledBlock label={documentInfo.indicatorSection.authorshipLabel}>
+          {section.card.authorship}
+        </LabeledBlock>
+      ) : null}
 
       <Footer metadata={metadata} />
     </Page>
