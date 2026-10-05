@@ -20,6 +20,11 @@ export const uiText = {
       title: "Gráfica eliminada",
       description: `${graphId} se ha eliminado del reporte.`,
     }),
+    renderingReport: {
+      title: "Creando el reporte...",
+      description:
+        "En un momento se abrirá el diálogo para que guardes tu reporte.",
+    },
     utils: {
       mapErrorSerialize: "No fue posible crear el mapa solicitado",
       graphErrorSerialize: "No fue posible crear el gráfico solicitado",
