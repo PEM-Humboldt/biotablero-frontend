@@ -20,8 +20,11 @@ import "leaflet/dist/leaflet.css";
 import { useUserCTX } from "@hooks/UserCTX";
 import { COLOMBIA_BOUNDS } from "pages/utils/settings";
 import { OnLoadingModal } from "@ui/OnLoadingModal";
-import { CssMaskRasterOverlay } from "./mapViewer/CssMaskRasterOverlay";
+import { CssMaskRasterOverlay } from "pages/search/mapViewer/CssMaskRasterOverlay";
 import { GradientLegend } from "@ui/GradientLegend";
+import { toast } from "sonner";
+import { CircleXIcon, FileExclamationPoint, XIcon } from "lucide-react";
+import { Button } from "@ui/shadCN/component/button";
 
 const config = {
   params: {
@@ -83,6 +86,31 @@ export function MapViewer({
       setErrorModal(true);
     }
   }, [layerError]);
+
+  useEffect(() => {
+    const toastId = toast("Indicadores no disponibles", {
+      position: "bottom-left",
+      description:
+        "Actualmente algunos indicadores no se encuentran disponibles debido a la actualización del módulo de consultas. Estamos trabajando para incorporarlos lo antes posible.",
+      icon: <FileExclamationPoint className="size-8 text-accent" />,
+      className: "relative p-6 gap-6! border-2! border-accent! -translate-y-17",
+      duration: Infinity,
+      action: (
+        <Button
+          size="icon"
+          variant="ghost-clean"
+          className="absolute top-1 right-1"
+          onClick={() => toast.dismiss(toastId)}
+        >
+          <CircleXIcon className="size-6" />
+        </Button>
+      ),
+    });
+
+    return () => {
+      toast.dismiss(toastId);
+    };
+  }, []);
 
   const handleModalClose = () => setErrorModal(false);
 
