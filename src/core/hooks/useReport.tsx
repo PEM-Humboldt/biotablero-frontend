@@ -724,6 +724,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
                       disabled={docSections.size === 0}
                       title={uiText.editor.footer.deleteBtn.title}
                       aria-label={uiText.editor.footer.deleteBtn.sr}
+                      onClick={removeReport}
                     >
                       <FileXIcon />
                       {uiText.editor.footer.deleteBtn.label}

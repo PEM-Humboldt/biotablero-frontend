@@ -55,4 +55,67 @@ export const uiText = {
     cancel: "Permanecer en la página",
     confirm: "Salir de todas formas",
   },
+
+  documentTree: {
+    noData: "No hay información para generar el reporte",
+    section: {
+      graphListSr: "Gráficos de esta sección",
+      graphTitle: (graphId: string) => `Gráfica: ${graphId}`,
+      noteSr: (graphId: string) => `Nota sobre la gráfica ${graphId}`,
+    },
+    edition: {
+      graph: {
+        previewBtn: {
+          sr: "Vista previa de la gráfica",
+          title: "Vista previa de la gráfica",
+          label: "",
+        },
+        zoomHrefTitle: "Haz clic para abrir a tamaño completo",
+        zoomImgAlt: "Vista previa gráfica",
+      },
+      map: {
+        previewBtn: {
+          sr: "Vista previa de mapa",
+          title: "Vista previa de mapa",
+          label: "",
+        },
+        zoomHrefTitle: "Haz clic para ver todo el mapa",
+        zoomImgAlt: "Vista previa del mapa",
+      },
+      note: {
+        editBtn: {
+          title: (hasNote: boolean) =>
+            hasNote ? "Actualizar nota" : "Agregar nota",
+          sr: (hasNote: boolean) =>
+            hasNote ? "Actualizar nota" : "Agregar nota",
+          label: "",
+        },
+        input: {
+          placeholder: "Mis observaciones...",
+          saveBtn: { sr: "Grabar cambios", title: "Grabar", label: "Grabar" },
+          cancelBtn: { sr: "Cancelar", title: "Cancelar", label: "Cancelar" },
+        },
+      },
+      order: {
+        moveUp: {
+          sr: "poner antes en el informe",
+          title: "poner antes en el informe",
+          label: "",
+        },
+        moveDown: {
+          sr: "poner despues en el informe",
+          title: "poner despues en el informe",
+          label: "",
+        },
+
+        remove: {
+          sr: (isSection: boolean) =>
+            isSection ? "Borrar sección" : "Borrar gráfica",
+          title: (isSection: boolean) =>
+            isSection ? "Borrar sección" : "Borrar gráfica",
+          label: "",
+        },
+      },
+    },
+  },
 };
