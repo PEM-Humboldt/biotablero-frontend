@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ClipboardPlus, FilePlus2 } from "lucide-react";
+import { ClipboardPlus, FileClock, FilePlus2 } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
 
 import { useReport } from "@hooks/useReport";
@@ -74,7 +74,11 @@ export function AddSearchIndicatorToReportBtn({
             aria-label={sr}
             className="cursor-pointer"
           >
-            <FilePlus2 className="mr-2 mb-1" strokeWidth={2} />
+            {isLoading ? (
+              <FileClock className="mr-2 mb-1 text-accent!" strokeWidth={2} />
+            ) : (
+              <FilePlus2 className="mr-2 mb-1" strokeWidth={2} />
+            )}
           </button>
         ) : (
           <Button

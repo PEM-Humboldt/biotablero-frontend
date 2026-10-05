@@ -12,6 +12,7 @@ import {
   ChartLine,
   CircleSlash,
   FileCheck,
+  FileClock,
   FileDown,
   FileXCorner,
   FileXIcon,
@@ -477,11 +478,21 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       },
     };
 
+    let toastId: string | number | undefined;
+
     try {
       if (!docContext) {
         return;
       }
       setIsLoading(true);
+      toastId = toast("creando reporte", {
+        position: "bottom-right",
+        description:
+          "En unos momentos se abrirá un diálogo para que guardes el reporte generado",
+        icon: <FileClock className="size-8 text-primary" />,
+        className: "px-6! gap-6! border-2! border-primary!",
+        duration: Infinity,
+      });
 
       const namePrefix = REPORT_DOWNLOAD_NAME_PREFIX[reportType];
 
@@ -529,6 +540,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error(uiText.downloadReportError, error);
     } finally {
+      toast.dismiss(toastId);
       setIsLoading(false);
     }
   };
