@@ -67,11 +67,8 @@ const modules: Module[] = [
   },
 ];
 
-export function displayModules(
-  username?: string,
-  company?: string,
-): DisplayModule[] {
-  const renderSpecialModule = username !== undefined && company !== undefined;
+export function displayModules(username?: string): DisplayModule[] {
+  const renderSpecialModule = username !== undefined;
   return modules
     .filter(
       (module) =>

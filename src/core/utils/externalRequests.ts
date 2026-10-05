@@ -6,6 +6,7 @@ type FeatureObject = {
 };
 
 export class ExternalRequests {
+  // TODO: verificar si todavía son requeridos los featureFlags
   /**
    * Get values of feature flags from an external url
    *

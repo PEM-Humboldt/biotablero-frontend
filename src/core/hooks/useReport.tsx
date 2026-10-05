@@ -12,6 +12,7 @@ import {
   ChartLine,
   CircleSlash,
   FileCheck,
+  FileClock,
   FileDown,
   FileXCorner,
   FileXIcon,
@@ -477,11 +478,20 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       },
     };
 
+    let toastId: string | number | undefined;
+
     try {
       if (!docContext) {
         return;
       }
       setIsLoading(true);
+      toastId = toast(uiText.context.renderingReport.title, {
+        position: "bottom-right",
+        description: uiText.context.renderingReport.description,
+        icon: <FileClock className="size-8 text-primary" />,
+        className: "px-6! gap-6! border-2! border-primary!",
+        duration: Infinity,
+      });
 
       const namePrefix = REPORT_DOWNLOAD_NAME_PREFIX[reportType];
 
@@ -529,6 +539,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error(uiText.downloadReportError, error);
     } finally {
+      toast.dismiss(toastId);
       setIsLoading(false);
     }
   };
@@ -724,6 +735,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
                       disabled={docSections.size === 0}
                       title={uiText.editor.footer.deleteBtn.title}
                       aria-label={uiText.editor.footer.deleteBtn.sr}
+                      onClick={removeReport}
                     >
                       <FileXIcon />
                       {uiText.editor.footer.deleteBtn.label}

@@ -1,4 +1,5 @@
 export const uiText = {
+  isLoading: "Cargando...",
   windowsUiText: {
     shinkedBtn: { label: "", title: "Expandir", sr: "Expandir ventana" },
     expandedBtn: { label: "", title: "Contraer", sr: "Expandir ventana" },

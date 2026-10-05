@@ -14,10 +14,18 @@ import type { ObservationMetadata } from "pages/monitoring/types/observations";
 import { GraphSelector } from "pages/monitoring/outlets/initiatives/observations/card/GraphSelector";
 import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
 import { AddMCIndicatorToReport } from "@ui/AddMCIndicatorToReport";
+import { useLocation, useParams } from "react-router";
+import { InitiativeError } from "pages/monitoring/outlets/initiatives/InitiativeError";
+
+interface RouterState {
+  from?: string;
+}
 
 export function Card() {
   const { observations, currentObservation, isLoading, errors } =
     useObservationsCTX();
+  const { detailItem } = useParams();
+  const location = useLocation();
 
   const indicatorTabs = uiText.observationCard.tabs.reduce<
     { key: string; label: string; icon: LucideIcon; text: string }[]
@@ -31,6 +39,19 @@ export function Card() {
 
     return all;
   }, []);
+
+  if (!isLoading && detailItem && !currentObservation && errors.length) {
+    const state = location.state as RouterState | null;
+    const previousUrl = state?.from || "/Monitoreo";
+
+    return (
+      <InitiativeError
+        msg="el indicador que buscas no se encuentra en este enlace"
+        errors={errors}
+        goBack={previousUrl}
+      />
+    );
+  }
 
   return (
     <main className="flex-3 bg-[#f5f5f5]">

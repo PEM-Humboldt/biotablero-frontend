@@ -46,13 +46,13 @@ export type DemographicStatsType = {
   organization: BarsInfo[];
 };
 
-export type IndicatorsStatsType = {
-  indicatorsByScale: BarsInfo[];
+export type ObservationsStatsType = {
+  observationsByScale: BarsInfo[];
 };
 
 export type StatsResponseMap = {
   General: GeneralStatsType;
   Ecosystems: EcosystemsStatsType;
   Demographic: DemographicStatsType;
-  Indicators: IndicatorsStatsType;
+  Indicators: ObservationsStatsType;
 };

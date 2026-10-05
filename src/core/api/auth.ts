@@ -4,8 +4,6 @@ import Keycloak from "keycloak-js";
 import type { ApiRequestError } from "@appTypes/api";
 import type { UserKeycloak } from "@appTypes/user";
 
-let keycloak: Keycloak | undefined;
-
 const backUrl =
   window._env_?.VITE_APP_KEYCLOAK_URL || import.meta.env.VITE_APP_KEYCLOAK_URL;
 const realmUrl =
@@ -16,12 +14,10 @@ const authClient = axios.create({
   baseURL: `${backUrl}/realms/${realmUrl}/protocol/openid-connect/userinfo`,
 });
 
-export async function getKeycloak() {
-  if (keycloak) {
-    return keycloak;
-  }
+let keycloak: Promise<Keycloak> | null = null;
 
-  keycloak = new Keycloak({
+async function initKeycloak(): Promise<Keycloak> {
+  const instance = new Keycloak({
     url:
       window._env_?.VITE_APP_KEYCLOAK_URL ||
       import.meta.env.VITE_APP_KEYCLOAK_URL ||
@@ -37,13 +33,21 @@ export async function getKeycloak() {
   });
 
   try {
-    await keycloak.init({
+    await instance.init({
       checkLoginIframe: false,
       onLoad: "check-sso",
       silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`,
     });
   } catch (err) {
     console.error("Auth server unavailable:", err);
+  }
+
+  return instance;
+}
+
+export function getKeycloak(): Promise<Keycloak> {
+  if (!keycloak) {
+    keycloak = initKeycloak();
   }
 
   return keycloak;

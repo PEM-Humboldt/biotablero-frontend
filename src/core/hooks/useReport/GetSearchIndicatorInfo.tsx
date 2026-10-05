@@ -31,7 +31,8 @@ export function GetSearchIndicatorInfo({
       description: info ?? "",
       graphInfo: otherInfo,
       rawData: tableData,
-      // NOTE: actualizar el enlace cuando el estado de seccion dependa de url
+      // TODO: actualizar la generación de este enlace cuando el estado de
+      // del indicador que se ve actualmente se encuentre en la url
       url: window.location.href,
     };
 

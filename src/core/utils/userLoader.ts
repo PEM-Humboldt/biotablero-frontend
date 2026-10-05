@@ -1,6 +1,7 @@
 import { getKeycloak, getUserInfo } from "@api/auth";
 import { isUserKeycloak, type UserProfile } from "@appTypes/user";
 import type { CheckNLoadReturn } from "@appTypes/userLoader";
+import { generateUserFromKeycloak } from "@hooks/UserCTX";
 import { partialComparison } from "@utils/getCredentials";
 import { redirect } from "react-router";
 
@@ -67,8 +68,14 @@ export async function checkNLoad<T, U>({
   }
 
   let criticalUserData: U | null = null;
+  const formattedUser = isUserKeycloak(user)
+    ? generateUserFromKeycloak(user)
+    : user;
+
   try {
-    criticalUserData = fetchCriticalData ? await fetchCriticalData(user) : null;
+    criticalUserData = fetchCriticalData
+      ? await fetchCriticalData(formattedUser)
+      : null;
   } catch (err) {
     console.error("Cannot retrieve critical user data:", err);
     if (onFetchFailure) {
@@ -79,7 +86,7 @@ export async function checkNLoad<T, U>({
 
   const dataPromise = fetchData
     ? Promise.resolve(
-        fetchData(user).catch((err) => {
+        fetchData(formattedUser).catch((err) => {
           console.error("Cannot retrieve user data:", err);
           if (onFetchFailure) {
             onFetchFailure();
