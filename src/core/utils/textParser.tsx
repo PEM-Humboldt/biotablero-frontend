@@ -83,19 +83,33 @@ export function lexNodesToReactNodes(
     }
 
     if ($isListNode(lexNode)) {
-      const listType = lexNode.getListType();
-      const Tag = listType === "number" ? "ol" : "ul";
-
-      return (
-        <Tag key={index}>
-          {lexNodesToReactNodes(lexNode.getChildren(), options ?? {})}
-        </Tag>
+      const children = lexNodesToReactNodes(
+        lexNode.getChildren(),
+        options ?? {},
       );
+
+      if (lexNode.getListType() === "number") {
+        return (
+          <ol key={index} start={lexNode.getStart()}>
+            {children}
+          </ol>
+        );
+      }
+
+      return <ul key={index}>{children}</ul>;
     }
 
     if ($isListItemNode(lexNode)) {
       return (
-        <li key={index}>
+        <li
+          key={index}
+          style={
+            lexNode.getChildrenSize() === 1 &&
+            $isListNode(lexNode.getFirstChild())
+              ? { listStyleType: "none" }
+              : undefined
+          }
+        >
           {lexNodesToReactNodes(lexNode.getChildren(), options ?? {})}
         </li>
       );
