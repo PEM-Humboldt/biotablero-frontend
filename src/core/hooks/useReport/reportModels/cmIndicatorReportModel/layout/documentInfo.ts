@@ -42,7 +42,7 @@ export const documentInfo = {
     grapMapLabel: (graphName: string) =>
       `Mapa del indicador para los valores de ${graphName}`,
     metricsInGraphLabel: (graphName: string) =>
-      `Gráfica del indicador para los valores '${graphName}'`,
+      `Gráfica del indicador para los valores ${graphName}`,
     userNoteTitleLabel: (userName: string) => `Anotación de ${userName}`,
     sectionDescriptionLabel: "¿Qué dice este indicador?",
     methodologyLabel: "Metodología",

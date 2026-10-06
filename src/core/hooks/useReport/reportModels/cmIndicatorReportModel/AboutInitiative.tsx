@@ -8,7 +8,7 @@ import type {
   IndicatorTag,
   ReportMetadata,
 } from "@appTypes/report";
-import { REPORT_PAGE_SIZE } from "@config/monitoring";
+import { REPORT_PAGE_SIZE } from "@config/report";
 import { documentInfo } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/documentInfo";
 
 export function InitiativeSection({

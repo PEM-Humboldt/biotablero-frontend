@@ -19,9 +19,10 @@ import {
 } from "@ui/shadCN/component/popover";
 import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 import TextareaAutosize from "react-textarea-autosize";
-import { REPORT_NOTE_MAX_LENGTH } from "@config/monitoring";
+import { REPORT_NOTE_MAX_LENGTH } from "@config/report";
 import { inputWarnColor } from "@utils/ui";
 import { motion, AnimatePresence } from "motion/react";
+import { uiText } from "@hooks/useReport/layout/uiText";
 
 export function ReportDocumentTree({
   documentSections,
@@ -30,7 +31,7 @@ export function ReportDocumentTree({
 }) {
   return documentSections.size === 0 ? (
     <div className="flex flex-col gap-4 items-center h-full p-8 m-4 text-center font-normal text-3xl text-primary">
-      No hay información para generar el reporte
+      {uiText.documentTree.noData}
       <FileSearchCorner className="size-20 text-accent" strokeWidth={1} />
     </div>
   ) : (
@@ -55,9 +56,11 @@ export function ReportDocumentTree({
                     <h3 className="m-0 font-normal text-lg group-hover:text-primary-foreground">
                       {name}
                     </h3>
-                    <p className="text-sm italic m-0 group-hover:text-primary-foreground">
-                      {indicatorType} • Versión: {version}
-                    </p>
+                    {indicatorType && version && (
+                      <p className="text-sm italic m-0 group-hover:text-primary-foreground">
+                        {indicatorType} • Versión: {version}
+                      </p>
+                    )}
                   </header>
 
                   <DocEdit
@@ -68,7 +71,7 @@ export function ReportDocumentTree({
                 </div>
 
                 <ul
-                  aria-labelledby="Gráficos de esta sección"
+                  aria-labelledby={uiText.documentTree.section.graphListSr}
                   className="flex flex-col list-none"
                 >
                   <AnimatePresence mode="popLayout">
@@ -96,7 +99,9 @@ export function ReportDocumentTree({
                                 id={graphLabelId}
                                 className="text-base text-foreground truncate"
                               >
-                                Gráfica: {graph.id}
+                                {uiText.documentTree.section.graphTitle(
+                                  graph.id,
+                                )}
                               </span>
 
                               <DocEdit
@@ -113,7 +118,9 @@ export function ReportDocumentTree({
                             {graph.userNote && (
                               <p
                                 className="line-clamp-2 m-0 ml-8 rounded"
-                                aria-label={`Nota sobre la gráfica ${graph.id}`}
+                                aria-label={uiText.documentTree.section.noteSr(
+                                  graph.id,
+                                )}
                               >
                                 "{graph.userNote}"
                               </p>
@@ -170,7 +177,13 @@ function DocEdit({
         {graphUrl && (
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="outline" size="sm" title="Vista previa gráfica">
+              <Button
+                variant="outline"
+                size="sm"
+                title={uiText.documentTree.edition.graph.previewBtn.title}
+                aria-label={uiText.documentTree.edition.graph.previewBtn.sr}
+              >
+                {uiText.documentTree.edition.graph.previewBtn.label}
                 <ChartBar />
               </Button>
             </PopoverTrigger>
@@ -183,11 +196,11 @@ function DocEdit({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block overflow-hidden rounded-lg"
-                title="Haz clic para abrir a tamaño completo"
+                title={uiText.documentTree.edition.graph.zoomHrefTitle}
               >
                 <img
                   src={graphUrl}
-                  alt="Vista previa gráfica"
+                  alt={uiText.documentTree.edition.graph.zoomImgAlt}
                   className="max-w-xs max-h-60 object-contain p-1 bg-background transition-transform"
                 />
               </a>
@@ -198,7 +211,13 @@ function DocEdit({
         {mapUrl && (
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="outline" size="sm" title="Vista previa del mapa">
+              <Button
+                variant="outline"
+                size="sm"
+                title={uiText.documentTree.edition.map.previewBtn.title}
+                aria-label={uiText.documentTree.edition.map.previewBtn.sr}
+              >
+                {uiText.documentTree.edition.map.previewBtn.label}
                 <MapIcon />
               </Button>
             </PopoverTrigger>
@@ -211,11 +230,11 @@ function DocEdit({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block overflow-hidden rounded-lg"
-                title="Haz clic para abrir a tamaño completo"
+                title={uiText.documentTree.edition.map.zoomHrefTitle}
               >
                 <img
                   src={mapUrl}
-                  alt="Vista previa gráfica"
+                  alt={uiText.documentTree.edition.map.zoomImgAlt}
                   className="max-w-xs max-h-60 object-contain p-1 bg-background transition-transform"
                 />
               </a>
@@ -232,9 +251,14 @@ function DocEdit({
               <Button
                 variant="outline"
                 size="sm"
-                title={userNote ? "Actualizar nota" : "Agregar nota"}
-                aria-label={userNote ? "Actualizar nota" : "Agregar nota"}
+                title={uiText.documentTree.edition.note.editBtn.title(
+                  Boolean(userNote),
+                )}
+                aria-label={uiText.documentTree.edition.note.editBtn.title(
+                  Boolean(userNote),
+                )}
               >
+                {uiText.documentTree.edition.note.editBtn.label}
                 <SquarePen />
               </Button>
             </PopoverTrigger>
@@ -249,7 +273,9 @@ function DocEdit({
                   className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-base transition-[color,box-shadow] outline-none md:text-sm"
                   id="description"
                   name="description"
-                  placeholder="Mis observaciones..."
+                  placeholder={
+                    uiText.documentTree.edition.note.input.placeholder
+                  }
                   value={noteText}
                   onChange={(e) => setNoteText(e.target.value)}
                   maxLength={REPORT_NOTE_MAX_LENGTH}
@@ -271,11 +297,20 @@ function DocEdit({
                   variant="outline_destructive"
                   size="sm"
                   onClick={() => setIsPopoverOpen(false)}
+                  title={uiText.documentTree.edition.note.input.saveBtn.title}
+                  aria-label={uiText.documentTree.edition.note.input.saveBtn.sr}
                 >
-                  Cancelar
+                  {uiText.documentTree.edition.note.input.saveBtn.label}
                 </Button>
-                <Button size="sm" onClick={() => void handleConfirmNote()}>
-                  Guardar
+                <Button
+                  size="sm"
+                  onClick={() => void handleConfirmNote()}
+                  title={uiText.documentTree.edition.note.input.cancelBtn.title}
+                  aria-label={
+                    uiText.documentTree.edition.note.input.cancelBtn.sr
+                  }
+                >
+                  {uiText.documentTree.edition.note.input.cancelBtn.label}
                 </Button>
               </div>
             </PopoverContent>
@@ -290,7 +325,10 @@ function DocEdit({
               variant="outline"
               size="sm"
               onClick={() => moveElement("prev", sectionId, graphId)}
+              title={uiText.documentTree.edition.order.moveUp.title}
+              aria-label={uiText.documentTree.edition.order.moveUp.sr}
             >
+              {uiText.documentTree.edition.order.moveUp.label}
               <ChevronUpCircle />
             </Button>
           )}
@@ -300,7 +338,10 @@ function DocEdit({
               variant="outline"
               size="sm"
               onClick={() => moveElement("next", sectionId, graphId)}
+              title={uiText.documentTree.edition.order.moveDown.title}
+              aria-label={uiText.documentTree.edition.order.moveDown.sr}
             >
+              {uiText.documentTree.edition.order.moveDown.label}
               <ChevronDownCircle />
             </Button>
           )}
@@ -313,7 +354,12 @@ function DocEdit({
         onClick={() =>
           graphId ? removeGraph(sectionId, graphId) : removeSection(sectionId)
         }
+        title={uiText.documentTree.edition.order.remove.title(Boolean(graphId))}
+        aria-label={uiText.documentTree.edition.order.remove.sr(
+          Boolean(graphId),
+        )}
       >
+        {uiText.documentTree.edition.order.remove.label}
         <Trash2Icon />
       </Button>
     </div>

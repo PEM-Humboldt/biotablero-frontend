@@ -14,12 +14,12 @@ import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 import { matchColor } from "pages/search/utils/matchColor";
 import TextBoxes from "@ui/TextBoxes";
 
-import { DPC } from "pages/search/types/connectivity";
+import { type DPC } from "pages/search/types/connectivity";
 import type { TextsObject } from "pages/search/types/texts";
 import { getMetricTexts } from "pages/search/utils/texts";
 import {
   SmallBars,
-  SmallBarsData,
+  type SmallBarsData,
   type SmallBarTooltip,
 } from "@composites/charts/SmallBars";
 import { LargeStackedBar } from "@composites/charts/LargeStackedBar";
@@ -30,7 +30,8 @@ import {
 } from "pages/search/dashboard/landscape/connectivity/CurrentPAConnectivityController";
 import { formatNumber } from "@utils/format";
 import colorPalettes from "pages/search/utils/colorPalettes";
-import { RasterLayer } from "pages/search/types/layers";
+import { type RasterLayer } from "pages/search/types/layers";
+import { GetSearchIndicatorInfo } from "@hooks/useReport/GetSearchIndicatorInfo";
 
 const legendDPCCategories = {
   muy_bajo: "Muy bajo",
@@ -177,11 +178,12 @@ export function CurrentPAConnectivity() {
   const { areaType, areaId } = context;
 
   const controllerRef = useRef(new CurrentPAConnectivityController());
-  const controller = controllerRef.current;
 
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
+    const controller = controllerRef.current;
+
     if (!areaType || !areaId) {
       searchDispatch({
         type: SearchUpdated.LOADING_LAYER,
@@ -203,7 +205,7 @@ export function CurrentPAConnectivity() {
         dispatch({ type: "CURRENT_PA_CONN_SUCCEEDED", payload: result });
       })
       .catch((error) => {
-        if (error?.message === "request canceled") {
+        if (error instanceof Error && error?.message === "request canceled") {
           return;
         }
         dispatch({ type: "CURRENT_PA_CONN_FAILED" });
@@ -249,7 +251,7 @@ export function CurrentPAConnectivity() {
         });
       })
       .catch((error) => {
-        if (error?.message === "request canceled") {
+        if (error instanceof Error && error?.message === "request canceled") {
           return;
         }
         dispatch({ type: "DPC_FAILED" });
@@ -279,13 +281,15 @@ export function CurrentPAConnectivity() {
     return () => {
       controller.cancelActiveRequests();
     };
-  }, [areaType, areaId]);
+  }, [areaType, areaId, searchDispatch]);
 
   const toggleInfo = (value: string) => {
     dispatch({ type: "TOGGLE_INFO", payload: value });
   };
 
   const toggleDpcMode = () => {
+    const controller = controllerRef.current;
+
     controller
       .loadSortedDpcData(!state.showLowestDpc)
       .then((result) => {
@@ -295,7 +299,7 @@ export function CurrentPAConnectivity() {
         });
       })
       .catch((error) => {
-        if (error?.message === "request canceled") {
+        if (error instanceof Error && error?.message === "request canceled") {
           return;
         }
         dispatch({ type: "DPC_FAILED" });
@@ -341,6 +345,7 @@ export function CurrentPAConnectivity() {
             />
           </span>
         </IconTooltip>
+
         {infoShown.has("protConn") && (
           <ShortInfo
             description={`<p>${texts.protConn.info}</p>`}
@@ -348,20 +353,34 @@ export function CurrentPAConnectivity() {
             collapseButton={false}
           />
         )}
-        <div>
-          <LargeStackedBar
-            data={currentPAConnData}
-            colors={(key: string | number) =>
-              matchColor("currentPAConn")(key) || colorPalettes.default[0]
-            }
-            loadStatus={messages.currentPAConn}
-            labelX="Porcentaje (%)"
-            labelY="Conectividad de áreas protegidas"
-            units="%"
-            padding={0.25}
-          />
-        </div>
+
+        <GetSearchIndicatorInfo
+          wrapperId="PAConnectivity"
+          title="Conectividad de Áreas Protegidas"
+          graphInfo={texts.protConn}
+          tableData={
+            currentPAConnData as unknown as Record<string, number | string>[]
+          }
+          graphId=""
+          includesMap={true}
+        >
+          <div>
+            <LargeStackedBar
+              data={currentPAConnData}
+              colors={(key: string | number) =>
+                matchColor("currentPAConn")(key) || colorPalettes.default[0]
+              }
+              loadStatus={messages.currentPAConn}
+              labelX="Porcentaje (%)"
+              labelY="Conectividad de áreas protegidas"
+              units="%"
+              padding={0.25}
+            />
+          </div>
+        </GetSearchIndicatorInfo>
+
         <TextBoxes
+          addToReportWrapperId="PAConnectivity"
           consText={texts.protConn.cons}
           metoText={texts.protConn.meto}
           quoteText={texts.protConn.quote}
@@ -370,6 +389,7 @@ export function CurrentPAConnectivity() {
           isInfoOpen={infoShown.has("protConn")}
           toggleInfo={() => toggleInfo("protConn")}
         />
+
         {currentPAConnData.length > 0 && (
           <div className="mb2 ml-6">
             <h6 className="innerInfo">Porcentaje de área protegida</h6>
@@ -421,39 +441,56 @@ export function CurrentPAConnectivity() {
         <h3 className="innerInfoH3">
           Haz clic en un área protegida para visualizarla
         </h3>
-        <div>
-          {dpcData.length > 0 && (
-            <SmallBars
-              data={graphData.transformedData}
-              keys={graphData.keys}
-              tooltips={graphData.tooltips}
-              loadStatus={messages.dpc}
-              colors={(key: string) =>
-                matchColor("dpc")(key) || colorPalettes.default[0]
-              }
-              onClickHandler={clickOnDPCGraph}
-              animate={false}
-              margin={{
-                bottom: 50,
-                left: 40,
-              }}
-              axisX={{
-                enabled: true,
-                legend: "dPC",
-                format: ".2f",
-              }}
-              enableLabel={true}
-            />
-          )}
-        </div>
-        <div className="dpcLegend">
-          {DPCCats.map((cat) => (
-            <PointFilledLegend color={matchColor("dpc")(cat)} key={cat}>
-              {legendDPCCategories[cat]}
-            </PointFilledLegend>
-          ))}
-        </div>
+
+        <GetSearchIndicatorInfo
+          wrapperId="dpcPAConnectivity"
+          title="Aporte de las áreas protegidas a la conectividad"
+          graphInfo={texts.paConnDPC}
+          tableData={dpcData}
+          graphId={
+            showLowestDpc ? "Áreas con mayor dPC" : "Áreas con menor dPC"
+          }
+          includesMap={true}
+        >
+          <>
+            <div>
+              {dpcData.length > 0 && (
+                <SmallBars
+                  data={graphData.transformedData}
+                  keys={graphData.keys}
+                  tooltips={graphData.tooltips}
+                  loadStatus={messages.dpc}
+                  colors={(key: string) =>
+                    matchColor("dpc")(key) || colorPalettes.default[0]
+                  }
+                  onClickHandler={clickOnDPCGraph}
+                  animate={false}
+                  margin={{
+                    bottom: 50,
+                    left: 40,
+                  }}
+                  axisX={{
+                    enabled: true,
+                    legend: "dPC",
+                    format: ".2f",
+                  }}
+                  enableLabel={true}
+                />
+              )}
+            </div>
+
+            <div className="dpcLegend">
+              {DPCCats.map((cat) => (
+                <PointFilledLegend color={matchColor("dpc")(cat)} key={cat}>
+                  {legendDPCCategories[cat]}
+                </PointFilledLegend>
+              ))}
+            </div>
+          </>
+        </GetSearchIndicatorInfo>
+
         <TextBoxes
+          addToReportWrapperId="dpcPAConnectivity"
           consText={texts.paConnDPC.cons}
           metoText={texts.paConnDPC.meto}
           quoteText={texts.paConnDPC.quote}

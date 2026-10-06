@@ -30,8 +30,11 @@ import type { TextsObject } from "pages/search/types/texts";
 import InfoIcon from "@mui/icons-material/Info";
 import { IconTooltip } from "@ui/Tooltips";
 import { ShortInfo } from "@composites/ShortInfo";
-import { speciesGroupLabels } from "pages/search/dashboard/species/commonDictionaries";
 import { getMetricTexts } from "pages/search/utils/texts";
+import { capitalize } from "@utils/format";
+import { GetSearchIndicatorInfo } from "@hooks/useReport/GetSearchIndicatorInfo";
+import { Square, SquareCheckBig } from "lucide-react";
+import { LOCALE } from "@config/global";
 
 const GAP_GRAPH_MAX_YEARS_VISUALIZATION_AMOUTN = 5;
 const GAP_GRAPH_START_YEARS_VISUALIZATION_AMOUTN = 3;
@@ -159,7 +162,14 @@ function gapReducer(state: GapState, action: GapAction): GapState {
     case GapsUpdated.INITIAL_DATA:
       return {
         ...state,
-        availableGroups: action.payload.taxonomicGroups,
+        availableGroups: action.payload.taxonomicGroups
+          .reduce<string[]>((all, current) => {
+            if (current !== "total") {
+              all.push(capitalize(current));
+            }
+            return all;
+          }, [])
+          .toSorted(),
         texts: action.payload.texts,
         seriesData: action.payload.series,
         availableYears: action.payload.yearsAvailable,
@@ -363,7 +373,7 @@ export function Gap() {
   );
 
   return (
-    <div className="graphcontainer pt6 overflow-hidden">
+    <div className="graphcontainer pt6">
       <h4>Índice de Vacíos por Registros (IVR) por km²</h4>
       <IconTooltip title="Interpretación">
         <InfoIcon
@@ -392,8 +402,11 @@ export function Gap() {
           <SelectContent>
             <SelectItem value="all">Todos los grupos</SelectItem>
             {gap.availableGroups.map((group) => (
-              <SelectItem key={`selectGroup-${group}`} value={group}>
-                {speciesGroupLabels[group] ?? group}
+              <SelectItem
+                key={`selectGroup-${group}`}
+                value={group.toLocaleLowerCase(LOCALE)}
+              >
+                {capitalize(group)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -406,7 +419,8 @@ export function Gap() {
           <div
             role="group"
             aria-label="Años a visualizar"
-            className="flex flex-wrap items-center"
+            className="flex flex-wrap items-center mt-2"
+            title="Selecciona los años a visualizar"
           >
             {gap.availableYears
               .toSorted((a, b) => a - b)
@@ -421,21 +435,9 @@ export function Gap() {
                     aria-pressed={isSelected}
                     variant="ghost-clean"
                     size="sm"
-                    className="text-foreground hover:text-primary border border-transparent hover:border-primary"
+                    className="text-foreground hover:text-accent hover:underline"
                   >
-                    <span
-                      aria-hidden="true"
-                      className={cn(
-                        "relative inline-block w-6 mr-1 shrink-0 rounded-sm h-0.5",
-                        "before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:w-2.5 before:h-2.5 before:rounded-full before:bg-inherit ",
-                        "after:absolute after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:w-1.5 after:h-1.5 after:rounded-full after:bg-white",
-                      )}
-                      style={{
-                        backgroundColor: isSelected
-                          ? (customColorMap[year] ?? getSeriesColor(year))
-                          : "#cccccc",
-                      }}
-                    />
+                    {isSelected ? <SquareCheckBig /> : <Square />}
                     <span className="text-sm">{year}</span>
                   </Button>
                 );
@@ -467,17 +469,52 @@ export function Gap() {
         <div className="errorData">Cargando datos...</div>
       ) : (
         <>
-          <div className="w-full h-full aspect-video">
-            <GapLineChart
-              data={renderData}
-              lastYear={lastYear}
-              averages={gap.averages}
-            />
-          </div>
-          <p className="text-sm text-center">
-            0 : vacío mínimo · 1 : vacíos máximo
-          </p>
+          <GetSearchIndicatorInfo
+            wrapperId="Gaps"
+            title="Vacíos"
+            graphInfo={gap.texts}
+            tableData={controllerRef.current.getDownloadData(renderData)}
+            graphId={`${gap.currentGroup === "all" ? "Todos los grupos" : gap.currentGroup}: ${gap.activeYears.toSorted().join(", ")}`}
+            includesMap={true}
+          >
+            <>
+              <div className="w-full h-full aspect-video">
+                <GapLineChart
+                  data={renderData}
+                  lastYear={lastYear}
+                  averages={gap.averages}
+                />
+              </div>
+              <div className="flex flex-wrap items-center justify-center gap-4 mb-2">
+                {gap.availableYears
+                  .filter((year) => gap.activeYears.includes(year))
+                  .toSorted((a, b) => a - b)
+                  .map((year) => (
+                    <div
+                      key={`legendYear_${year}`}
+                      className="flex items-center"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className={cn(
+                          "relative inline-block w-6 mr-1 shrink-0 rounded-sm h-0.5",
+                          "before:absolute before:top-1/2 before:left-1/2 before:-translate-x-1/2 before:-translate-y-1/2 before:w-2.5 before:h-2.5 before:rounded-full before:bg-inherit",
+                          "after:absolute after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:w-1.5 after:h-1.5 after:rounded-full after:bg-white",
+                        )}
+                        style={{
+                          backgroundColor:
+                            customColorMap[year] ?? getSeriesColor(year),
+                        }}
+                      />
+                      <span className="text-sm">{year}</span>
+                    </div>
+                  ))}
+              </div>
+            </>
+          </GetSearchIndicatorInfo>
+
           <TextBoxes
+            addToReportWrapperId="Gaps"
             consText={gap.texts.cons}
             metoText={gap.texts.meto}
             quoteText={gap.texts.quote}
@@ -505,7 +542,7 @@ const GapLineChart = memo(function GapLineChart({
     <ResponsiveLine
       data={data}
       markers={markers(lastYear, averages)}
-      margin={{ top: 30, right: 10, bottom: 60, left: 60 }}
+      margin={{ top: 30, right: 10, bottom: 55, left: 60 }}
       xScale={{ type: "linear", min: "auto", max: "auto" }}
       yScale={{ type: "linear", min: 0, max: "auto" }}
       curve="monotoneX"

@@ -1,3 +1,76 @@
+import { type BBox } from "geojson";
+import { type SrchType } from "pages/search/hooks/SearchContext";
+
+import { type ReactElement, type Dispatch, type SetStateAction } from "react";
+
+import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
+import { type SearchState } from "pages/search/hooks/SearchReducer";
+
+export type SectionInfo = {
+  sectionId: string;
+  graphId: string;
+  sectionInfo:
+    | Omit<SearchSection, "graphs" | "mapUrl">
+    | Omit<IndicatorSection, "graphs" | "mapUrl">;
+  graphComponent: ReactElement;
+  mapUrl: string | null;
+  mapElementId: string | null;
+  sectionUrl: string;
+};
+
+export enum ReportType {
+  NONE,
+  SEARCH_INDICATORS,
+  MONITORING_INDICATORS,
+}
+
+export type MCReportModelProps = {
+  metadata: ReportMetadata;
+  context: IndicatorContext;
+  sections: Map<string, IndicatorSection>;
+};
+export type SearchReportModelProps = {
+  metadata: ReportMetadata;
+  context: SearchContext;
+  sections: Map<string, SearchSection>;
+};
+
+export type ReportModelProps = MCReportModelProps | SearchReportModelProps;
+
+export type ReportContextType = {
+  isLoading: boolean;
+  errors: string[];
+  reportContextResolver: (
+    context: InitiativeCompleteInfo | SearchState,
+  ) => void;
+  reportDownloaded: boolean;
+  setCurrentSectionPool: (section: SectionInfo | null) => void;
+  hasSections: boolean;
+  addSection: (userNote?: string) => Promise<void>;
+
+  addSectionToRegistry: (id: string, info: SectionInfo) => void;
+  removeSectionFromRegistry: (id: string) => void;
+  addSectionFromRegistryToReport: (
+    id: string,
+    userNote: string,
+  ) => Promise<void>;
+  removeGraph: (sectionId: string, graphId: string) => void;
+  removeSection: (sectionId: string) => void;
+  removeReport: () => void;
+  updateNote: (sectionId: string, graphId: string, newNote?: string) => void;
+  toggleEditor: (forceState?: boolean) => void;
+  whyDownload: string;
+  setWhyDownload: Dispatch<SetStateAction<string>>;
+  moveElement: (
+    direction: "prev" | "next",
+    sectionId: string,
+    graphStateId?: string,
+  ) => void;
+  downloadReport: () => Promise<void>;
+  documentSections: Map<string, SearchSection | IndicatorSection>;
+  addLeaveCallback: (callback: () => void) => void;
+};
+
 export type GraphDTO = {
   id: string;
   blobUrl: string;
@@ -6,21 +79,27 @@ export type GraphDTO = {
 };
 
 // Consultas
+type CsvCell = string | number | boolean | null | undefined;
+export type CsvRow = Record<string, CsvCell>;
+
 export type SearchSection = {
   title: string;
   description: string;
   graphInfo?: Record<string, string>;
   graphs: GraphDTO[];
+  rawData?: CsvRow[];
   url: string;
 };
 
 export type SearchContext = {
-  location: {
+  searchType: SrchType;
+  area: {
     type: string;
-    name: string;
-    id: number;
+    name?: string;
+    polygonId: number;
+    size: number;
+    bbox?: BBox;
   };
-  customPolygon: boolean;
   searchUrl: string;
 };
 
@@ -92,3 +171,8 @@ export type ReportInfo = {
       sections: SearchSection[];
     }
 );
+
+export type FetchReportContext = {
+  data: IndicatorContext | SearchContext | null;
+  errors: string[];
+};

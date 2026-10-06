@@ -25,6 +25,7 @@ import { matchColor } from "pages/search/utils/matchColor";
 import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 import { getMetricTexts } from "pages/search/utils/texts";
 import type { RasterLayer } from "pages/search/types/layers";
+import { GetSearchIndicatorInfo } from "@hooks/useReport/GetSearchIndicatorInfo";
 
 export type SEKey = (typeof hfTimelineLUT)[number]["key"];
 export type SELabel = (typeof hfTimelineLUT)[number]["label"];
@@ -316,41 +317,59 @@ export function TimelineFootprint() {
       {!message && <p>Haz clic en un ecosistema para ver su comportamiento</p>}
 
       <div>
-        <Lines
-          loadStatus={message}
-          colors={timelineFPColors}
-          seriesData={timelineData}
-          markers={hfTimelineMarkers}
-          showLegend={false}
-          enablePoints={true}
-          height={300}
-          onClickGraphHandler={(id) => void handleEcosystemSelection(id)}
-          selectedIdProp={activeSEInfo?.key ?? "aTotal"}
-        />
+        <GetSearchIndicatorInfo
+          wrapperId="TimelineFootprint"
+          title="Huella Humana en el Tiempo"
+          graphInfo={texts.hfTimeline}
+          tableData={processLineSeriesDataToCsv(timelineData)}
+          graphId={activeSEInfo ? activeSEInfo.label : ""}
+          includesMap={
+            activeSEInfo !== undefined && activeSEInfo.key !== "aTotal"
+          }
+        >
+          <>
+            <Lines
+              loadStatus={message}
+              colors={timelineFPColors}
+              seriesData={timelineData}
+              markers={hfTimelineMarkers}
+              showLegend={false}
+              enablePoints={true}
+              height={300}
+              onClickGraphHandler={(id) => void handleEcosystemSelection(id)}
+              selectedIdProp={activeSEInfo?.key ?? "aTotal"}
+            />
 
-        {!message && (
-          <GraphLegend
-            keys={availableLabels}
-            isBar={false}
-            customColorMap={customColorMap}
-            onClick={(label: string) => void handleEcosystemSelection(label)}
-            selected={
-              !activeSEInfo || activeSEInfo.key === "aTotal"
-                ? []
-                : [activeSEInfo.label]
-            }
-            className="justify-center"
-          />
-        )}
+            {!message && (
+              <GraphLegend
+                keys={availableLabels}
+                isBar={false}
+                customColorMap={customColorMap}
+                onClick={(label: string) =>
+                  void handleEcosystemSelection(label)
+                }
+                selected={
+                  !activeSEInfo || activeSEInfo.key === "aTotal"
+                    ? []
+                    : [activeSEInfo.label]
+                }
+                className="justify-center"
+              />
+            )}
 
-        {activeSEInfo && activeSEInfo.key !== "aTotal" && seExtensionvalue && (
-          <div>
-            <h6>{`${selectedSE} dentro de la unidad de consulta`}</h6>
-            <h5>{`${Math.round(seExtensionvalue).toLocaleString(LOCALE)} ha`}</h5>
-          </div>
-        )}
+            {activeSEInfo &&
+              activeSEInfo.key !== "aTotal" &&
+              seExtensionvalue && (
+                <div>
+                  <h6>{`${selectedSE} dentro de la unidad de consulta`}</h6>
+                  <h5>{`${Math.round(seExtensionvalue).toLocaleString(LOCALE)} ha`}</h5>
+                </div>
+              )}
+          </>
+        </GetSearchIndicatorInfo>
 
         <TextBoxes
+          addToReportWrapperId="TimelineFootprint"
           consText={texts.hfTimeline.cons}
           metoText={texts.hfTimeline.meto}
           quoteText={texts.hfTimeline.quote}

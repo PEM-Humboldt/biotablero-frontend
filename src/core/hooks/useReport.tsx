@@ -1,20 +1,6 @@
-import { toast } from "sonner";
-import {
-  ChartLine,
-  CircleSlash,
-  FileCheck,
-  FileDown,
-  FileXCorner,
-  FileXIcon,
-  type LucideIcon,
-  Shredder,
-} from "lucide-react";
 import {
   createContext,
-  type Dispatch,
-  type ReactElement,
   type ReactNode,
-  type SetStateAction,
   useCallback,
   useContext,
   useEffect,
@@ -22,33 +8,49 @@ import {
   useRef,
   useState,
 } from "react";
+import {
+  ChartLine,
+  CircleSlash,
+  FileCheck,
+  FileClock,
+  FileDown,
+  FileXCorner,
+  FileXIcon,
+  Shredder,
+  type LucideIcon,
+} from "lucide-react";
 import workerUrl from "modern-screenshot/worker?url";
+import { toast } from "sonner";
 import { useBlocker, useLocation } from "react-router";
-import { pdf } from "@react-pdf/renderer";
 import { AnimatePresence } from "motion/react";
 import TextareaAutosize from "react-textarea-autosize";
+import { pdf } from "@react-pdf/renderer";
 
 import {
   REPORT_DOWNLOAD_NAME_PREFIX,
   REPORT_NOTE_MAX_LENGTH,
-} from "@config/monitoring";
+} from "@config/report";
 import { inputWarnColor } from "@utils/ui";
 import { useUserCTX } from "@hooks/UserCTX";
-import { fetchInitiativeContext } from "@hooks/useReport/utils/fetchInitiativeContext";
+import { fetchContext } from "@hooks/useReport/utils/fetchModuleContext";
 import { makeMapImg } from "@hooks/useReport/utils/makeMapImg";
 import { makeGraphImg } from "@hooks/useReport/utils/makeGraphImg";
 import { CMIndicatorReportModel } from "@hooks/useReport/reportModels/CMIndicatorReportModel";
+import { SearchIndicatorReportModel } from "@hooks/useReport/reportModels/SearchIndicatorReportModel";
 import { LOCALE } from "@config/global";
 import { ReportDocumentTree } from "@hooks/useReport/reportModels/ReportDocumentTree";
 import { Button } from "@ui/shadCN/component/button";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
-import type {
-  SearchSection,
-  IndicatorContext,
-  SearchContext,
-  ReportMetadata,
-  IndicatorSection,
-  GraphDTO,
+import {
+  ReportType,
+  type GraphDTO,
+  type IndicatorContext,
+  type IndicatorSection,
+  type ReportContextType,
+  type ReportMetadata,
+  type SearchContext,
+  type SearchSection,
+  type SectionInfo,
 } from "@appTypes/report";
 import {
   Sheet,
@@ -69,80 +71,83 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@ui/shadCN/component/alert-dialog";
-
-import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
-import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 import { uiText } from "@hooks/useReport/layout/uiText";
 import { StrValidator } from "@utils/strValidator";
+import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
+
+// TODO: revisar estas importaciones de tipos desde pages
+import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
+import type { SearchState } from "pages/search/hooks/SearchReducer";
+
+// TODO: crear el back de Consultas para poder manejar sus propias métricas, de momento está enlazado a Monitoreo
 import { sendReportDownloadReason } from "pages/monitoring/api/services/report";
-
-type ReportContextType = {
-  isLoading: boolean;
-  errors: string[];
-  reportContextResolver: (context: InitiativeCompleteInfo) => void;
-  reportDownloaded: boolean;
-  setCurrentSectionPool: (section: SectionInfo | null) => void;
-  hasSections: boolean;
-  addSection: (userNote?: string) => Promise<void>;
-  removeGraph: (sectionId: string, graphId: string) => void;
-  removeSection: (sectionId: string) => void;
-  removeReport: () => void;
-  updateNote: (sectionId: string, graphId: string, newNote?: string) => void;
-  toggleEditor: (forceState?: boolean) => void;
-  whyDownload: string;
-  setWhyDownload: Dispatch<SetStateAction<string>>;
-  moveElement: (
-    direction: "prev" | "next",
-    sectionId: string,
-    graphStateId?: string,
-  ) => void;
-  downloadReport: () => Promise<void>;
-  documentSections: Map<string, SearchSection | IndicatorSection>;
-};
-
-const ReportContext = createContext<ReportContextType | null>(null);
 
 const mcIndicatorPathComponents = ["Monitoreo", "Iniciativas", "Indicadores"];
 const searchComponents = ["Consultas"];
 
 const revokeGraphUrls = (graph: GraphDTO) => {
   URL.revokeObjectURL(graph.blobUrl);
+
   if (graph.mapUrl) {
     URL.revokeObjectURL(graph.mapUrl);
   }
 };
 
-type SectionInfo = {
-  sectionId: string;
-  graphId: string;
-  sectionInfo:
-    | Omit<SearchSection, "graphs" | "mapUrl">
-    | Omit<IndicatorSection, "graphs" | "mapUrl">;
-  graphComponent: ReactElement;
-  mapUrl: string | null;
-  mapElementId: string | null;
-  sectionUrl: string;
-};
+function getDocumentModel(
+  reportType: ReportType,
+  metadata: ReportMetadata,
+  context: IndicatorContext | SearchContext,
+  sections: Map<string, IndicatorSection | SearchSection>,
+) {
+  switch (reportType) {
+    case ReportType.MONITORING_INDICATORS:
+      return (
+        <CMIndicatorReportModel
+          metadata={metadata}
+          context={context as IndicatorContext}
+          sections={sections as Map<string, IndicatorSection>}
+        />
+      );
+
+    case ReportType.SEARCH_INDICATORS:
+      return (
+        <SearchIndicatorReportModel
+          metadata={metadata}
+          context={context as SearchContext}
+          sections={sections as Map<string, SearchSection>}
+        />
+      );
+
+    case ReportType.NONE:
+    default:
+      console.error("Unknown report type");
+      return null;
+  }
+}
+
+const ReportContext = createContext<ReportContextType | null>(null);
 
 export function ReportCTX({ children }: { children: ReactNode }) {
+  // Contextos
   const { pathname } = useLocation();
+  const { user } = useUserCTX();
+
+  // Referencias
+  const currentSectionInfoPool = useRef<SectionInfo | null>(null);
+  const sectionsRegistryRef = useRef<Map<string, SectionInfo>>(new Map());
+  const leaveCallbackRef = useRef<(() => void) | null>(null);
+  const reportContextRef = useRef<InitiativeCompleteInfo | SearchState | null>(
+    null,
+  );
+
+  // Estados locales
   const [isLoading, setIsLoading] = useState(false);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [reportDownloaded, setReportDownloaded] = useState(true);
 
-  const { user } = useUserCTX();
-  // TODO: Complementar el type cuando se incorpore consultas
-  const reportContextRef = useRef<InitiativeCompleteInfo | null>(null);
-
-  const reportContextResolver = useCallback(
-    (context: InitiativeCompleteInfo) => {
-      reportContextRef.current = context;
-    },
-    [],
-  );
-
-  const currentSectionInfoPool = useRef<SectionInfo | null>(null);
+  // Estados de integración
+  const [whyDownload, setWhyDownload] = useState("");
   const [docContext, setDocContext] = useState<
     IndicatorContext | SearchContext | null
   >(null);
@@ -150,116 +155,149 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     Map<string, SearchSection | IndicatorSection>
   >(new Map());
 
-  const [whyDownload, setWhyDownload] = useState("");
+  // Funcionalidad
 
   const reportType = useMemo(() => {
     const segments = pathname.split("/").filter(Boolean);
     const firstSegment = segments[0];
 
     if (firstSegment === searchComponents[0]) {
-      return "Search";
+      return ReportType.SEARCH_INDICATORS;
     }
 
     const fullPath = mcIndicatorPathComponents.every((required) =>
       segments.includes(required),
     );
 
-    return fullPath ? "InitiativeIndicator" : null;
+    return fullPath ? ReportType.MONITORING_INDICATORS : ReportType.NONE;
   }, [pathname]);
 
-  const addSection = async (userNote?: string) => {
-    if (!user || !currentSectionInfoPool.current || !reportContextRef.current) {
-      return;
-    }
+  const reportContextResolver = useCallback(
+    (context: InitiativeCompleteInfo | SearchState) => {
+      reportContextRef.current = context;
+    },
+    [],
+  );
 
-    setIsLoading(true);
-    setErrors([]);
-
-    if (!docContext) {
-      const { data, errors: ctxErrors } =
-        reportType === "InitiativeIndicator"
-          ? await fetchInitiativeContext(reportContextRef.current)
-          : { data: null, errors: [] };
-
-      if (ctxErrors.length > 0) {
-        setErrors(ctxErrors);
+  const addSection = useCallback(
+    async (userNote?: string, selectedSection?: SectionInfo) => {
+      const sectionToAddInfo =
+        selectedSection || currentSectionInfoPool.current;
+      if (!user || !sectionToAddInfo) {
         return;
       }
 
-      setDocContext(data);
-    }
+      setIsLoading(true);
+      setErrors([]);
 
-    const {
-      sectionId,
-      graphId,
-      sectionInfo,
-      graphComponent,
-      mapElementId,
-      mapUrl,
-      sectionUrl,
-    } = currentSectionInfoPool.current;
+      if (!docContext) {
+        const { data, errors: ctxErrors } = await fetchContext(
+          reportType,
+          reportContextRef.current,
+        );
 
-    const currentSection = docSections.get(sectionId);
+        if (ctxErrors.length > 0) {
+          setErrors(ctxErrors);
+          return;
+        }
 
-    let newMapUrl: string | null = mapUrl;
-    if (!newMapUrl && mapElementId) {
-      const buildtMap = await makeMapImg(mapElementId, {
+        setDocContext(data);
+      }
+
+      const {
+        sectionId,
+        graphId,
+        sectionInfo,
+        graphComponent,
+        mapElementId,
+        mapUrl,
+        sectionUrl,
+      } = sectionToAddInfo;
+
+      const currentSection = docSections.get(sectionId);
+
+      let newMapUrl: string | null = mapUrl;
+      if (!newMapUrl && mapElementId) {
+        const buildtMap = await makeMapImg(mapElementId, {
+          scale: 2,
+          workerUrl,
+          timeout: 10000,
+        });
+
+        if (buildtMap.errors.length > 0 || !buildtMap.map) {
+          setErrors(buildtMap.errors);
+          setIsLoading(false);
+          return;
+        }
+        newMapUrl = buildtMap.map;
+      }
+
+      const buildtGraph = await makeGraphImg(graphComponent, {
         scale: 2,
         workerUrl,
         timeout: 10000,
       });
-
-      if (buildtMap.errors.length > 0 || !buildtMap.map) {
-        setErrors(buildtMap.errors);
-        setIsLoading(false);
+      setIsLoading(false);
+      if (buildtGraph.errors.length > 0 || !buildtGraph.graph) {
+        setErrors(buildtGraph.errors);
         return;
       }
-      newMapUrl = buildtMap.map;
-    }
 
-    const buildtGraph = await makeGraphImg(graphComponent, {
-      scale: 2,
-      workerUrl,
-      timeout: 10000,
-    });
-    setIsLoading(false);
-    if (buildtGraph.errors.length > 0 || !buildtGraph.graph) {
-      setErrors(buildtGraph.errors);
-      return;
-    }
+      const newGraph: GraphDTO = {
+        id: graphId,
+        blobUrl: buildtGraph.graph.blobUrl,
+        userNote: userNote ? StrValidator.sanitize(userNote) : undefined,
+        mapUrl: newMapUrl ?? undefined,
+      };
 
-    const newGraph: GraphDTO = {
-      id: graphId,
-      blobUrl: buildtGraph.graph.blobUrl,
-      userNote: userNote ? StrValidator.sanitize(userNote) : undefined,
-      mapUrl: newMapUrl ?? undefined,
-    };
+      const updatedSection = {
+        ...(currentSection ?? {}),
+        ...sectionInfo,
+        url: sectionUrl,
+        graphs: [
+          ...(currentSection?.graphs.filter((g) => g.id !== graphId) ?? []),
+          newGraph,
+        ],
+      };
 
-    const updatedSection: SearchSection | IndicatorSection = {
-      ...(currentSection ?? {}),
-      ...sectionInfo,
-      url: sectionUrl,
-      graphs: [
-        ...(currentSection?.graphs.filter((g) => g.id !== graphId) ?? []),
-        newGraph,
-      ],
-    };
+      setReportDownloaded(false);
+      setDocSections((oldSections) =>
+        new Map(oldSections).set(sectionId, updatedSection),
+      );
 
-    setReportDownloaded(false);
-    setDocSections((oldSections) =>
-      new Map(oldSections).set(sectionId, updatedSection),
-    );
+      toast(uiText.context.addSectionToastSuccess.title, {
+        position: "bottom-right",
+        description: uiText.context.addSectionToastSuccess.description(
+          sectionToAddInfo.sectionInfo.title,
+        ),
+        icon: <FileCheck className="size-8 text-primary" />,
+        className: "px-6! gap-6! border-2! border-primary!",
+        duration: 4 * 1000,
+      });
+    },
+    [docContext, docSections, reportType, user],
+  );
 
-    toast(uiText.context.addSectionToastSuccess.title, {
-      position: "bottom-right",
-      description: uiText.context.addSectionToastSuccess.description(
-        currentSectionInfoPool.current.sectionInfo.title,
-      ),
-      icon: <FileCheck className="size-8 text-primary" />,
-      className: "px-6! gap-6! border-2! border-primary!",
-      duration: 4 * 1000,
-    });
-  };
+  const addSectionToRegistry = useCallback((id: string, info: SectionInfo) => {
+    sectionsRegistryRef.current.set(id, info);
+  }, []);
+
+  const removeSectionFromRegistry = useCallback((id: string) => {
+    sectionsRegistryRef.current.delete(id);
+  }, []);
+
+  const addSectionFromRegistryToReport = useCallback(
+    async (id: string, userNote?: string) => {
+      const sectionToAdd = sectionsRegistryRef.current.get(id);
+      if (!sectionToAdd) {
+        console.warn(`'${id}' doesn't exist in the registry pool`);
+        return;
+      }
+
+      await addSection(userNote, sectionToAdd);
+    },
+    [addSection],
+  );
 
   const removeElements = useCallback(
     ({
@@ -357,6 +395,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
   };
 
   const removeReport = () => {
+    setWhyDownload("");
     removeElements({
       toastInfo: {
         ...uiText.context.removeReportToastSuccess,
@@ -427,8 +466,9 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       return;
     }
 
+    const creationDate = new Date();
     const docMetadata: ReportMetadata = {
-      creationDate: new Date().toLocaleDateString(LOCALE, {
+      creationDate: creationDate.toLocaleDateString(LOCALE, {
         year: "numeric",
         month: "long",
         day: "numeric",
@@ -440,27 +480,52 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       },
     };
 
+    let toastId: string | number | undefined;
+
     try {
       if (!docContext) {
         return;
       }
       setIsLoading(true);
+      toastId = toast(uiText.context.renderingReport.title, {
+        position: "bottom-right",
+        description: uiText.context.renderingReport.description,
+        icon: <FileClock className="size-8 text-primary" />,
+        className: "px-6! gap-6! border-2! border-primary!",
+        duration: Infinity,
+      });
 
-      // TODO: el siguiente segmento debe ser adecuado para cuando
-      // mas secciones de biotablero requieran reportes.
-      // let blob: Blob;
-      // let fileName: string;
-      // esta condicion es para indicadores de iniciativa
-      // if (reportType === "InitiativeIndicator") ...
-      const blob = await pdf(
-        <CMIndicatorReportModel
-          metadata={docMetadata}
-          context={docContext as IndicatorContext}
-          sections={docSections as Map<string, IndicatorSection>}
-        />,
-      ).toBlob();
-      const fileName = `${REPORT_DOWNLOAD_NAME_PREFIX}_${docMetadata.creationDate}.pdf`;
-      // TODO: fin del segmento
+      const documentModel = getDocumentModel(
+        reportType,
+        docMetadata,
+        docContext,
+        docSections,
+      );
+      if (!documentModel) {
+        throw new Error("No se pudo generar el PDF: tipo de reporte no válido");
+      }
+
+      const namePrefix = REPORT_DOWNLOAD_NAME_PREFIX[reportType];
+      const namePosfix =
+        reportType === ReportType.SEARCH_INDICATORS
+          ? `Polígono-${(docContext as SearchContext).area.polygonId}`
+          : StrValidator.sanitizeToURLSlug(
+              (docContext as IndicatorContext).initiativeShortName ??
+                (docContext as IndicatorContext).initiativeName,
+            ).slice(0, 8);
+      const nameDate = new Date(
+        creationDate.getTime() - creationDate.getTimezoneOffset() * 60000,
+      )
+        .toISOString()
+        .slice(0, 16)
+        .replaceAll(/:/g, "-");
+      const fileName = `${namePrefix}_${nameDate}_${namePosfix}.pdf`;
+
+      const blob = await pdf(documentModel).toBlob();
+      if (!blob) {
+        setErrors(["No fue posible crear el PDF"]);
+        return;
+      }
 
       const pdfUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -489,6 +554,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error(uiText.downloadReportError, error);
     } finally {
+      toast.dismiss(toastId);
       setIsLoading(false);
     }
   };
@@ -502,14 +568,6 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       forceState !== undefined ? forceState : !oldState,
     );
   };
-
-  useEffect(() => {}, [docSections]);
-
-  useEffect(() => {
-    return () => {
-      removeElements({});
-    };
-  }, [removeElements]);
 
   const updateNote = (sectionId: string, graphId: string, newNote?: string) => {
     setDocSections((oldSections) => {
@@ -533,24 +591,48 @@ export function ReportCTX({ children }: { children: ReactNode }) {
     });
   };
 
-  const blocker = useBlocker(
-    !reportDownloaded
-      ? ({ currentLocation, nextLocation }) => {
-          const currentPath = currentLocation.pathname
-            .split("/")
-            .filter(Boolean)
-            .slice(0, -1)
-            .join("/");
-          const nextPath = nextLocation.pathname
-            .split("/")
-            .filter(Boolean)
-            .slice(0, -1)
-            .join("/");
+  const addLeaveCallback = useCallback((callback: () => void) => {
+    leaveCallbackRef.current = callback;
+    return () => {
+      leaveCallbackRef.current = null; // cleanup
+    };
+  }, []);
 
-          return currentPath !== nextPath;
-        }
-      : false,
-  );
+  const blocker = useBlocker(({ currentLocation, nextLocation }) => {
+    const currentPath = currentLocation.pathname
+      .split("/")
+      .filter(Boolean)
+      .slice(0, -1)
+      .join("/");
+    const nextPath = nextLocation.pathname
+      .split("/")
+      .filter(Boolean)
+      .slice(0, -1)
+      .join("/");
+
+    const pathChange = currentPath !== nextPath;
+    const searchChange = currentLocation.search !== nextLocation.search;
+
+    return (
+      (ReportType.SEARCH_INDICATORS === reportType && searchChange) ||
+      pathChange
+    );
+  });
+
+  useEffect(() => {
+    if (blocker.state === "blocked" && reportDownloaded) {
+      blocker.proceed();
+      if (leaveCallbackRef.current) {
+        leaveCallbackRef.current();
+      }
+    }
+  }, [blocker, reportDownloaded]);
+
+  useEffect(() => {
+    return () => {
+      removeElements({});
+    };
+  }, [removeElements]);
 
   return (
     <ReportContext.Provider
@@ -566,12 +648,16 @@ export function ReportCTX({ children }: { children: ReactNode }) {
         removeSection,
         removeReport,
         updateNote,
+        addSectionToRegistry,
+        removeSectionFromRegistry,
+        addSectionFromRegistryToReport,
         toggleEditor,
         whyDownload,
         setWhyDownload,
         moveElement,
         downloadReport,
         documentSections: docSections,
+        addLeaveCallback,
       }}
     >
       <Sheet open={isEditorOpen} onOpenChange={setIsEditorOpen}>
@@ -591,7 +677,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
                 <SheetTitle className="text-3xl text-primary m-0 font-normal">
                   {uiText.editor.header.title}
                 </SheetTitle>
-                <SheetDescription className="text-base text-primary m-0 max-w-[65ch] text-balance">
+                <SheetDescription className="text-base text-primary m-0 text-balance">
                   {uiText.editor.header.description}
                 </SheetDescription>
               </SheetHeader>
@@ -659,15 +745,18 @@ export function ReportCTX({ children }: { children: ReactNode }) {
                         {uiText.editor.footer.closeBtn.label}
                       </Button>
                     </SheetClose>
-                    <Button
-                      variant="outline_destructive"
-                      disabled={docSections.size === 0}
-                      title={uiText.editor.footer.deleteBtn.title}
-                      aria-label={uiText.editor.footer.deleteBtn.sr}
-                    >
-                      <FileXIcon />
-                      {uiText.editor.footer.deleteBtn.label}
-                    </Button>
+                    <SheetClose asChild>
+                      <Button
+                        variant="outline_destructive"
+                        disabled={docSections.size === 0}
+                        title={uiText.editor.footer.deleteBtn.title}
+                        aria-label={uiText.editor.footer.deleteBtn.sr}
+                        onClick={removeReport}
+                      >
+                        <FileXIcon />
+                        {uiText.editor.footer.deleteBtn.label}
+                      </Button>
+                    </SheetClose>
                   </ButtonGroup>
                 </div>
               </SheetFooter>
@@ -690,7 +779,14 @@ export function ReportCTX({ children }: { children: ReactNode }) {
             <AlertDialogCancel onClick={() => blocker.reset?.()}>
               {uiText.leaveAlert.cancel}
             </AlertDialogCancel>
-            <AlertDialogAction onClick={() => blocker.proceed?.()}>
+            <AlertDialogAction
+              onClick={() => {
+                blocker.proceed?.();
+                if (leaveCallbackRef.current) {
+                  leaveCallbackRef.current();
+                }
+              }}
+            >
               {uiText.leaveAlert.confirm}
             </AlertDialogAction>
           </AlertDialogFooter>

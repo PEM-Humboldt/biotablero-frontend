@@ -12,7 +12,7 @@ import {
   PopoverTrigger,
 } from "@ui/shadCN/component/popover";
 import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
-import { REPORT_NOTE_MAX_LENGTH } from "@config/monitoring";
+import { REPORT_NOTE_MAX_LENGTH } from "@config/report";
 import { inputWarnColor } from "@utils/ui";
 import { uiText } from "@ui/addMCIndicatorToReport/layout/uiText";
 
@@ -53,7 +53,9 @@ export function AddMCIndicatorToReport() {
               }
             >
               <ClipboardPlus />
-              {uiText.addToReportBtn.label(isLoading)}
+              {isLoading
+                ? uiText.addToReportBtn.label.loading
+                : uiText.addToReportBtn.label.ready}
             </Button>
           </PopoverTrigger>
 
