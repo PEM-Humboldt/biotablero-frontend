@@ -315,7 +315,7 @@ export function TimelineFootprint() {
       <div>
         <GetSearchIndicatorInfo
           wrapperId="TimelineFootprint"
-          title="Vacíos"
+          title="Huella Humana en el Tiempo"
           graphInfo={texts.hfTimeline}
           tableData={processLineSeriesDataToCsv(timelineData)}
           graphId={activeSEInfo ? activeSEInfo.label : ""}

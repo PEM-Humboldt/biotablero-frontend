@@ -56,9 +56,11 @@ export function ReportDocumentTree({
                     <h3 className="m-0 font-normal text-lg group-hover:text-primary-foreground">
                       {name}
                     </h3>
-                    <p className="text-sm italic m-0 group-hover:text-primary-foreground">
-                      {indicatorType} • Versión: {version}
-                    </p>
+                    {indicatorType && version && (
+                      <p className="text-sm italic m-0 group-hover:text-primary-foreground">
+                        {indicatorType} • Versión: {version}
+                      </p>
+                    )}
                   </header>
 
                   <DocEdit
