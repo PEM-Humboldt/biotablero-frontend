@@ -24,8 +24,10 @@ export const documentInfo = {
 
   SearchSection: {
     grapMapLabel: (graphName: string) => `Mapa para ${graphName}`,
-    metricsInGraphLabel: (graphName: string) => `Gráfica para '${graphName}'`,
-    dataInLabel: (graphName: string) => `Datos para '${graphName}'`,
+    metricsInGraphLabel: (graphName: string) => `Gráfica para ${graphName}`,
+    dataInLabel: (graphName: string) => `Datos para ${graphName}`,
+    dataDisclaimer:
+      "Los datos de esta tabla pueden ser obtenidos como .CSV desde BioTablero, con el botón de 'Descargar' al pié del indicador.",
     userNoteTitleLabel: (userName: string) => `Anotación de ${userName}`,
     sectionDescriptionLabel: "¿Qué dice este indicador?",
     methodologyLabel: "Metodología",

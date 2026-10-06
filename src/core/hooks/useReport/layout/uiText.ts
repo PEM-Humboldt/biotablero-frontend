@@ -65,7 +65,8 @@ export const uiText = {
     noData: "No hay información para generar el reporte",
     section: {
       graphListSr: "Gráficos de esta sección",
-      graphTitle: (graphId: string) => `Gráfica: ${graphId}`,
+      graphTitle: (graphId: string) =>
+        `Gráfica${graphId ? `: ${graphId}` : ""}`,
       noteSr: (graphId: string) => `Nota sobre la gráfica ${graphId}`,
     },
     edition: {
