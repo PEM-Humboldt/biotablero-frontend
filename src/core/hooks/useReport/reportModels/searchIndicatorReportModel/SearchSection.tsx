@@ -69,6 +69,9 @@ export function SearchSection({
                 )}
               </Text>
               <DynamicPdfTable data={section.rawData} />
+              <Text style={styles.disclaimerText}>
+                {documentInfo.SearchSection.dataDisclaimer}
+              </Text>
             </View>
           )}
 

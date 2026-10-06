@@ -175,7 +175,7 @@ export function StrategicEcosystems({
           title="Ecosistemas estratégicos"
           graphInfo={texts}
           tableData={[]}
-          graphId={activeSE ?? "none"}
+          graphId={activeSE ?? "Ecosistemas Estratégicos"}
           includesMap={true}
         >
           <div className="ecosystems">

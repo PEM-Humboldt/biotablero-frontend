@@ -395,6 +395,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
   };
 
   const removeReport = () => {
+    setWhyDownload("");
     removeElements({
       toastInfo: {
         ...uiText.context.removeReportToastSuccess,
@@ -465,8 +466,9 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       return;
     }
 
+    const creationDate = new Date();
     const docMetadata: ReportMetadata = {
-      creationDate: new Date().toLocaleDateString(LOCALE, {
+      creationDate: creationDate.toLocaleDateString(LOCALE, {
         year: "numeric",
         month: "long",
         day: "numeric",
@@ -493,8 +495,6 @@ export function ReportCTX({ children }: { children: ReactNode }) {
         duration: Infinity,
       });
 
-      const namePrefix = REPORT_DOWNLOAD_NAME_PREFIX[reportType];
-
       const documentModel = getDocumentModel(
         reportType,
         docMetadata,
@@ -505,7 +505,22 @@ export function ReportCTX({ children }: { children: ReactNode }) {
         throw new Error("No se pudo generar el PDF: tipo de reporte no válido");
       }
 
-      const fileName = `${namePrefix}_${docMetadata.creationDate}.pdf`;
+      const namePrefix = REPORT_DOWNLOAD_NAME_PREFIX[reportType];
+      const namePosfix =
+        reportType === ReportType.SEARCH_INDICATORS
+          ? `Polígono-${(docContext as SearchContext).area.polygonId}`
+          : StrValidator.sanitizeToURLSlug(
+              (docContext as IndicatorContext).initiativeShortName ??
+                (docContext as IndicatorContext).initiativeName,
+            ).slice(0, 8);
+      const nameDate = new Date(
+        creationDate.getTime() - creationDate.getTimezoneOffset() * 60000,
+      )
+        .toISOString()
+        .slice(0, 16)
+        .replaceAll(/:/g, "-");
+      const fileName = `${namePrefix}_${nameDate}_${namePosfix}.pdf`;
+
       const blob = await pdf(documentModel).toBlob();
       if (!blob) {
         setErrors(["No fue posible crear el PDF"]);
@@ -662,7 +677,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
                 <SheetTitle className="text-3xl text-primary m-0 font-normal">
                   {uiText.editor.header.title}
                 </SheetTitle>
-                <SheetDescription className="text-base text-primary m-0 max-w-[65ch] text-balance">
+                <SheetDescription className="text-base text-primary m-0 text-balance">
                   {uiText.editor.header.description}
                 </SheetDescription>
               </SheetHeader>
@@ -730,16 +745,18 @@ export function ReportCTX({ children }: { children: ReactNode }) {
                         {uiText.editor.footer.closeBtn.label}
                       </Button>
                     </SheetClose>
-                    <Button
-                      variant="outline_destructive"
-                      disabled={docSections.size === 0}
-                      title={uiText.editor.footer.deleteBtn.title}
-                      aria-label={uiText.editor.footer.deleteBtn.sr}
-                      onClick={removeReport}
-                    >
-                      <FileXIcon />
-                      {uiText.editor.footer.deleteBtn.label}
-                    </Button>
+                    <SheetClose asChild>
+                      <Button
+                        variant="outline_destructive"
+                        disabled={docSections.size === 0}
+                        title={uiText.editor.footer.deleteBtn.title}
+                        aria-label={uiText.editor.footer.deleteBtn.sr}
+                        onClick={removeReport}
+                      >
+                        <FileXIcon />
+                        {uiText.editor.footer.deleteBtn.label}
+                      </Button>
+                    </SheetClose>
                   </ButtonGroup>
                 </div>
               </SheetFooter>
