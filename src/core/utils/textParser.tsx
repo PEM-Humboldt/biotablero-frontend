@@ -101,7 +101,6 @@ export function lexNodesToReactNodes(
     }
 
     if ($isListNode(lexNode)) {
-      const listType = lexNode.getListType();
       const children = lexNodesToReactNodes(
         lexNode.getChildren(),
         options ?? {},
@@ -115,8 +114,15 @@ export function lexNodesToReactNodes(
         );
       }
 
-      const Tag = listType === "number" ? "ol" : "ul";
-      return <Tag key={index}>{children}</Tag>;
+      if (lexNode.getListType() === "number") {
+        return (
+          <ol key={index} start={lexNode.getStart()}>
+            {children}
+          </ol>
+        );
+      }
+
+      return <ul key={index}>{children}</ul>;
     }
 
     if ($isListItemNode(lexNode)) {
@@ -166,7 +172,15 @@ export function lexNodesToReactNodes(
       }
 
       return (
-        <li key={index}>
+        <li
+          key={index}
+          style={
+            lexNode.getChildrenSize() === 1 &&
+            $isListNode(lexNode.getFirstChild())
+              ? { listStyleType: "none" }
+              : undefined
+          }
+        >
           {lexNodesToReactNodes(lexNode.getChildren(), options ?? {})}
         </li>
       );
