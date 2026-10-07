@@ -178,44 +178,33 @@
       list-style-position: outside;
     }
 
+    /* Cualquier lista anidada (ul u ol dentro de ul u ol) usa la misma sangría */
+    & :is(ul, ol) :is(ul, ol) {
+      @apply mt-2 ml-8;
+    }
+
     & ul {
       @apply list-disc;
     }
 
     & ol {
-      list-style-type: none !important;
-      counter-reset: li-counter;
-
-      & ol {
-        counter-reset: li-counter;
-        @apply mt-2 ml-8;
-      }
+      @apply list-decimal;
     }
 
     & li {
       @apply mb-1 relative;
       display: list-item;
-    }
-
-    & ol > li {
-      counter-increment: li-counter;
 
       &::marker {
-        content: counter(li-counter) ". ";
         @apply text-foreground text-base font-light;
       }
     }
 
+    /* <li> que Lexical usa solo como contenedor de una sublista */
     & li:has(> ul:only-child),
     & li:has(> ol:only-child) {
       @apply ml-0;
       display: block;
-      list-style-type: none !important;
-      counter-increment: none;
-
-      &::marker {
-        content: none !important;
-      }
     }
 
     & li > p {
