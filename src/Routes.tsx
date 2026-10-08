@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, redirect } from "react-router";
 
 import { getKeycloak } from "@api/auth";
 import { checkNLoad } from "@utils/userLoader";
@@ -13,6 +13,7 @@ import { Initiatives } from "pages/monitoring/outlets/Initiatives";
 import { Logs } from "pages/monitoring/outlets/Logs";
 import { InitiativesAdmin } from "pages/monitoring/outlets/InitiativesAdmin";
 import { MyProfile } from "pages/monitoring/outlets/MyProfile";
+import { IndicatorsAdmin } from "pages/monitoring/outlets/IndicatorsAdmin";
 import { TagsAdmin } from "pages/monitoring/outlets/TagsAdmin";
 import { Resources as MonitoringResources } from "pages/monitoring/outlets/Resources";
 import { ObservationsSearch } from "pages/monitoring/outlets/ObservationsSearch";
@@ -98,9 +99,19 @@ export const routes = createBrowserRouter([
           {
             path: "Admin",
             children: [
+              { index: true, loader: () => redirect("Iniciativas") },
               {
                 path: "Iniciativas",
                 Component: InitiativesAdmin,
+                loader: () =>
+                  checkNLoad({
+                    requirements: { roles: ["Admin"] },
+                    redirectPath: "/Monitoreo",
+                  }),
+              },
+              {
+                path: "Indicadores",
+                Component: IndicatorsAdmin,
                 loader: () =>
                   checkNLoad({
                     requirements: { roles: ["Admin"] },
