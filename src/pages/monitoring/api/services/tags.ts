@@ -119,3 +119,21 @@ export async function removeTagFromInitiative(tagInInitiativeId: number) {
 
   return res;
 }
+
+export async function addTagToObservation(initiativeId: number, tagId: number) {
+  const res = await monitoringAPI<TagInInitiative>({
+    type: "post",
+    endpoint: `ObservationTag?initiativeId=${initiativeId}&tagId=${tagId}`,
+  });
+
+  return res;
+}
+
+export async function removeTagFromObservation(tagInObservationId: number) {
+  const res = await monitoringAPI<undefined>({
+    type: "delete",
+    endpoint: `ObservationTag/${tagInObservationId}`,
+  });
+
+  return res;
+}
