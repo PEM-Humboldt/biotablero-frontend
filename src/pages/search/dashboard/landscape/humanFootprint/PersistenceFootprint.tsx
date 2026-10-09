@@ -9,7 +9,7 @@ import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
 import { matchColor } from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
-import TextBoxes from "@ui/TextBoxes";
+import { TextBoxes } from "@ui/TextBoxes";
 
 import { HFPersistence } from "pages/search/types/humanFootprint";
 import type { TextsObject } from "pages/search/types/texts";
@@ -153,9 +153,8 @@ class PersistenceFootprint extends React.Component<Props, persistenceHFState> {
         </h2>
         {showInfoGraph && (
           <ShortInfo
-            description={`<p>${texts.hfPersistence.info}</p>`}
+            description={texts.hfPersistence.info}
             className="graphinfo2"
-            collapseButton={false}
           />
         )}
         <h6>Estable natural, Dinámica, Estable alta</h6>

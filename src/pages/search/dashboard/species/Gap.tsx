@@ -25,7 +25,7 @@ import {
 import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
 import { ErrorsList } from "@ui/LabelingWithErrors";
-import TextBoxes from "@ui/TextBoxes";
+import { TextBoxes } from "@ui/TextBoxes";
 import type { TextsObject } from "pages/search/types/texts";
 import InfoIcon from "@mui/icons-material/Info";
 import { IconTooltip } from "@ui/Tooltips";
@@ -383,11 +383,7 @@ export function Gap() {
       </IconTooltip>
 
       {gap.showInfo && (
-        <ShortInfo
-          description={`<p>${gap.texts.info}</p>`}
-          className="graphinfo2"
-          collapseButton={false}
-        />
+        <ShortInfo description={gap.texts.info} className="graphinfo2" />
       )}
 
       {gap.availableGroups.length > 1 && (
@@ -515,11 +511,11 @@ export function Gap() {
 
           <TextBoxes
             addToReportWrapperId="Gaps"
-            consText={gap.texts.cons}
-            metoText={gap.texts.meto}
-            quoteText={gap.texts.quote}
-            downloadData={controllerRef.current.getDownloadData(renderData)}
-            downloadName={`índiceVacíos_${areaType?.label}_${areaId?.name}.csv`}
+            texts={gap.texts}
+            download={{
+              data: controllerRef.current.getDownloadData(renderData),
+              filename: `índiceVacíos_${areaType?.label}_${areaId?.name}.csv`,
+            }}
             isInfoOpen={gap.showInfo}
             toggleInfo={() => updateGap({ type: GapsUpdated.SHOW_INFO })}
           />

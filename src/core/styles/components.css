@@ -236,6 +236,86 @@
     }
   }
 
+  /* NOTE: para manejar los estilos de renderizado de los relatos del territorio */
+  .markdown-ShortInfo {
+    @apply leading-relaxed text-foreground break-words text-[#424242]! font-[300]!;
+
+    /* Párrafos y espaciado general */
+    & p {
+      @apply mb-1 last:mb-0 text-left text-pretty;
+    }
+
+    /* Listas */
+    & ul,
+    & ol {
+      @apply ml-8 mb-2 p-0 text-[12px]!;
+      list-style-position: outside;
+    }
+
+    & ul {
+      @apply list-disc;
+    }
+
+    & ol {
+      list-style-type: none !important;
+      counter-reset: li-counter;
+
+      & ol {
+        counter-reset: li-counter;
+        @apply mt-2 ml-4;
+      }
+    }
+
+    & li {
+      @apply mb-1 relative;
+      display: list-item;
+    }
+
+    & ol > li {
+      counter-increment: li-counter;
+
+      &::marker {
+        content: counter(li-counter) ". ";
+        @apply text-foreground font-light;
+      }
+    }
+
+    & li:has(> ul:only-child),
+    & li:has(> ol:only-child) {
+      @apply ml-0;
+      display: block;
+      list-style-type: none !important;
+      counter-increment: none;
+
+      &::marker {
+        content: none !important;
+      }
+    }
+
+    & li > p {
+      @apply m-0 inline;
+    }
+
+    & li > ul,
+    & li > ol {
+      @apply block;
+    }
+
+    /* Links */
+    & a {
+      @apply text-primary underline transition-colors font-normal hover:text-accent;
+    }
+
+    /* Formatos de texto */
+    & strong {
+      @apply font-normal text-foreground;
+    }
+
+    & em {
+      @apply italic;
+    }
+  }
+
   /* NOTE: Para la tabla de etiquetas */
   .table-tags {
     @apply border border-primary/30 rounded-lg mb-2 overflow-hidden;

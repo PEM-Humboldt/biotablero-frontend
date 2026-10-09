@@ -10,6 +10,22 @@ import type {
 import { REPORT_PAGE_SIZE } from "@config/report";
 import { useMemo } from "react";
 import { documentInfo } from "@hooks/useReport/reportModels/searchIndicatorReportModel/layout/documentInfo";
+import { parseSimpleMarkdown } from "@utils/textParser";
+
+const infoSectionsLabel = {
+  info: "Información",
+  meto: "Metodología",
+  cons: "Consideraciones",
+  quote: "Autoría",
+  helper: "Ayuda",
+} as const;
+
+const infoSectionsOrder: (keyof typeof infoSectionsLabel)[] = [
+  "meto",
+  "cons",
+  "quote",
+  "helper",
+];
 
 export function SearchSection({
   section,
@@ -18,6 +34,20 @@ export function SearchSection({
   section: SearchSectionType;
   metadata: ReportMetadata;
 }) {
+  const renderSections = !section?.graphInfo
+    ? []
+    : infoSectionsOrder.reduce<{ label: string; description: string }[]>(
+        (all, current) => {
+          const sectionDescription = section.graphInfo?.[current] ?? "";
+
+          if (sectionDescription) {
+            all.push({ label: current, description: sectionDescription });
+          }
+          return all;
+        },
+        [],
+      );
+
   return (
     <Page
       size={REPORT_PAGE_SIZE}
@@ -91,18 +121,20 @@ export function SearchSection({
       {section.description ? (
         <View style={styles.quoteBox} wrap={false}>
           <Text style={styles.h4}>
-            {documentInfo.SearchSection.sectionDescriptionLabel}
+            {parseSimpleMarkdown(
+              documentInfo.SearchSection.sectionDescriptionLabel,
+              { renderToPdf: true },
+            )}
           </Text>
           <Text style={styles.quoteText}>{section.description}</Text>
         </View>
       ) : null}
 
-      {section?.graphInfo &&
-        Object.entries(section.graphInfo).map(([item, description]) => (
-          <LabeledBlock key={item} label={item}>
-            {description}
-          </LabeledBlock>
-        ))}
+      {renderSections.map(({ label, description }) => (
+        <LabeledBlock key={label} label={label}>
+          {description}
+        </LabeledBlock>
+      ))}
 
       <Footer metadata={metadata} />
     </Page>
@@ -122,8 +154,12 @@ export function LabeledBlock({
 
   return (
     <View style={styles.block}>
-      <Text style={styles.h4}>{label}</Text>
-      <Text style={styles.paragraph}>{children}</Text>
+      <Text style={styles.h4}>
+        {infoSectionsLabel[label as keyof typeof infoSectionsLabel]}
+      </Text>
+      <View style={styles.paragraph}>
+        {parseSimpleMarkdown(children, { renderToPdf: true })}
+      </View>
     </View>
   );
 }

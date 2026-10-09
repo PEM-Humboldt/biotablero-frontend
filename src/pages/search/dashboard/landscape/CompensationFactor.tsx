@@ -246,11 +246,7 @@ class CompensationFactor extends React.Component<
               />
             </IconTooltip>
             {infoShown.has("cf") && (
-              <ShortInfo
-                description={`<p>${texts.cf.info}</p>`}
-                className="graphinfo2"
-                collapseButton={false}
-              />
+              <ShortInfo description={texts.cf.info} className="graphinfo2" />
             )}
           </div>
           <LargeStackedBar
@@ -281,11 +277,7 @@ class CompensationFactor extends React.Component<
             />
           </IconTooltip>
           {infoShown.has("biomes") && (
-            <ShortInfo
-              description={`<p>${texts.biomes.info}</p>`}
-              className="graphinfo3"
-              collapseButton={false}
-            />
+            <ShortInfo description={texts.biomes.info} className="graphinfo3" />
           )}
           <LargeStackedBar
             data={biomes}
@@ -316,9 +308,8 @@ class CompensationFactor extends React.Component<
           </IconTooltip>
           {infoShown.has("bioticReg") && (
             <ShortInfo
-              description={`<p>${texts.bioticRegions.info}</p>`}
+              description={texts.bioticRegions.info}
               className="graphinfo3"
-              collapseButton={false}
             />
           )}
           <LargeStackedBar

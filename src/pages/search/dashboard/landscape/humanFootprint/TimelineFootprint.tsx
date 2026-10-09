@@ -5,7 +5,7 @@ import { type CartesianMarkerProps } from "@nivo/core";
 import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
 import { ShortInfo } from "@composites/ShortInfo";
 import { IconTooltip } from "@ui/Tooltips";
-import TextBoxes from "@ui/TextBoxes";
+import { TextBoxes } from "@ui/TextBoxes";
 import { Lines } from "@composites/charts/Lines";
 import { GraphLegend } from "@ui/GraphLegend";
 import { LOCALE } from "@config/global";
@@ -306,11 +306,7 @@ export function TimelineFootprint() {
       </h2>
 
       {showInfoGraph && (
-        <ShortInfo
-          description={`<p>${texts.hfTimeline.info}</p>`}
-          className="graphinfo2"
-          collapseButton={false}
-        />
+        <ShortInfo description={texts.hfTimeline.info} className="graphinfo2" />
       )}
 
       <h6>Huella humana en el tiempo comparada con EE</h6>
@@ -370,11 +366,11 @@ export function TimelineFootprint() {
 
         <TextBoxes
           addToReportWrapperId="TimelineFootprint"
-          consText={texts.hfTimeline.cons}
-          metoText={texts.hfTimeline.meto}
-          quoteText={texts.hfTimeline.quote}
-          downloadData={processLineSeriesDataToCsv(timelineData)}
-          downloadName={`timeline_hf_${areaType.id}_${areaId.id}.csv`}
+          texts={texts.hfTimeline}
+          download={{
+            data: processLineSeriesDataToCsv(timelineData),
+            filename: `timeline_hf_${areaType.id}_${areaId.id}.csv`,
+          }}
           isInfoOpen={showInfoGraph}
           toggleInfo={toggleInfoGraph}
         />

@@ -11,7 +11,7 @@ import {
 import { formatNumber } from "@utils/format";
 import { matchColor } from "pages/search/utils/matchColor";
 import BackendAPI from "pages/search/api/backendAPI";
-import TextBoxes from "@ui/TextBoxes";
+import { TextBoxes } from "@ui/TextBoxes";
 
 import {
   currentSEPAConn,
@@ -267,11 +267,7 @@ class CurrentSEPAConnectivity extends React.Component<Props, State> {
           </IconTooltip>
         </h2>
         {showInfoGraph && (
-          <ShortInfo
-            description={`<p>${texts.paConnSE.info}</p>`}
-            className="graphinfo2"
-            collapseButton={false}
-          />
+          <ShortInfo description={texts.paConnSE.info} className="graphinfo2" />
         )}
         <div>
           <h3>Haz clic en la gráfica para seleccionar un EE</h3>
