@@ -11,7 +11,7 @@ import { AddSearchIndicatorToReportBtn } from "@ui/AddSearchIndicatorToReport";
 
 import type { TextsObject } from "pages/search/types/texts";
 
-// NOTE: Merecemos mejor que material, borrar apenas se
+// TODO: Merecemos mejor que material, borrar apenas se
 // se actualice Search a la nueva UI
 import AnnouncementIcon from "@mui/icons-material/Announcement";
 import CollectionsBookmarkIcon from "@mui/icons-material/CollectionsBookmark";

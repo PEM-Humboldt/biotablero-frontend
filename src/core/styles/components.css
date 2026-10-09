@@ -303,7 +303,7 @@
 
     /* Links */
     & a {
-      @apply text-accent underline transition-colors font-normal hover:text-primary;
+      @apply text-primary underline transition-colors font-normal hover:text-accent;
     }
 
     /* Formatos de texto */
