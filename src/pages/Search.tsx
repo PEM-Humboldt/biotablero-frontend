@@ -19,6 +19,10 @@ import {
 } from "pages/search/hooks/SearchReducer";
 import { ReportCTX } from "@hooks/useReport";
 
+import { toast } from "sonner";
+import { CircleXIcon, FileExclamationPoint } from "lucide-react";
+import { Button } from "@ui/shadCN/component/button";
+
 export function Search() {
   const { layoutDispatch } = useOutletContext<UiManager>();
   const [searchState, searchDispatch] = useReducer(
@@ -30,6 +34,31 @@ export function Search() {
   const query = new URLSearchParams(search);
   const areaTypeURL = query.get("area_type");
   const areaIdURL = query.get("area_id");
+
+  useEffect(() => {
+    const toastId = toast("Indicadores no disponibles", {
+      position: "bottom-left",
+      description:
+        "Actualmente algunos indicadores no se encuentran disponibles debido a la actualización del módulo de consultas. Estamos trabajando para incorporarlos próximamente.",
+      icon: <FileExclamationPoint className="size-8 text-accent" />,
+      className: "relative p-6 gap-6! border-2! border-accent! -translate-y-17",
+      duration: Infinity,
+      action: (
+        <Button
+          size="icon"
+          variant="ghost-clean"
+          className="absolute top-1 right-1"
+          onClick={() => toast.dismiss(toastId)}
+        >
+          <CircleXIcon className="size-6" />
+        </Button>
+      ),
+    });
+
+    return () => {
+      toast.dismiss(toastId);
+    };
+  }, []);
 
   useEffect(() => {
     layoutDispatch({
