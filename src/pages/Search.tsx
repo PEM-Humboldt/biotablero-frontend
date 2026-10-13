@@ -36,27 +36,39 @@ export function Search() {
   const areaIdURL = query.get("area_id");
 
   useEffect(() => {
-    const toastId = toast("Indicadores no disponibles", {
-      position: "bottom-left",
-      description:
-        "Actualmente algunos indicadores no se encuentran disponibles debido a la actualización del módulo de consultas. Estamos trabajando para incorporarlos próximamente.",
-      icon: <FileExclamationPoint className="size-8 text-accent" />,
-      className: "relative p-6 gap-6! border-2! border-accent! -translate-y-17",
-      duration: Infinity,
-      action: (
-        <Button
-          size="icon"
-          variant="ghost-clean"
-          className="absolute top-1 right-1"
-          onClick={() => toast.dismiss(toastId)}
-        >
-          <CircleXIcon className="size-6" />
-        </Button>
-      ),
-    });
+    let toastId: string | number | undefined;
+
+    // HACK: se difiere el toast al siguiente ciclo del event loop porque crearlo
+    // directo en el efecto no se renderizaba de forma consistente. todavía no sé
+    // porqué, puede ser porque el <Toaster /> aún no está suscrito, o el dismiss
+    // del cleanup choca con la creación del toast nuevo (Search se remonta al cargar).
+    const timer = setTimeout(() => {
+      toastId = toast("Indicadores no disponibles", {
+        position: "bottom-left",
+        description:
+          "Actualmente algunos indicadores no se encuentran disponibles debido a la actualización del módulo de consultas. Estamos trabajando para incorporarlos próximamente.",
+        icon: <FileExclamationPoint className="size-8 text-accent" />,
+        className:
+          "relative p-6 gap-6! border-2! border-accent! -translate-y-17",
+        duration: Infinity,
+        action: (
+          <Button
+            size="icon"
+            variant="ghost-clean"
+            className="absolute top-1 right-1"
+            onClick={() => toast.dismiss(toastId)}
+          >
+            <CircleXIcon className="size-6" />
+          </Button>
+        ),
+      });
+    }, 0);
 
     return () => {
-      toast.dismiss(toastId);
+      clearTimeout(timer);
+      if (toastId !== undefined) {
+        toast.dismiss(toastId);
+      }
     };
   }, []);
 
