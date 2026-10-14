@@ -13,6 +13,7 @@ import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
 import { makeLocationsString } from "@hooks/useReport/utils/formatters";
 import type { SearchState } from "pages/search/hooks/SearchReducer";
+import { makeInitiativeLocationsString } from "@utils/format";
 
 export const fetchContext = async (
   reportType: ReportType,
@@ -112,7 +113,10 @@ async function fetchInitiativeContext(
   const contextData: IndicatorContext = {
     initiativeName: initiativeInfo.name,
     initiativeShortName: initiativeInfo.shortName,
-    initiativeLocation: makeLocationsString(initiativeInfo.locations),
+    initiativeLocation: makeInitiativeLocationsString(
+      initiativeInfo.locations,
+      " | ",
+    ),
     initiativeCreationDate: new Date(
       initiativeInfo.creationDate,
     ).toLocaleDateString(LOCALE, {

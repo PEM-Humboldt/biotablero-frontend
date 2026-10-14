@@ -20,6 +20,7 @@ import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
 import { TagsRender } from "pages/monitoring/ui/TagsRender";
 import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
 import { uiText } from "pages/monitoring/outlets/observationsSearch/layout/uiText";
+import { makeInitiativeLocationsString } from "@utils/format";
 
 export function SearchOutput() {
   const {
@@ -97,14 +98,10 @@ export function SearchOutput() {
             observation.versions[observation.versions.length - 1].creationDate,
           );
 
-          const initiativeLocations = (observation?.locations ?? [])
-            .map((l) => {
-              const municipality = l.locality !== null ? `, ${l.locality}` : "";
-              const locality = l.locality !== null ? ` - ${l.locality}` : "";
-
-              return `${l.location.parent?.name}${municipality}${locality}`;
-            })
-            .join(" / ");
+          const initiativeLocations = makeInitiativeLocationsString(
+            observation?.locations ?? [],
+            " / ",
+          );
 
           const tagsGrouped = (observation.tags || []).reduce<
             Record<number, { group: string; tags: string[] }>
