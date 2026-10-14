@@ -1,32 +1,61 @@
-import { type Dispatch, type SetStateAction, useMemo, useState } from "react";
-import type { InitiativeByLocation } from "pages/monitoring/types/initiative";
-import { Button } from "@ui/shadCN/component/button";
-import { cn } from "@ui/shadCN/lib/utils";
-import { makeInitiativeLocationsString } from "@utils/format";
+import {
+  type Dispatch,
+  type SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   ChevronRightCircle,
   RotateCcw,
   SearchIcon,
   XCircle,
 } from "lucide-react";
+
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@ui/shadCN/component/input-group";
-import { fuzzySearch } from "pages/monitoring/utils/search";
+import { Button } from "@ui/shadCN/component/button";
+import { ErrorsList } from "@ui/LabelingWithErrors";
+import { LoadingDiv } from "@ui/LoadingDiv";
 import { StrValidator } from "@utils/strValidator";
+import { cn } from "@ui/shadCN/lib/utils";
+import { makeInitiativeLocationsString } from "@utils/format";
+
+import type { InitiativeByLocation } from "pages/monitoring/types/initiative";
+import { fuzzySearch } from "pages/monitoring/utils/search";
+import { getInitiativeLocations } from "pages/monitoring/api/services/initiatives";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
 export function InitiativesSearch({
-  initiatives,
   currentInitiative,
   setCurrentInitiative,
 }: {
-  initiatives: InitiativeByLocation[];
   currentInitiative: InitiativeByLocation | null;
   setCurrentInitiative: Dispatch<SetStateAction<InitiativeByLocation | null>>;
 }) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [errors, setErrors] = useState<string[]>([]);
+  const [initiatives, setInitiatives] = useState<InitiativeByLocation[]>([]);
   const [initiativesFilterInput, setInitiativesFilterInput] = useState("");
+
+  useEffect(() => {
+    const fetchInitiativesAvailable = async () => {
+      const res = await getInitiativeLocations();
+      setIsLoading(false);
+
+      if (isMonitoringAPIError(res)) {
+        setErrors(res.data.map((err) => err.msg));
+        return;
+      }
+
+      setInitiatives(res);
+    };
+
+    void fetchInitiativesAvailable();
+  }, []);
 
   const filteredInitiatives = useMemo(() => {
     const sanitizedSearch = StrValidator.normalize(initiativesFilterInput);
@@ -42,7 +71,9 @@ export function InitiativesSearch({
     );
   }, [initiativesFilterInput, initiatives, currentInitiative?.id]);
 
-  return (
+  return isLoading ? (
+    <LoadingDiv />
+  ) : (
     <div aria-label="Iniciativas" className="space-y-2">
       <div
         aria-label="Filtrar por nombre"
@@ -72,6 +103,8 @@ export function InitiativesSearch({
           <RotateCcw />
         </Button>
       </div>
+
+      {errors.length > 0 && <ErrorsList errorItems={errors} />}
 
       <div className="overflow-y-auto min-h-0 h-full max-h-[300px] lg:max-h-none scrollbar-custom">
         {filteredInitiatives.map((initiative) => {
