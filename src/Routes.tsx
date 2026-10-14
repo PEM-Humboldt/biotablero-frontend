@@ -9,16 +9,16 @@ import { Indicators } from "pages/Indicators";
 import { Portfolio } from "pages/Portfolio";
 import { InitiativesMap } from "pages/monitoring/outlets/InitiativesMap";
 import { Initiatives } from "pages/monitoring/outlets/Initiatives";
-
-import { Logs } from "pages/monitoring/outlets/Logs";
-import { InitiativesAdmin } from "pages/monitoring/outlets/InitiativesAdmin";
-import { MyProfile } from "pages/monitoring/outlets/MyProfile";
-import { IndicatorsAdmin } from "pages/monitoring/outlets/IndicatorsAdmin";
-import { TagsAdmin } from "pages/monitoring/outlets/TagsAdmin";
 import { Resources as MonitoringResources } from "pages/monitoring/outlets/Resources";
 import { ObservationsSearch } from "pages/monitoring/outlets/ObservationsSearch";
 import { Manager as ResourcesManager } from "pages/monitoring/outlets/resources/Manager";
 import { Help } from "pages/monitoring/outlets/Help";
+
+import { MyProfile } from "pages/monitoring/outlets/MyProfile";
+import { InitiativesAdmin } from "pages/monitoring/outlets/InitiativesAdmin";
+import { ObservationsAdmin } from "pages/monitoring/outlets/ObservationsAdmin";
+import { TagsAdmin } from "pages/monitoring/outlets/TagsAdmin";
+import { Logs } from "pages/monitoring/outlets/Logs";
 import { ToS } from "pages/TOS";
 
 export const routes = createBrowserRouter([
@@ -110,8 +110,8 @@ export const routes = createBrowserRouter([
                   }),
               },
               {
-                path: "Indicadores",
-                Component: IndicatorsAdmin,
+                path: "Observaciones",
+                Component: ObservationsAdmin,
                 loader: () =>
                   checkNLoad({
                     requirements: { roles: ["Admin"] },
