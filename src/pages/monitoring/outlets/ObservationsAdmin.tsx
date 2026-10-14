@@ -16,11 +16,31 @@ import {
   getObservationData,
   getObservationsByInitiative,
 } from "../api/services/observations";
+import { ErrorsList } from "@ui/LabelingWithErrors";
+import { Button } from "@ui/shadCN/component/button";
+import { PageTitleUpdater } from "@ui/PageTitleUpdater";
+import { cn } from "@ui/shadCN/lib/utils";
+import { makeInitiativeLocationsString } from "@utils/format";
+import {
+  ChevronRightCircle,
+  RotateCcw,
+  SearchIcon,
+  XCircle,
+} from "lucide-react";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@ui/shadCN/component/input-group";
+import { fuzzySearch } from "../utils/search";
+import { StrValidator } from "@utils/strValidator";
+import { InitiativesSearch } from "./observationsAdmin/InitiativesSearch";
 
 export function ObservationsAdmin() {
   const [isLoading, setIsLoading] = useState(true);
   const [errors, setErrors] = useState<string[]>([]);
   const [initiatives, setInitiatives] = useState<InitiativeByLocation[]>([]);
+  const [initiativesFilterInput, setInitiativesFilterInput] = useState("");
   const [currentInitiative, setCurrentInitiative] =
     useState<InitiativeByLocation | null>(null);
   const [observationsMetadata, setObservationsMetadata] = useState<
@@ -95,35 +115,43 @@ export function ObservationsAdmin() {
   }, [currentInitiative, observationsMetadata]);
 
   return (
-    <div>
-      {initiatives.map((initiative) => (
-        <div key={initiative.id}>
-          <h4>{initiative.name}</h4>
-          {initiative.mainLocationId}
-          <button
-            onClick={() => {
-              setCurrentInitiative(initiative);
-            }}
-          >
-            poncheme {initiative.name}
-          </button>
-        </div>
-      ))}
+    <main className="page-main">
+      <PageTitleUpdater title="Administrar Observaciones" subtitle="" />
 
-      {renderObservations.map((observation) => (
-        <div key={observation.id}>
-          {observation.name} {observation.topic.name}
-          las tags, el name las versiones {observation.versions.length}
-          {observation.versions.map((version) => (
-            <div key={`observation-${observation.id}_version-${version.id}`}>
-              ver{" "}
-              <button onClick={() => void fetchObservationData(version.id)}>
-                abrir
-              </button>
+      <header>
+        <h3>Administrar Observaciones</h3>
+        <Button>Cargar Observaciones</Button>
+      </header>
+
+      {errors.length > 0 && <ErrorsList errorItems={errors} />}
+
+      <div className="w-full grid grid-cols-1 md:grid-cols-[30%_70%] gap-4">
+        <InitiativesSearch
+          initiatives={initiatives}
+          currentInitiative={currentInitiative}
+          setCurrentInitiative={setCurrentInitiative}
+        />
+
+        <div>
+          <h4>Observaciones relacionadas</h4>
+          {renderObservations.map((observation) => (
+            <div key={observation.id}>
+              {observation.name} {observation.topic.name}
+              las tags, el name las versiones {observation.versions.length}
+              {observation.versions.map((version) => (
+                <div
+                  key={`observation-${observation.id}_version-${version.id}`}
+                >
+                  ver{" "}
+                  <button onClick={() => void fetchObservationData(version.id)}>
+                    abrir
+                  </button>
+                </div>
+              ))}
             </div>
           ))}
         </div>
-      ))}
-    </div>
+      </div>
+    </main>
   );
 }
