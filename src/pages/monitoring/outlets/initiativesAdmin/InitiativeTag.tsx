@@ -3,6 +3,7 @@ import type {
   InitiativeDisplayInfoShort,
 } from "pages/monitoring/types/initiative";
 import { uiText } from "pages/monitoring/outlets/initiativesAdmin/layout/uiText";
+import { makeInitiativeLocationsString } from "@utils/format";
 
 export function InitiativeTag({
   initiative,
@@ -13,14 +14,10 @@ export function InitiativeTag({
   const displayName = initiative.shortName
     ? `${initiative.name}, ${initiative.shortName}`
     : initiative.name;
-  const initiativeLocations = initiative.locations
-    .map((l) => {
-      const municipality = l.municipality !== null ? `, ${l.municipality}` : "";
-      const locality = l.locality !== null ? ` - ${l.locality}` : "";
-
-      return `${l.department}${municipality}${locality}`;
-    })
-    .join(" / ");
+  const initiativeLocations = makeInitiativeLocationsString(
+    initiative.locations,
+    " / ",
+  );
 
   return (
     <>
