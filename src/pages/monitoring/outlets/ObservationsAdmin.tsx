@@ -17,7 +17,7 @@ export function ObservationsAdmin() {
 
       <header>
         <h3>Administrar Observaciones</h3>
-        <Button>Cargar Observaciones</Button>
+        <Button>Cargar observaciones a una iniciativa</Button>
       </header>
 
       <div className="w-full grid grid-cols-1 md:grid-cols-[30%_70%] gap-4">
