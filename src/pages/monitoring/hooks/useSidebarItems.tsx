@@ -104,11 +104,11 @@ export function useSidebarItems() {
               group: 3,
             },
             {
-              label: "Indicadores",
+              label: "Observaciones",
               description:
-                "Carga y actualiza los indicadores realizadas por una Iniciativa",
+                "Carga y actualiza las observaciones realizadas por las Iniciativas",
               icon: ScanEye,
-              linkTo: "Admin/Indicadores",
+              linkTo: "Admin/Observaciones",
               group: 3,
             },
             {

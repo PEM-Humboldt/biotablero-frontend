@@ -1,14 +1,10 @@
-import type {
-  ODataObservations,
-  TagInIndicator,
-} from "pages/monitoring/types/odataResponse";
+import type { ODataObservations } from "pages/monitoring/types/odataResponse";
 import { createODataGetter } from "pages/monitoring/api/oDataGetter";
 import { monitoringAPI } from "pages/monitoring/api/core";
 import type {
   ObservationData,
   ObservationMetadata,
 } from "pages/monitoring/types/observations";
-import { serializeQueryParams } from "@utils/htmlRequest";
 
 /**
  * Fetches the observatios metadata from the "Observation" endpoint using odataParams.
