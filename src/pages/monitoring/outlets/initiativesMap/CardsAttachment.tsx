@@ -26,6 +26,7 @@ import type { ObservationMetadata } from "pages/monitoring/types/observations";
 import { getObservationsByInitiative } from "pages/monitoring/api/services/observations";
 import { DataSheetSmallCard } from "pages/monitoring/outlets/initiativesMap/dataSheetAndNavigation/DataSheetSmallCard";
 import { uiText } from "pages/monitoring/outlets/initiativesMap/layout/uiText";
+import { makeInitiativeLocationsString } from "@utils/format";
 
 export function CardsAttachment() {
   const { departmentId, initiativeId } = useParams();
@@ -172,19 +173,10 @@ export function CardsAttachment() {
                     initiatives.map((initiative) => {
                       const initiativeLocations =
                         initiative?.locations !== undefined
-                          ? initiative.locations
-                              .map((l) => {
-                                const municipality =
-                                  l.location.name !== null
-                                    ? l.location.name
-                                    : "";
-                                const locallity = l.locality
-                                  ? `, ${l.locality}`
-                                  : "";
-
-                                return `${municipality}${locallity}`;
-                              })
-                              .join(" / ")
+                          ? makeInitiativeLocationsString(
+                              initiative.locations,
+                              " / ",
+                            )
                           : "";
                       return (
                         <DataSheetSmallCard
