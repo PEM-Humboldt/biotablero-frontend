@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { InitiativeByLocation } from "pages/monitoring/types/initiative";
-import type {
-  ObservationData,
-  ObservationMetadata,
+import {
+  type ObservationData,
+  type ObservationMetadata,
 } from "pages/monitoring/types/observations";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import {
@@ -12,11 +12,12 @@ import {
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { LoadingDiv } from "@ui/LoadingDiv";
 import { Button } from "@ui/shadCN/component/button";
-import { TagsGroupsRender } from "pages/monitoring/ui/TagsGroupsRender";
 import { LOCALE } from "@config/global";
-import { FilePenLine, ScanSearch } from "lucide-react";
+import { ScanSearch } from "lucide-react";
 import { cn } from "@ui/shadCN/lib/utils";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
+import { ObservationVersionCard } from "./observationsList/ObservationVersionCard";
+import { ObservationHeader } from "./observationsList/ObservationHeader";
 
 export function ObservationsList({
   fromInitiative,
@@ -25,6 +26,9 @@ export function ObservationsList({
 }) {
   const [isLoading, setIsLoading] = useState(true);
   const [errors, setErrors] = useState<string[]>([]);
+  const [editingObservation, setEditingObservation] = useState<number | null>(
+    null,
+  );
   const [observationsMetadata, setObservationsMetadata] = useState<
     ObservationMetadata[]
   >([]);
@@ -71,6 +75,19 @@ export function ObservationsList({
     [],
   );
 
+  const updateObservationMetadata = (
+    updatedObservation: ObservationMetadata,
+  ) => {
+    setObservationsMetadata((oldObservations) => {
+      const newObservations = oldObservations.map((oldObservation) =>
+        oldObservation.id === updatedObservation.id
+          ? updatedObservation
+          : oldObservation,
+      );
+      return newObservations;
+    });
+  };
+
   return !fromInitiative ? (
     <div className="p-4 bg-background rounded-lg">
       Selecciona una iniciativa para poder administrar sus observaciones
@@ -108,17 +125,11 @@ export function ObservationsList({
               )}
             >
               <motion.div layout="position" className="space-y-3">
-                <h4 className="*:block">
-                  <span>{observation.name}</span>
-                  <span className="text-base italic font-light">
-                    {observation.topic.name}
-                  </span>
-                </h4>
-
-                <TagsGroupsRender
-                  tags={observation.tags.map((t) => t.tag)}
-                  groupId={observation.name.replaceAll(" ", "")}
-                  colorIndexOffset={3}
+                <ObservationHeader
+                  observation={observation}
+                  editingThis={observation.id === editingObservation}
+                  setObservationToEdit={setEditingObservation}
+                  updater={updateObservationMetadata}
                 />
 
                 <div>
@@ -157,37 +168,5 @@ export function ObservationsList({
         })}
       </ul>
     </div>
-  );
-}
-
-function ObservationVersionCard({
-  observationMetadata,
-  observationData,
-}: {
-  observationMetadata: ObservationMetadata;
-  observationData: ObservationData;
-}) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [isLoading, setIsloading] = useState(false);
-  const [errors, setErrors] = useState<string[]>([]);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, height: 0 }}
-      animate={{ opacity: 1, height: "auto" }}
-      exit={{ opacity: 0, height: 0 }}
-      transition={{ duration: 0.2 }}
-      className="bg-input min-h-60"
-    >
-      <ErrorsList errorItems={errors} />
-
-      {observationData.observationId}
-      <Button
-        onClick={() => setIsEditing((isEditing) => !isEditing)}
-        title={`Editar la version ${observationData.version} de ${new Date(observationData.creationDate).toLocaleDateString(LOCALE)}`}
-      >
-        <FilePenLine />
-      </Button>
-    </motion.div>
   );
 }
