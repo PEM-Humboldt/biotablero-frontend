@@ -104,7 +104,10 @@ export function InitiativesSearch({
         </Button>
       </div>
 
-      {errors.length > 0 && <ErrorsList errorItems={errors} />}
+      <ErrorsList
+        errorItems={errors}
+        className="bg-accent/10 p-4 border border-accent rounded-lg"
+      />
 
       <div className="overflow-y-auto min-h-0 h-full max-h-[300px] lg:max-h-none scrollbar-custom">
         {filteredInitiatives.map((initiative) => {
