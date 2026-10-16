@@ -7,6 +7,7 @@ import {
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import {
   getObservationData,
+  getObservationMetadata,
   getObservationsByInitiative,
 } from "pages/monitoring/api/services/observations";
 import { ErrorsList } from "@ui/LabelingWithErrors";
@@ -75,9 +76,17 @@ export function ObservationsList({
     [],
   );
 
-  const updateObservationMetadata = (
-    updatedObservation: ObservationMetadata,
-  ) => {
+  const updateObservationMetadata = async (observationId: number) => {
+    setIsLoading(true);
+    setErrors([]);
+
+    const updatedObservation = await getObservationMetadata(observationId);
+    setIsLoading(false);
+    if (isMonitoringAPIError(updatedObservation)) {
+      setErrors(updatedObservation.data.map((err) => err.msg));
+      return;
+    }
+
     setObservationsMetadata((oldObservations) => {
       const newObservations = oldObservations.map((oldObservation) =>
         oldObservation.id === updatedObservation.id
@@ -129,7 +138,9 @@ export function ObservationsList({
                   observation={observation}
                   editingThis={observation.id === editingObservation}
                   setObservationToEdit={setEditingObservation}
-                  updater={updateObservationMetadata}
+                  onSubmitSuccess={() =>
+                    void updateObservationMetadata(observation.id)
+                  }
                 />
 
                 <div>

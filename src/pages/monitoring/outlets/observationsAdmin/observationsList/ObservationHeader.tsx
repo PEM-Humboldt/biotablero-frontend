@@ -3,6 +3,7 @@ import {
   FormEvent,
   SetStateAction,
   useCallback,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -26,6 +27,11 @@ import {
   RESOURCE_TAGS_LIMIT_ECOSYSTEM,
 } from "@config/monitoring";
 import { TagInObservation } from "pages/monitoring/types/odataResponse";
+import {
+  addTagToObservation,
+  removeTagFromObservation,
+} from "pages/monitoring/api/services/tags";
+import { ApiRequestError } from "@appTypes/api";
 
 export const observationTagCategories: {
   tagCategoryId: number;
@@ -64,17 +70,21 @@ export function ObservationHeader({
   observation,
   editingThis: editingThis,
   setObservationToEdit,
-  updater,
+  onSubmitSuccess,
 }: {
   observation: ObservationMetadata;
   editingThis: boolean;
   setObservationToEdit: Dispatch<SetStateAction<number | null>>;
-  updater: (observationUpdated: ObservationMetadata) => void;
+  onSubmitSuccess: () => void;
 }) {
   const [isLoading, setIsloading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [observationName, setObservationName] = useState(observation.name);
-  const tagsRef = useRef(observation.tags.map(getTagId));
+  const tagsRef = useRef<TagInObservation[]>([]);
+
+  useEffect(() => {
+    tagsRef.current = observation.tags;
+  }, [observation.tags]);
 
   const [tags, setTags] = useState<
     Record<number, (TagInObservation | TagData)[]>
@@ -106,49 +116,84 @@ export function ObservationHeader({
     [],
   );
 
-  const handdleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const currentTags = tagsRef.current;
     setErrors([]);
     setIsloading(true);
-    const sanitizedName = StrValidator.sanitize(observationName);
 
-    if (sanitizedName !== observation.name) {
-      const res = await updateObservationName(observation.id, sanitizedName);
-      if (isMonitoringAPIError(res)) {
-        setErrors(res.data.map((err) => err.msg));
+    const flatTagsIds = Object.values(tags).flat().map(getTagId);
+    const diffTagsIds = {
+      add: flatTagsIds.filter(
+        (newTag) => !currentTags.some((oldTag) => getTagId(oldTag) === newTag),
+      ),
+      remove: currentTags.filter(
+        (oldTag) => !flatTagsIds.some((newTag) => getTagId(oldTag) === newTag),
+      ),
+    };
+
+    if (diffTagsIds.remove.length > 0) {
+      const res = await Promise.all(
+        diffTagsIds.remove.map(({ observationTagId }) =>
+          removeTagFromObservation(observationTagId),
+        ),
+      );
+
+      const resErrors = res.filter(isMonitoringAPIError);
+      if (resErrors.length > 0) {
+        setErrors([
+          "Se presentó un error quitando las etiquetas",
+          ...resErrors
+            .map((errList) => errList.data.map((err) => err.msg))
+            .flat(),
+        ]);
+
         setIsloading(false);
         return;
       }
-
-      setIsloading(false);
-      setObservationName(res.name);
-      updater(res);
-      setObservationToEdit(null);
     }
 
-    const flatTagsIds = Object.values(tags).flat().map(getTagId);
+    if (diffTagsIds.add.length > 0) {
+      const res = await Promise.all(
+        diffTagsIds.add.map((tagId) =>
+          addTagToObservation(observation.id, tagId),
+        ),
+      );
 
-    const diffTagsIds = {
-      add: flatTagsIds.filter(
-        (newTag) => !tagsRef.current.some((oldTag) => oldTag === newTag),
-      ),
-      remove: tagsRef.current.filter(
-        (oldTag) => !flatTagsIds.some((newTag) => oldTag === newTag),
-      ),
-    };
+      const resErrors = res.filter(isMonitoringAPIError);
+      if (resErrors.length > 0) {
+        setErrors([
+          "Se presentó un error agregando las etiquetas",
+          ...resErrors
+            .map((errList) => errList.data.map((err) => err.msg))
+            .flat(),
+        ]);
+
+        setIsloading(false);
+        return;
+      }
+    }
+
+    const sanitizedName = StrValidator.sanitize(observationName);
+    if (sanitizedName !== observation.name) {
+      const res = await updateObservationName(observation.id, sanitizedName);
+      if (isMonitoringAPIError(res)) {
+        setErrors([
+          "Se presentó un error actualizando el nombre de la observación",
+          ...res.data.map((err) => err.msg),
+        ]);
+
+        setIsloading(false);
+        return;
+      }
+      setObservationName(res.name);
+    }
+
+    onSubmitSuccess();
+    setIsloading(false);
+    setObservationToEdit(null);
   };
-
-  const flatTagsIds = Object.values(tags).flat().map(getTagId);
-
-  const diffTagsIds = {
-    add: flatTagsIds.filter(
-      (newTag) => !tagsRef.current.some((oldTag) => oldTag === newTag),
-    ),
-    remove: tagsRef.current.filter(
-      (oldTag) => !flatTagsIds.some((newTag) => oldTag === newTag),
-    ),
-  };
-  console.log(diffTagsIds);
 
   return !editingThis ? (
     <header className="flex">
@@ -171,7 +216,7 @@ export function ObservationHeader({
       </Button>
     </header>
   ) : (
-    <form onSubmit={handdleSubmit}>
+    <form onSubmit={handleSubmit}>
       <ErrorsList
         errorItems={errors}
         className="bg-accent/10 border border-accent rounded-lg p-4"

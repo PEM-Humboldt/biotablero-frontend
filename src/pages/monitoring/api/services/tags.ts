@@ -120,10 +120,13 @@ export async function removeTagFromInitiative(tagInInitiativeId: number) {
   return res;
 }
 
-export async function addTagToObservation(initiativeId: number, tagId: number) {
+export async function addTagToObservation(
+  observationId: number,
+  tagId: number,
+) {
   const res = await monitoringAPI<TagInInitiative>({
     type: "post",
-    endpoint: `ObservationTag?initiativeId=${initiativeId}&tagId=${tagId}`,
+    endpoint: `ObservationTag?observationId=${observationId}&tagId=${tagId}`,
   });
 
   return res;
