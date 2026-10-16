@@ -31,7 +31,8 @@ import {
   addTagToObservation,
   removeTagFromObservation,
 } from "pages/monitoring/api/services/tags";
-import { ApiRequestError } from "@appTypes/api";
+import { validationExemption } from "pages/monitoring/ui/initiativesAdmin/utils/fieldClientValidations";
+import { observationNameNotExist } from "../utils/observationValidations";
 
 export const observationTagCategories: {
   tagCategoryId: number;
@@ -78,7 +79,9 @@ export function ObservationHeader({
   onSubmitSuccess: () => void;
 }) {
   const [isLoading, setIsloading] = useState(false);
-  const [errors, setErrors] = useState<string[]>([]);
+  const [errors, setErrors] = useState<{ input?: string[]; global?: string[] }>(
+    {},
+  );
   const [observationName, setObservationName] = useState(observation.name);
   const tagsRef = useRef<TagInObservation[]>([]);
 
@@ -120,79 +123,109 @@ export function ObservationHeader({
     e.preventDefault();
 
     const currentTags = tagsRef.current;
-    setErrors([]);
+    setErrors({});
     setIsloading(true);
 
-    const flatTagsIds = Object.values(tags).flat().map(getTagId);
-    const diffTagsIds = {
-      add: flatTagsIds.filter(
-        (newTag) => !currentTags.some((oldTag) => getTagId(oldTag) === newTag),
-      ),
-      remove: currentTags.filter(
-        (oldTag) => !flatTagsIds.some((newTag) => getTagId(oldTag) === newTag),
-      ),
-    };
+    try {
+      const [sanitizedName, validationErrors] = (
+        await new StrValidator(observationName)
+          .sanitize()
+          .isRequired()
+          .hasLengthMoreThan(3)
+          .hasLengthLessOrEqualThan(120)
+          .customAsync(
+            validationExemption(
+              observationNameNotExist(observation.initiativeId),
+              observation.name === observationName,
+            ),
+            "Ya existe otra observación con ese nombre",
+          )
+      ).result;
 
-    if (diffTagsIds.remove.length > 0) {
-      const res = await Promise.all(
-        diffTagsIds.remove.map(({ observationTagId }) =>
-          removeTagFromObservation(observationTagId),
+      if (validationErrors.length > 0) {
+        setErrors((old) => ({ ...old, input: validationErrors }));
+        return null;
+      }
+
+      if (sanitizedName !== observation.name) {
+        const res = await updateObservationName(observation.id, sanitizedName);
+        if (isMonitoringAPIError(res)) {
+          setErrors((old) => ({
+            ...old,
+            global: [
+              "Se presentó un error actualizando el nombre de la observación",
+              ...res.data.map((err) => err.msg),
+            ],
+          }));
+
+          return;
+        }
+        setObservationName(res.name);
+      }
+
+      const flatTagsIds = Object.values(tags).flat().map(getTagId);
+      const diffTagsIds = {
+        add: flatTagsIds.filter(
+          (newTag) =>
+            !currentTags.some((oldTag) => getTagId(oldTag) === newTag),
         ),
-      );
-
-      const resErrors = res.filter(isMonitoringAPIError);
-      if (resErrors.length > 0) {
-        setErrors([
-          "Se presentó un error quitando las etiquetas",
-          ...resErrors
-            .map((errList) => errList.data.map((err) => err.msg))
-            .flat(),
-        ]);
-
-        setIsloading(false);
-        return;
-      }
-    }
-
-    if (diffTagsIds.add.length > 0) {
-      const res = await Promise.all(
-        diffTagsIds.add.map((tagId) =>
-          addTagToObservation(observation.id, tagId),
+        remove: currentTags.filter(
+          (oldTag) =>
+            !flatTagsIds.some((newTag) => getTagId(oldTag) === newTag),
         ),
-      );
+      };
 
-      const resErrors = res.filter(isMonitoringAPIError);
-      if (resErrors.length > 0) {
-        setErrors([
-          "Se presentó un error agregando las etiquetas",
-          ...resErrors
-            .map((errList) => errList.data.map((err) => err.msg))
-            .flat(),
-        ]);
+      if (diffTagsIds.remove.length > 0) {
+        const res = await Promise.all(
+          diffTagsIds.remove.map(({ observationTagId }) =>
+            removeTagFromObservation(observationTagId),
+          ),
+        );
 
-        setIsloading(false);
-        return;
+        const resErrors = res.filter(isMonitoringAPIError);
+        if (resErrors.length > 0) {
+          setErrors((old) => ({
+            ...old,
+            global: [
+              "Se presentó un error quitando las etiquetas",
+              ...resErrors
+                .map((error) => error.data.map((err) => err.msg))
+                .flat(),
+            ],
+          }));
+
+          return;
+        }
       }
-    }
 
-    const sanitizedName = StrValidator.sanitize(observationName);
-    if (sanitizedName !== observation.name) {
-      const res = await updateObservationName(observation.id, sanitizedName);
-      if (isMonitoringAPIError(res)) {
-        setErrors([
-          "Se presentó un error actualizando el nombre de la observación",
-          ...res.data.map((err) => err.msg),
-        ]);
+      if (diffTagsIds.add.length > 0) {
+        const res = await Promise.all(
+          diffTagsIds.add.map((tagId) =>
+            addTagToObservation(observation.id, tagId),
+          ),
+        );
 
-        setIsloading(false);
-        return;
+        const resErrors = res.filter(isMonitoringAPIError);
+        if (resErrors.length > 0) {
+          setErrors((old) => ({
+            ...old,
+            global: [
+              "Se presentó un error agregando las etiquetas",
+              ...resErrors
+                .map((error) => error.data.map((err) => err.msg))
+                .flat(),
+            ],
+          }));
+
+          return;
+        }
       }
-      setObservationName(res.name);
-    }
 
-    onSubmitSuccess();
-    setIsloading(false);
-    setObservationToEdit(null);
+      onSubmitSuccess();
+      setObservationToEdit(null);
+    } finally {
+      setIsloading(false);
+    }
   };
 
   return !editingThis ? (
@@ -216,9 +249,9 @@ export function ObservationHeader({
       </Button>
     </header>
   ) : (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="space-y-4 bg-muted p-4 rounded-lg">
       <ErrorsList
-        errorItems={errors}
+        errorItems={errors?.global ?? []}
         className="bg-accent/10 border border-accent rounded-lg p-4"
       />
 
@@ -229,27 +262,30 @@ export function ObservationHeader({
         texts={{ label: "Nombre de la observación" }}
         state={observationName}
         stateSetter={setObservationName}
-        validationErrors={[]}
+        validationErrors={errors?.input ?? []}
+        autoComplete="off"
       />
 
-      {observationTagCategories.map((tagGroup) => {
-        const tagCategoryId = tagGroup.tagCategoryId;
+      <div className="flex gap-12" title="Etiquetas de la observación">
+        {observationTagCategories.map((tagGroup) => {
+          const tagCategoryId = tagGroup.tagCategoryId;
 
-        return (
-          <StableTagSelector
-            key={`tag_manager_${tagCategoryId}`}
-            managerTitle={tagGroup.title}
-            tagCategoryId={tagCategoryId}
-            selectedTags={tags[tagCategoryId]}
-            onTagsChange={updateTags(tagCategoryId)}
-            fixedSearchParams={INITIATIVE_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS}
-            maxTagsAmount={tagGroup.maxTagsAmount}
-            texts={tagGroup.uiText}
-            relatedId={observation.id}
-            parentRelationKey="observationTagId"
-          />
-        );
-      })}
+          return (
+            <StableTagSelector
+              key={`tag_manager_${tagCategoryId}`}
+              managerTitle={tagGroup.title}
+              tagCategoryId={tagCategoryId}
+              selectedTags={tags[tagCategoryId]}
+              onTagsChange={updateTags(tagCategoryId)}
+              fixedSearchParams={INITIATIVE_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS}
+              maxTagsAmount={tagGroup.maxTagsAmount}
+              texts={tagGroup.uiText}
+              relatedId={observation.id}
+              parentRelationKey="observationTagId"
+            />
+          );
+        })}
+      </div>
 
       <div className="flex flex-row-reverse justify-between">
         <Button disabled={isLoading}>Guardar</Button>
