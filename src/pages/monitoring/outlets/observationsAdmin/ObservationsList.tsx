@@ -58,23 +58,20 @@ export function ObservationsList({
     void fetchObservationsMetadata();
   }, [fromInitiative]);
 
-  const handleSelectVersion = useCallback(
-    async (observationVersionId: number) => {
-      setErrors([]);
-      setIsLoading(true);
-      setObservationVersion(null);
+  const handleGetVersion = useCallback(async (observationVersionId: number) => {
+    setErrors([]);
+    setIsLoading(true);
+    setObservationVersion(null);
 
-      const res = await getObservationData(observationVersionId);
-      setIsLoading(false);
-      if (isMonitoringAPIError(res)) {
-        setErrors(res.data.map((err) => err.msg));
-        return;
-      }
+    const res = await getObservationData(observationVersionId);
+    setIsLoading(false);
+    if (isMonitoringAPIError(res)) {
+      setErrors(res.data.map((err) => err.msg));
+      return;
+    }
 
-      setObservationVersion(res);
-    },
-    [],
-  );
+    setObservationVersion(res);
+  }, []);
 
   const updateObservationMetadata = async (observationId: number) => {
     setIsLoading(true);
@@ -153,7 +150,7 @@ export function ObservationsList({
                           key={`observation-${observation.id}_version-${version.id}`}
                         >
                           <Button
-                            onClick={() => void handleSelectVersion(version.id)}
+                            onClick={() => void handleGetVersion(version.id)}
                             variant={isSelected ? "default" : "outline"}
                             title={`Ver la version ${version.version} de ${observationDate.toLocaleDateString(LOCALE)}`}
                             disabled={version.id === observationVersion?.id}
@@ -169,8 +166,10 @@ export function ObservationsList({
 
                 {isSelected && (
                   <ObservationVersionCard
-                    observationMetadata={observation}
                     observationData={observationVersion}
+                    onUpdateCallback={() =>
+                      handleGetVersion(observationVersion.id)
+                    }
                   />
                 )}
               </motion.div>

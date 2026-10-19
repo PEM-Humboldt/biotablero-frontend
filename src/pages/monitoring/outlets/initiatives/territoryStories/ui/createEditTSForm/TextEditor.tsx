@@ -33,9 +33,6 @@ export function TextEditor({
   };
 
   const validateText = () => {
-    if (textStateRef.current === null) {
-      return;
-    }
     const editorState = textStateRef.current;
     if (!editorState) {
       return;
