@@ -1,10 +1,4 @@
-import {
-  FormEvent,
-  MutableRefObject,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { FormEvent, MutableRefObject, useRef, useState } from "react";
 import {
   type ObservationData,
   type ObservationMetadata,
@@ -25,12 +19,14 @@ import {
   fromLexicalEditorStateRefToMarkdown,
   parseSimpleMarkdown,
 } from "@utils/textParser";
-import { TextEditor } from "../../initiatives/territoryStories/ui/createEditTSForm/TextEditor";
-import { EditorState } from "lexical";
+import { $getRoot, EditorState } from "lexical";
 import {
   availableTransformers,
   RichTextEditor,
 } from "@composites/RichTextEditor";
+import { StrValidator } from "@utils/strValidator";
+import { updateObservationData } from "pages/monitoring/api/services/observations";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
 type ObservationVersionTexts = Omit<
   ObservationData,
@@ -68,11 +64,11 @@ const observationVersionTexts: ObservationVersionTextType[] = [
 ];
 
 export function ObservationVersionCard({
-  observationMetadata,
   observationData,
+  onUpdateCallback,
 }: {
-  observationMetadata: ObservationMetadata;
   observationData: ObservationData;
+  onUpdateCallback: () => void;
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsloading] = useState(false);
@@ -88,21 +84,50 @@ export function ObservationVersionCard({
     }
   });
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const observationInfo: ObservationVersionTexts = {};
     const observationTexts = observationTextsRef.current;
-    console.log("666", observationTexts);
 
-    observationTexts.forEach((observationText) => {
-      if (observationText) {
-        console.log(
-          fromLexicalEditorStateRefToMarkdown(
-            observationText,
-            availableTransformers,
-          ),
+    setIsloading(true);
+    [...observationTexts.entries()].forEach(
+      ([observationKey, observationTextLexical]) => {
+        const observationText = fromLexicalEditorStateRefToMarkdown(
+          observationTextLexical,
+          availableTransformers,
         );
-      }
-    });
+
+        if (observationText) {
+          observationInfo[observationKey as keyof ObservationVersionTexts] =
+            observationText;
+        }
+      },
+    );
+
+    if (Object.keys(observationInfo).length === 0) {
+      return;
+    }
+
+    const res = await updateObservationData(
+      observationData.id,
+      observationInfo as Record<
+        | "description"
+        | "methodology"
+        | "interpretation"
+        | "considerations"
+        | "authorship",
+        string
+      >,
+    );
+
+    setIsloading(false);
+    if (isMonitoringAPIError(res)) {
+      setErrors(res.data.map((err) => err.msg));
+      return;
+    }
+
+    setIsEditing(false);
+    onUpdateCallback();
   };
 
   const observationVersionDate = new Date(observationData.creationDate);
@@ -114,11 +139,6 @@ export function ObservationVersionCard({
       transition={{ duration: 0.2 }}
       className="border border-muted rounded-lg"
     >
-      <ErrorsList
-        errorItems={errors}
-        className="bg-accent/10 border border-accent rounded-lg mx-4 mt-4 p-4"
-      />
-
       {!isEditing ? (
         <div className="p-4 space-y-4">
           <div className="flex justify-between items-center">
@@ -168,11 +188,16 @@ export function ObservationVersionCard({
           onSubmit={handleSubmit}
           className="space-y-4 bg-muted p-4 rounded-lg"
         >
+          <ErrorsList
+            errorItems={errors}
+            className="bg-accent/10 border border-accent rounded-lg mx-4 mt-4 p-4"
+          />
+
           {observationVersionTexts.map((observationInfo) => (
             <SectionTextEditor
               key={`textEditor_${observationInfo.key}`}
               sectionData={observationInfo}
-              textToLoad=""
+              textToLoad={observationData[observationInfo.key] ?? ""}
               observationTextRef={
                 observationTextsRef.current.get(observationInfo.key)!
               }
@@ -206,6 +231,21 @@ function SectionTextEditor({
 }) {
   const [errors, setErrors] = useState<string[]>([]);
 
+  const handleValidation = () => {
+    const editorState = observationTextRef.current;
+    if (!editorState) {
+      return;
+    }
+
+    setErrors([]);
+    const plaintext = editorState.read(() => $getRoot().getTextContent());
+    const [_, textValidationErrors] = new StrValidator(
+      plaintext,
+    ).hasLengthLessOrEqualThan(120).result;
+
+    setErrors(textValidationErrors);
+  };
+
   return (
     <fieldset>
       <LabelAndErrors
@@ -225,10 +265,10 @@ function SectionTextEditor({
         describedBy={
           errors.length > 0 ? `errors_text_${sectionData.key}` : undefined
         }
-        // onChange={handleOnChange}
-        // onBlur={validateText}
+        onChange={handleValidation}
+        onBlur={handleValidation}
         counter={true}
-        maxLength={3000}
+        maxLength={300}
       />
     </fieldset>
   );
