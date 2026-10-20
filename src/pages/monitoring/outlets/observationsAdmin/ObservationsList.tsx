@@ -216,13 +216,24 @@ export function ObservationsList({
                 {selectedObservationVersion &&
                   selectedObservationVersion.observationId ===
                     observation.id && (
-                    <ObservationVersionCard
-                      observationData={selectedObservationVersion}
-                      editingThis={isEditModeOn}
-                      onUpdateSuccess={() =>
-                        handleGetVersion(selectedObservationVersion.id)
-                      }
-                    />
+                    <>
+                      <ObservationVersionCard
+                        observationData={selectedObservationVersion}
+                        editingThis={isEditModeOn}
+                        onUpdateSuccess={() =>
+                          handleGetVersion(selectedObservationVersion.id)
+                        }
+                      />
+
+                      {isEditModeOn && (
+                        <Button
+                          onClick={() => handleSetObservationToEdit(null)}
+                          className="ml-auto"
+                        >
+                          {"cerrar el modo de edición"}
+                        </Button>
+                      )}
+                    </>
                   )}
               </motion.div>
             </motion.li>
