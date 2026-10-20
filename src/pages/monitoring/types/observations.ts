@@ -3,6 +3,7 @@ import type {
   TagInObservation,
 } from "pages/monitoring/types/odataResponse";
 import { TagData } from "./initiative";
+import { LucideIcon } from "lucide-react";
 
 export enum ObservationMetric {
   OCCUPATION_SPECIES = 1,
@@ -132,4 +133,15 @@ export type BarsData = {
 
 export type CleanDataType = {
   cleanData: BarsData | LineData[];
+};
+
+export type ObservationVersionTexts = Omit<
+  ObservationData,
+  "id" | "observationId" | "creationDate" | "version" | "groups"
+>;
+
+export type ObservationVersionTextType = {
+  key: keyof ObservationVersionTexts;
+  label: string;
+  icon: LucideIcon;
 };

@@ -28,6 +28,7 @@ import type { InitiativeByLocation } from "pages/monitoring/types/initiative";
 import { fuzzySearch } from "pages/monitoring/utils/search";
 import { getInitiativeLocations } from "pages/monitoring/api/services/initiatives";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import { uiText } from "./layout/uiText";
 
 export function InitiativesSearch({
   currentInitiative,
@@ -74,9 +75,9 @@ export function InitiativesSearch({
   return isLoading ? (
     <LoadingDiv />
   ) : (
-    <div aria-label="Iniciativas" className="space-y-2">
+    <div className="space-y-2">
       <div
-        aria-label="Filtrar por nombre"
+        aria-label={uiText.initiativeSearch.sectionLabel}
         className="bg-input p-4 rounded-lg flex gap-2"
       >
         <InputGroup>
@@ -84,7 +85,7 @@ export function InitiativesSearch({
             id="filterInitiatives"
             value={initiativesFilterInput}
             onChange={(e) => setInitiativesFilterInput(e.target.value)}
-            placeholder="Nombre de la iniciativa"
+            placeholder={uiText.initiativeSearch.input.placeholder}
             autoComplete="off"
           />
           <InputGroupAddon align="inline-end">
@@ -95,12 +96,13 @@ export function InitiativesSearch({
         <Button
           variant="outline"
           disabled={initiativesFilterInput.length === 0}
-          title="Deshacer búsqueda"
+          title={uiText.initiativeSearch.input.restartBtn.title}
           size="icon"
-          aria-label="Deshacer búsqueda"
+          aria-label={uiText.initiativeSearch.input.restartBtn.sr}
           onClick={() => setInitiativesFilterInput("")}
         >
           <RotateCcw />
+          {uiText.initiativeSearch.input.restartBtn.label}
         </Button>
       </div>
 
@@ -138,8 +140,10 @@ export function InitiativesSearch({
                   }}
                   variant="ghost"
                   size="icon-lg"
-                  title="Ver Observaciones de la iniciativa"
+                  title={uiText.initiativeSearch.selectInitiativeBtn.title}
+                  aria-label={uiText.initiativeSearch.selectInitiativeBtn.sr}
                 >
+                  {uiText.initiativeSearch.selectInitiativeBtn.label}
                   <ChevronRightCircle className="size-8" strokeWidth={1.5} />
                 </Button>
               ) : (
@@ -149,9 +153,11 @@ export function InitiativesSearch({
                   }}
                   variant="ghost"
                   size="icon-lg"
-                  title="Deseleccionat la iniciativa"
                   className="text-primary-foreground"
+                  title={uiText.initiativeSearch.deselectInitiativeBtn.title}
+                  aria-label={uiText.initiativeSearch.deselectInitiativeBtn.sr}
                 >
+                  {uiText.initiativeSearch.deselectInitiativeBtn.label}
                   <XCircle className="size-8" strokeWidth={1.5} />
                 </Button>
               )}

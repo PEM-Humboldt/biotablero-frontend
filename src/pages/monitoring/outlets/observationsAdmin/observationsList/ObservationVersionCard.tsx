@@ -1,19 +1,18 @@
-import { FormEvent, MutableRefObject, useRef, useState } from "react";
 import {
+  FormEvent,
+  MutableRefObject,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import {
+  ObservationVersionTexts,
+  ObservationVersionTextType,
   type ObservationData,
-  type ObservationMetadata,
 } from "pages/monitoring/types/observations";
 import { ErrorsList, LabelAndErrors } from "@ui/LabelingWithErrors";
 import { Button } from "@ui/shadCN/component/button";
 import { LOCALE } from "@config/global";
-import {
-  BadgeCheck,
-  BookOpenCheck,
-  FilePenLine,
-  LucideIcon,
-  MessageCircleWarning,
-  Network,
-} from "lucide-react";
 import { motion } from "motion/react";
 import {
   fromLexicalEditorStateRefToMarkdown,
@@ -27,56 +26,32 @@ import {
 import { StrValidator } from "@utils/strValidator";
 import { updateObservationData } from "pages/monitoring/api/services/observations";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-
-type ObservationVersionTexts = Omit<
-  ObservationData,
-  "id" | "observationId" | "creationDate" | "version" | "groups"
->;
-
-type ObservationVersionTextType = {
-  key: keyof ObservationVersionTexts;
-  label: string;
-  icon: LucideIcon;
-};
-
-const observationVersionTexts: ObservationVersionTextType[] = [
-  {
-    key: "description",
-    label: "¿Qué dice este indicador?",
-    icon: BadgeCheck,
-  },
-  {
-    key: "methodology",
-    label: "Metodología",
-    icon: Network,
-  },
-  {
-    key: "interpretation",
-    label: "Interpretación",
-    icon: BookOpenCheck,
-  },
-  {
-    key: "considerations",
-    label: "Consideración",
-    icon: MessageCircleWarning,
-  },
-  { key: "authorship", label: "Autoría", icon: FilePenLine },
-];
+import { observationVersionTexts } from "pages/monitoring/outlets/observationsAdmin/layout/observationVersionSetup.ts";
+import { uiText } from "../layout/uiText";
 
 export function ObservationVersionCard({
   observationData,
-  onUpdateCallback,
+  editingThis,
+  onUpdateSuccess,
 }: {
   observationData: ObservationData;
-  onUpdateCallback: () => void;
+  editingThis: boolean;
+  onUpdateSuccess: () => Promise<void>;
 }) {
-  const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsloading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
 
   const observationTextsRef = useRef<
     Map<keyof ObservationVersionTexts, MutableRefObject<EditorState | null>>
   >(new Map());
+
+  const observationVersionDate = new Date(observationData.creationDate);
+
+  useEffect(() => {
+    return () => {
+      observationTextsRef.current = new Map();
+    };
+  }, []);
 
   observationVersionTexts.forEach((observationInfo) => {
     if (!observationTextsRef.current.has(observationInfo.key)) {
@@ -89,7 +64,6 @@ export function ObservationVersionCard({
     const observationInfo: ObservationVersionTexts = {};
     const observationTexts = observationTextsRef.current;
 
-    setIsloading(true);
     [...observationTexts.entries()].forEach(
       ([observationKey, observationTextLexical]) => {
         const observationText = fromLexicalEditorStateRefToMarkdown(
@@ -98,8 +72,7 @@ export function ObservationVersionCard({
         );
 
         if (observationText) {
-          observationInfo[observationKey as keyof ObservationVersionTexts] =
-            observationText;
+          observationInfo[observationKey] = observationText;
         }
       },
     );
@@ -108,16 +81,10 @@ export function ObservationVersionCard({
       return;
     }
 
+    setIsloading(true);
     const res = await updateObservationData(
       observationData.id,
-      observationInfo as Record<
-        | "description"
-        | "methodology"
-        | "interpretation"
-        | "considerations"
-        | "authorship",
-        string
-      >,
+      observationInfo as Record<keyof ObservationVersionTexts, string>,
     );
 
     setIsloading(false);
@@ -126,11 +93,9 @@ export function ObservationVersionCard({
       return;
     }
 
-    setIsEditing(false);
-    onUpdateCallback();
+    onUpdateSuccess();
   };
 
-  const observationVersionDate = new Date(observationData.creationDate);
   return (
     <motion.div
       initial={{ opacity: 0, height: 0 }}
@@ -139,26 +104,17 @@ export function ObservationVersionCard({
       transition={{ duration: 0.2 }}
       className="border border-muted rounded-lg"
     >
-      {!isEditing ? (
+      {!editingThis ? (
         <div className="p-4 space-y-4">
-          <div className="flex justify-between items-center">
-            <span className="text-primary font-normal">
-              Version del{" "}
-              <time dateTime={observationVersionDate.toISOString()}>
-                {observationVersionDate.toLocaleDateString(LOCALE, {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </time>
-            </span>
-            <Button
-              onClick={() => setIsEditing((isEditing) => !isEditing)}
-              title={`Editar la version ${observationData.version} de ${new Date(observationData.creationDate).toLocaleDateString(LOCALE)}`}
-            >
-              <FilePenLine />
-              Editar textos de la version
-            </Button>
+          <div className="text-lg text-primary font-normal">
+            Version del{" "}
+            <time dateTime={observationVersionDate.toISOString()}>
+              {observationVersionDate.toLocaleDateString(LOCALE, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </time>
           </div>
 
           {observationVersionTexts.map((observationInfo) => {
@@ -185,7 +141,7 @@ export function ObservationVersionCard({
         </div>
       ) : (
         <form
-          onSubmit={handleSubmit}
+          onSubmit={(e) => void handleSubmit(e)}
           className="space-y-4 bg-muted p-4 rounded-lg"
         >
           <ErrorsList
@@ -209,7 +165,7 @@ export function ObservationVersionCard({
             <Button
               type="button"
               variant="outline_destructive"
-              onClick={() => setIsEditing(!isEditing)}
+              onClick={() => console.log("nara 222")}
             >
               Cancelar
             </Button>
