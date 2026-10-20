@@ -1,12 +1,4 @@
-import {
-  Dispatch,
-  FormEvent,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import type { TagData } from "pages/monitoring/types/initiative";
 import { type ObservationMetadata } from "pages/monitoring/types/observations";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
@@ -69,30 +61,27 @@ const getTagId = (tag: TagInObservation | TagData) =>
 
 export function ObservationHeader({
   observation,
-  editingThis: editingThis,
-  setObservationToEdit,
-  onSubmitSuccess,
+  editMode,
+  onUpdateSuccess,
 }: {
   observation: ObservationMetadata;
-  editingThis: boolean;
-  setObservationToEdit: Dispatch<SetStateAction<number | null>>;
-  onSubmitSuccess: () => void;
+  editMode: boolean;
+  onUpdateSuccess: () => Promise<void>;
 }) {
   const [isLoading, setIsloading] = useState(false);
   const [errors, setErrors] = useState<{ input?: string[]; global?: string[] }>(
     {},
   );
   const [observationName, setObservationName] = useState(observation.name);
+
   const tagsRef = useRef<TagInObservation[]>([]);
 
   useEffect(() => {
     tagsRef.current = observation.tags;
   }, [observation.tags]);
 
-  const [tags, setTags] = useState<
-    Record<number, (TagInObservation | TagData)[]>
-  >(() => {
-    return observationTagCategories.reduce<Record<number, TagInObservation[]>>(
+  const savedTagsSetter = () =>
+    observationTagCategories.reduce<Record<number, TagInObservation[]>>(
       (all, current) => {
         const categoryId = current.tagCategoryId;
 
@@ -103,7 +92,9 @@ export function ObservationHeader({
       },
       {},
     );
-  });
+
+  const [tags, setTags] =
+    useState<Record<number, (TagInObservation | TagData)[]>>(savedTagsSetter);
 
   const updateTags = useCallback(
     (categoryId: number) => (updatedTags: (TagInObservation | TagData)[]) => {
@@ -221,14 +212,18 @@ export function ObservationHeader({
         }
       }
 
-      onSubmitSuccess();
-      setObservationToEdit(null);
+      onUpdateSuccess();
     } finally {
       setIsloading(false);
     }
   };
 
-  return !editingThis ? (
+  const handleReset = () => {
+    setTags(savedTagsSetter());
+    setObservationName(observation.name);
+  };
+
+  return !editMode ? (
     <header className="flex">
       <div className="flex-1">
         <h4 className="*:block">
@@ -244,12 +239,13 @@ export function ObservationHeader({
           colorIndexOffset={3}
         />
       </div>
-      <Button onClick={() => setObservationToEdit(observation.id)}>
-        Editar observacion
-      </Button>
     </header>
   ) : (
-    <form onSubmit={handleSubmit} className="space-y-4 bg-muted p-4 rounded-lg">
+    <form
+      onSubmit={handleSubmit}
+      onReset={handleReset}
+      className="space-y-4 bg-muted p-4 rounded-lg"
+    >
       <ErrorsList
         errorItems={errors?.global ?? []}
         className="bg-accent/10 border border-accent rounded-lg p-4"
@@ -290,11 +286,11 @@ export function ObservationHeader({
       <div className="flex flex-row-reverse justify-between">
         <Button disabled={isLoading}>Guardar</Button>
         <Button
-          type="button"
+          type="reset"
           variant="outline_destructive"
-          onClick={() => setObservationToEdit(null)}
+          onClick={() => console.log("reset header")}
         >
-          Cancelar
+          Reset
         </Button>
       </div>
     </form>
