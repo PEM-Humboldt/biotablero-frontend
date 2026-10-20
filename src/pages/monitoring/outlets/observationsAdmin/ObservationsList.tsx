@@ -13,12 +13,12 @@ import {
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { LoadingDiv } from "@ui/LoadingDiv";
 import { Button } from "@ui/shadCN/component/button";
-import { LOCALE } from "@config/global";
 import { ScanSearch } from "lucide-react";
 import { cn } from "@ui/shadCN/lib/utils";
 import { motion } from "motion/react";
 import { ObservationVersionCard } from "./observationsList/ObservationVersionCard";
 import { ObservationHeader } from "./observationsList/ObservationHeader";
+import { uiText } from "./layout/uiText";
 
 export function ObservationsList({
   fromInitiative,
@@ -27,13 +27,11 @@ export function ObservationsList({
 }) {
   const [isLoading, setIsLoading] = useState(true);
   const [errors, setErrors] = useState<string[]>([]);
-  const [editingObservation, setEditingObservation] = useState<number | null>(
-    null,
-  );
+  const [editObservation, setEditObservation] = useState<number | null>(null);
   const [observationsMetadata, setObservationsMetadata] = useState<
     ObservationMetadata[]
   >([]);
-  const [observationVersion, setObservationVersion] =
+  const [selectedObservationVersion, setSelectedObservationVersion] =
     useState<ObservationData | null>(null);
 
   useEffect(() => {
@@ -58,20 +56,23 @@ export function ObservationsList({
     void fetchObservationsMetadata();
   }, [fromInitiative]);
 
-  const handleGetVersion = useCallback(async (observationVersionId: number) => {
-    setErrors([]);
-    setIsLoading(true);
-    setObservationVersion(null);
+  const handleGetVersion = useCallback(
+    async (observationVersionId: number) => {
+      setErrors([]);
+      setIsLoading(true);
 
-    const res = await getObservationData(observationVersionId);
-    setIsLoading(false);
-    if (isMonitoringAPIError(res)) {
-      setErrors(res.data.map((err) => err.msg));
-      return;
-    }
+      const res = await getObservationData(observationVersionId);
+      setIsLoading(false);
+      if (isMonitoringAPIError(res)) {
+        setErrors(res.data.map((err) => err.msg));
+        setSelectedObservationVersion(null);
+        return;
+      }
 
-    setObservationVersion(res);
-  }, []);
+      setSelectedObservationVersion(res);
+    },
+    [selectedObservationVersion?.id],
+  );
 
   const updateObservationMetadata = async (observationId: number) => {
     setIsLoading(true);
@@ -94,12 +95,23 @@ export function ObservationsList({
     });
   };
 
-  return !fromInitiative ? (
-    <div className="p-4 bg-background rounded-lg">
-      Selecciona una iniciativa para poder administrar sus observaciones
-    </div>
-  ) : (
-    <div className="p-4 bg-background rounded-lg space-y-4">
+  const handleSetObservationToEdit = useCallback(
+    (observationId: number | null) => {
+      setEditObservation(observationId);
+
+      if (
+        observationId !== null &&
+        selectedObservationVersion &&
+        selectedObservationVersion.observationId !== observationId
+      ) {
+        setSelectedObservationVersion(null);
+      }
+    },
+    [selectedObservationVersion],
+  );
+
+  return (
+    <>
       <ErrorsList
         errorItems={errors}
         className="bg-accent/10 p-4 border border-accent rounded-lg"
@@ -107,16 +119,17 @@ export function ObservationsList({
 
       {isLoading && (
         <LoadingDiv
-          text="Cargando información de las observaciones..."
+          text={uiText.observationsList.loadind}
           className="absolute"
         />
       )}
 
-      <ul aria-label="Observaciones relacionadas" className="space-y-4">
+      <ul
+        aria-label={uiText.observationsList.listDescription.sr}
+        className="space-y-4"
+      >
         {observationsMetadata.map((observation) => {
-          const isSelected =
-            observationVersion &&
-            observationVersion.observationId === observation.id;
+          const isEditModeOn = observation.id === editObservation;
 
           return (
             <motion.li
@@ -126,37 +139,73 @@ export function ObservationsList({
                 layout: { type: "spring", stiffness: 350, damping: 25 },
               }}
               className={cn(
-                "border border-muted rounded-lg p-4 overflow-hidden",
-                isSelected ? "shadow-xl border-primary" : "",
+                "relative border border-muted rounded-lg p-4 overflow-hidden",
+                isEditModeOn ? "shadow-xl border-primary" : "",
               )}
             >
-              <motion.div layout="position" className="space-y-3">
+              <motion.div layout="position" className="flex flex-col gap-2">
+                <Button
+                  onClick={() =>
+                    handleSetObservationToEdit(
+                      isEditModeOn ? null : observation.id,
+                    )
+                  }
+                  className="ml-auto"
+                >
+                  {isEditModeOn
+                    ? "cerrar el modo de edición"
+                    : "Iniciar el modo de edición"}
+                </Button>
+
                 <ObservationHeader
                   observation={observation}
-                  editingThis={observation.id === editingObservation}
-                  setObservationToEdit={setEditingObservation}
-                  onSubmitSuccess={() =>
-                    void updateObservationMetadata(observation.id)
+                  editMode={isEditModeOn}
+                  onUpdateSuccess={() =>
+                    updateObservationMetadata(observation.id)
                   }
                 />
 
-                <div>
-                  Versiones
+                <div
+                  aria-label={
+                    uiText.observationsList.versionsListDescription.sr
+                  }
+                >
+                  {isEditModeOn
+                    ? uiText.observationsList.versionsListDescriptionEdit.label
+                    : uiText.observationsList.versionsListDescription.label}
+
                   <ul className="border-t border-t-muted py-2 flex flex-wrap gap-2">
                     {observation.versions.map((version) => {
-                      const observationDate = new Date(version.creationDate);
+                      const isThisVersionSelected =
+                        version.id === selectedObservationVersion?.id;
+
                       return (
                         <li
                           key={`observation-${observation.id}_version-${version.id}`}
                         >
                           <Button
-                            onClick={() => void handleGetVersion(version.id)}
-                            variant={isSelected ? "default" : "outline"}
-                            title={`Ver la version ${version.version} de ${observationDate.toLocaleDateString(LOCALE)}`}
-                            disabled={version.id === observationVersion?.id}
+                            onClick={() =>
+                              isThisVersionSelected
+                                ? setSelectedObservationVersion(null)
+                                : void handleGetVersion(version.id)
+                            }
+                            variant={
+                              isThisVersionSelected ? "default" : "outline"
+                            }
+                            title={uiText.observationsList.openVersionBtn.sr(
+                              version.version,
+                              new Date(version.creationDate),
+                            )}
+                            aria-label={uiText.observationsList.openVersionBtn.sr(
+                              version.version,
+                              new Date(version.creationDate),
+                            )}
                           >
                             <ScanSearch className="size-6" />
-                            {observationDate.toLocaleDateString(LOCALE)}
+                            {uiText.observationsList.openVersionBtn.label(
+                              version.version,
+                              new Date(version.creationDate),
+                            )}
                           </Button>
                         </li>
                       );
@@ -164,19 +213,22 @@ export function ObservationsList({
                   </ul>
                 </div>
 
-                {isSelected && (
-                  <ObservationVersionCard
-                    observationData={observationVersion}
-                    onUpdateCallback={() =>
-                      handleGetVersion(observationVersion.id)
-                    }
-                  />
-                )}
+                {selectedObservationVersion &&
+                  selectedObservationVersion.observationId ===
+                    observation.id && (
+                    <ObservationVersionCard
+                      observationData={selectedObservationVersion}
+                      editingThis={isEditModeOn}
+                      onUpdateSuccess={() =>
+                        handleGetVersion(selectedObservationVersion.id)
+                      }
+                    />
+                  )}
               </motion.div>
             </motion.li>
           );
         })}
       </ul>
-    </div>
+    </>
   );
 }
