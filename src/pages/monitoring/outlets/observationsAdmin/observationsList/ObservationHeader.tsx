@@ -25,6 +25,8 @@ import {
 } from "pages/monitoring/api/services/tags";
 import { validationExemption } from "pages/monitoring/ui/initiativesAdmin/utils/fieldClientValidations";
 import { observationNameNotExist } from "../utils/observationValidations";
+import { toast } from "sonner";
+import { UserRoundCheck } from "lucide-react";
 
 export const observationTagCategories: {
   tagCategoryId: number;
@@ -213,6 +215,13 @@ export function ObservationHeader({
       }
 
       onUpdateSuccess();
+
+      toast("Información de la observación actualizada", {
+        position: "bottom-right",
+        description: `La información de la observación ${observationName} fue correctamente actualizada`,
+        icon: <UserRoundCheck className="size-8 text-primary" />,
+        className: "px-6! gap-6! border-2! border-primary!",
+      });
     } finally {
       setIsloading(false);
     }

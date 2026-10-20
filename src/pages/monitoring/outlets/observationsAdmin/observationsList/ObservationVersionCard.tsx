@@ -13,12 +13,11 @@ import {
 import { ErrorsList, LabelAndErrors } from "@ui/LabelingWithErrors";
 import { Button } from "@ui/shadCN/component/button";
 import { LOCALE } from "@config/global";
-import { motion } from "motion/react";
 import {
   fromLexicalEditorStateRefToMarkdown,
   parseSimpleMarkdown,
 } from "@utils/textParser";
-import { $getRoot, EditorState } from "lexical";
+import { EditorState } from "lexical";
 import {
   availableTransformers,
   RichTextEditor,
@@ -27,7 +26,9 @@ import { StrValidator } from "@utils/strValidator";
 import { updateObservationData } from "pages/monitoring/api/services/observations";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { observationVersionTexts } from "pages/monitoring/outlets/observationsAdmin/layout/observationVersionSetup.ts";
-import { uiText } from "../layout/uiText";
+// import { uiText } from "../layout/uiText";
+import { UserRoundCheck } from "lucide-react";
+import { toast } from "sonner";
 
 export function ObservationVersionCard({
   observationData,
@@ -38,46 +39,66 @@ export function ObservationVersionCard({
   editingThis: boolean;
   onUpdateSuccess: () => Promise<void>;
 }) {
+  const [resetKey, setResetKey] = useState(0);
   const [isLoading, setIsloading] = useState(false);
-  const [errors, setErrors] = useState<string[]>([]);
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof ObservationVersionTexts | "root", string[]>>
+  >({});
 
   const observationTextsRef = useRef<
     Map<keyof ObservationVersionTexts, MutableRefObject<EditorState | null>>
   >(new Map());
 
-  const observationVersionDate = new Date(observationData.creationDate);
-
   useEffect(() => {
-    return () => {
-      observationTextsRef.current = new Map();
-    };
-  }, []);
-
-  observationVersionTexts.forEach((observationInfo) => {
-    if (!observationTextsRef.current.has(observationInfo.key)) {
+    observationVersionTexts.forEach((observationInfo) => {
       observationTextsRef.current.set(observationInfo.key, { current: null });
-    }
-  });
+    });
+  }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const observationInfo: ObservationVersionTexts = {};
     const observationTexts = observationTextsRef.current;
 
-    [...observationTexts.entries()].forEach(
-      ([observationKey, observationTextLexical]) => {
+    setErrors({});
+    let hasErrors = false;
+
+    const observationInfo: ObservationVersionTexts = [
+      ...observationTexts.entries(),
+    ].reduce<ObservationVersionTexts>(
+      (all, [observationKey, observationTextLexical]) => {
+        const original = observationData[observationKey];
+
         const observationText = fromLexicalEditorStateRefToMarkdown(
           observationTextLexical,
           availableTransformers,
         );
 
-        if (observationText) {
-          observationInfo[observationKey] = observationText;
+        if (observationText !== original) {
+          const [validatedText, validationErrors] = new StrValidator(
+            observationText,
+          ).hasLengthLessOrEqualThan(120).result;
+
+          if (validationErrors.length > 0) {
+            setErrors((oldErr) => ({
+              ...oldErr,
+              [observationKey]: validationErrors,
+            }));
+
+            hasErrors = true;
+            return all;
+          }
+
+          all[observationKey] = validatedText;
+        } else {
+          all[observationKey] = original;
         }
+
+        return all;
       },
+      {},
     );
 
-    if (Object.keys(observationInfo).length === 0) {
+    if (hasErrors || Object.keys(observationInfo).length === 0) {
       return;
     }
 
@@ -89,19 +110,31 @@ export function ObservationVersionCard({
 
     setIsloading(false);
     if (isMonitoringAPIError(res)) {
-      setErrors(res.data.map((err) => err.msg));
+      setErrors((old) => ({ ...old, root: res.data.map((err) => err.msg) }));
       return;
     }
 
-    onUpdateSuccess();
+    await onUpdateSuccess();
+    setResetKey((prev) => prev + 1);
+
+    toast("Textos de version actualizados", {
+      position: "bottom-right",
+      description: `Los textos esta observación en la version ${observationData.version} de ${new Date(observationData.creationDate).toLocaleDateString(LOCALE)} han sido actualizados correctamente.`,
+      icon: <UserRoundCheck className="size-8 text-primary" />,
+      className: "px-6! gap-6! border-2! border-primary!",
+    });
   };
 
+  const handleReset = () => {
+    setErrors({});
+    setResetKey((prev) => prev + 1);
+  };
+
+  const observationVersionDate = new Date(observationData.creationDate);
+
   return (
-    <motion.div
-      initial={{ opacity: 0, height: 0 }}
-      animate={{ opacity: 1, height: "auto" }}
-      exit={{ opacity: 0, height: 0 }}
-      transition={{ duration: 0.2 }}
+    <div
+      key={`${observationData.observationId}_${observationData.id}_${resetKey}`}
       className="border border-muted rounded-lg"
     >
       {!editingThis ? (
@@ -142,10 +175,11 @@ export function ObservationVersionCard({
       ) : (
         <form
           onSubmit={(e) => void handleSubmit(e)}
+          onReset={handleReset}
           className="space-y-4 bg-muted p-4 rounded-lg"
         >
           <ErrorsList
-            errorItems={errors}
+            errorItems={errors.root ?? []}
             className="bg-accent/10 border border-accent rounded-lg mx-4 mt-4 p-4"
           />
 
@@ -153,26 +187,23 @@ export function ObservationVersionCard({
             <SectionTextEditor
               key={`textEditor_${observationInfo.key}`}
               sectionData={observationInfo}
-              textToLoad={observationData[observationInfo.key] ?? ""}
+              textToLoad={observationData[observationInfo.key] || ""}
               observationTextRef={
                 observationTextsRef.current.get(observationInfo.key)!
               }
+              errors={errors[observationInfo.key] ?? []}
             />
           ))}
 
           <div className="flex flex-row-reverse justify-between">
             <Button disabled={isLoading}>Guardar</Button>
-            <Button
-              type="button"
-              variant="outline_destructive"
-              onClick={() => console.log("nara 222")}
-            >
+            <Button type="reset" variant="outline_destructive">
               Cancelar
             </Button>
           </div>
         </form>
       )}
-    </motion.div>
+    </div>
   );
 }
 
@@ -180,28 +211,13 @@ function SectionTextEditor({
   sectionData,
   observationTextRef,
   textToLoad,
+  errors,
 }: {
   sectionData: ObservationVersionTextType;
   observationTextRef: MutableRefObject<EditorState | null>;
   textToLoad: string;
+  errors: string[];
 }) {
-  const [errors, setErrors] = useState<string[]>([]);
-
-  const handleValidation = () => {
-    const editorState = observationTextRef.current;
-    if (!editorState) {
-      return;
-    }
-
-    setErrors([]);
-    const plaintext = editorState.read(() => $getRoot().getTextContent());
-    const [_, textValidationErrors] = new StrValidator(
-      plaintext,
-    ).hasLengthLessOrEqualThan(120).result;
-
-    setErrors(textValidationErrors);
-  };
-
   return (
     <fieldset>
       <LabelAndErrors
@@ -221,8 +237,6 @@ function SectionTextEditor({
         describedBy={
           errors.length > 0 ? `errors_text_${sectionData.key}` : undefined
         }
-        onChange={handleValidation}
-        onBlur={handleValidation}
         counter={true}
         maxLength={300}
       />
