@@ -268,36 +268,24 @@ export function CreateEditTSForm({
       return;
     }
 
-    const results = await Promise.all([
+    const [imgErrors, vidErrors, resEnabledStatus] = await Promise.all([
       handleSubmitImages(res),
       handleSubmitVideos(res),
+      story.enabled
+        ? await enableTerritoryStory(res.id)
+        : await disableTerritoryStory(res.id),
     ]);
 
-    const uploadErrors = results.reduce((all, current) => {
-      if (current === null) {
-        return all;
-      }
-      return { ...all, ...current };
-    }, {} as FormError);
-
-    if (uploadErrors && Object.keys(uploadErrors).length > 0) {
-      setErrors(uploadErrors);
-      return;
-    }
-
-    const resEnabledStatus = story.enabled
-      ? await enableTerritoryStory(res.id)
-      : await disableTerritoryStory(res.id);
-
-    if (isMonitoringAPIError(resEnabledStatus)) {
-      setErrors(makeApiResponseErrorObject(resEnabledStatus));
-      return;
-    }
+    const uploadErrors: string[] = [
+      imgErrors && uiText.uploadErrors.images,
+      vidErrors && uiText.uploadErrors.videos,
+      isMonitoringAPIError(resEnabledStatus) && uiText.uploadErrors.enable,
+    ].filter((error): error is string => Boolean(error));
 
     const toastText =
       territoryStoryId === undefined
-        ? uiText.toast.creation
-        : uiText.toast.update;
+        ? uiText.toast.creation(uploadErrors)
+        : uiText.toast.update(uploadErrors);
 
     toast(toastText.title, {
       position: "bottom-right",

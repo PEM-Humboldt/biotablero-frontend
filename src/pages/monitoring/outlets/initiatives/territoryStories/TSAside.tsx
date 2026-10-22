@@ -65,7 +65,8 @@ function TSRecommendations() {
       setIsLoading(false);
     };
 
-    void fetchStories();
+    // TODO: activar cuando esté disponible el llamado a historias random
+    // void fetchStories();
   }, [initiativeId]);
 
   if (isLoading) {
