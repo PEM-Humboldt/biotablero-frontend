@@ -111,7 +111,7 @@ export function InitiativesSearch({
         className="bg-accent/10 p-4 border border-accent rounded-lg"
       />
 
-      <div className="overflow-y-auto min-h-0 h-full max-h-[300px] lg:max-h-none scrollbar-custom">
+      <div className="overflow-y-auto min-h-0 h-full max-h-[300px] lg:max-h-none scrollbar-custom space-y-2">
         {filteredInitiatives.map((initiative) => {
           const isActive = currentInitiative?.id === initiative.id;
 
