@@ -5,6 +5,8 @@ import { Button } from "@ui/shadCN/component/button";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { TagsRender } from "pages/monitoring/ui/TagsRender";
 import { uiText } from "pages/monitoring/outlets/initiatives/layout/uiText";
+import { TagInInitiative } from "pages/monitoring/types/odataResponse";
+import { cn } from "@ui/shadCN/lib/utils";
 
 export function TagsAndContact() {
   const { initiativeInfo } = useInitiativeCTX();
@@ -62,12 +64,10 @@ export function TagsAndContact() {
                     className="inline-flex items-center gap-1 px-1.5 py-0.5 text-sm whitespace-nowrap hover:text-accent hover:underline"
                   >
                     <LinkIcon className="size-3 text-accent" />
-                    {t.tag.name}
+                    <SocialTag tagComplete={t} />
                   </a>
                 ) : (
-                  <span className="px-1.5 py-0.5 text-sm whitespace-nowrap">
-                    {t.tag.name}
-                  </span>
+                  <SocialTag tagComplete={t} />
                 )}
               </li>
             ))}
@@ -75,5 +75,18 @@ export function TagsAndContact() {
         </div>
       )}
     </div>
+  );
+}
+
+function SocialTag({ tagComplete }: { tagComplete: TagInInitiative }) {
+  const tagInfo = tagComplete.tag;
+  const classes = "px-1.5 py-0.5 text-sm whitespace-nowrap";
+
+  return tagInfo.fullName ? (
+    <abbr title={tagInfo.fullName} className={classes}>
+      {tagInfo.name}
+    </abbr>
+  ) : (
+    <span className={classes}>{tagInfo.name}</span>
   );
 }
