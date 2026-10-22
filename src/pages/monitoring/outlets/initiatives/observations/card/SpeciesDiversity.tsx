@@ -119,8 +119,7 @@ export function SpeciesDiversity() {
               setSelectedSpecie(s);
             }
           }}
-          colorFromOptionHash={true}
-          highContrast={true}
+          customColorList={GRAPHS_CONTRAST_COLOR_PALETTE}
         />
 
         <GraphInfoSelector
@@ -141,7 +140,7 @@ export function SpeciesDiversity() {
         mapUrl={null}
       >
         <>
-          <div className="w-full h-full aspect-3/2">
+          <div className="w-full h-full aspect-video">
             <ResponsiveLine
               data={filteredData}
               margin={{ top: 20, right: 30, bottom: 30, left: 60 }}
