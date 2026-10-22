@@ -49,11 +49,11 @@ export function ObservationSmallCard({
   return (
     <div
       className={cn(
-        "p-3 pb-2 rounded-xl outline outline-transparent hover:outline-primary transition-colors duration-300",
+        "p-4 pb-3 rounded-xl outline outline-transparent hover:outline-primary transition-colors duration-300",
         isCurrent ? "bg-muted outline-primary" : "bg-background shadow-2xl",
       )}
     >
-      <h4 className="mb-1">{observation.name}</h4>
+      <h4 className="mb-1 text-balance">{observation.topic.name}</h4>
       <div className="flex flex-wrap m-1 ml-0 gap-2">
         <TagsGroupsRender
           tags={observation.tags.map((t) => t.tag)}
