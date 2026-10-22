@@ -29,6 +29,7 @@ import { observationVersionTexts } from "pages/monitoring/outlets/observationsAd
 // import { uiText } from "../layout/uiText";
 import { UserRoundCheck } from "lucide-react";
 import { toast } from "sonner";
+import { OBSERVATION_VERSION_DESCRIPTION_FIELD_MAX_LENGHT } from "@config/monitoring";
 
 export function ObservationVersionCard({
   observationData,
@@ -49,11 +50,9 @@ export function ObservationVersionCard({
     Map<keyof ObservationVersionTexts, MutableRefObject<EditorState | null>>
   >(new Map());
 
-  useEffect(() => {
-    observationVersionTexts.forEach((observationInfo) => {
-      observationTextsRef.current.set(observationInfo.key, { current: null });
-    });
-  }, []);
+  observationVersionTexts.forEach((observationInfo) => {
+    observationTextsRef.current.set(observationInfo.key, { current: null });
+  });
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -76,7 +75,9 @@ export function ObservationVersionCard({
         if (observationText !== original) {
           const [validatedText, validationErrors] = new StrValidator(
             observationText,
-          ).hasLengthLessOrEqualThan(120).result;
+          ).hasLengthLessOrEqualThan(
+            OBSERVATION_VERSION_DESCRIPTION_FIELD_MAX_LENGHT,
+          ).result;
 
           if (validationErrors.length > 0) {
             setErrors((oldErr) => ({
@@ -238,7 +239,7 @@ function SectionTextEditor({
           errors.length > 0 ? `errors_text_${sectionData.key}` : undefined
         }
         counter={true}
-        maxLength={300}
+        maxLength={(OBSERVATION_VERSION_DESCRIPTION_FIELD_MAX_LENGHT / 3) * 2}
       />
     </fieldset>
   );
