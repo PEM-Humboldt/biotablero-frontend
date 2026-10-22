@@ -1,4 +1,3 @@
-import { type PageProps } from "@react-pdf/renderer";
 import type { ImageMimeType } from "@appTypes/formats";
 import type { ODataParams } from "@appTypes/odata";
 import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
@@ -51,7 +50,7 @@ export const MONITORING_IMG_ALLOWED_FORMATS: ImageMimeType[] = [
   "image/png",
   "image/webp",
 ];
-export const INITIATIVES_IMG_MAX_FILE_SIZE = 2;
+export const INITIATIVES_IMG_MAX_FILE_SIZE = 3;
 
 // Initiatives browser
 export const INITIATIVES_MAP_PADDING_LG = {
@@ -151,6 +150,7 @@ export const GLOSARY_FILTER_IS_AND = false;
 export const OBSERVATIONS_PER_PAGE = 7;
 export const OBSERVATION_MAX_COUNT_OCUPATION_SPECIES = 3;
 export const INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY = 3;
+export const OBSERVATION_VERSION_DESCRIPTION_FIELD_MAX_LENGHT = 3000;
 
 // Help
 export const HELP_YOUTUBE_VIDEO_URL = "www.youtube.com/watch?v=z2Ida2a2hHQ";
