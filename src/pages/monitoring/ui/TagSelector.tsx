@@ -106,6 +106,7 @@ export function TagSelector<T extends { tag: Omit<ODataTag, "categoryName"> }>({
 }: TagSelectorProps<T>) {
   const [value, setValue] = useState<string>("");
   const [errors, setErrors] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const tagIdsKey = selectedTags
     .map((t) => (isTagRelated(t) ? t.tag.id : t.id))
@@ -124,6 +125,7 @@ export function TagSelector<T extends { tag: Omit<ODataTag, "categoryName"> }>({
     }
 
     setErrors([]);
+    setIsLoading(true);
     const [tagId, label] = value.split("|");
     let newTag: TagData | T = {
       id: Number(tagId),
@@ -134,6 +136,7 @@ export function TagSelector<T extends { tag: Omit<ODataTag, "categoryName"> }>({
       const res = await apiUpdaters.add(relatedId, Number(tagId));
 
       if (isMonitoringAPIError(res)) {
+        setIsLoading(false);
         setErrors(res.data.map((err) => err.msg));
         return;
       }
@@ -141,21 +144,25 @@ export function TagSelector<T extends { tag: Omit<ODataTag, "categoryName"> }>({
       newTag = res;
     }
 
+    setIsLoading(false);
     onTagsChange([...selectedTags, newTag]);
     setValue("");
   };
 
   const removeTag = async (tagId: number, relationId: number | null) => {
     setErrors([]);
+    setIsLoading(true);
     if (relationId && apiUpdaters?.remove) {
       const res = await apiUpdaters.remove(relationId);
 
       if (isMonitoringAPIError(res)) {
         setErrors(res.data.map((err) => err.msg));
+        setIsLoading(false);
         return;
       }
     }
 
+    setIsLoading(false);
     onTagsChange(
       selectedTags.filter((tag) =>
         isTagRelated(tag) ? tag.tag.id !== tagId : tag.id !== tagId,
@@ -171,6 +178,7 @@ export function TagSelector<T extends { tag: Omit<ODataTag, "categoryName"> }>({
   }, []);
 
   const uiTexts = uiText.initiative.module.tags;
+  console.log("666", isLoading);
 
   return (
     <div className="flex-1 flex flex-col">
@@ -238,7 +246,10 @@ export function TagSelector<T extends { tag: Omit<ODataTag, "categoryName"> }>({
             fixedFilter={filter}
             fixedSearchParams={fixedSearchParams}
             maxItems={maxTagsAmount}
-            uiText={{ ...texts }}
+            uiText={{
+              ...texts,
+              itemNotFound: isLoading ? "Cargando..." : texts.itemNotFound,
+            }}
             className="flex-1 min-w-0"
           />
 
