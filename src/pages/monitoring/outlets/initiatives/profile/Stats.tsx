@@ -83,7 +83,7 @@ export function Stats() {
                   {displayValue}
                   {isLoading && <Spinner className="size-6 text-primary" />}
                 </span>
-                {stat.unit && <span className="text-xl">{stat.unit}</span>}
+                {stat.unit && <span className="text-xl"> {stat.unit}</span>}
               </div>
             </div>
           </div>
