@@ -9,7 +9,7 @@ import { LoadingDiv } from "@ui/LoadingDiv";
 export function IndicatorsStats() {
   const { errors, stats, isLoading } = useStats("Indicators");
 
-  const totalIndicators = stats
+  const totalObservations = stats
     ? Object.values(stats).reduce((all, current) => {
         return all + current.reduce((t, c) => t + c.value, 0);
       }, 0)
@@ -38,7 +38,7 @@ export function IndicatorsStats() {
           />
 
           <div className="text-right text-xl p-4">
-            {uiText.stats.indicators.indicatorsAmount(totalIndicators)}
+            {uiText.stats.indicators.indicatorsAmount(totalObservations)}
           </div>
         </>
       ) : (
