@@ -39,9 +39,23 @@ import type { MetricTypesMap } from "pages/search/types/metrics";
 import InfoIcon from "@mui/icons-material/Info";
 import { IconTooltip } from "@ui/Tooltips";
 import { capitalize } from "@utils/format";
+import { ResponsiveBar } from "@nivo/bar";
 
 const OBSERVED_RICHNESS_GRAPH_KEYS = ["CR", "EN", "VU"];
-
+const CUSTOM_BINS = [
+  "1",
+  "2",
+  "3-5",
+  "6-10",
+  "11-20",
+  "21-50",
+  "51-100",
+  "101-200",
+  "201-500",
+  "501-1000",
+  ">1000",
+];
+const HISTOGRAM_BARS_COLOR = "#D49A36";
 const threatenedSpeciesCustomColorMap: Record<string, string> = {
   CR: "#5c150c",
   EN: "#bc472b",
@@ -234,7 +248,7 @@ export function ObservedRichness() {
       getMetricTexts("statsOnSpecies"),
       areaType?.id !== "custom" ? controller.getAreaData() : null,
       controller.getNationalData(),
-      controller.getRichnessSerie(),
+      controller.getRichnessHistogram(),
       controller.getRichnessLayer(),
     ])
       .then(
@@ -328,7 +342,7 @@ export function ObservedRichness() {
       Promise.all([
         areaType?.id !== "custom" ? controller.getAreaData(groupFilter) : null,
         controller.getNationalData(groupFilter),
-        controller.getRichnessSerie(groupFilter),
+        controller.getRichnessHistogram(groupFilter),
         controller.getRichnessLayer(groupFilter),
       ])
         .then(([current, context, graphData, areaRichnessMap]) => {
@@ -378,15 +392,23 @@ export function ObservedRichness() {
     [areaType?.id, areaId?.name, searchMapDispatch],
   );
 
-  const graphSerieTicks = useMemo(() => {
-    if (!richness.areaSerie) {
+  const histogramData = useMemo(() => {
+    if (
+      !richness.areaSerie ||
+      !richness.areaSerie.data ||
+      richness.areaSerie.data.length === 0
+    ) {
       return [];
     }
-    const data = richness.areaSerie.data;
-    if (data.length === 0) {
-      return [];
-    }
-    return generateLinearTicks(0, data[data.length - 1].x, 10);
+
+    // NOTE: esto se puede pulir
+    console.log(richness.areaSerie.data);
+    return richness.areaSerie.data
+      .slice(0, CUSTOM_BINS.length)
+      .map((point, index) => ({
+        rango: CUSTOM_BINS[index],
+        frecuencia: point.y,
+      }));
   }, [richness.areaSerie]);
 
   return (
@@ -473,7 +495,7 @@ export function ObservedRichness() {
       {richness.areaSerie && (
         <div className="graphcontainer pt6">
           <h4 className="text-balance">
-            Número de especies registradas por km² (LMSC)
+            Número de especies registradas por km²
           </h4>
           {richness.isLoading ? (
             <div className="errorData">Cargando datos...</div>
@@ -494,48 +516,89 @@ export function ObservedRichness() {
               includesMap={true}
             >
               <div className="w-full aspect-video">
-                <ResponsiveLine
-                  data={[richness.areaSerie]}
-                  margin={{ top: 30, right: 20, bottom: 60, left: 60 }}
-                  xScale={{
-                    type: "linear",
-                    min: 1,
-                    max: graphSerieTicks[graphSerieTicks.length - 1],
-                    nice: false,
+                <ResponsiveBar
+                  data={histogramData}
+                  keys={["frecuencia"]}
+                  indexBy="rango"
+                  margin={{ top: 20, right: 20, bottom: 60, left: 60 }}
+                  padding={0.1}
+                  colors={[HISTOGRAM_BARS_COLOR]}
+                  enableLabel={false}
+                  enableGridX={false}
+                  enableGridY={true}
+                  theme={{
+                    axis: {
+                      ticks: { text: { fill: "#888", fontSize: 12 } },
+                      legend: { text: { fill: "#888", fontSize: 13 } },
+                    },
+                    grid: { line: { stroke: "#f0f0f0", strokeWidth: 1 } },
                   }}
-                  yScale={{ type: "linear", min: 0, max: "auto" }}
-                  curve="monotoneX"
-                  gridXValues={graphSerieTicks}
                   axisBottom={{
+                    tickSize: 0,
                     legend: "Número de especies registradas",
-                    legendOffset: 36,
-                    legendPosition: "middle" as const,
-                    tickValues: graphSerieTicks,
+                    legendPosition: "middle",
+                    legendOffset: 45,
+                    renderTick: (tick) => {
+                      const parts = String(tick.value).split("-");
+
+                      return (
+                        <g transform={`translate(${tick.x},${tick.y + 12})`}>
+                          {parts.length > 1 ? (
+                            <>
+                              <text
+                                textAnchor="middle"
+                                fill="#888"
+                                fontSize={12}
+                                dy={6}
+                              >
+                                {parts[0]}
+                              </text>
+                              <text
+                                textAnchor="middle"
+                                fill="#888"
+                                fontSize={12}
+                                dy={18}
+                              >
+                                {parts[1]}
+                              </text>
+                            </>
+                          ) : (
+                            <text
+                              textAnchor="middle"
+                              fill="#888"
+                              fontSize={12}
+                              dy={6}
+                            >
+                              {tick.value}
+                            </text>
+                          )}
+                        </g>
+                      );
+                    },
                   }}
-                  colors={observedRichnessGradientColors}
-                  gridYValues={5}
                   axisLeft={{
-                    tickValues: 5,
-                    legend: "Frecuencia de unidades de 1km²",
+                    tickSize: 0,
+                    tickPadding: 10,
+                    tickRotation: 0,
+                    legend: "Frecuencia de unidades de 1 km²",
+                    legendPosition: "middle",
                     legendOffset: -50,
-                    format: (value: number) => `${value / 1000}k`,
+                    tickValues: 6,
+                    format: (value) =>
+                      value >= 1000 ? `${value / 1000}k` : value,
                   }}
-                  pointSize={7}
-                  pointColor="#ffffff"
-                  pointBorderWidth={2}
-                  pointBorderColor={{ from: "seriesColor" }}
-                  pointLabelYOffset={-12}
-                  enableTouchCrosshair={true}
-                  useMesh={true}
-                  tooltip={(p) => (
-                    <div className="bg-background rounded-lg text-grey-dark px-4 py-2 text-sm text-nowrap shadow-2xl flex flex-col">
-                      <span
-                        style={{ color: p.point.seriesColor }}
-                        className="font-semibold"
-                      >
-                        {p.point.data.yFormatted}
-                      </span>
-                      <span>Especies</span>
+                  tooltip={({ indexValue, value }) => (
+                    <div
+                      style={{
+                        padding: "6px 12px",
+                        background: "white",
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                        color: "#333",
+                      }}
+                    >
+                      <strong>Especies:</strong> {indexValue} <br />
+                      <strong>Frecuencia:</strong> {value}
                     </div>
                   )}
                 />
