@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ClipboardPen, ClipboardPlus } from "lucide-react";
+import { ClipboardPen, ClipboardPlus, Download, FileDown } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
 
 import { useReport } from "@hooks/useReport";
@@ -121,8 +121,21 @@ export function AddMCIndicatorToReport() {
           title={uiText.editReportBtn.title}
           aria-label={uiText.editReportBtn.sr}
         >
-          <ClipboardPen />
+          <FileDown />
           {uiText.editReportBtn.label}
+        </Button>
+
+        {/* NOTE: Mock para el video, debe agregarse la funcionalidad */}
+        <Button
+          disabled={!hasSections}
+          variant="outline"
+          size="sm"
+          onClick={() => toggleEditor(true)}
+          title={uiText.editReportBtn.title}
+          aria-label={uiText.editReportBtn.sr}
+        >
+          <Download />
+          Descargar archivos
         </Button>
       </ButtonGroup>
     </>

@@ -2,21 +2,21 @@ export const uiText = {
   addToReportBtn: {
     title: {
       notLogged: "Inicia sesión para crear reportes",
-      logged: `Hacer anotacion y agregar a mi reporte`,
+      logged: `Hacer anotacion y sumar al reporte`,
     },
     sr: {
       notLogged: "Inicia sesión para crear reportes",
-      logged: `Hacer anotacion y agregar a mi reporte`,
+      logged: `Hacer anotacion y sumar al reporte`,
     },
     label: {
       loading: "Agregando...",
-      ready: "Agregar a mi reporte",
+      ready: "Sumar al reporte",
     },
   },
   editReportBtn: {
     title: "Abrir panel de edicion",
     sr: "Abrir panel para editar y descargar mi reporte",
-    label: "Editar",
+    label: "Descargar reporte",
   },
 
   addNotePopover: {

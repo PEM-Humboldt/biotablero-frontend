@@ -62,7 +62,16 @@ export function Resources() {
         return;
       }
 
-      setResourceTypes(resTypes.value);
+      // NOTE: Anexo provisional para el video mientras se
+      // ajusta en el back
+      const mockCategory: ResourceType = {
+        id: 666,
+        name: "Financiación y apoyos",
+        description:
+          "Oportunidades de financiación disponibles para apoyar el monitoreo comunitario.",
+      };
+
+      setResourceTypes([...resTypes.value, mockCategory]);
 
       const resSearch = await makeSearchResourcesComponents();
       setIsLoading((prvLoads) => prvLoads - 1);
