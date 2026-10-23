@@ -28,7 +28,7 @@ export const profileStats: {
     unit: undefined,
   },
   {
-    valueKey: "totalIndicators",
+    valueKey: "totalObservations",
     icon: ChartBar,
     title: "Número total de indicadores",
     hoverTitle: undefined,

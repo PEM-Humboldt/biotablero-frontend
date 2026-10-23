@@ -58,8 +58,6 @@ export function GraphInfoSelector({
 
           const textColor = bgColor ? getContrastColor(bgColor) : undefined;
 
-          console.log("sel", bgColor, option);
-
           return (
             <li key={`selectorBtn_${title}`}>
               <Button

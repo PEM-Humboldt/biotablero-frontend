@@ -178,7 +178,6 @@ export function TagSelector<T extends { tag: Omit<ODataTag, "categoryName"> }>({
   }, []);
 
   const uiTexts = uiText.initiative.module.tags;
-  console.log("666", isLoading);
 
   return (
     <div className="flex-1 flex flex-col">
