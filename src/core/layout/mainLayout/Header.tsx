@@ -29,17 +29,17 @@ export function Header({
     <header
       className={cn(
         "flex flex-wrap justify-between items-center border-b border-b-grey min-h-[60px] md:min-h-[70px] isolate",
-        environmentLabel && "bg-secondary/25 border-b-secondary/60",
+        // environmentLabel && "bg-secondary/25 border-b-secondary/60",
         className,
       )}
     >
       <div className="flex gap-2 items-baseline p-2 md:px-8 min-w-0 flex-1">
         <Link to="/">
-          <h1 className="text-secondary font-semibold! m-0! text-xl! sm:text-2xl! md:text-5xl!">
+          <h1 className="text-accent font-semibold! m-0! text-xl! sm:text-2xl! md:text-5xl!">
             BioTablero
             <span className="sr-only">{activeModuleInfo.name}</span>
           </h1>
-          {environmentLabel && (
+          {!environmentLabel && (
             <span className="inline-flex rounded px-2 py-1 text-sm/0 m-0 font-bold leading-none text-secondary uppercase">
               {environmentLabel}
             </span>
@@ -61,7 +61,7 @@ export function Header({
         <div
           className={cn(
             "flex gap-4 px-6 items-center self-stretch",
-            environmentLabel ? "bg-secondary/20" : "bg-grey-light",
+            // environmentLabel ? "bg-secondary/20" : "bg-grey-light",
           )}
           aria-hidden="true"
         >
