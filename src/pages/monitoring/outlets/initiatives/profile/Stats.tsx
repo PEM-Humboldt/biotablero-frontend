@@ -44,6 +44,7 @@ export function Stats() {
 
     const initiativeFullStats = { ...generalStats, ...initiativeStats };
 
+    console.log(initiativeFullStats);
     setInitiativeStats(initiativeFullStats);
   }, [initiativeId]);
 
@@ -59,6 +60,7 @@ export function Stats() {
   ) : (
     <div className="flex flex-wrap gap-2 lg:gap-4 *:flex-1">
       {profileStats.map((stat) => {
+        console.log("stat", stat);
         const displayValue = new Intl.NumberFormat("es-CO", {
           maximumFractionDigits: 0,
         }).format((initiativeStats?.[stat.valueKey] as number) ?? 0);
