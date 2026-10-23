@@ -156,7 +156,7 @@ export function RelativeSpeciesUseByGroup() {
             />
           </div>
 
-          <GraphLegend keys={displayKeys} />
+          <GraphLegend keys={displayKeys} labelClassName={{ key: "italic" }} />
         </>
       </GetObservationInfo>
     </>

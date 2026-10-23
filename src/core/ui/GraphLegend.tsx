@@ -5,7 +5,7 @@ import { hashStringToRange } from "@utils/format";
 import { getSeriesColor } from "pages/monitoring/outlets/initiatives/observations/card/utils/colors";
 
 export function GraphLegend({
-  keys,
+  keys: labels,
   customColorMap,
   customColorList,
   isBar = true,
@@ -13,6 +13,7 @@ export function GraphLegend({
   className,
   onClick,
   selected,
+  labelClassName,
 }: {
   keys: string[];
   customColorMap?: Record<string, string>;
@@ -22,12 +23,14 @@ export function GraphLegend({
   className?: string;
   onClick?: (label: string) => void;
   selected?: string[];
+  labelClassName?: { key?: string; complement?: string };
 }) {
   return (
     <ul
       className={cn("flex flex-wrap justify-end gap-4 text-sm p-4", className)}
     >
-      {[...new Set(keys)].map((key) => {
+      {[...new Set(labels)].map((label) => {
+        const [key, ...complement] = label.split(",");
         const isSelected = selected?.includes(key) ?? false;
 
         const color =
@@ -56,10 +59,19 @@ export function GraphLegend({
                 isSelected && "underline underline-offset-4 font-semibold",
               )}
             >
-              {key}
-              {renderValues && renderValues[key]
-                ? ` · ${renderValues[key]}`
-                : ""}
+              <span className={cn(labelClassName?.key)}>{key}</span>
+
+              {complement.length > 0 && (
+                <span className={cn(labelClassName?.complement)}>
+                  , {complement.join(",")}
+                </span>
+              )}
+
+              <span>
+                {renderValues && renderValues[key]
+                  ? ` · ${renderValues[key]}`
+                  : ""}
+              </span>
             </span>
           </>
         );

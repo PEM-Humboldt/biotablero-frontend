@@ -12,7 +12,7 @@ export function Banner() {
           ? { backgroundImage: `url('${initiativeInfo?.bannerUrl}')` }
           : {}),
         backgroundSize: "cover",
-        backgroundPosition: "left center",
+        backgroundPosition: "top center",
       }}
     >
       <div className="absolute top-2 md:top-6 right-2 md:right-6">

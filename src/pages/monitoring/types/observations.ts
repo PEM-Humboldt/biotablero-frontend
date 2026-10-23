@@ -1,7 +1,9 @@
 import type {
   LocationCompleteInfo,
-  TagInIndicator,
+  TagInObservation,
 } from "pages/monitoring/types/odataResponse";
+import { TagData } from "./initiative";
+import { LucideIcon } from "lucide-react";
 
 export enum ObservationMetric {
   OCCUPATION_SPECIES = 1,
@@ -10,6 +12,12 @@ export enum ObservationMetric {
   RELATIVE_SPECIES_USE_BY_GROUP = 4,
   RELATIONAL_INTENSITY_INDEX = 5,
   COLLECTIVE_ACTION_PARTICIPATION = 6,
+}
+
+export function isTagInObservation(
+  tag: TagData | TagInObservation,
+): tag is TagInObservation {
+  return "initiativeTagId" in tag;
 }
 
 export type ObservationDescription = { id: ObservationMetric; name: string };
@@ -27,7 +35,7 @@ export interface ObservationMetadata {
   topic: ObservationDescription;
   locations: LocationCompleteInfo[];
   versions: ObservationVersion[];
-  tags: TagInIndicator[];
+  tags: TagInObservation[];
 }
 
 /* NOTE:
@@ -125,4 +133,15 @@ export type BarsData = {
 
 export type CleanDataType = {
   cleanData: BarsData | LineData[];
+};
+
+export type ObservationVersionTexts = Omit<
+  ObservationData,
+  "id" | "observationId" | "creationDate" | "version" | "groups"
+>;
+
+export type ObservationVersionTextType = {
+  key: keyof ObservationVersionTexts;
+  label: string;
+  icon: LucideIcon;
 };

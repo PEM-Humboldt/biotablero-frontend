@@ -18,8 +18,6 @@ export const uiText = {
 
   tagsTitle: {
     all: "Etiquetas del recurso: ",
-    ecosystem: "Escala biológica",
-    BiologicalGroup: "Grupo biológico",
   },
 
   attachmentsTitle: {

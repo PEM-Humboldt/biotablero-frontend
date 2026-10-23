@@ -16,6 +16,7 @@ import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout
 import { AddMCIndicatorToReport } from "@ui/AddMCIndicatorToReport";
 import { useLocation, useParams } from "react-router";
 import { InitiativeError } from "pages/monitoring/outlets/initiatives/InitiativeError";
+import { parseSimpleMarkdown } from "@utils/textParser";
 
 interface RouterState {
   from?: string;
@@ -67,7 +68,7 @@ export function Card() {
             : uiText.observationCard.noSelection}
         </div>
       ) : (
-        <div className="max-w-[1400px] mx-auto">
+        <div className="max-w-[1200px] ">
           <header className="bg-primary mx-4 mt-2 p-4 flex gap-2 rounded-lg">
             {isLoading && (
               <Spinner className="text-primary-foreground size-8 self-center" />
@@ -102,16 +103,16 @@ export function Card() {
             </section>
 
             {currentObservation?.description && (
-              <section className="flex-1 p-4 bg-background md:min-w-[200px] rounded-lg shadow-2xl">
+              <section className="flex-1 p-8 bg-background md:min-w-[200px] rounded-lg shadow-2xl">
                 <h4 className="flex gap-1 items-center">
                   <BadgeCheck className="text-accent" />
                   {uiText.search.card.descriptionTitle}
                   {isLoading && <Spinner className="text-primary ml-2" />}
                 </h4>
 
-                {currentObservation.description.split("\n").map((par, i) => (
-                  <p key={`currentDescription_${i}`}>{par}</p>
-                ))}
+                <div className="markdown-renderer">
+                  {parseSimpleMarkdown(currentObservation.description)}
+                </div>
               </section>
             )}
           </div>
@@ -144,12 +145,12 @@ export function Card() {
                     value={tab.label}
                     className="m-0 p-4 pb-0 h-full "
                   >
-                    <section>
+                    <section className="p-4 pb-8 ">
                       <h4 className="sr-only">{tab.label}</h4>
 
-                      {tab.text.split("\n").map((par, i) => (
-                        <p key={`tabContent_${tab.label}_${i}`}>{par}</p>
-                      ))}
+                      <div className="markdown-renderer">
+                        {parseSimpleMarkdown(tab.text)}
+                      </div>
                     </section>
                   </TabsContent>
                 ))}

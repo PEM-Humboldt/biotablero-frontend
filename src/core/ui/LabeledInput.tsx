@@ -25,7 +25,7 @@ interface LabeledInputProps
   texts: { label?: string; sr?: string; placeholder?: string };
   state: string;
   stateSetter: (value: string) => void;
-  validator?: () => Promise<void | boolean> | void | boolean;
+  validator?: () => Promise<unknown> | unknown;
   validationErrors: string[];
 }
 

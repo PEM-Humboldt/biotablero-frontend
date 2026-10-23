@@ -5,13 +5,11 @@ import { ChevronRightCircle } from "lucide-react";
 import { cn } from "@ui/shadCN/lib/utils";
 import { Button } from "@ui/shadCN/component/button";
 import { LOCALE } from "@config/global";
-import { TAG_COLORS } from "@config/monitoring";
 
 import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
-import { TagsRender } from "pages/monitoring/ui/TagsRender";
 import type { ObservationMetadata } from "pages/monitoring/types/observations";
 import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
-import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
+import { TagsGroupsRender } from "pages/monitoring/ui/TagsGroupsRender";
 
 export function ObservationSmallCard({
   observation,
@@ -21,20 +19,6 @@ export function ObservationSmallCard({
   const { currentObservation } = useObservationsCTX();
   const isCurrent =
     currentObservation && observation.id === currentObservation.observationId;
-
-  const tagsGrouped = (observation.tags || []).reduce<
-    Record<number, { group: string; tags: string[] }>
-  >((all, tag) => {
-    if (!all[tag.tag.category.id]) {
-      all[tag.tag.category.id] = {
-        group: translateTagCategory(tag.tag.category.name),
-        tags: [],
-      };
-    }
-    all[tag.tag.category.id].tags.push(tag.tag.name);
-
-    return all;
-  }, {});
 
   const { since, until } = useMemo(
     () =>
@@ -65,25 +49,17 @@ export function ObservationSmallCard({
   return (
     <div
       className={cn(
-        "p-3 pb-2 rounded-xl outline outline-transparent hover:outline-primary transition-colors duration-300",
+        "p-4 pb-3 rounded-xl outline outline-transparent hover:outline-primary transition-colors duration-300",
         isCurrent ? "bg-muted outline-primary" : "bg-background shadow-2xl",
       )}
     >
-      <h4 className="mb-1">{observation.name}</h4>
+      <h4 className="mb-1 text-balance">{observation.topic.name}</h4>
       <div className="flex flex-wrap m-1 ml-0 gap-2">
-        {Object.values(tagsGrouped).map((tags, i) => {
-          const colorValues = TAG_COLORS[i % TAG_COLORS.length];
-          const colorSet = `${colorValues.bg} ${colorValues.fg}`;
-
-          return (
-            <TagsRender
-              key={`tags_${tags.group}_${i}`}
-              tags={tags.tags}
-              srTitle={tags.group}
-              className={cn(colorSet, "font-normal")}
-            />
-          );
-        })}
+        <TagsGroupsRender
+          tags={observation.tags.map((t) => t.tag)}
+          groupId={observation.name.replaceAll(" ", "")}
+          colorIndexOffset={3}
+        />
       </div>
 
       <hr className="mt-2 border-grey-light" />

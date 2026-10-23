@@ -28,6 +28,7 @@ type ComboboxODataProps<T> = {
     trigger: string;
     inputPlaceholder: string;
     onEmptySearch?: string;
+    isLoading?: string;
   };
   className?: string;
 };
@@ -225,10 +226,15 @@ export function ComboboxOData<T>({
         }}
         keys={{ forValue: "value", forLabel: "label" }}
         uiText={{
-          itemNotFound:
-            !loadOnEmpty && !searchParams.filter
-              ? (uiText?.onEmptySearch ?? "")
-              : uiText.itemNotFound,
+          itemNotFound: (() => {
+            if (isLoading) {
+              return uiText?.loading ?? "Cargando...";
+            }
+            if (!loadOnEmpty && !searchParams.filter) {
+              return uiText?.onEmptySearch ?? "";
+            }
+            return uiText.itemNotFound;
+          })(),
           trigger: uiText.trigger,
           inputPlaceholder: uiText.inputPlaceholder,
         }}
