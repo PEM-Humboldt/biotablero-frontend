@@ -17,10 +17,8 @@ import { ErrorsList } from "@ui/LabelingWithErrors";
 import { GetSearchIndicatorInfo } from "@hooks/useReport/GetSearchIndicatorInfo";
 import { GraphLegend } from "@ui/GraphLegend";
 import { LOCALE } from "@config/global";
-import { ResponsiveLine } from "@nivo/line";
 import { ShortInfo } from "@composites/ShortInfo";
 import { cn } from "@ui/shadCN/lib/utils";
-import { generateLinearTicks } from "@utils/ui";
 
 import {
   ObservedRichnessController,
@@ -401,8 +399,6 @@ export function ObservedRichness() {
       return [];
     }
 
-    // NOTE: esto se puede pulir
-    console.log(richness.areaSerie.data);
     return richness.areaSerie.data
       .slice(0, CUSTOM_BINS.length)
       .map((point, index) => ({
@@ -595,10 +591,12 @@ export function ObservedRichness() {
                         border: "1px solid #ccc",
                         borderRadius: "4px",
                         color: "#333",
+                        width: "150px",
                       }}
                     >
-                      <strong>Especies:</strong> {indexValue} <br />
-                      <strong>Frecuencia:</strong> {value}
+                      <strong>{value}</strong> celdas de 1km² registran{" "}
+                      <strong>{indexValue}</strong> especie
+                      {Number(indexValue) === 1 ? "" : "s"}
                     </div>
                   )}
                 />

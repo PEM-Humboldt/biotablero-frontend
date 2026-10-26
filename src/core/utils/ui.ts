@@ -30,6 +30,7 @@ export function getRandomImageURL() {
   return imagesBank[seed];
 }
 
+// NOTE: Evaluar si se necesita en otro lado, o eliminar función
 /**
  * Generates an array of linearly distributed numeric ticks.
  *
