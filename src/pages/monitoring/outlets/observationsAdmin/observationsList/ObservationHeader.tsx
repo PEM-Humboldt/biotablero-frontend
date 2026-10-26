@@ -1,4 +1,10 @@
-import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
+import {
+  type FormEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import type { TagData } from "pages/monitoring/types/initiative";
 import { type ObservationMetadata } from "pages/monitoring/types/observations";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
@@ -13,50 +19,17 @@ import {
   StableTagSelector,
 } from "pages/monitoring/ui/TagSelector";
 
-import {
-  INITIATIVE_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS,
-  RESOURCE_TAGS_LIMIT_BIOLOGICAL_GROUP,
-  RESOURCE_TAGS_LIMIT_ECOSYSTEM,
-} from "@config/monitoring";
-import { TagInObservation } from "pages/monitoring/types/odataResponse";
+import { INITIATIVE_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS } from "@config/monitoring";
+import type { TagInObservation } from "pages/monitoring/types/odataResponse";
 import {
   addTagToObservation,
   removeTagFromObservation,
 } from "pages/monitoring/api/services/tags";
 import { validationExemption } from "pages/monitoring/ui/initiativesAdmin/utils/fieldClientValidations";
-import { observationNameNotExist } from "../utils/observationValidations";
+import { observationNameNotExist } from "pages/monitoring/outlets/observationsAdmin/utils/observationValidations";
 import { toast } from "sonner";
 import { UserRoundCheck } from "lucide-react";
-
-export const observationTagCategories: {
-  tagCategoryId: number;
-  title: string;
-  maxTagsAmount: number;
-  uiText: { itemNotFound: string; trigger: string; inputPlaceholder: string };
-}[] = [
-  {
-    tagCategoryId: 3,
-    title: "Grupo biológico",
-    maxTagsAmount: RESOURCE_TAGS_LIMIT_ECOSYSTEM,
-    uiText: {
-      itemNotFound:
-        "No hay coincidencias, para solicitar la creación de esa etiqueta, escribe a info@biotablero.humboldt.org.co",
-      trigger: "Añadir etiqueta de grupo biológico",
-      inputPlaceholder: "¿Cómo se llama la etiqueta que buscas?",
-    },
-  },
-  {
-    tagCategoryId: 4,
-    title: "Ecosistemas",
-    maxTagsAmount: RESOURCE_TAGS_LIMIT_BIOLOGICAL_GROUP,
-    uiText: {
-      itemNotFound:
-        "No hay coincidencias, para solicitar la creación de esa etiqueta, escribe a biotablero@humboldt.org.co",
-      trigger: "Añadir etiqueta de ecosistemas",
-      inputPlaceholder: "¿Cómo se llama la etiqueta que buscas?",
-    },
-  },
-];
+import { observationTagCategories } from "pages/monitoring/outlets/observationsAdmin/layout/observationTagCategories";
 
 const getTagId = (tag: TagInObservation | TagData) =>
   isTagRelated(tag) ? tag.tag.id : tag.id;
@@ -214,7 +187,7 @@ export function ObservationHeader({
         }
       }
 
-      onUpdateSuccess();
+      await onUpdateSuccess();
 
       toast("Información de la observación actualizada", {
         position: "bottom-right",
@@ -251,7 +224,7 @@ export function ObservationHeader({
     </header>
   ) : (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={(e) => void handleSubmit(e)}
       onReset={handleReset}
       className="space-y-4 bg-muted p-4 rounded-lg"
     >
@@ -297,7 +270,7 @@ export function ObservationHeader({
         <Button
           type="reset"
           variant="outline_destructive"
-          onClick={() => console.log("reset header")}
+          onClick={() => console.warn("reset header")}
         >
           Reset
         </Button>

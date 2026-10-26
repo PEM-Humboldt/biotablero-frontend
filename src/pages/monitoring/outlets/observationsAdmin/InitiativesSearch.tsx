@@ -28,7 +28,7 @@ import type { InitiativeByLocation } from "pages/monitoring/types/initiative";
 import { fuzzySearch } from "pages/monitoring/utils/search";
 import { getInitiativeLocations } from "pages/monitoring/api/services/initiatives";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import { uiText } from "./layout/uiText";
+import { uiText } from "pages/monitoring/outlets/observationsAdmin/layout/uiText";
 
 export function InitiativesSearch({
   currentInitiative,

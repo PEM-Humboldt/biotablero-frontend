@@ -5,7 +5,7 @@ import {
   MessageCircleWarning,
   Network,
 } from "lucide-react";
-import { ObservationVersionTextType } from "pages/monitoring/types/observations";
+import { type ObservationVersionTextType } from "pages/monitoring/types/observations";
 
 export const observationVersionTexts: ObservationVersionTextType[] = [
   {
