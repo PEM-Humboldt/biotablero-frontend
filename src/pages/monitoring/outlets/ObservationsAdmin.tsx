@@ -6,7 +6,7 @@ import { PageTitleUpdater } from "@ui/PageTitleUpdater";
 import type { InitiativeByLocation } from "pages/monitoring/types/initiative";
 import { InitiativesSearch } from "pages/monitoring/outlets/observationsAdmin/InitiativesSearch";
 import { ObservationsList } from "pages/monitoring/outlets/observationsAdmin/ObservationsList";
-import { uiText } from "./observationsAdmin/layout/uiText";
+import { uiText } from "pages/monitoring/outlets/observationsAdmin/layout/uiText";
 
 export function ObservationsAdmin() {
   const [currentInitiative, setCurrentInitiative] =

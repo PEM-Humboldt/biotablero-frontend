@@ -16,9 +16,9 @@ import { Button } from "@ui/shadCN/component/button";
 import { ScanSearch } from "lucide-react";
 import { cn } from "@ui/shadCN/lib/utils";
 import { motion } from "motion/react";
-import { ObservationVersionCard } from "./observationsList/ObservationVersionCard";
-import { ObservationHeader } from "./observationsList/ObservationHeader";
-import { uiText } from "./layout/uiText";
+import { ObservationVersionCard } from "pages/monitoring/outlets/observationsAdmin//observationsList/ObservationVersionCard";
+import { ObservationHeader } from "pages/monitoring/outlets/observationsAdmin/observationsList/ObservationHeader";
+import { uiText } from "pages/monitoring/outlets/observationsAdmin/layout/uiText";
 
 export function ObservationsList({
   fromInitiative,
@@ -56,23 +56,20 @@ export function ObservationsList({
     void fetchObservationsMetadata();
   }, [fromInitiative]);
 
-  const handleGetVersion = useCallback(
-    async (observationVersionId: number) => {
-      setErrors([]);
-      setIsLoading(true);
+  const handleGetVersion = useCallback(async (observationVersionId: number) => {
+    setErrors([]);
+    setIsLoading(true);
 
-      const res = await getObservationData(observationVersionId);
-      setIsLoading(false);
-      if (isMonitoringAPIError(res)) {
-        setErrors(res.data.map((err) => err.msg));
-        setSelectedObservationVersion(null);
-        return;
-      }
+    const res = await getObservationData(observationVersionId);
+    setIsLoading(false);
+    if (isMonitoringAPIError(res)) {
+      setErrors(res.data.map((err) => err.msg));
+      setSelectedObservationVersion(null);
+      return;
+    }
 
-      setSelectedObservationVersion(res);
-    },
-    [selectedObservationVersion?.id],
-  );
+    setSelectedObservationVersion(res);
+  }, []);
 
   const updateObservationMetadata = async (observationId: number) => {
     setIsLoading(true);
