@@ -59,5 +59,21 @@ export const uiText = {
     },
   },
 
-  observationVersionCard: {},
+  observationVersionCard: {
+    saveBtn: {
+      sr: "Guardar cambios",
+      title: "Guardar cambios",
+      label: "Guardar",
+    },
+    cancelBtn: { sr: "Cancelar", title: "Cancelar", label: "Cancelar" },
+    updatedToast: {
+      title: "Textos de version actualizados",
+      description: (versionNumber: number, creationDate: Date) =>
+        `Los textos esta observación en la version ${versionNumber} de ${creationDate.toLocaleDateString(LOCALE)} han sido actualizados correctamente.`,
+    },
+    editVersionTitlePrefix: "Version del ",
+    noTextInThisVersion: (textField: string) =>
+      `No hay textos asociados con '${textField}' en esta versión de la observación`,
+    textEditorPlaceHolder: "Este indicador...",
+  },
 };

@@ -1,14 +1,8 @@
-import {
-  FormEvent,
-  MutableRefObject,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
-import {
+import { type FormEvent, type MutableRefObject, useRef, useState } from "react";
+import type {
   ObservationVersionTexts,
   ObservationVersionTextType,
-  type ObservationData,
+  ObservationData,
 } from "pages/monitoring/types/observations";
 import { ErrorsList, LabelAndErrors } from "@ui/LabelingWithErrors";
 import { Button } from "@ui/shadCN/component/button";
@@ -17,7 +11,7 @@ import {
   fromLexicalEditorStateRefToMarkdown,
   parseSimpleMarkdown,
 } from "@utils/textParser";
-import { EditorState } from "lexical";
+import { type EditorState } from "lexical";
 import {
   availableTransformers,
   RichTextEditor,
@@ -25,8 +19,8 @@ import {
 import { StrValidator } from "@utils/strValidator";
 import { updateObservationData } from "pages/monitoring/api/services/observations";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import { observationVersionTexts } from "pages/monitoring/outlets/observationsAdmin/layout/observationVersionSetup.ts";
-// import { uiText } from "../layout/uiText";
+import { observationVersionTexts } from "pages/monitoring/outlets/observationsAdmin/layout/observationVersionSetup";
+import { uiText } from "pages/monitoring/outlets/observationsAdmin/layout/uiText";
 import { UserRoundCheck } from "lucide-react";
 import { toast } from "sonner";
 import { OBSERVATION_VERSION_DESCRIPTION_FIELD_MAX_LENGHT } from "@config/monitoring";
@@ -118,9 +112,12 @@ export function ObservationVersionCard({
     await onUpdateSuccess();
     setResetKey((prev) => prev + 1);
 
-    toast("Textos de version actualizados", {
+    toast(uiText.observationVersionCard.updatedToast.title, {
       position: "bottom-right",
-      description: `Los textos esta observación en la version ${observationData.version} de ${new Date(observationData.creationDate).toLocaleDateString(LOCALE)} han sido actualizados correctamente.`,
+      description: uiText.observationVersionCard.updatedToast.description(
+        observationData.version,
+        new Date(observationData.creationDate),
+      ),
       icon: <UserRoundCheck className="size-8 text-primary" />,
       className: "px-6! gap-6! border-2! border-primary!",
     });
@@ -141,7 +138,7 @@ export function ObservationVersionCard({
       {!editingThis ? (
         <div className="p-4 space-y-4">
           <div className="text-lg text-primary font-normal">
-            Version del{" "}
+            {uiText.observationVersionCard.editVersionTitlePrefix}
             <time dateTime={observationVersionDate.toISOString()}>
               {observationVersionDate.toLocaleDateString(LOCALE, {
                 year: "numeric",
@@ -163,11 +160,11 @@ export function ObservationVersionCard({
                   <span className="font-normal">{observationInfo.label}</span>
                 </div>
                 <div className="markdown-renderer">
-                  {parseSimpleMarkdown(
-                    description !== undefined && description !== ""
-                      ? description
-                      : `No hay textos asociados con '${observationInfo.label}' en esta versión de la observación`,
-                  )}
+                  {description !== undefined && description !== ""
+                    ? parseSimpleMarkdown(description)
+                    : uiText.observationVersionCard.noTextInThisVersion(
+                        observationInfo.label,
+                      )}
                 </div>
               </div>
             );
@@ -197,9 +194,20 @@ export function ObservationVersionCard({
           ))}
 
           <div className="flex flex-row-reverse justify-between">
-            <Button disabled={isLoading}>Guardar</Button>
-            <Button type="reset" variant="outline_destructive">
-              Cancelar
+            <Button
+              disabled={isLoading}
+              title={uiText.observationVersionCard.saveBtn.title}
+              aria-label={uiText.observationVersionCard.saveBtn.sr}
+            >
+              {uiText.observationVersionCard.saveBtn.label}
+            </Button>
+            <Button
+              type="reset"
+              variant="outline_destructive"
+              title={uiText.observationVersionCard.cancelBtn.title}
+              aria-label={uiText.observationVersionCard.cancelBtn.sr}
+            >
+              {uiText.observationVersionCard.cancelBtn.label}
             </Button>
           </div>
         </form>
@@ -232,7 +240,7 @@ function SectionTextEditor({
         id={`richText_${sectionData.key}`}
         textToLoad={textToLoad}
         textStateRef={observationTextRef}
-        placeholder={"nnnnnn"}
+        placeholder={uiText.observationVersionCard.textEditorPlaceHolder}
         className="bg-background"
         editorNamespace={`richText_${sectionData.key}`}
         describedBy={
