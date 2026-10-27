@@ -581,21 +581,13 @@ export function ObservedRichness() {
                     legendOffset: -50,
                     tickValues: 6,
                     format: (value) => {
-                      const v = value as number;
-                      return v >= 1000 ? `${v / 1000}k` : v;
+                      if (typeof value === "number") {
+                        return value >= 1000 ? `${value / 1000}k` : value;
+                      }
                     },
                   }}
                   tooltip={({ indexValue, value }) => (
-                    <div
-                      style={{
-                        padding: "6px 12px",
-                        background: "white",
-                        border: "1px solid #ccc",
-                        borderRadius: "4px",
-                        color: "#333",
-                        width: "max-content",
-                      }}
-                    >
+                    <div className="bg-background p-2 shadow-lg rounded text-xs min-w-max">
                       <strong>{value}</strong> celdas de 1km²
                       <br />
                       registran <strong>{indexValue}</strong> especie
