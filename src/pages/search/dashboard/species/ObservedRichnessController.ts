@@ -135,7 +135,7 @@ export class ObservedRichnessController {
     return this.getTableData(NATIONAL_AREA_ID_VALUE, taxonomicGroup);
   }
 
-  async getRichnessSerie(taxonomicGroup?: string) {
+  async getRichnessHistogram(taxonomicGroup?: string) {
     const requestKey = "richnessSerie";
     const { request, source } = SearchAPI.requestMetricsValues(
       "richness",
