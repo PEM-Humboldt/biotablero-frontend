@@ -38,21 +38,9 @@ import InfoIcon from "@mui/icons-material/Info";
 import { IconTooltip } from "@ui/Tooltips";
 import { capitalize } from "@utils/format";
 import { ResponsiveBar } from "@nivo/bar";
+import { makeCustomHistogramBinsLabels } from "@utils/ui";
 
 const OBSERVED_RICHNESS_GRAPH_KEYS = ["CR", "EN", "VU"];
-const CUSTOM_BINS = [
-  "1",
-  "2",
-  "3-5",
-  "6-10",
-  "11-20",
-  "21-50",
-  "51-100",
-  "101-200",
-  "201-500",
-  "501-1000",
-  ">1000",
-];
 const HISTOGRAM_BARS_COLOR = "#D49A36";
 const threatenedSpeciesCustomColorMap: Record<string, string> = {
   CR: "#5c150c",
@@ -70,9 +58,9 @@ enum ObservedRichnessUpdated {
   SHOW_INFO = "showInfo",
 }
 
-type ObservedRichnessGraphSerie = {
+type ObservedRichnessHistogramData = {
   id: string;
-  data: { x: number; y: number }[];
+  data: { bin: string; frecuency: number }[];
 };
 
 type ObservedRichnessState = {
@@ -83,7 +71,7 @@ type ObservedRichnessState = {
   currentTaxonomicGroup: string;
   nationalTableData: ObservedRichnessDataType | null;
   areaTableData: ObservedRichnessDataType | null;
-  areaSerie: ObservedRichnessGraphSerie | null;
+  areaHistogram: ObservedRichnessHistogramData | null;
   texts: TextsObject;
 };
 
@@ -100,7 +88,7 @@ type ObservedRichnessAction =
         texts: TextsObject;
         nationalData: ObservedRichnessDataType;
         areaData: ObservedRichnessDataType | null;
-        areaSerie: MetricTypesMap["richness"];
+        areaHistogram: MetricTypesMap["richness"];
       };
     }
   | {
@@ -109,20 +97,25 @@ type ObservedRichnessAction =
         taxonomicGroup: string;
         nationalData: ObservedRichnessDataType;
         areaData: ObservedRichnessDataType | null;
-        areaSerie: MetricTypesMap["richness"];
+        areaHistogram: MetricTypesMap["richness"];
       };
     }
   | { type: ObservedRichnessUpdated.SHOW_INFO; forceState?: boolean };
 
-function transformSerieToObservedRichnessSerie(
-  serie: MetricTypesMap["richness"],
-): ObservedRichnessGraphSerie {
-  const pairedData = serie.bin_edges.map((edge, idx) => ({
-    x: Number(edge.toFixed(2)),
-    y: serie.frequency[idx] ?? serie.frequency[idx - 1],
+function transformDataToObservedRichnessHistogram(
+  histogram: MetricTypesMap["richness"],
+): ObservedRichnessHistogramData {
+  const customBins = makeCustomHistogramBinsLabels(
+    histogram.bin_edges,
+    { fromIndex: 2 },
+    11,
+  );
+  const pairedData = customBins.map((bin, i) => ({
+    bin,
+    frecuency: histogram.frequency[i] ?? histogram.frequency[i - 1],
   }));
 
-  return { id: String(serie.id), data: pairedData };
+  return { id: String(histogram.id), data: pairedData };
 }
 
 function transformDataToSmallStackedBarData(
@@ -170,8 +163,8 @@ function observedRichnessReducer(
         nationalTableData: action.payload.nationalData,
         areaTableData: action.payload.areaData,
         texts: action.payload.texts,
-        areaSerie: transformSerieToObservedRichnessSerie(
-          action.payload.areaSerie,
+        areaHistogram: transformDataToObservedRichnessHistogram(
+          action.payload.areaHistogram,
         ),
         currentTaxonomicGroup: "all",
       };
@@ -183,8 +176,8 @@ function observedRichnessReducer(
         errors: [],
         nationalTableData: action.payload.nationalData,
         areaTableData: action.payload.areaData,
-        areaSerie: transformSerieToObservedRichnessSerie(
-          action.payload.areaSerie,
+        areaHistogram: transformDataToObservedRichnessHistogram(
+          action.payload.areaHistogram,
         ),
         currentTaxonomicGroup: action.payload.taxonomicGroup,
       };
@@ -212,7 +205,7 @@ const observedRichnessInitialState: ObservedRichnessState = {
   currentTaxonomicGroup: "all",
   nationalTableData: null,
   areaTableData: null,
-  areaSerie: null,
+  areaHistogram: null,
   texts: { info: "", cons: "", meto: "", quote: "" },
 };
 
@@ -269,7 +262,7 @@ export function ObservedRichness() {
               texts: texts,
               areaData: areaData,
               nationalData: nationalData,
-              areaSerie: areaSerie,
+              areaHistogram: areaSerie,
             },
           });
 
@@ -350,7 +343,7 @@ export function ObservedRichness() {
               taxonomicGroup: taxonomicGroup,
               nationalData: context,
               areaData: current,
-              areaSerie: graphData,
+              areaHistogram: graphData,
             },
           });
 
@@ -389,23 +382,6 @@ export function ObservedRichness() {
     },
     [areaType?.id, areaId?.name, searchMapDispatch],
   );
-
-  const histogramData = useMemo(() => {
-    if (
-      !richness.areaSerie ||
-      !richness.areaSerie.data ||
-      richness.areaSerie.data.length === 0
-    ) {
-      return [];
-    }
-
-    return richness.areaSerie.data
-      .slice(0, CUSTOM_BINS.length)
-      .map((point, index) => ({
-        rango: CUSTOM_BINS[index],
-        frecuencia: point.y,
-      }));
-  }, [richness.areaSerie]);
 
   return (
     <div className="graphcontainer pt6">
@@ -488,7 +464,7 @@ export function ObservedRichness() {
         )}
       </div>
 
-      {richness.areaSerie && (
+      {richness.areaHistogram && (
         <div className="graphcontainer pt6">
           <h4 className="text-balance">
             Número de especies registradas por km²
@@ -513,9 +489,9 @@ export function ObservedRichness() {
             >
               <div className="w-full aspect-video">
                 <ResponsiveBar
-                  data={histogramData}
-                  keys={["frecuencia"]}
-                  indexBy="rango"
+                  data={richness.areaHistogram.data}
+                  keys={["frecuency"]}
+                  indexBy="bin"
                   margin={{ top: 20, right: 20, bottom: 60, left: 60 }}
                   padding={0.1}
                   colors={[HISTOGRAM_BARS_COLOR]}
@@ -588,7 +564,7 @@ export function ObservedRichness() {
                   }}
                   tooltip={({ indexValue, value }) => (
                     <div className="bg-background p-2 shadow-lg rounded text-xs min-w-max">
-                      <strong>{value}</strong> celdas de 1km²
+                      <strong>{value}</strong> unidades de 1km²
                       <br />
                       registran <strong>{indexValue}</strong> especie
                       {Number(indexValue) === 1 ? "" : "s"}
