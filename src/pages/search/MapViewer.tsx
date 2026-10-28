@@ -20,7 +20,7 @@ import "leaflet/dist/leaflet.css";
 import { useUserCTX } from "@hooks/UserCTX";
 import { COLOMBIA_BOUNDS } from "pages/utils/settings";
 import { OnLoadingModal } from "@ui/OnLoadingModal";
-import { CssMaskRasterOverlay } from "./mapViewer/CssMaskRasterOverlay";
+import { CssMaskRasterOverlay } from "pages/search/mapViewer/CssMaskRasterOverlay";
 import { GradientLegend } from "@ui/GradientLegend";
 
 const config = {
