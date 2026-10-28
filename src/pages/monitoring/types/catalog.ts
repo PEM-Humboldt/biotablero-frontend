@@ -19,7 +19,7 @@ export type SidebarItem = {
   label: string;
   description: string;
   icon: LucideIcon;
-  group: number;
+  group: "common" | "user" | "admin";
 } & ({ linkTo: string } | { action: () => void; isActive: boolean });
 
 export type LocationList = {

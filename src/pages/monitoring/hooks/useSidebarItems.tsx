@@ -41,7 +41,7 @@ export function useSidebarItems() {
           "Busca y localiza todas las iniciativas de monitoreo que se están realizando",
         icon: ColombiaIconLucide,
         linkTo: "/Monitoreo",
-        group: 1,
+        group: "common",
       },
       {
         label: "Indicadores",
@@ -49,7 +49,7 @@ export function useSidebarItems() {
           "Busca y visualiza los indicadores de biodiversidad de todas las iniciativas",
         icon: ChartBar,
         linkTo: "/Monitoreo/Indicadores",
-        group: 1,
+        group: "common",
       },
       {
         label: "Recursos",
@@ -57,7 +57,7 @@ export function useSidebarItems() {
           "Busca y comparte guías, herramientas y materiales para el monitoreo",
         icon: BookMarked,
         linkTo: "/Monitoreo/Recursos",
-        group: 1,
+        group: "common",
       },
       {
         label: "Ayudas",
@@ -65,7 +65,7 @@ export function useSidebarItems() {
           "Resuelve las dudas más frecuentes sobre monitoreo y el uso de la plataforma",
         icon: BadgeQuestionMark,
         linkTo: "/Monitoreo/Ayudas",
-        group: 1,
+        group: "common",
       },
       {
         label: "Glosario",
@@ -74,7 +74,7 @@ export function useSidebarItems() {
         icon: NotepadText,
         action: toggleSidebar,
         isActive: open,
-        group: 1,
+        group: "common",
       },
 
       // NOTE: items para usuarios registrados en biotablero
@@ -86,7 +86,7 @@ export function useSidebarItems() {
                 "Gestiona tu perfil y las iniciativas en las que participas",
               icon: UserRoundCheck,
               linkTo: "MiPerfil",
-              group: 2,
+              group: "user",
             },
           ]
         : []),
@@ -100,7 +100,7 @@ export function useSidebarItems() {
                 "Agrega y actualiza la información de las iniciativas",
               icon: UserRoundCog,
               linkTo: "Admin/Iniciativas",
-              group: 3,
+              group: "admin",
             },
             {
               label: "Etiquetas",
@@ -108,7 +108,7 @@ export function useSidebarItems() {
                 "Crea y administra las etiquetas que son usadas en las iniciativas",
               icon: Tags,
               linkTo: "Admin/Etiquetas",
-              group: 3,
+              group: "admin",
             },
             {
               label: "Logs",
@@ -116,7 +116,7 @@ export function useSidebarItems() {
                 "Consulta y descarga los registros de actividad de la plataforma",
               icon: Logs,
               linkTo: "Admin/Registros",
-              group: 3,
+              group: "admin",
             },
           ]
         : []),
