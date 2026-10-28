@@ -4,10 +4,13 @@ import { useUserCTX } from "@hooks/UserCTX";
 import defaultProfileImageUrl from "@assets/icons/user_icon.svg?url";
 import { Button } from "@ui/shadCN/component/button";
 import { DoorClosed, CircleUserRound, DoorOpen, Bell } from "lucide-react";
+import { useNavigate } from "react-router";
+import { RoleInMonitoring } from "pages/monitoring/types/catalog";
 
 export function Uim() {
   const { user, login, logout, updateUser } = useUserCTX();
   const imageURL = useRef<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     imageURL.current = user?.picture ?? defaultProfileImageUrl;
@@ -17,7 +20,8 @@ export function Uim() {
     <div className="flex items-center ml-auto px-3">
       {user ? (
         <>
-          <Button
+          {/* NOTE: Desactivado mientras se realiza la funcionalidad de notificaciones
+			<Button
             onClick={() => console.log("Notificaciones")}
             variant="link"
             title="Notificaciones"
@@ -25,10 +29,19 @@ export function Uim() {
             aria-label="Ver notificaciones"
           >
             <Bell className="size-4 md:size-5" aria-hidden="true" />
-          </Button>
+          </Button> */}
 
           <Button
-            onClick={() => void updateUser()}
+            onClick={() => {
+              if (
+                window.innerWidth < 1024 &&
+                !user.roles.includes(RoleInMonitoring.ADMIN)
+              ) {
+                navigate("/Monitoreo/MiPerfil");
+              } else {
+                void updateUser();
+              }
+            }}
             variant="link"
             size="icon-lg"
             title="Editar mi usuario"
