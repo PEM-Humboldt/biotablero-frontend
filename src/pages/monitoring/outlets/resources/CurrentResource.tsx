@@ -15,9 +15,9 @@ import type {
   MonitoringResource,
   ResourceAttachment,
 } from "pages/monitoring/types/odataResponse";
-import { TagsRender } from "pages/monitoring/ui/TagsRender";
 import { LikeResourceButton } from "pages/monitoring/outlets/resources/ui/LikeResourseButton";
 import { uiText } from "pages/monitoring/outlets/resources/layout/uiText";
+import { TagsGroupsRender } from "pages/monitoring/ui/TagsGroupsRender";
 
 type UnifiedAttachment = ResourceAttachment & {
   type: "file" | "link";
@@ -39,13 +39,6 @@ export function CurrentResource({
   const lastUpdate = new Date(resource.publicationDate);
   const isoDate = lastUpdate.toISOString().split("T")[0];
   const renderDate = lastUpdate.toLocaleDateString();
-  const tags = resource.tags.reduce<Record<number, string[]>>((all, tag) => {
-    if (!all[tag.tag.category.id]) {
-      all[tag.tag.category.id] = [];
-    }
-    all[tag.tag.category.id].push(tag.tag.name);
-    return all;
-  }, {});
 
   const attachments: UnifiedAttachment[] = [
     ...(resource.files ?? []).map((file) => ({
@@ -91,18 +84,12 @@ export function CurrentResource({
           <time dateTime={isoDate}>{renderDate}</time>
         </div>
 
-        <div className="flex gap-2 pt-2 pb-6">
-          <TagsRender
-            tags={tags[3]}
-            srTitle={uiText.tagsTitle.BiologicalGroup}
-            className="[&_li]:bg-blue-200 [&_li]:text-blue-800 font-normal"
-          />
-          <TagsRender
-            tags={tags[4]}
-            srTitle={uiText.tagsTitle.ecosystem}
-            className="[&_li]:bg-green-100 [&_li]:text-green-800 font-normal"
-          />
-        </div>
+        <TagsGroupsRender
+          tags={resource.tags.map((t) => t.tag)}
+          groupId={resource.name.replaceAll(" ", "")}
+          stylesFor={{ group: "pt-2 pb-6" }}
+          colorIndexOffset={3}
+        />
       </header>
 
       <div className="flex flex-wrap w-full gap-4 [&_h4]:text-primary [&_h4]:italic [&_h4]:mb-0">

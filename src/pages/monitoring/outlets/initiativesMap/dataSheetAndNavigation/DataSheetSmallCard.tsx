@@ -1,11 +1,9 @@
 import { Link } from "react-router";
 import type { ODataTag } from "pages/monitoring/types/odataResponse";
-import { TagsRender } from "pages/monitoring/ui/TagsRender";
-import { cn } from "@ui/shadCN/lib/utils";
 import { Button } from "@ui/shadCN/component/button";
 import type { LucideIcon } from "lucide-react";
-import { TAG_COLORS } from "@config/monitoring";
 import type { ObservationVersion } from "pages/monitoring/types/observations";
+import { TagsGroupsRender } from "pages/monitoring/ui/TagsGroupsRender";
 
 export function DataSheetSmallCard({
   title,
@@ -26,43 +24,20 @@ export function DataSheetSmallCard({
     sr?: string;
   };
 }) {
-  const tagsGrouped = (tags || []).reduce<Record<number, string[]>>(
-    (all, tag) => {
-      if (!all[tag.category.id]) {
-        all[tag.category.id] = [];
-      }
-      all[tag.category.id].push(tag.name);
-
-      return all;
-    },
-    {},
-  );
-
   const Icon = link.icon;
-  const prefix = title.replaceAll(" ", "");
 
   return (
     <div className="bg-background p-2 rounded-lg outline outline-transparent hover:outline-primary transition-colors duration-300">
       <h5 className="text-base/5 font-normal mb-0 px-2 text-balance">
         {title}
       </h5>
-      {tags && Object.keys(tagsGrouped).length > 0 && (
-        <div className="m-1 gap-2 space-y-2">
-          {Object.values(tagsGrouped).map((group, i) => {
-            const colorValues = TAG_COLORS[i % TAG_COLORS.length];
-            const colorSet = `${colorValues.bg} ${colorValues.fg}`;
 
-            return (
-              <TagsRender
-                key={`${prefix}_${group[i]}_${i}`}
-                tags={group}
-                srTitle="Etiquetas 1"
-                className={cn(colorSet, "font-normal")}
-              />
-            );
-          })}
-        </div>
-      )}
+      <TagsGroupsRender
+        tags={tags ?? []}
+        groupId={title.replaceAll(" ", "")}
+        colorIndexOffset={3}
+        stylesFor={{ group: "m-1 mt-2" }}
+      />
 
       {location && location !== "" && (
         <address className="px-2">{location}</address>

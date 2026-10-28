@@ -2,6 +2,7 @@ import { LOCALE } from "@config/global";
 
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { uiText } from "pages/monitoring/outlets/initiatives/layout/uiText";
+import { makeInitiativeLocationsString } from "@utils/format";
 
 export function BasicInfo() {
   const { initiativeInfo } = useInitiativeCTX();
@@ -19,15 +20,10 @@ export function BasicInfo() {
     year: "numeric",
   });
 
-  const initiativeLocations = initiativeInfo.locations
-    .map((l) => {
-      const municipality = l.location.name ? `, ${l.location.name}` : "";
-      const locality = l.locality ? ` - ${l.locality}` : "";
-      const department = l.location?.parent ? l.location.parent.name : "";
-
-      return `${department}${municipality}${locality}`;
-    })
-    .join(uiText.profile.basicInfo.locationSeparator);
+  const initiativeLocations = makeInitiativeLocationsString(
+    initiativeInfo.locations,
+    uiText.profile.basicInfo.locationSeparator,
+  );
 
   const initiativeUsers = initiativeInfo.users
     .map((u) => u.externalData?.fullName || u.externalData?.username)

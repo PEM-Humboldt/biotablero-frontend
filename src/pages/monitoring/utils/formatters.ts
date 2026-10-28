@@ -1,4 +1,6 @@
 import { LOCALE } from "@config/global";
+import { LocationCompleteInfo } from "../types/odataResponse";
+import { LocationObj } from "../types/initiative";
 
 /**
  * Formats the date value of a log into a localized string.

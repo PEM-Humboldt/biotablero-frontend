@@ -11,7 +11,7 @@ export interface GeneralStatsType {
 
 export interface InitiativeStats {
   totalMunicipalities: number;
-  totalIndicators: number;
+  totalObservations: number;
 }
 
 export interface InitiativeStatsComplete

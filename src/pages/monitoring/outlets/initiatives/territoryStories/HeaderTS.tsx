@@ -17,8 +17,8 @@ export function HeaderTS({
 }) {
   const { initiativeInfo } = useInitiativeCTX();
 
-  const bannerUrl =
-    (initiativeInfo?.bannerUrl as string) || uiText.header.imgFallback;
+  const bannerUrl = uiText.header.imgFallback;
+  // (initiativeInfo?.bannerUrl as string) || uiText.header.imgFallback;
 
   return (
     <header

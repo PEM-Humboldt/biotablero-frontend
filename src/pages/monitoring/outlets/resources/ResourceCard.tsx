@@ -4,9 +4,9 @@ import { cn } from "@ui/shadCN/lib/utils";
 
 import type { MonitoringResourceShort } from "pages/monitoring/types/odataResponse";
 import { ExternalLink, FileDown, type LucideIcon } from "lucide-react";
-import { TagsRender } from "pages/monitoring/ui/TagsRender";
 import { LikeResourceButton } from "pages/monitoring/outlets/resources/ui/LikeResourseButton";
 import { uiText } from "pages/monitoring/outlets/resources/layout/uiText";
+import { TagsGroupsRender } from "pages/monitoring/ui/TagsGroupsRender";
 
 export function ResourceCard({
   resource,
@@ -18,16 +18,6 @@ export function ResourceCard({
   const lastUpdate = new Date(resource.publicationDate);
   const isoDate = lastUpdate.toISOString().split("T")[0];
   const renderDate = lastUpdate.toLocaleDateString();
-
-  const tags = resource.tags.reduce<Record<number, string[]>>((all, tag) => {
-    if (!all[tag.tag.category.id]) {
-      all[tag.tag.category.id] = [];
-    }
-    if (tag.tag?.name) {
-      all[tag.tag.category.id].push(tag.tag.name);
-    }
-    return all;
-  }, {});
 
   return (
     <div
@@ -60,15 +50,9 @@ export function ResourceCard({
 
         <div className="space-y-2">
           <span className="sr-only">{uiText.tagsTitle.all}</span>
-          <TagsRender
-            tags={tags[3]}
-            srTitle={uiText.tagsTitle.BiologicalGroup}
-            className="[&_li]:bg-blue-200 [&_li]:text-blue-800 font-normal"
-          />
-          <TagsRender
-            tags={tags[4]}
-            srTitle={uiText.tagsTitle.ecosystem}
-            className="[&_li]:bg-green-100 [&_li]:text-green-800 font-normal"
+          <TagsGroupsRender
+            tags={resource.tags.map((t) => t.tag)}
+            groupId={resource.name.replaceAll(" ", "")}
           />
         </div>
       </div>
