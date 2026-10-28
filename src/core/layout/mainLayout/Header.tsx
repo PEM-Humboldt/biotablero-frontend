@@ -60,12 +60,12 @@ export function Header({
       {activeModuleInfo.name !== "" && (
         <div
           className={cn(
-            "flex gap-4 px-6 items-center self-stretch",
+            "hidden! lg:flex! gap-4 px-6 items-center self-stretch",
             environmentLabel ? "bg-secondary/20" : "bg-grey-light",
           )}
           aria-hidden="true"
         >
-          <span className="hidden lg:inline! text-base text-grey-dark md:text-lg font-normal">
+          <span className="hidden xl:inline! text-base text-grey-dark md:text-lg font-normal">
             {activeModuleInfo.name}
           </span>
           {activeModuleInfo.icon && (
