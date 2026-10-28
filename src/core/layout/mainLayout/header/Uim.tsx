@@ -6,6 +6,7 @@ import { Button } from "@ui/shadCN/component/button";
 import { DoorClosed, CircleUserRound, DoorOpen, Bell } from "lucide-react";
 import { useNavigate } from "react-router";
 import { RoleInMonitoring } from "pages/monitoring/types/catalog";
+import { BREAKPOINT_FOR_PROFILE_BTN_BEHAVIOR } from "@config/global";
 
 export function Uim() {
   const { user, login, logout, updateUser } = useUserCTX();
@@ -34,7 +35,7 @@ export function Uim() {
           <Button
             onClick={() => {
               if (
-                window.innerWidth < 1024 &&
+                window.innerWidth < BREAKPOINT_FOR_PROFILE_BTN_BEHAVIOR &&
                 !user.roles.includes(RoleInMonitoring.ADMIN)
               ) {
                 navigate("/Monitoreo/MiPerfil");
