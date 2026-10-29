@@ -1,5 +1,7 @@
 import { NavLink, useLocation } from "react-router";
 
+import { cn } from "@ui/shadCN/lib/utils";
+import { BREAKPOINT_FOR_PROFILE_BTN_BEHAVIOR } from "@config/global";
 import {
   Sidebar,
   SidebarContent,
@@ -10,36 +12,44 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@ui/shadCN/component/sidebar";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@ui/shadCN/component/tooltip";
 
 import type { SidebarItem } from "pages/monitoring/types/catalog";
-import { cn } from "@ui/shadCN/lib/utils";
 import { useSidebarItems } from "pages/monitoring/hooks/useSidebarItems";
-import { BREAKPOINT_FOR_PROFILE_BTN_BEHAVIOR } from "@config/global";
 
 export function MonitoringSidebar() {
   const menuItems = useSidebarItems();
 
-  console.log(menuItems);
   return (
     <div className="isolate z-100">
       <nav className="xl:hidden! flex flex-wrap gap-1 lg:gap-2 p-1 lg:px-2 justify-center border-b border-grey-light">
-        {Object.entries(menuItems).map(([key, { label, sr, items }], index) =>
-          key === "user" &&
-          window.innerWidth <= BREAKPOINT_FOR_PROFILE_BTN_BEHAVIOR ? null : (
-            <ul
-              key={`sidebarMenu_${key}`}
-              className={cn(
-                "flex gap-1 w-full *:flex-1 md:w-auto",
-                index ? "border-l border-grey-light px-1 lg:px-2" : "",
-              )}
-              title={label}
-            >
-              {items.map((item) => (
-                <SidebarItemSmallScreen item={item} />
-              ))}
-            </ul>
-          ),
-        )}
+        <TooltipProvider delayDuration={300}>
+          {Object.entries(menuItems).map(
+            ([key, { label, sr, items }], index) => (
+              <ul
+                key={`sidebarMenu_${key}`}
+                className={cn(
+                  "flex flex-wrap gap-1 w-full md:w-auto justify-center",
+                  index ? "border-l border-grey-light px-1 lg:px-2" : "",
+                  key === "user" &&
+                    window.innerWidth <= BREAKPOINT_FOR_PROFILE_BTN_BEHAVIOR &&
+                    "hidden",
+                )}
+                aria-label={sr}
+                title={label}
+              >
+                {items.map((item) => (
+                  <TopBarMenuItemsGroup item={item} />
+                ))}
+              </ul>
+            ),
+          )}
+        </TooltipProvider>
       </nav>
 
       <Sidebar
@@ -54,7 +64,7 @@ export function MonitoringSidebar() {
               aria-label={sr}
               className="border-b border-grey-light"
             >
-              {label !== "" && (
+              {label && (
                 <SidebarGroupLabel className="text-sm text-grey p-0 justify-center">
                   {label}
                 </SidebarGroupLabel>
@@ -77,38 +87,43 @@ export function MonitoringSidebar() {
   );
 }
 
-//
-function SidebarItemSmallScreen({ item }: { item: SidebarItem }) {
+function TopBarMenuItemsGroup({ item }: { item: SidebarItem }) {
   const { pathname } = useLocation();
-
-  const ItemContent = () => (
-    <>
-      <item.icon strokeWidth={1.5} />
-      <span>{item.label}</span>
-    </>
-  );
 
   return (
     <li
       className={cn(
-        "text-sm *:flex *:flex-col *:items-center! p-1 lg:p-2 rounded-lg",
+        "text-sm p-1 lg:p-2 rounded-lg hover:bg-primary cursor-pointer",
         "action" in item && item.isActive
-          ? "cursor-pointer text-accent bg-accent/10 hover:bg-accent!"
-          : "cursor-pointer text-grey-dark",
-
-        "linkTo" in item && item.linkTo === pathname ? "bg-muted" : "",
+          ? "text-accent bg-accent/10 hover:bg-accent!"
+          : "text-grey-dark hover:text-primary-foreground!",
+        "linkTo" in item && item.linkTo === pathname ? "bg-input" : "",
       )}
       key={`sidebarItem_${item.label}`}
     >
-      {"action" in item ? (
-        <button onClick={"action" in item ? () => item.action() : undefined}>
-          <ItemContent />
-        </button>
-      ) : (
-        <NavLink to={item.linkTo}>
-          <ItemContent />
-        </NavLink>
-      )}
+      <Tooltip>
+        <TooltipTrigger asChild>
+          {"action" in item ? (
+            <button
+              className="cursor-pointer w-full"
+              onClick={() => item.action()}
+            >
+              <ItemContent item={item} />
+            </button>
+          ) : (
+            <NavLink to={item.linkTo}>
+              <ItemContent item={item} />
+            </NavLink>
+          )}
+        </TooltipTrigger>
+
+        <TooltipContent
+          side="bottom"
+          className="max-w-[300px] text-center text-background! text-balance"
+        >
+          {item.description}
+        </TooltipContent>
+      </Tooltip>
     </li>
   );
 }
@@ -132,17 +147,20 @@ function SidebarItem({ item }: { item: SidebarItem }) {
         onClick={"action" in item ? () => item.action() : undefined}
       >
         {"action" in item ? (
-          <>
-            <item.icon strokeWidth={1.5} />
-            <span>{item.label}</span>
-          </>
+          <ItemContent item={item} />
         ) : (
           <NavLink to={item.linkTo}>
-            <item.icon strokeWidth={1.5} />
-            <span>{item.label}</span>
+            <ItemContent item={item} />
           </NavLink>
         )}
       </SidebarMenuButton>
     </SidebarMenuItem>
   );
 }
+
+const ItemContent = ({ item }: { item: SidebarItem }) => (
+  <div className="text-center">
+    <item.icon strokeWidth={1.5} className="mx-auto" />
+    <span>{item.label}</span>
+  </div>
+);
