@@ -20,18 +20,15 @@ import {
 } from "pages/monitoring/types/catalog";
 import { useUserCTX } from "@hooks/UserCTX";
 
+const groupsInfo = {
+  common: { label: "", sr: "" },
+  user: { label: "", sr: "Administrar tu cuenta" },
+  admin: { label: "Administrar", sr: "Administrar el módulo" },
+};
+
 export function useSidebarItems() {
   const { user } = useUserCTX();
   const { toggleSidebar, open } = useSidebar();
-
-  const groupsInfo = useMemo(
-    () => ({
-      1: { label: "", sr: "" },
-      2: { label: "", sr: "Administrar tu cuenta" },
-      3: { label: "Administrar", sr: "Administrar el módulo" },
-    }),
-    [],
-  );
 
   const itemsList = useMemo<SidebarItem[]>(
     () => [
@@ -80,7 +77,7 @@ export function useSidebarItems() {
 
       // NOTE: items para usuarios registrados en biotablero
       ...(user && !user.roles.includes(RoleInMonitoring.ADMIN)
-        ? [
+        ? ([
             {
               label: "Mi Perfil",
               description:
@@ -89,12 +86,12 @@ export function useSidebarItems() {
               linkTo: "MiPerfil",
               group: "user",
             },
-          ]
+          ] satisfies SidebarItem[])
         : []),
 
       // NOTE: items para administradores de biotablero
       ...(user && user.roles.includes(RoleInMonitoring.ADMIN)
-        ? [
+        ? ([
             {
               label: "Iniciativas",
               description:
@@ -127,7 +124,7 @@ export function useSidebarItems() {
               linkTo: "Admin/Registros",
               group: "admin",
             },
-          ]
+          ] satisfies SidebarItem[])
         : []),
     ],
     [toggleSidebar, open, user],
@@ -135,7 +132,12 @@ export function useSidebarItems() {
 
   const items = useMemo(() => {
     return itemsList.reduce<
-      Record<number, { label: string; sr: string; items: SidebarItem[] }>
+      Partial<
+        Record<
+          SidebarItem["group"],
+          { label: string; sr: string; items: SidebarItem[] }
+        >
+      >
     >((all, current) => {
       const groupKey = current.group;
 
