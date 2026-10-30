@@ -52,7 +52,7 @@ export function CurrentResource({
   ];
 
   return (
-    <article className="relative w-full p-8 bg-background border-2 border-primary rounded-xl shadow-xl mb-4 lg:w-[75%]">
+    <article className="relative w-full p-4 pt-6 lg:p-8 bg-background border-2 border-primary rounded-xl shadow-xl mb-4 lg:w-[75%]">
       <header>
         <div className="flex gap-2 justify-between">
           <h3 className="text-primary text-5xl mb-0">{resource.name}</h3>
@@ -92,16 +92,20 @@ export function CurrentResource({
         />
       </header>
 
-      <div className="flex flex-wrap w-full gap-4 [&_h4]:text-primary [&_h4]:italic [&_h4]:mb-0">
-        <div className="flex-2 min-w-[350px]">
-          <h4>{uiText.resourceDesciptionTitle}</h4>
-          <p className="text-lg max-w-[65ch]">{resource.description}</p>
+      <div className="flex flex-col lg:flex-row w-full gap-4 mb-4">
+        <div className="flex-1">
+          <h4 className="text-primary italic mb-0">
+            {uiText.resourceDesciptionTitle}
+          </h4>
+          <p className="text-base xl:text-lg max-w-[65ch] m-0">
+            {resource.description}
+          </p>
         </div>
 
         <ResourceAttachments
           title={uiText.attachmentsTitle.files}
           attachments={attachments}
-          className="flex-1 min-w-[350px]"
+          className="flex-1 xl:border-l xl:border-l-grey-light xl:pl-4"
         />
       </div>
 
@@ -119,29 +123,9 @@ function ResourceAttachments({
   attachments: UnifiedAttachment[];
   className?: string;
 }) {
-  if (!attachments || attachments.length === 0) {
-    return null;
-  }
-
-  const getAttachmentIcon = (att: UnifiedAttachment) => {
-    if (att.type === "link") {
-      return ExternalLink;
-    }
-
-    const icons: Record<string, LucideIcon> = {
-      pdf: FileText,
-      pptx: FileImage,
-      xlsx: FileSpreadsheet,
-      csv: FileSpreadsheet,
-    };
-
-    const fileExtension = att.url.split(".").pop()?.toLowerCase() || "";
-    return icons[fileExtension] ?? FileIcon;
-  };
-
-  return (
-    <section className={cn("border-l border-l-grey-light pl-4", className)}>
-      <h4>{title}</h4>
+  return !attachments || attachments.length === 0 ? null : (
+    <section className={className}>
+      <h4 className="text-primary italic mb-0">{title}</h4>
       <ul className="space-y-1">
         {attachments.map((att, i) => {
           const Icon = getAttachmentIcon(att);
@@ -159,7 +143,10 @@ function ResourceAttachments({
                 i % 2 ? "bg-muted/50" : "",
               )}
             >
-              <div className="group-hover:underline">{att.name}</div>
+              <div className="group-hover:underline min-w-0 truncate">
+                {att.name}
+              </div>
+
               <div className="flex gap-1 items-center text-accent text-sm font-normal">
                 <span>{isLink ? "Visitar" : `Descargar ${extension}`}</span>
                 <Icon size={18} />
@@ -176,7 +163,7 @@ function ResourceAttachments({
                     ? uiText.currentResource.attachmentAction.link(att.url)
                     : uiText.currentResource.attachmentAction.file(att.name)
                 }
-              ></a>
+              />
             </li>
           );
         })}
@@ -184,3 +171,19 @@ function ResourceAttachments({
     </section>
   );
 }
+
+const getAttachmentIcon = (att: UnifiedAttachment) => {
+  if (att.type === "link") {
+    return ExternalLink;
+  }
+
+  const icons: Record<string, LucideIcon> = {
+    pdf: FileText,
+    pptx: FileImage,
+    xlsx: FileSpreadsheet,
+    csv: FileSpreadsheet,
+  };
+
+  const fileExtension = att.url.split(".").pop()?.toLowerCase() || "";
+  return icons[fileExtension] ?? FileIcon;
+};
