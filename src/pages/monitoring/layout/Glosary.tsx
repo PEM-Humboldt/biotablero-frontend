@@ -20,7 +20,7 @@ import { GLOSARY_FILTER_IS_AND } from "@config/monitoring";
 import { uiText } from "pages/monitoring/layout/glosary/layout/uiText";
 
 export function Glosary() {
-  const { setOpen } = useSidebar();
+  const { setOpen, isMobile, setOpenMobile } = useSidebar();
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState<string[]>([]);
 
@@ -113,7 +113,9 @@ export function Glosary() {
             <Button
               size="icon"
               variant="ghost"
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                isMobile ? setOpenMobile(false) : setOpen(false);
+              }}
               title={uiText.search.closeBtn.title}
               aria-label={uiText.search.closeBtn.sr}
             >

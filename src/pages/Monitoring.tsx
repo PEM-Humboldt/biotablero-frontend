@@ -9,13 +9,12 @@ import { SidebarProvider } from "@ui/shadCN/component/sidebar";
 import type { UiManager } from "core/layout/MainLayout";
 import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
 import { UserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
-import { MonitoringSidebar } from "pages/monitoring/layout/MonitoringSidebar";
+import { MonitoringMenu } from "pages/monitoring/layout/MonitoringMenu";
 import { CurrentInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { Glosary } from "pages/monitoring/layout/Glosary";
 
 export function Monitoring() {
   const { layoutDispatch, layoutState } = useOutletContext<UiManager>();
-
   const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -50,18 +49,18 @@ export function Monitoring() {
     );
   }
 
-  if (!isAvailable) {
-    return <MonitoringBackendUnavailable />;
-  }
-
-  return (
+  return !isAvailable ? (
+    <MonitoringBackendUnavailable />
+  ) : (
     <UserInMonitoringCTX>
       <CurrentInitiativeCTX>
-        <SidebarProvider defaultOpen={false}>
-          <MonitoringSidebar />
-          <Glosary />
+        <SidebarProvider defaultOpen={false} className="flex-col xl:flex-row">
+          <MonitoringMenu />
 
-          <Outlet context={{ layoutState, layoutDispatch }} />
+          <div className="grid grid-cols-1 xl:grid-cols-[auto_1fr] w-full h-full">
+            <Glosary />
+            <Outlet context={{ layoutState, layoutDispatch }} />
+          </div>
         </SidebarProvider>
       </CurrentInitiativeCTX>
     </UserInMonitoringCTX>

@@ -33,10 +33,10 @@ export function MonitoringMenu() {
             aria-label={sr}
             className={cn(
               // --- Móvil / Tablet ---
-              "flex w-full flex-wrap justify-center gap-1 md:w-auto border-grey-light",
+              "flex w-full flex-wrap justify-center gap-1 sm:w-auto border-grey-light",
               index > 0 && "border-l px-1 lg:px-2",
               key === "user" &&
-                window.innerWidth <= BREAKPOINT_PROFILE_BTN_ON_MENU &&
+                window.innerWidth < BREAKPOINT_PROFILE_BTN_ON_MENU &&
                 "hidden",
 
               // --- Escritorio ---
@@ -108,7 +108,10 @@ function MonitoringMenuBtn({ item }: { item: SidebarItem }) {
 
 const ItemContent = ({ item }: { item: SidebarItem }) => (
   <div>
-    <item.icon strokeWidth={1.5} className="mx-auto size-6 shrink-0" />
+    <item.icon
+      strokeWidth={1.5}
+      className="mx-auto size-4 md:size-6 shrink-0"
+    />
     <span className="text-center shrink-0 truncate">{item.label}</span>
   </div>
 );
