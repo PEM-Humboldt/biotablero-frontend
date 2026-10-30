@@ -158,14 +158,17 @@ export function ODataSearchBar<T>({
     <form
       onSubmit={submitSearch}
       className={cn(
-        "flex flex-wrap gap-2 justify-center rounded-lg px-4 py-4 items-end",
+        "flex gap-2 justify-center rounded-lg px-4 py-4 items-end",
         className,
       )}
     >
       {components.map((component, i) => (
         <label
           key={`${component.label}_${i}`}
-          className={`${i === 0 ? "flex-2" : "flex-1"} text-left text-base`}
+          className={cn(
+            i === 0 ? "flex-[2_0_auto]" : "flex-[1_0_auto]",
+            "text-left text-base",
+          )}
           htmlFor={component.label}
         >
           {component.label}
