@@ -9,6 +9,7 @@ import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { initiativeTabs } from "pages/monitoring/outlets/initiatives/layout/tabs";
 import { InitiativeError } from "pages/monitoring/outlets/initiatives/InitiativeError";
 import { PageTitleUpdater } from "@ui/PageTitleUpdater";
+import { cn } from "@ui/shadCN/lib/utils";
 
 export function Initiatives() {
   const { initiativeInfo, isLoading } = useInitiativeCTX();
@@ -46,12 +47,16 @@ export function Initiatives() {
         onValueChange={(e) => void handleOnChangeTab(e)}
         className="flex flex-col h-full"
       >
-        <TabsList className="w-full h-auto flex *:flex-1 bg-accent p-0! m-0!">
+        <TabsList className="w-full h-auto grid grid-cols-2 md:grid-cols-4 bg-accent p-0! m-0! gap-0!">
           {[...initiativeTabs].map(([key, value]) => (
             <TabsTrigger
               key={`tTrigger_${key}`}
               value={value.slug}
-              className="text-sm lg:text-lg border-b-2 border-b-primary data-[state=active]:border-b-accent data-[state=active]:bg-primary data-[state=inactive]:hover:bg-accent data-[state=inactive]:hover:text-background bg-grey-light text-primary data-[state=active]:text-background justify-start p-0 cursor-pointer data-[state=active]:cursor-auto"
+              className={cn(
+                " text-sm lg:text-lg border-b-2 border-b-primary bg-grey-light text-primary justify-start p-0 cursor-pointer",
+                "data-[state=active]:border-b-accent data-[state=active]:bg-primary data-[state=inactive]:hover:bg-accent data-[state=inactive]:hover:text-background",
+                "data-[state=active]:text-background data-[state=active]:cursor-auto",
+              )}
             >
               <value.icon
                 className="bg-primary/20 p-2 mr-2 size-9 "

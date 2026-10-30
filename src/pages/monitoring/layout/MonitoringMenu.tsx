@@ -12,7 +12,9 @@ import type { SidebarItem } from "pages/monitoring/types/catalog";
 import { useSidebarItems } from "pages/monitoring/hooks/useSidebarItems";
 
 export function MonitoringMenu() {
-  const menuItems = useSidebarItems();
+  const { items: menuItems } = useSidebarItems();
+  const { pathname } = useLocation();
+  const activePath = pathname.split("/").filter(Boolean);
 
   return (
     <div className="isolate bg-background z-100">
@@ -50,7 +52,11 @@ export function MonitoringMenu() {
             )}
             <ul className="flex w-full flex-wrap justify-between sm:justify-center gap-1 xl:min-w-0 xl:flex-col">
               {items.map((item) => (
-                <MonitoringMenuBtn key={item.label} item={item} />
+                <MonitoringMenuBtn
+                  key={item.label}
+                  item={item}
+                  activePath={activePath}
+                />
               ))}
             </ul>
           </div>
@@ -60,13 +66,35 @@ export function MonitoringMenu() {
   );
 }
 
-function MonitoringMenuBtn({ item }: { item: SidebarItem }) {
-  const { pathname } = useLocation();
+function MonitoringMenuBtn({
+  item,
+  activePath,
+}: {
+  item: SidebarItem;
+  activePath: string[];
+}) {
+  const { initiativeSubPathsExclusion } = useSidebarItems();
   const isSidebar = window.innerWidth >= 1280;
 
   const isAction = "action" in item;
   const isActionActive = isAction && item.isActive;
-  const isPathActive = !isAction && item.linkTo === pathname;
+  const linkPath = !isAction ? item.linkTo.split("/").filter(Boolean) : [];
+
+  let isPathActive = false;
+
+  if (!isAction && linkPath.length === 1) {
+    isPathActive = !initiativeSubPathsExclusion.includes(activePath[1]);
+  } else {
+    for (let i = 0; i < linkPath.length; i++) {
+      if (linkPath[i] !== activePath[i]) {
+        break;
+      }
+
+      if (i === linkPath.length - 1) {
+        isPathActive = true;
+      }
+    }
+  }
 
   const triggerCSS = cn(
     "flex w-full items-center gap-2 rounded-md p-1 lg:p-2 lg:pt-3 hover:bg-sidebar-accent focus-visible:bg-accent/10",

@@ -30,6 +30,13 @@ export function useSidebarItems() {
   const { user } = useUserCTX();
   const { toggleSidebar, open } = useSidebar();
 
+  const initiativeSubPathsExclusion = [
+    "Indicadores",
+    "Recursos",
+    "Ayudas",
+    "Admin",
+  ];
+
   const itemsList = useMemo<SidebarItem[]>(
     () => [
       // NOTE: items para cualquier usuario
@@ -106,7 +113,7 @@ export function useSidebarItems() {
                 "Carga y actualiza las observaciones realizadas por las Iniciativas",
               icon: ScanEye,
               linkTo: "Admin/Observaciones",
-              group: 3,
+              group: "admin",
             },
             {
               label: "Etiquetas",
@@ -154,5 +161,5 @@ export function useSidebarItems() {
     }, {});
   }, [itemsList, groupsInfo]);
 
-  return items;
+  return { items, initiativeSubPathsExclusion };
 }
