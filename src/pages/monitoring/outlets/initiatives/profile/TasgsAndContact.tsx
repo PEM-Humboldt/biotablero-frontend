@@ -6,7 +6,6 @@ import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { TagsRender } from "pages/monitoring/ui/TagsRender";
 import { uiText } from "pages/monitoring/outlets/initiatives/layout/uiText";
 import { TagInInitiative } from "pages/monitoring/types/odataResponse";
-import { cn } from "@ui/shadCN/lib/utils";
 
 export function TagsAndContact() {
   const { initiativeInfo } = useInitiativeCTX();
@@ -24,7 +23,7 @@ export function TagsAndContact() {
     ) ?? [];
 
   return !initiativeInfo ? null : (
-    <div className="flex-1 space-y-4 px-2 lg:px-4 [&_h4]:m-0 self-end">
+    <div className="flex-1 space-y-4 [&_h4]:m-0 self-start xl:self-end">
       {initiativeInfo.contacts?.map((contact) => (
         <Button
           key={`contactInfo_${contact.email}`}
