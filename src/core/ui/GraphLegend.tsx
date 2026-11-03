@@ -27,7 +27,10 @@ export function GraphLegend({
 }) {
   return (
     <ul
-      className={cn("flex flex-wrap justify-end gap-4 text-sm p-4", className)}
+      className={cn(
+        "flex flex-wrap justify-end gap-x-4 gap-y-1 text-sm p-4",
+        className,
+      )}
     >
       {[...new Set(labels)].map((label) => {
         const [key, ...complement] = label.split(",");

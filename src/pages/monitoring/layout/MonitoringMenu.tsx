@@ -25,7 +25,7 @@ export function MonitoringMenu() {
           "border-b border-grey-light",
 
           // --- Escritorio ---
-          "xl:h-full xl:w-[6rem] xl:flex-col xl:justify-start xl:gap-0 xl:p-0",
+          "xl:h-full xl:w-[7rem] xl:flex-col xl:justify-start xl:gap-0 xl:p-0",
           "xl:border-b-0 xl:border-r xl:border-sidebar-border",
         )}
       >

@@ -23,6 +23,8 @@ export const uiText = {
         label: "Año",
         placeholder: "¿De qué añó es el indicador?",
       },
+      indicatorsAmount: (current: number, total: number) =>
+        `${current}/${total} indicadores`,
       resetSearchBtn: {
         sr: "Reiniciar búsqueda",
         title: "Limpiar filtros",

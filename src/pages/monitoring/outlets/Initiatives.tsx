@@ -47,7 +47,7 @@ export function Initiatives() {
         onValueChange={(e) => void handleOnChangeTab(e)}
         className="flex flex-col h-full"
       >
-        <TabsList className="w-full h-auto grid grid-cols-2 md:grid-cols-4 bg-accent p-0! m-0! gap-0!">
+        <TabsList className="w-full h-auto grid grid-cols-2 md:grid-cols-4 bg-accent p-0! m-0! gap-0! z-10">
           {[...initiativeTabs].map(([key, value]) => (
             <TabsTrigger
               key={`tTrigger_${key}`}
