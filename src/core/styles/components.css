@@ -146,29 +146,29 @@
 
   /* NOTE: para manejar los estilos de renderizado de los relatos del territorio */
   .markdown-renderer {
-    @apply text-lg leading-relaxed text-foreground break-words;
+    @apply text-base lg:text-lg leading-relaxed text-foreground break-words;
 
     /* Párrafos y espaciado general */
     & p {
-      @apply mb-4 last:mb-0 text-lg;
+      @apply mb-4 last:mb-0 text-base lg:text-lg;
     }
 
     /* Headings dinámicos (h1-h6) */
     & h1 {
-      @apply text-5xl font-bold mt-8 mb-4;
+      @apply text-4xl lg:text-5xl font-bold mt-8 mb-4;
     }
     & h2 {
-      @apply text-4xl font-bold mt-6 mb-3;
+      @apply text-3xl lg:text-4xl font-bold mt-6 mb-3;
     }
     & h3 {
-      @apply text-3xl font-normal mt-5 mb-2;
+      @apply text-2xl lg:text-3xl font-normal mt-5 mb-2;
     }
     & h4 {
-      @apply text-2xl font-normal mt-4 mb-2;
+      @apply text-xl lg:text-2xl font-normal mt-4 mb-2;
     }
     & h5,
     & h6 {
-      @apply text-lg font-normal mt-4 mb-2;
+      @apply text-lg lg:text-xl font-normal mt-4 mb-2;
     }
 
     /* Listas */

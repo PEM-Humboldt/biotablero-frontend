@@ -131,7 +131,7 @@ export function DetectionProbabilityWithoutCovariables() {
           <div className="w-full h-full aspect-video">
             <ResponsiveLine
               data={filteredData}
-              margin={{ top: 20, right: 30, bottom: 30, left: 30 }}
+              margin={{ top: 20, right: 40, bottom: 30, left: 40 }}
               motionConfig={GRAPH_ANIMATION_CONFIG}
               xScale={{ type: "point" }}
               yScale={{

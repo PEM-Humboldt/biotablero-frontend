@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { ClipboardPen, ClipboardPlus, Download, FileDown } from "lucide-react";
+import { ClipboardPlus, FileDown, FolderDown } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
 
 import { useReport } from "@hooks/useReport";
 import { Button } from "@ui/shadCN/component/button";
-import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import { useUserCTX } from "@hooks/UserCTX";
 import {
   Popover,
@@ -30,114 +29,112 @@ export function AddMCIndicatorToReport() {
   };
 
   return (
-    <>
-      <ButtonGroup className="mt-2">
-        <Popover
-          open={isPopoverOpen}
-          onOpenChange={(open) => setIsPopoverOpen(open)}
-        >
-          <PopoverTrigger asChild>
-            <Button
-              disabled={!user || isLoading}
-              variant="outline"
-              size="sm"
-              title={
-                !user
-                  ? uiText.addToReportBtn.title.notLogged
-                  : uiText.addToReportBtn.title.logged
-              }
-              aria-label={
-                !user
-                  ? uiText.addToReportBtn.sr.notLogged
-                  : uiText.addToReportBtn.sr.logged
-              }
-            >
-              <ClipboardPlus />
-              {isLoading
-                ? uiText.addToReportBtn.label.loading
-                : uiText.addToReportBtn.label.ready}
-            </Button>
-          </PopoverTrigger>
-
-          <PopoverContent
-            align="end"
-            className="w-80 p-2 space-y-2 rounded-xl bg-muted"
+    <div className="flex flex-wrap justify-end">
+      <Popover
+        open={isPopoverOpen}
+        onOpenChange={(open) => setIsPopoverOpen(open)}
+      >
+        <PopoverTrigger asChild>
+          <Button
+            disabled={!user || isLoading}
+            variant="ghost-clean"
+            size="sm"
+            title={
+              !user
+                ? uiText.addToReportBtn.title.notLogged
+                : uiText.addToReportBtn.title.logged
+            }
+            aria-label={
+              !user
+                ? uiText.addToReportBtn.sr.notLogged
+                : uiText.addToReportBtn.sr.logged
+            }
           >
-            <label htmlFor="description" className="font-normal text-primary">
-              Agrega una nota (Opcional)
-            </label>
-            <InputGroup className="mt-2">
-              <TextareaAutosize
-                data-slot="input-group-control"
-                className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-sm md:text-base transition-[color,box-shadow] outline-none"
-                id="description"
-                name="description"
-                placeholder={uiText.addNotePopover.placeholder}
-                value={noteText}
-                onChange={(e) => setNoteText(e.target.value)}
-                maxLength={REPORT_NOTE_MAX_LENGTH}
-              />
-              <InputGroupAddon
-                align="block-end"
-                className={`${inputWarnColor(
-                  noteText,
-                  REPORT_NOTE_MAX_LENGTH,
-                  0.95,
-                )} flex-row-reverse`}
-              >
-                {noteText.length} / {REPORT_NOTE_MAX_LENGTH}
-              </InputGroupAddon>
-            </InputGroup>
+            <ClipboardPlus />
+            {isLoading
+              ? uiText.addToReportBtn.label.loading
+              : uiText.addToReportBtn.label.ready}
+          </Button>
+        </PopoverTrigger>
 
-            <div className="flex flex-row-reverse justify-between gap-2">
-              <Button
-                size="sm"
-                disabled={isLoading}
-                onClick={() => void handleConfirmNote()}
-                title={uiText.addNotePopover.addBtn.title}
-                aria-label={uiText.addNotePopover.addBtn.sr}
-              >
-                {uiText.addNotePopover.addBtn.label(isLoading)}
-              </Button>
-
-              <Button
-                variant="outline_destructive"
-                size="sm"
-                onClick={() => setIsPopoverOpen(false)}
-                title={uiText.addNotePopover.cancelBtn.title}
-                aria-label={uiText.addNotePopover.cancelBtn.sr}
-              >
-                {uiText.addNotePopover.cancelBtn.label}
-              </Button>
-            </div>
-          </PopoverContent>
-        </Popover>
-
-        <Button
-          disabled={!hasSections}
-          variant="outline"
-          size="sm"
-          onClick={() => toggleEditor(true)}
-          title={uiText.editReportBtn.title}
-          aria-label={uiText.editReportBtn.sr}
+        <PopoverContent
+          align="end"
+          className="w-80 p-2 space-y-2 rounded-xl bg-muted"
         >
-          <FileDown />
-          {uiText.editReportBtn.label}
-        </Button>
+          <label htmlFor="description" className="font-normal text-primary">
+            Agrega una nota (Opcional)
+          </label>
+          <InputGroup className="mt-2">
+            <TextareaAutosize
+              data-slot="input-group-control"
+              className="flex field-sizing-content min-h-16 w-full resize-none rounded-md bg-transparent px-3 py-2.5 text-sm md:text-base transition-[color,box-shadow] outline-none"
+              id="description"
+              name="description"
+              placeholder={uiText.addNotePopover.placeholder}
+              value={noteText}
+              onChange={(e) => setNoteText(e.target.value)}
+              maxLength={REPORT_NOTE_MAX_LENGTH}
+            />
+            <InputGroupAddon
+              align="block-end"
+              className={`${inputWarnColor(
+                noteText,
+                REPORT_NOTE_MAX_LENGTH,
+                0.95,
+              )} flex-row-reverse`}
+            >
+              {noteText.length} / {REPORT_NOTE_MAX_LENGTH}
+            </InputGroupAddon>
+          </InputGroup>
 
-        {/* NOTE: Mock para el video, debe agregarse la funcionalidad */}
-        <Button
-          disabled={!hasSections}
-          variant="outline"
-          size="sm"
-          onClick={() => toggleEditor(true)}
-          title={uiText.editReportBtn.title}
-          aria-label={uiText.editReportBtn.sr}
-        >
-          <Download />
-          Descargar archivos
-        </Button>
-      </ButtonGroup>
-    </>
+          <div className="flex flex-row-reverse justify-between gap-2">
+            <Button
+              size="sm"
+              disabled={isLoading}
+              onClick={() => void handleConfirmNote()}
+              title={uiText.addNotePopover.addBtn.title}
+              aria-label={uiText.addNotePopover.addBtn.sr}
+            >
+              {uiText.addNotePopover.addBtn.label(isLoading)}
+            </Button>
+
+            <Button
+              variant="outline_destructive"
+              size="sm"
+              onClick={() => setIsPopoverOpen(false)}
+              title={uiText.addNotePopover.cancelBtn.title}
+              aria-label={uiText.addNotePopover.cancelBtn.sr}
+            >
+              {uiText.addNotePopover.cancelBtn.label}
+            </Button>
+          </div>
+        </PopoverContent>
+      </Popover>
+
+      <Button
+        disabled={!hasSections}
+        size="sm"
+        variant="ghost-clean"
+        onClick={() => toggleEditor(true)}
+        title={uiText.editReportBtn.title}
+        aria-label={uiText.editReportBtn.sr}
+      >
+        <FileDown />
+        {uiText.editReportBtn.label}
+      </Button>
+
+      {/* NOTE: Mock para el video, debe agregarse la funcionalidad */}
+      <Button
+        disabled={!hasSections}
+        size="sm"
+        variant="ghost-clean"
+        onClick={() => toggleEditor(true)}
+        title={uiText.editReportBtn.title}
+        aria-label={uiText.editReportBtn.sr}
+      >
+        <FolderDown />
+        Descargar archivos
+      </Button>
+    </div>
   );
 }

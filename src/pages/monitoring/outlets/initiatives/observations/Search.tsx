@@ -19,6 +19,7 @@ import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
 import { ObservationSmallCard } from "pages/monitoring/outlets/initiatives/observations/search/ObservationSmallCard";
 import { fuzzySearch } from "pages/monitoring/utils/search";
 import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
+import { cn } from "@ui/shadCN/lib/utils";
 
 export function Search() {
   const { observations: allInitiativeObservations } = useObservationsCTX();
@@ -134,84 +135,107 @@ export function Search() {
   }
 
   return (
-    <div className="bg-grey-light border-b border-grey lg:border-b-0 flex-1 flex lg:min-w-76 lg:flex-col max-h-102 lg:max-h-none">
-      <div className="bg-primary/70 rounded-xl m-2 overflow-hidden [&>div]:px-4 space-y-2">
-        <h3 className="bg-primary p-4 pb-2  m-0 font-normal text-primary-foreground">
-          {uiText.search.module.title}
-        </h3>
+    <div
+      className={cn(
+        "grid grid-cols-1 gap-4 border-b border-grey ",
+        "md:grid-cols-2",
+        "lg:grid-cols-1 lg:grid-rows-[auto_1fr] lg:max-h-full lg:border-b-0",
+      )}
+    >
+      <div className="contents lg:block lg:sticky lg:top-2">
+        <div className="bg-primary/70 rounded-xl overflow-hidden [&>div]:px-4 space-y-2">
+          <h3 className="bg-primary py-2 px-4 m-0 font-normal text-primary-foreground">
+            {uiText.search.module.title}
+          </h3>
 
-        <div className="pt-2">
-          <label
-            htmlFor="lookfor"
-            className="text-primary-foreground font-normal"
-          >
-            {uiText.search.module.searchInputLabel}
-          </label>
-          <InputGroup>
-            <InputGroupInput
-              value={lookFor}
-              onChange={(e) => setLookFor(e.target.value)}
-              id="lookfor"
-              autoComplete="off"
-            />
-            <InputGroupAddon align="inline-end">
-              <SearchIcon className="text-accent" />
-            </InputGroupAddon>
-          </InputGroup>
-        </div>
+          <div className="pt-2">
+            <label
+              htmlFor="lookfor"
+              className="text-primary-foreground font-normal"
+            >
+              {uiText.search.module.searchInputLabel}
+            </label>
+            <InputGroup>
+              <InputGroupInput
+                value={lookFor}
+                onChange={(e) => setLookFor(e.target.value)}
+                id="lookfor"
+                autoComplete="off"
+              />
+              <InputGroupAddon align="inline-end">
+                <SearchIcon className="text-accent" />
+              </InputGroupAddon>
+            </InputGroup>
+          </div>
 
-        <FilterSelect
-          {...uiText.search.module.filterBiological}
-          value={biologicalGroup}
-          onChange={setBiologicalGroup}
-          options={Object.entries(presentBiologicalGroups).map(
-            ([key, value]) => ({ value: key, label: value }),
-          )}
-          shouldRender={Object.keys(presentBiologicalGroups).length > 1}
-        />
-
-        <FilterSelect
-          {...uiText.search.module.filterEcosystem}
-          value={ecosystem}
-          onChange={setEcosystem}
-          options={Object.entries(presentEcosystems).map(([key, value]) => ({
-            value: key,
-            label: value,
-          }))}
-          shouldRender={Object.keys(presentEcosystems).length > 1}
-        />
-
-        <FilterSelect
-          {...uiText.search.module.filterYear}
-          value={selectedYear}
-          onChange={setSelectedYear}
-          options={[...presentYears].map((y) => ({
-            value: String(y),
-            label: String(y),
-          }))}
-          shouldRender={presentYears.size > 1}
-        />
-
-        <div className="text-right pt-2 pb-4">
-          <Button
-            onClick={clearFilters}
-            variant="outline_destructive"
-            aria-label={uiText.search.module.resetSearchBtn.sr}
-            title={uiText.search.module.resetSearchBtn.title}
-          >
-            <Trash2 />
-            {uiText.search.module.resetSearchBtn.label}
-          </Button>
-        </div>
-      </div>
-
-      <div className="flex-1 flex flex-col p-2 gap-4 overflow-auto scrollbar-custom">
-        {filteredObservations.map((observation) => (
-          <ObservationSmallCard
-            key={`smallCartObservation_${observation.id}`}
-            observation={observation}
+          <FilterSelect
+            {...uiText.search.module.filterBiological}
+            value={biologicalGroup}
+            onChange={setBiologicalGroup}
+            options={Object.entries(presentBiologicalGroups).map(
+              ([key, value]) => ({ value: key, label: value }),
+            )}
+            shouldRender={Object.keys(presentBiologicalGroups).length > 0}
           />
-        ))}
+
+          <FilterSelect
+            {...uiText.search.module.filterEcosystem}
+            value={ecosystem}
+            onChange={setEcosystem}
+            options={Object.entries(presentEcosystems).map(([key, value]) => ({
+              value: key,
+              label: value,
+            }))}
+            shouldRender={Object.keys(presentEcosystems).length > 0}
+          />
+
+          <FilterSelect
+            {...uiText.search.module.filterYear}
+            value={selectedYear}
+            onChange={setSelectedYear}
+            options={[...presentYears].map((y) => ({
+              value: String(y),
+              label: String(y),
+            }))}
+            shouldRender={presentYears.size > 0}
+          />
+
+          <div className="text-right pt-2 pb-4">
+            <Button
+              onClick={clearFilters}
+              variant="outline_destructive"
+              aria-label={uiText.search.module.resetSearchBtn.sr}
+              title={uiText.search.module.resetSearchBtn.title}
+            >
+              <Trash2 />
+              {uiText.search.module.resetSearchBtn.label}
+            </Button>
+          </div>
+        </div>
+
+        <div
+          className={cn(
+            "flex flex-col rounded-lg max-h-100 m-0",
+            "md:rounded-none md:max-h-102 md:min-h-0",
+            "lg:min-h-0 lg:max-h-full",
+          )}
+        >
+          <div className="text-primary text-sm font-normal p-2">
+            {uiText.search.module.indicatorsAmount(
+              filteredObservations.length,
+              allInitiativeObservations.length,
+            )}
+          </div>
+
+          <div className="flex flex-col p-2 md:p-1 gap-4 overflow-auto scrollbar-custom">
+            {filteredObservations.map((observation) => (
+              <ObservationSmallCard
+                key={`smallCartObservation_${observation.id}`}
+                observation={observation}
+              />
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
