@@ -3,7 +3,7 @@ import {
   RESOURCE_TAGS_LIMIT_ECOSYSTEM,
 } from "@config/monitoring";
 
-export const observationTagCategories: {
+export const topicTagCategories: {
   tagCategoryId: number;
   title: string;
   maxTagsAmount: number;

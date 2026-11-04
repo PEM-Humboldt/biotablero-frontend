@@ -19,18 +19,18 @@ import {
 import { StrValidator } from "@utils/strValidator";
 import { updateTopicData } from "pages/monitoring/api/services/topics";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import { observationVersionTexts } from "pages/monitoring/outlets/observationsAdmin/layout/observationVersionSetup";
-import { uiText } from "pages/monitoring/outlets/observationsAdmin/layout/uiText";
+import { topicVersionTexts } from "pages/monitoring/outlets/topicsAdmin/layout/topicVersionSetup";
+import { uiText } from "pages/monitoring/outlets/topicsAdmin/layout/uiText";
 import { UserRoundCheck } from "lucide-react";
 import { toast } from "sonner";
 import { OBSERVATION_VERSION_DESCRIPTION_FIELD_MAX_LENGHT } from "@config/monitoring";
 
-export function ObservationVersionCard({
-  observationData,
+export function TopicVersionCard({
+  topicData,
   editingThis,
   onUpdateSuccess,
 }: {
-  observationData: TopicData;
+  topicData: TopicData;
   editingThis: boolean;
   onUpdateSuccess: () => Promise<void>;
 }) {
@@ -40,67 +40,64 @@ export function ObservationVersionCard({
     Partial<Record<keyof TopicVersionTexts | "root", string[]>>
   >({});
 
-  const observationTextsRef = useRef<
+  const topicTextsRef = useRef<
     Map<keyof TopicVersionTexts, MutableRefObject<EditorState | null>>
   >(new Map());
 
-  observationVersionTexts.forEach((observationInfo) => {
-    observationTextsRef.current.set(observationInfo.key, { current: null });
+  topicVersionTexts.forEach((topicInfo) => {
+    topicTextsRef.current.set(topicInfo.key, { current: null });
   });
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const observationTexts = observationTextsRef.current;
+    const topicTexts = topicTextsRef.current;
 
     setErrors({});
     let hasErrors = false;
 
-    const observationInfo: TopicVersionTexts = [
-      ...observationTexts.entries(),
-    ].reduce<TopicVersionTexts>(
-      (all, [observationKey, observationTextLexical]) => {
-        const original = observationData[observationKey];
+    const topicInfo: TopicVersionTexts = [
+      ...topicTexts.entries(),
+    ].reduce<TopicVersionTexts>((all, [topicKey, topicTextLexical]) => {
+      const original = topicData[topicKey];
 
-        const observationText = fromLexicalEditorStateRefToMarkdown(
-          observationTextLexical,
-          availableTransformers,
-        );
+      const topicText = fromLexicalEditorStateRefToMarkdown(
+        topicTextLexical,
+        availableTransformers,
+      );
 
-        if (observationText !== original) {
-          const [validatedText, validationErrors] = new StrValidator(
-            observationText,
-          ).hasLengthLessOrEqualThan(
-            OBSERVATION_VERSION_DESCRIPTION_FIELD_MAX_LENGHT,
-          ).result;
+      if (topicText !== original) {
+        const [validatedText, validationErrors] = new StrValidator(
+          topicText,
+        ).hasLengthLessOrEqualThan(
+          OBSERVATION_VERSION_DESCRIPTION_FIELD_MAX_LENGHT,
+        ).result;
 
-          if (validationErrors.length > 0) {
-            setErrors((oldErr) => ({
-              ...oldErr,
-              [observationKey]: validationErrors,
-            }));
+        if (validationErrors.length > 0) {
+          setErrors((oldErr) => ({
+            ...oldErr,
+            [topicKey]: validationErrors,
+          }));
 
-            hasErrors = true;
-            return all;
-          }
-
-          all[observationKey] = validatedText;
-        } else {
-          all[observationKey] = original;
+          hasErrors = true;
+          return all;
         }
 
-        return all;
-      },
-      {},
-    );
+        all[topicKey] = validatedText;
+      } else {
+        all[topicKey] = original;
+      }
 
-    if (hasErrors || Object.keys(observationInfo).length === 0) {
+      return all;
+    }, {});
+
+    if (hasErrors || Object.keys(topicInfo).length === 0) {
       return;
     }
 
     setIsloading(true);
     const res = await updateTopicData(
-      observationData.id,
-      observationInfo as Record<keyof TopicVersionTexts, string>,
+      topicData.id,
+      topicInfo as Record<keyof TopicVersionTexts, string>,
     );
 
     setIsloading(false);
@@ -115,8 +112,8 @@ export function ObservationVersionCard({
     toast(uiText.observationVersionCard.updatedToast.title, {
       position: "bottom-right",
       description: uiText.observationVersionCard.updatedToast.description(
-        observationData.version,
-        new Date(observationData.creationDate),
+        topicData.version,
+        new Date(topicData.creationDate),
       ),
       icon: <UserRoundCheck className="size-8 text-primary" />,
       className: "px-6! gap-6! border-2! border-primary!",
@@ -128,19 +125,19 @@ export function ObservationVersionCard({
     setResetKey((prev) => prev + 1);
   };
 
-  const observationVersionDate = new Date(observationData.creationDate);
+  const topicVersionDate = new Date(topicData.creationDate);
 
   return (
     <div
-      key={`${observationData.observationId}_${observationData.id}_${resetKey}`}
+      key={`${topicData.topicId}_${topicData.id}_${resetKey}`}
       className="border border-muted rounded-lg"
     >
       {!editingThis ? (
         <div className="p-4 space-y-4">
           <div className="text-lg text-primary font-normal">
             {uiText.observationVersionCard.editVersionTitlePrefix}
-            <time dateTime={observationVersionDate.toISOString()}>
-              {observationVersionDate.toLocaleDateString(LOCALE, {
+            <time dateTime={topicVersionDate.toISOString()}>
+              {topicVersionDate.toLocaleDateString(LOCALE, {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
@@ -148,22 +145,22 @@ export function ObservationVersionCard({
             </time>
           </div>
 
-          {observationVersionTexts.map((observationInfo) => {
-            const description = observationData[observationInfo.key];
+          {topicVersionTexts.map((topicInfo) => {
+            const description = topicData[topicInfo.key];
 
-            const IconComponent = observationInfo.icon;
+            const IconComponent = topicInfo.icon;
 
             return (
-              <div key={observationInfo.key}>
+              <div key={topicInfo.key}>
                 <div className="flex items-center gap-1 text-primary">
                   <IconComponent />
-                  <span className="font-normal">{observationInfo.label}</span>
+                  <span className="font-normal">{topicInfo.label}</span>
                 </div>
                 <div className="markdown-renderer">
                   {description !== undefined && description !== ""
                     ? parseSimpleMarkdown(description)
                     : uiText.observationVersionCard.noTextInThisVersion(
-                        observationInfo.label,
+                        topicInfo.label,
                       )}
                 </div>
               </div>
@@ -181,15 +178,13 @@ export function ObservationVersionCard({
             className="bg-accent/10 border border-accent rounded-lg mx-4 mt-4 p-4"
           />
 
-          {observationVersionTexts.map((observationInfo) => (
+          {topicVersionTexts.map((topicInfo) => (
             <SectionTextEditor
-              key={`textEditor_${observationInfo.key}`}
-              sectionData={observationInfo}
-              textToLoad={observationData[observationInfo.key] || ""}
-              observationTextRef={
-                observationTextsRef.current.get(observationInfo.key)!
-              }
-              errors={errors[observationInfo.key] ?? []}
+              key={`textEditor_${topicInfo.key}`}
+              sectionData={topicInfo}
+              textToLoad={topicData[topicInfo.key] || ""}
+              topicTextRef={topicTextsRef.current.get(topicInfo.key)!}
+              errors={errors[topicInfo.key] ?? []}
             />
           ))}
 
@@ -218,12 +213,12 @@ export function ObservationVersionCard({
 
 function SectionTextEditor({
   sectionData,
-  observationTextRef,
+  topicTextRef,
   textToLoad,
   errors,
 }: {
   sectionData: TopicVersionTextType;
-  observationTextRef: MutableRefObject<EditorState | null>;
+  topicTextRef: MutableRefObject<EditorState | null>;
   textToLoad: string;
   errors: string[];
 }) {
@@ -239,7 +234,7 @@ function SectionTextEditor({
       <RichTextEditor
         id={`richText_${sectionData.key}`}
         textToLoad={textToLoad}
-        textStateRef={observationTextRef}
+        textStateRef={topicTextRef}
         placeholder={uiText.observationVersionCard.textEditorPlaceHolder}
         className="bg-background"
         editorNamespace={`richText_${sectionData.key}`}

@@ -18,7 +18,7 @@ export function ObservationSmallCard({
 }) {
   const { currentObservation } = useObservationsCTX();
   const isCurrent =
-    currentObservation && observation.id === currentObservation.observationId;
+    currentObservation && observation.id === currentObservation.topicId;
 
   const { since, until } = useMemo(
     () =>

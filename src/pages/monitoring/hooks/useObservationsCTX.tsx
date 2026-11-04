@@ -13,7 +13,7 @@ import { useNavigate, useParams } from "react-router";
 import type { ODataParams } from "@appTypes/odata";
 
 import {
-  ObservationMetric,
+  TopicMetric,
   type CleanDataType,
   type TopicData,
   type TopicMetadata,
@@ -47,13 +47,13 @@ const ObservationsContext = createContext<ObservationContextValues | null>(
 );
 
 const dataTransformFunction = {
-  [ObservationMetric.OCCUPATION_SPECIES]: dataTransformLineGraph,
-  [ObservationMetric.DETECTION_PROBABILITY_WITHOUT_COVARIABLES]:
+  [TopicMetric.OCCUPATION_SPECIES]: dataTransformLineGraph,
+  [TopicMetric.DETECTION_PROBABILITY_WITHOUT_COVARIABLES]:
     dataTransformLineGraph,
-  [ObservationMetric.SPECIES_DIVERSITY]: dataTransformLineGraph,
-  [ObservationMetric.RELATIVE_SPECIES_USE_BY_GROUP]: dataTransformBarGraph,
-  [ObservationMetric.RELATIONAL_INTENSITY_INDEX]: dataTransformBarGraph,
-  [ObservationMetric.COLLECTIVE_ACTION_PARTICIPATION]: dataTransformBarGraph,
+  [TopicMetric.SPECIES_DIVERSITY]: dataTransformLineGraph,
+  [TopicMetric.RELATIVE_SPECIES_USE_BY_GROUP]: dataTransformBarGraph,
+  [TopicMetric.RELATIONAL_INTENSITY_INDEX]: dataTransformBarGraph,
+  [TopicMetric.COLLECTIVE_ACTION_PARTICIPATION]: dataTransformBarGraph,
 };
 
 export function ObservationsCTX({ children }: { children: ReactNode }) {
@@ -135,7 +135,7 @@ export function ObservationsCTX({ children }: { children: ReactNode }) {
         return;
       }
 
-      const metadata = await getTopicMetadata(data.observationId);
+      const metadata = await getTopicMetadata(data.topicId);
       if (isMonitoringAPIError(metadata)) {
         setIsLoading(false);
         setCurrentObservation(null);

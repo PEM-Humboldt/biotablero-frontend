@@ -4,11 +4,11 @@ import { Button } from "@ui/shadCN/component/button";
 import { PageTitleUpdater } from "@ui/PageTitleUpdater";
 
 import type { InitiativeByLocation } from "pages/monitoring/types/initiative";
-import { InitiativesSearch } from "pages/monitoring/outlets/observationsAdmin/InitiativesSearch";
-import { ObservationsList } from "pages/monitoring/outlets/observationsAdmin/ObservationsList";
-import { uiText } from "pages/monitoring/outlets/observationsAdmin/layout/uiText";
+import { InitiativesSearch } from "pages/monitoring/outlets/topicsAdmin/InitiativesSearch";
+import { TopicsList } from "pages/monitoring/outlets/topicsAdmin/TopicsList";
+import { uiText } from "pages/monitoring/outlets/topicsAdmin/layout/uiText";
 
-export function ObservationsAdmin() {
+export function TopicsAdmin() {
   const [currentInitiative, setCurrentInitiative] =
     useState<InitiativeByLocation | null>(null);
 
@@ -36,7 +36,7 @@ export function ObservationsAdmin() {
           {!currentInitiative ? (
             uiText.observationsList.noInitiative
           ) : (
-            <ObservationsList fromInitiative={currentInitiative} />
+            <TopicsList fromInitiative={currentInitiative} />
           )}
         </div>
       </div>

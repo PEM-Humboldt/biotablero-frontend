@@ -109,11 +109,11 @@ export function useSidebarItems() {
               group: "admin",
             },
             {
-              label: "Observaciones",
+              label: "Temáticas",
               description:
                 "Carga y actualiza las observaciones realizadas por las Iniciativas",
               icon: ScanEye,
-              linkTo: "Admin/Observaciones",
+              linkTo: "Admin/Tematicas",
               group: "admin",
             },
             {
