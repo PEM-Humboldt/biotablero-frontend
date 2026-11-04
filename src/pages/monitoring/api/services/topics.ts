@@ -4,54 +4,54 @@ import { monitoringAPI } from "pages/monitoring/api/core";
 import type { TopicData, TopicMetadata } from "pages/monitoring/types/topics";
 
 /**
- * Fetches the observatios metadata from the "Observation" endpoint using odataParams.
+ * Fetches the topics metadata from the "Topic" endpoint using odataParams.
  *
  * @param odataParams Optional OData query parameters
  *
  * @returns A `Promise` resolving to:
- * - On success: An `ODataObservations` object.
+ * - On success: An `ODataTopics` object.
  * - On failure: A `ApiRequestError` object.
  */
-export const getObservations = createODataGetter<ODataTopics>("Observation");
+export const getTopics = createODataGetter<ODataTopics>("Topic");
 
 /**
- * Retrieves all the observations metadata associated with a specific initiative.
+ * Retrieves all the topics metadata associated with a specific initiative.
  *
  * @param initiativeId - The initiative identifier in db
  *
  * @returns A `Promise` resolving to:
- * - On success: An array of `ObservationMetadata` objects
+ * - On success: An array of `TopicMetadata` objects
  * - On failure: A `ApiRequestError` object.
  */
-export async function getObservationsByInitiative(initiativeId: number) {
+export async function getTopicsByInitiative(initiativeId: number) {
   const res = await monitoringAPI<TopicMetadata[]>({
     type: "get",
-    endpoint: `Observation/GetByInitiative/${initiativeId}`,
+    endpoint: `Topic/GetByInitiative/${initiativeId}`,
   });
 
   return res;
 }
 
 /**
- * Retrieves the data values of the specified observation needed for rendering.
+ * Retrieves the data values of the specified topic needed for rendering.
  *
- * @param observationId - The number of the indicator in DB
+ * @param topicId - The number of the indicator in DB
  *
  * @returns A `Promise` resolving to:
- * - On success: An `ObservationData` object
+ * - On success: An `TopicData` object
  * - On failure: A `ApiRequestError` object.
  */
-export async function getObservationData(observationId: number) {
+export async function getTopicData(topicId: number) {
   const res = await monitoringAPI<TopicData>({
     type: "get",
-    endpoint: `ObservationVersion/${observationId}`,
+    endpoint: `TopicVersion/${topicId}`,
   });
 
   return res;
 }
 
-export async function updateObservationData(
-  observationId: number,
+export async function updateTopicData(
+  topicId: number,
   payload: Record<
     | "description"
     | "methodology"
@@ -63,7 +63,7 @@ export async function updateObservationData(
 ) {
   const res = await monitoringAPI<TopicData>({
     type: "put",
-    endpoint: `ObservationVersion/${observationId}`,
+    endpoint: `TopicVersion/${topicId}`,
     options: {
       data: payload,
       headers: {
@@ -77,30 +77,27 @@ export async function updateObservationData(
 }
 
 /**
- * Retrieves all the metadata from the specified observation.
+ * Retrieves all the metadata from the specified topic.
  *
- * @param observationId - The number of the indicator in DB
+ * @param topicId - The number of the indicator in DB
  *
  * @returns A `Promise` resolving to:
- * - On success: An `ObservationMetadata` object
+ * - On success: An `TopicMetadata` object
  * - On failure: A `ApiRequestError` object.
  */
-export async function getObservationMetadata(observationId: number) {
+export async function getTopicMetadata(topicId: number) {
   const res = await monitoringAPI<TopicMetadata>({
     type: "get",
-    endpoint: `Observation/${observationId}`,
+    endpoint: `Topic/${topicId}`,
   });
 
   return res;
 }
 
-export async function updateObservationName(
-  observationId: number,
-  name: string,
-) {
+export async function updateTopicName(topicId: number, name: string) {
   const res = await monitoringAPI<TopicMetadata>({
     type: "put",
-    endpoint: `Observation/${observationId}`,
+    endpoint: `Topic/${topicId}`,
     options: {
       data: { Name: name },
       headers: {
