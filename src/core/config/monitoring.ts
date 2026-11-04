@@ -56,14 +56,14 @@ export const INITIATIVES_IMG_MAX_FILE_SIZE = 3;
 export const INITIATIVES_MAP_PADDING_LG = {
   south: 50,
   north: 50,
-  east: 150,
-  west: 300,
+  east: 0,
+  west: 0,
 };
 export const INITIATIVES_MAP_PADDING_SM = {
-  south: 50,
-  north: 50,
-  east: 0,
-  west: 50,
+  south: 10,
+  north: 0,
+  east: 50,
+  west: 10,
 };
 export const INITIATIVES_MAP_STATS_BAR_HEIGHT = 20;
 export const INITIATIVES_MAP_STATS_GRAPH_Y_MARGINS = 70;
