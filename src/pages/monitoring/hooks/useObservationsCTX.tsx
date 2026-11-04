@@ -23,7 +23,7 @@ import {
   getTopicMetadata,
   getTopics,
   getTopicsByInitiative,
-} from "pages/monitoring/api/services/observations";
+} from "pages/monitoring/api/services/topics";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { OBSERVATIONS_PER_PAGE } from "@config/monitoring";
 import {

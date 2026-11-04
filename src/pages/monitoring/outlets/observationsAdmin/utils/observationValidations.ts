@@ -1,16 +1,16 @@
-import { getTopics } from "pages/monitoring/api/services/observations";
+import { getTopics } from "pages/monitoring/api/services/topics";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
-/*
- * Checks if a observation with the same name already exist
+/**
+ * Creates a validation function to check if an topic with the same name already exists for a given initiative.
  *
- * @param observationName - the name of the observation
- * @returns `true` if the observation name does not exist; otherwise, `false`.
+ * @param initiativeId - The ID of the initiative to check against.
+ * @returns An async function that takes a `topicName` and returns `true` if the observation name does not exist; otherwise, `false`.
  */
 export function observationNameNotExist(initiativeId: number) {
-  return async (observationName: string) => {
+  return async (topicName: string) => {
     const existingInitiative = await getTopics({
-      filter: `initiativeId eq ${initiativeId} and name eq '${observationName}'`,
+      filter: `initiativeId eq ${initiativeId} and name eq '${topicName}'`,
     });
 
     if (isMonitoringAPIError(existingInitiative)) {

@@ -9,7 +9,7 @@ import { LoadingDiv } from "@ui/LoadingDiv";
 export function IndicatorsStats() {
   const { errors, stats, isLoading } = useStats("Indicators");
 
-  const totalObservations = stats
+  const totalTopics = stats
     ? Object.values(stats).reduce((all, current) => {
         return all + current.reduce((t, c) => t + c.value, 0);
       }, 0)
@@ -28,17 +28,17 @@ export function IndicatorsStats() {
         {parseSimpleMarkdown(uiText.stats.indicators.preTextMd)}
       </div>
 
-      {stats && stats.observationsByScale.length > 0 ? (
+      {stats && stats.topicsByScale.length > 0 ? (
         <>
           <MonitorignOverviewBars
-            data={stats.observationsByScale}
+            data={stats.topicsByScale}
             keysForValues={["value"]}
             keyForLeftAxisLabel="key"
             bottomAxisLabel="Personas"
           />
 
           <div className="text-right text-xl p-4">
-            {uiText.stats.indicators.indicatorsAmount(totalObservations)}
+            {uiText.stats.indicators.indicatorsAmount(totalTopics)}
           </div>
         </>
       ) : (

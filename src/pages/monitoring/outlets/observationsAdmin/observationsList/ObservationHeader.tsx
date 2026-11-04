@@ -8,7 +8,7 @@ import {
 import type { TagData } from "pages/monitoring/types/initiative";
 import { type TopicMetadata } from "pages/monitoring/types/topics";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import { updateTopicName } from "pages/monitoring/api/services/observations";
+import { updateTopicName } from "pages/monitoring/api/services/topics";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { Button } from "@ui/shadCN/component/button";
 import { TagsGroupsRender } from "pages/monitoring/ui/TagsGroupsRender";
