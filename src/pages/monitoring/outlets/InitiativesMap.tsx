@@ -19,8 +19,12 @@ import { MapFinder } from "pages/monitoring/outlets/initiativesMap/MapFinder";
 import { DataSheetAndNavigation } from "pages/monitoring/outlets/initiativesMap/DataSheetAndNavigation";
 import { MapLegend } from "pages/monitoring/outlets/initiativesMap/MapLegend";
 import { CardsAttachment } from "pages/monitoring/outlets/initiativesMap/CardsAttachment";
+import { cn } from "@ui/shadCN/lib/utils";
+import { useParams } from "react-router";
 
 export function InitiativesMap() {
+  const { departmentId } = useParams();
+
   const [tiles, setTiles] = useState(0);
   const [layer, setLayer] = useState<number | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
@@ -126,32 +130,51 @@ export function InitiativesMap() {
   return errors.length > 0 ? (
     <ErrorsList errorItems={errors} />
   ) : (
-    <div className="relative flex flex-col h-full w-full">
-      <DataSheetAndNavigation initiatives={initiatives} />
+    <div className="relative h-full w-full">
+      <div className="relative flex flex-col min-h-[70dvh] xl:h-full w-full">
+        <MapFinder
+          tiles={tiles}
+          layer={layer}
+          nation={nation}
+          initiatives={initiatives}
+          activeFeatures={showDepartments ? activeFeatures : []}
+          leastInitiativesPerDepartment={leastInitiativesPerDepartment}
+          mostInitiativesPerDepartment={mostInitiativesPerDepartment}
+        />
 
-      <CardsAttachment />
+        <MapLegend
+          leastInitiativesPerDepartment={leastInitiativesPerDepartment}
+          mostInitiativesPerDepartment={mostInitiativesPerDepartment}
+          activeDepartments={activeDepartmentsList}
+          tiles={tiles}
+          setTiles={setTiles}
+          layers={layer}
+          setLayers={setLayer}
+          showDepartments={showDepartments}
+          setShowDepartments={setShowDepartments}
+        />
+      </div>
 
-      <MapFinder
-        tiles={tiles}
-        layer={layer}
-        nation={nation}
-        initiatives={initiatives}
-        activeFeatures={showDepartments ? activeFeatures : []}
-        leastInitiativesPerDepartment={leastInitiativesPerDepartment}
-        mostInitiativesPerDepartment={mostInitiativesPerDepartment}
-      />
+      <div className="flex flex-col lg:flex-row lg:*:flex-1 xl:contents">
+        <DataSheetAndNavigation
+          initiatives={initiatives}
+          className={cn(
+            "relative z-10",
+            "xl:absolute xl:w-106 xl:top-4 xl:left-4 xl:rounded-lg xl:shadow-md xl:overflow-hidden",
+          )}
+        />
 
-      <MapLegend
-        leastInitiativesPerDepartment={leastInitiativesPerDepartment}
-        mostInitiativesPerDepartment={mostInitiativesPerDepartment}
-        activeDepartments={activeDepartmentsList}
-        tiles={tiles}
-        setTiles={setTiles}
-        layers={layer}
-        setLayers={setLayer}
-        showDepartments={showDepartments}
-        setShowDepartments={setShowDepartments}
-      />
+        <CardsAttachment
+          className={cn(
+            "relative z-10 ",
+            "xl:absolute xl:w-74 xl:top-16 xl:left-112 xl:rounded-lg xl:overflow-hidden xl-shadow-2xl",
+            "transition-all duration-300 ease-in-out",
+            !departmentId
+              ? "hidden xl:block! xl:-translate-y-100 xl:opacity-0 xl:pointer-events-none"
+              : "block! xl:translate-y-0 xl:opacity-100",
+          )}
+        />
+      </div>
     </div>
   );
 }
