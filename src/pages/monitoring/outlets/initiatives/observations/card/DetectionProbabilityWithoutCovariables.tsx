@@ -11,7 +11,7 @@ import { GetObservationInfo } from "@hooks/useReport/GetIndicatorInfo";
 
 import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
 import { ConfidenceIntervalLayer } from "pages/monitoring/outlets/initiatives/observations/card/utils/ConfidenceIntervalLayer";
-import type { LineData } from "pages/monitoring/types/observations";
+import type { LineData } from "pages/monitoring/types/topics";
 import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
 import { GraphLegend } from "@ui/GraphLegend";
 import { getSeriesColor } from "pages/monitoring/outlets/initiatives/observations/card/utils/colors";

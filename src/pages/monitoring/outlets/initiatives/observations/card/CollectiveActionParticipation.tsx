@@ -6,7 +6,7 @@ import { GRAPH_ANIMATION_CONFIG } from "@config/global";
 import { ResponsiveBar } from "@nivo/bar";
 
 import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
-import type { BarsData } from "pages/monitoring/types/observations";
+import type { BarsData } from "pages/monitoring/types/topics";
 import {
   getContrastColor,
   getSeriesColor,

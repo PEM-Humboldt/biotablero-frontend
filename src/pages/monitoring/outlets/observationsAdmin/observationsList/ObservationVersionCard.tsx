@@ -1,9 +1,9 @@
 import { type FormEvent, type MutableRefObject, useRef, useState } from "react";
 import type {
-  ObservationVersionTexts,
-  ObservationVersionTextType,
-  ObservationData,
-} from "pages/monitoring/types/observations";
+  TopicVersionTexts,
+  TopicVersionTextType,
+  TopicData,
+} from "pages/monitoring/types/topics";
 import { ErrorsList, LabelAndErrors } from "@ui/LabelingWithErrors";
 import { Button } from "@ui/shadCN/component/button";
 import { LOCALE } from "@config/global";
@@ -17,7 +17,7 @@ import {
   RichTextEditor,
 } from "@composites/RichTextEditor";
 import { StrValidator } from "@utils/strValidator";
-import { updateObservationData } from "pages/monitoring/api/services/observations";
+import { updateTopicData } from "pages/monitoring/api/services/observations";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { observationVersionTexts } from "pages/monitoring/outlets/observationsAdmin/layout/observationVersionSetup";
 import { uiText } from "pages/monitoring/outlets/observationsAdmin/layout/uiText";
@@ -30,18 +30,18 @@ export function ObservationVersionCard({
   editingThis,
   onUpdateSuccess,
 }: {
-  observationData: ObservationData;
+  observationData: TopicData;
   editingThis: boolean;
   onUpdateSuccess: () => Promise<void>;
 }) {
   const [resetKey, setResetKey] = useState(0);
   const [isLoading, setIsloading] = useState(false);
   const [errors, setErrors] = useState<
-    Partial<Record<keyof ObservationVersionTexts | "root", string[]>>
+    Partial<Record<keyof TopicVersionTexts | "root", string[]>>
   >({});
 
   const observationTextsRef = useRef<
-    Map<keyof ObservationVersionTexts, MutableRefObject<EditorState | null>>
+    Map<keyof TopicVersionTexts, MutableRefObject<EditorState | null>>
   >(new Map());
 
   observationVersionTexts.forEach((observationInfo) => {
@@ -55,9 +55,9 @@ export function ObservationVersionCard({
     setErrors({});
     let hasErrors = false;
 
-    const observationInfo: ObservationVersionTexts = [
+    const observationInfo: TopicVersionTexts = [
       ...observationTexts.entries(),
-    ].reduce<ObservationVersionTexts>(
+    ].reduce<TopicVersionTexts>(
       (all, [observationKey, observationTextLexical]) => {
         const original = observationData[observationKey];
 
@@ -98,9 +98,9 @@ export function ObservationVersionCard({
     }
 
     setIsloading(true);
-    const res = await updateObservationData(
+    const res = await updateTopicData(
       observationData.id,
-      observationInfo as Record<keyof ObservationVersionTexts, string>,
+      observationInfo as Record<keyof TopicVersionTexts, string>,
     );
 
     setIsloading(false);
@@ -222,7 +222,7 @@ function SectionTextEditor({
   textToLoad,
   errors,
 }: {
-  sectionData: ObservationVersionTextType;
+  sectionData: TopicVersionTextType;
   observationTextRef: MutableRefObject<EditorState | null>;
   textToLoad: string;
   errors: string[];

@@ -22,7 +22,7 @@ import {
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import type { InitiativeByLocation } from "pages/monitoring/types/initiative";
 import { getInitiativeLocations } from "pages/monitoring/api/services/initiatives";
-import type { ObservationMetadata } from "pages/monitoring/types/observations";
+import type { TopicMetadata } from "pages/monitoring/types/topics";
 import { getObservationsByInitiative } from "pages/monitoring/api/services/observations";
 import { DataSheetSmallCard } from "pages/monitoring/outlets/initiativesMap/dataSheetAndNavigation/DataSheetSmallCard";
 import { uiText } from "pages/monitoring/outlets/initiativesMap/layout/uiText";
@@ -31,7 +31,7 @@ import { makeInitiativeLocationsString } from "@utils/format";
 export function CardsAttachment({ className }: { className?: string }) {
   const { departmentId, initiativeId } = useParams();
   const [initiatives, setInitiatives] = useState<InitiativeByLocation[]>([]);
-  const [observations, setIndicators] = useState<ObservationMetadata[]>([]);
+  const [observations, setIndicators] = useState<TopicMetadata[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [expanded, setExpanded] = useState(true);

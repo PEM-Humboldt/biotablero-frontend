@@ -108,7 +108,7 @@ export function SearchOutput() {
             >
               <div className="relative mx-2 p-4">
                 <div className="pt-8">
-                  <h4 className="text-xl m-0">{observation.topic.name}</h4>
+                  <h4 className="text-xl m-0">{observation.topicType.name}</h4>
                 </div>
 
                 <time

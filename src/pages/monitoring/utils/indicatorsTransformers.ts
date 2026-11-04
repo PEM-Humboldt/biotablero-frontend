@@ -1,9 +1,9 @@
 import type {
   BarsData,
   BarDataValues,
-  ObservationData,
+  TopicData,
   LineData,
-} from "pages/monitoring/types/observations";
+} from "pages/monitoring/types/topics";
 import { indicatorsDateFormatter } from "pages/monitoring/utils/formatters";
 
 /**
@@ -16,7 +16,7 @@ import { indicatorsDateFormatter } from "pages/monitoring/utils/formatters";
  *
  * @returns An array of series formatted for line charts, or an empty array if no groups are present.
  */
-export function dataTransformLineGraph(data: ObservationData) {
+export function dataTransformLineGraph(data: TopicData) {
   if (!data?.groups) {
     return [];
   }
@@ -85,7 +85,7 @@ export function dataTransformLineGraph(data: ObservationData) {
  *
  * @returns An object containing the sorted bar dataset and the array of unique category keys.
  */
-export function dataTransformBarGraph(data: ObservationData): BarsData {
+export function dataTransformBarGraph(data: TopicData): BarsData {
   if (!data?.groups) {
     return { values: [], keys: {} };
   }
