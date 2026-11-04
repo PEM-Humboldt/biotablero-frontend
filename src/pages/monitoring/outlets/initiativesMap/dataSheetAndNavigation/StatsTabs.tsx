@@ -22,7 +22,7 @@ export function StatsTabs() {
       onValueChange={(t) => setCurrentTab(t as StatsType)}
       value={currentTab}
     >
-      <TabsList className="flex-nowrap gap-1 my-2 mx-1 bg-transparent rounded-lg ">
+      <TabsList className="flex gap-4 xl:gap-1 my-2 bg-transparent rounded-lg">
         {tabsAvailable.map((tab) => {
           const btnInfo = statsTabsInfo[tab].tabBtn;
           const Icon = btnInfo.icon;
@@ -59,7 +59,7 @@ export function StatsTabs() {
           <TabsContent
             key={`statsContent${tab}`}
             value={tab}
-            className="max-h-80 lg:max-h-none overflow-y-auto scrollbar-custom"
+            className="overflow-y-auto scrollbar-custom"
           >
             {Stats && <Stats />}
           </TabsContent>

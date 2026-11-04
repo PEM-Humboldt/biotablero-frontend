@@ -31,13 +31,14 @@ import { Button } from "@ui/shadCN/component/button";
 import {
   Check,
   ChevronDown,
-  Expand,
   EyeClosed,
   EyeIcon,
+  InfoIcon,
   Layers,
   Minimize2,
 } from "lucide-react";
 import { cn } from "@ui/shadCN/lib/utils";
+import { HORIZONTAL_BREAKPOINT } from "@config/global";
 
 export function MapLegend({
   leastInitiativesPerDepartment,
@@ -65,7 +66,7 @@ export function MapLegend({
   const { departmentId, initiativeId } = useParams();
   const [expanded, setExpanded] = useState(() => {
     if (typeof window !== "undefined") {
-      return window.innerWidth >= 1024;
+      return window.innerWidth >= HORIZONTAL_BREAKPOINT.xl;
     }
     return true;
   });
@@ -100,7 +101,7 @@ export function MapLegend({
   return (
     <Collapsible open={expanded} onOpenChange={setExpanded}>
       <div
-        className="absolute z-10 border border-primary/50 bottom-1 right-1 lg:top-4 lg:right-14 w-70 rounded-lg overflow-hidden shadow-md h-fit"
+        className="absolute top-4 right-14 z-10 w-70 rounded-lg overflow-hidden shadow-md h-fit"
         role="group"
         aria-label={uiText.mapLegend.labelSr}
       >
@@ -137,7 +138,7 @@ export function MapLegend({
               ) : (
                 <>
                   {uiText.windowsUiText.shinkedBtn.label}
-                  <Expand />
+                  <InfoIcon />
                 </>
               )}
             </Button>
