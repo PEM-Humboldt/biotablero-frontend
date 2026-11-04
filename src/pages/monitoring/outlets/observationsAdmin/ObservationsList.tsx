@@ -9,7 +9,7 @@ import {
   getTopicData,
   getTopicMetadata,
   getTopicsByInitiative,
-} from "pages/monitoring/api/services/observations";
+} from "pages/monitoring/api/services/topics";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { LoadingDiv } from "@ui/LoadingDiv";
 import { Button } from "@ui/shadCN/component/button";

@@ -17,7 +17,7 @@ import {
   RichTextEditor,
 } from "@composites/RichTextEditor";
 import { StrValidator } from "@utils/strValidator";
-import { updateTopicData } from "pages/monitoring/api/services/observations";
+import { updateTopicData } from "pages/monitoring/api/services/topics";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { observationVersionTexts } from "pages/monitoring/outlets/observationsAdmin/layout/observationVersionSetup";
 import { uiText } from "pages/monitoring/outlets/observationsAdmin/layout/uiText";
