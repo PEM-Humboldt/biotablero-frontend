@@ -44,7 +44,7 @@ export function TerritoryStories() {
       <TerritoryStoriesCTX>
         <HeaderTS currentPanel={panel} goToPanel={handlePanelChange} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-[3fr_1fr] max-w-[1600px]">
+        <div className="grid grid-cols-1 xl:grid-cols-[3fr_1fr] max-w-[1600px]">
           <main className="">
             <PanelComponent moveToPanel={setPanel} />
           </main>

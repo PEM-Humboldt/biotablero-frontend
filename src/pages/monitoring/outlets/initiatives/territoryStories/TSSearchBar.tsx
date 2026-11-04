@@ -63,7 +63,7 @@ export function TSSearchBar({ className }: { className: string }) {
         components={searchBarItems}
         setSearchParams={setStoriesSearchParams}
         filterInjection={filterByMyUser}
-        className="p-0 gap-0 m-0 w-1/2 min-w-[250px] shrink-0"
+        className="p-0 gap-0 m-0 w-1/2 min-w-[230px] shrink-0"
       />
 
       <Button

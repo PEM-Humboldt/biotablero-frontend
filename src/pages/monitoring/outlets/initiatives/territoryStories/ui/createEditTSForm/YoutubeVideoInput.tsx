@@ -109,9 +109,7 @@ export function YoutubeVideoInput({
       }
     }
 
-    if (newCardsInfo.length > 0) {
-      setVideoCardsInfo((old) => [...old, ...newCardsInfo]);
-    }
+    setVideoCardsInfo(newCardsInfo);
     setIsLoading(false);
   }, []);
 
