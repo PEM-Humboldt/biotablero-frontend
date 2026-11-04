@@ -26,13 +26,8 @@ export function GraphSelector() {
     return null;
   }
 
-<<<<<<< HEAD:src/pages/monitoring/outlets/initiatives/topics/card/GraphSelector.tsx
   switch (currentTopic.topicType.id) {
     case TopicMetric.OCCUPATION_SPECIES:
-=======
-  switch (currentObservation.topicType.id) {
-    case ObservationMetric.OCCUPATION_SPECIES:
->>>>>>> 241dc9bb5 (Updates types naming Observation -> Topic):src/pages/monitoring/outlets/initiatives/observations/card/GraphSelector.tsx
       return <OccupationSpecies />;
 
     case TopicMetric.DETECTION_PROBABILITY_WITHOUT_COVARIABLES:
