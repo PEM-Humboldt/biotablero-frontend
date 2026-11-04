@@ -60,7 +60,7 @@ export function FeaturedStory() {
         className="bg-accent/10 border border-accent rounded-lg m-4 p-4"
       />
 
-      <article className="m-8 p-6 py-4 rounded-2xl shadow-lg space-y-4 bg-background outline outline-primary/10 hover:outline-primary hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-in-out">
+      <article className="m-4 mb-8 xl:m-8 p-6 py-4 rounded-2xl shadow-lg space-y-4 bg-background outline outline-primary/10 hover:outline-primary hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-in-out">
         <header>
           <h3 className="text-primary text-3xl font-normal">
             <span className="sr-only">

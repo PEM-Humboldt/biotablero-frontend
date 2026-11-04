@@ -66,7 +66,7 @@ export function TerritoryStoryReader() {
   const featuredImg = getFeaturedImage(currentStory);
 
   return (
-    <div className="flex flex-col p-4 gap-4">
+    <div className="flex flex-col p-2 xl:p-4 gap-4">
       <Button
         variant="outline"
         size="lg"
@@ -86,7 +86,9 @@ export function TerritoryStoryReader() {
           )}
 
           <div className="flex flex-col-reverse">
-            <h3 className="text-3xl font-bold mb-1">{currentStory.title}</h3>
+            <h3 className="text-xl xl:text-3xl font-bold mb-1">
+              {currentStory.title}
+            </h3>
 
             <div className="grid grid-cols-2 items-center">
               <StoryTimestamp
@@ -95,7 +97,7 @@ export function TerritoryStoryReader() {
               />
               <StoryCreator
                 story={currentStory}
-                className="text-lg font-normal border-l border-l-primary/30 p-2 px-4"
+                className="text-sm xl:text-lg font-normal border-l border-l-primary/30 p-2 px-4"
               />
             </div>
           </div>
@@ -116,7 +118,7 @@ export function TerritoryStoryReader() {
           <LikeTSButton story={currentStory} className="-ml-2 mt-2 mb-6" />
         </header>
 
-        <section className="markdown-renderer m-4 lg:m-8 mt-0 w-full max-w-[75ch]">
+        <section className="markdown-renderer p-2 xl:m-8 mt-0 w-full max-w-[75ch]">
           {parseSimpleMarkdown(currentStory.text, {
             headingsOffset: TERRITORY_STORY_HEADINGS_OFFSET,
           })}
@@ -206,7 +208,7 @@ function FeaturedImageContainer({
           isVertical ? "aspect-3/2" : "aspect-auto"
         }`}
       />
-      <figcaption className="text-right p-4 pt-1 w-[50%] min-w-[250px] text-balance">
+      <figcaption className="text-right text-sm md:text-base p-4 pt-1 w-[50%] min-w-[250px] text-balance">
         {featuredImg.alt}
       </figcaption>
     </figure>
