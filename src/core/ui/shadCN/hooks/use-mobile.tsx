@@ -1,6 +1,7 @@
+import { HORIZONTAL_BREAKPOINT } from "@config/global";
 import * as React from "react";
 
-const MOBILE_BREAKPOINT = 1280;
+const MOBILE_BREAKPOINT = HORIZONTAL_BREAKPOINT.xl;
 
 export function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(
