@@ -1,6 +1,6 @@
 import type {
   LocationCompleteInfo,
-  TagInObservation,
+  TagInTopic,
 } from "pages/monitoring/types/odataResponse";
 import { TagData } from "./initiative";
 import { LucideIcon } from "lucide-react";
@@ -14,28 +14,26 @@ export enum ObservationMetric {
   COLLECTIVE_ACTION_PARTICIPATION = 6,
 }
 
-export function isTagInObservation(
-  tag: TagData | TagInObservation,
-): tag is TagInObservation {
+export function isTagInTopic(tag: TagData | TagInTopic): tag is TagInTopic {
   return "initiativeTagId" in tag;
 }
 
-export type ObservationDescription = { id: ObservationMetric; name: string };
-export type ObservationVersion = {
+export type TopicDescription = { id: ObservationMetric; name: string };
+export type TopicVersion = {
   id: number;
   creationDate: string;
   version: number;
 };
 
-export interface ObservationMetadata {
+export interface TopicMetadata {
   id: number;
   name: string;
   initiativeId: number;
   initiativeName?: string;
-  topic: ObservationDescription;
+  topicType: TopicDescription;
   locations: LocationCompleteInfo[];
-  versions: ObservationVersion[];
-  tags: TagInObservation[];
+  versions: TopicVersion[];
+  tags: TagInTopic[];
 }
 
 /* NOTE:
@@ -51,7 +49,7 @@ export interface ObservationMetadata {
  *  measureUnit: {name: string, representation?: string}
  *  no lo necesitan 11 y 12
  */
-type ObservationValue = {
+type TopicValue = {
   id: number;
   date: { year: number; month: number };
   dateEnd?: { year: number; month: number };
@@ -69,7 +67,7 @@ type ObservationValue = {
  *  parent?: {id: number, name: string}
  *  los necesita 1,2,4,5,6
  */
-export type ObservationGroup = {
+export type TopicGroup = {
   id: number;
   category: {
     id: number;
@@ -77,10 +75,10 @@ export type ObservationGroup = {
     description?: string;
     parent?: { id: number; name: string };
   };
-  values: ObservationValue[];
+  values: TopicValue[];
 };
 
-export interface ObservationData {
+export interface TopicData {
   id: number;
   observationId: number;
   creationDate: string;
@@ -90,7 +88,7 @@ export interface ObservationData {
   interpretation?: string;
   considerations?: string;
   authorship?: string;
-  groups: ObservationGroup[];
+  groups: TopicGroup[];
 }
 
 export type LineDataValues = {
@@ -135,13 +133,13 @@ export type CleanDataType = {
   cleanData: BarsData | LineData[];
 };
 
-export type ObservationVersionTexts = Omit<
-  ObservationData,
+export type TopicVersionTexts = Omit<
+  TopicData,
   "id" | "observationId" | "creationDate" | "version" | "groups"
 >;
 
-export type ObservationVersionTextType = {
-  key: keyof ObservationVersionTexts;
+export type TopicVersionTextType = {
+  key: keyof TopicVersionTexts;
   label: string;
   icon: LucideIcon;
 };

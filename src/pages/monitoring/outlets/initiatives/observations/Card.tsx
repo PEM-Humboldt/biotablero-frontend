@@ -10,7 +10,7 @@ import {
 } from "@ui/shadCN/component/tabs";
 
 import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
-import type { ObservationMetadata } from "pages/monitoring/types/observations";
+import type { TopicMetadata } from "pages/monitoring/types/topics";
 import { GraphSelector } from "pages/monitoring/outlets/initiatives/observations/card/GraphSelector";
 import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
 import { AddMCIndicatorToReport } from "@ui/AddMCIndicatorToReport";
@@ -31,8 +31,7 @@ export function Card() {
   const indicatorTabs = uiText.observationCard.tabs.reduce<
     { key: string; label: string; icon: LucideIcon; text: string }[]
   >((all, current) => {
-    const value =
-      currentObservation?.[current.key as keyof ObservationMetadata];
+    const value = currentObservation?.[current.key as keyof TopicMetadata];
 
     if (value && typeof value === "string") {
       all.push({ ...current, text: value });
@@ -77,7 +76,7 @@ export function Card() {
             )}
 
             <div className="text-primary-foreground font-normal">
-              <h3 className="m-0">{currentObservation.topic.name}</h3>
+              <h3 className="m-0">{currentObservation.topicType.name}</h3>
 
               <span className="text-base italic" title="Etiquetas">
                 {currentObservation.tags.map((t) => t.tag.name).join(" - ")}
@@ -97,7 +96,7 @@ export function Card() {
           <div className="flex flex-wrap flex-col xl:flex-row gap-4">
             <section className="flex-2 xl:flex-3 w-full h-full bg-background rounded-lg p-2 shadow-2xl">
               <h4 className="sr-only">
-                Gráfica de {currentObservation.topic.name}
+                Gráfica de {currentObservation.topicType.name}
               </h4>
               <GraphSelector />
             </section>

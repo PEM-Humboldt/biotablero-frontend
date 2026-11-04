@@ -1,4 +1,4 @@
-import { getObservations } from "pages/monitoring/api/services/observations";
+import { getTopics } from "pages/monitoring/api/services/observations";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 
 /*
@@ -9,7 +9,7 @@ import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
  */
 export function observationNameNotExist(initiativeId: number) {
   return async (observationName: string) => {
-    const existingInitiative = await getObservations({
+    const existingInitiative = await getTopics({
       filter: `initiativeId eq ${initiativeId} and name eq '${observationName}'`,
     });
 

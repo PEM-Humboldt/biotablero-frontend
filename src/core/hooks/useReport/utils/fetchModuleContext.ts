@@ -128,7 +128,7 @@ async function fetchInitiativeContext(
     initiativeStats: {
       area: initiativeInfo.polygonArea,
       areaUnit: " ha",
-      localitiesUnderMonitoring: initiativeStats.totalMunicipalities,
+      localitiesUnderMonitoring: initiativeStats.TotalMunicipalities,
       monitoringEvents: monitoringEvents.reduce(
         (total, curr) => total + curr.value,
         0,

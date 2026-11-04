@@ -1,5 +1,5 @@
 import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
-import { ObservationMetric } from "pages/monitoring/types/observations";
+import { ObservationMetric } from "pages/monitoring/types/topics";
 import { OccupationSpecies } from "pages/monitoring/outlets/initiatives/observations/card/OccupationSpecies";
 import { DetectionProbabilityWithoutCovariables } from "pages/monitoring/outlets/initiatives/observations/card/DetectionProbabilityWithoutCovariables";
 import { SpeciesDiversity } from "pages/monitoring/outlets/initiatives/observations/card/SpeciesDiversity";
@@ -26,7 +26,7 @@ export function GraphSelector() {
     return null;
   }
 
-  switch (currentObservation.topic.id) {
+  switch (currentObservation.topicType.id) {
     case ObservationMetric.OCCUPATION_SPECIES:
       return <OccupationSpecies />;
 

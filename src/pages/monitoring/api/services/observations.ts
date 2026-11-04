@@ -1,10 +1,7 @@
-import type { ODataObservations } from "pages/monitoring/types/odataResponse";
+import type { ODataTopics } from "pages/monitoring/types/odataResponse";
 import { createODataGetter } from "pages/monitoring/api/oDataGetter";
 import { monitoringAPI } from "pages/monitoring/api/core";
-import type {
-  ObservationData,
-  ObservationMetadata,
-} from "pages/monitoring/types/observations";
+import type { TopicData, TopicMetadata } from "pages/monitoring/types/topics";
 
 /**
  * Fetches the observatios metadata from the "Observation" endpoint using odataParams.
@@ -15,8 +12,7 @@ import type {
  * - On success: An `ODataObservations` object.
  * - On failure: A `ApiRequestError` object.
  */
-export const getObservations =
-  createODataGetter<ODataObservations>("Observation");
+export const getObservations = createODataGetter<ODataTopics>("Observation");
 
 /**
  * Retrieves all the observations metadata associated with a specific initiative.
@@ -28,7 +24,7 @@ export const getObservations =
  * - On failure: A `ApiRequestError` object.
  */
 export async function getObservationsByInitiative(initiativeId: number) {
-  const res = await monitoringAPI<ObservationMetadata[]>({
+  const res = await monitoringAPI<TopicMetadata[]>({
     type: "get",
     endpoint: `Observation/GetByInitiative/${initiativeId}`,
   });
@@ -46,7 +42,7 @@ export async function getObservationsByInitiative(initiativeId: number) {
  * - On failure: A `ApiRequestError` object.
  */
 export async function getObservationData(observationId: number) {
-  const res = await monitoringAPI<ObservationData>({
+  const res = await monitoringAPI<TopicData>({
     type: "get",
     endpoint: `ObservationVersion/${observationId}`,
   });
@@ -65,7 +61,7 @@ export async function updateObservationData(
     string
   >,
 ) {
-  const res = await monitoringAPI<ObservationData>({
+  const res = await monitoringAPI<TopicData>({
     type: "put",
     endpoint: `ObservationVersion/${observationId}`,
     options: {
@@ -90,7 +86,7 @@ export async function updateObservationData(
  * - On failure: A `ApiRequestError` object.
  */
 export async function getObservationMetadata(observationId: number) {
-  const res = await monitoringAPI<ObservationMetadata>({
+  const res = await monitoringAPI<TopicMetadata>({
     type: "get",
     endpoint: `Observation/${observationId}`,
   });
@@ -102,7 +98,7 @@ export async function updateObservationName(
   observationId: number,
   name: string,
 ) {
-  const res = await monitoringAPI<ObservationMetadata>({
+  const res = await monitoringAPI<TopicMetadata>({
     type: "put",
     endpoint: `Observation/${observationId}`,
     options: {

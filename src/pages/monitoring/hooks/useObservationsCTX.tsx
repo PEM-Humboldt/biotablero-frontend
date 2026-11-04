@@ -15,14 +15,14 @@ import type { ODataParams } from "@appTypes/odata";
 import {
   ObservationMetric,
   type CleanDataType,
-  type ObservationData,
-  type ObservationMetadata,
-} from "pages/monitoring/types/observations";
+  type TopicData,
+  type TopicMetadata,
+} from "pages/monitoring/types/topics";
 import {
-  getObservationData,
-  getObservationMetadata,
-  getObservations,
-  getObservationsByInitiative,
+  getTopicData,
+  getTopicMetadata,
+  getTopics,
+  getTopicsByInitiative,
 } from "pages/monitoring/api/services/observations";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { OBSERVATIONS_PER_PAGE } from "@config/monitoring";
@@ -32,12 +32,10 @@ import {
 } from "pages/monitoring/utils/indicatorsTransformers";
 
 type ObservationContextValues = {
-  observations: ObservationMetadata[];
+  observations: TopicMetadata[];
   isLoading: boolean;
   errors: string[];
-  currentObservation:
-    | (ObservationMetadata & ObservationData & CleanDataType)
-    | null;
+  currentObservation: (TopicMetadata & TopicData & CleanDataType) | null;
   setSearchObservations: Dispatch<SetStateAction<ODataParams>>;
   currentPage: number;
   setCurrentPage: (page: number) => void;
@@ -66,9 +64,9 @@ export function ObservationsCTX({ children }: { children: ReactNode }) {
   const [searchParams, setSearchParams] = useState<ODataParams>({
     top: OBSERVATIONS_PER_PAGE,
   });
-  const [observations, setObservations] = useState<ObservationMetadata[]>([]);
+  const [observations, setObservations] = useState<TopicMetadata[]>([]);
   const [currentObservation, setCurrentObservation] = useState<
-    (ObservationMetadata & ObservationData & CleanDataType) | null
+    (TopicMetadata & TopicData & CleanDataType) | null
   >(null);
   const navigate = useNavigate();
 
@@ -86,7 +84,7 @@ export function ObservationsCTX({ children }: { children: ReactNode }) {
       setErrors([]);
 
       if (initiativeId) {
-        const res = await getObservationsByInitiative(Number(initiativeId));
+        const res = await getTopicsByInitiative(Number(initiativeId));
         setIsLoading(false);
         if (isMonitoringAPIError(res)) {
           setErrors(res.data.map((err) => err.msg));
@@ -98,7 +96,7 @@ export function ObservationsCTX({ children }: { children: ReactNode }) {
         observationsAmount.current = res.length;
       } else {
         const skip = (resolvedPage - 1) * OBSERVATIONS_PER_PAGE;
-        const res = await getObservations({
+        const res = await getTopics({
           ...searchParams,
           skip,
           top: OBSERVATIONS_PER_PAGE,
@@ -129,7 +127,7 @@ export function ObservationsCTX({ children }: { children: ReactNode }) {
       setIsLoading(true);
       setErrors([]);
 
-      const data = await getObservationData(Number(currentObservationId));
+      const data = await getTopicData(Number(currentObservationId));
       if (isMonitoringAPIError(data)) {
         setIsLoading(false);
         setCurrentObservation(null);
@@ -137,7 +135,7 @@ export function ObservationsCTX({ children }: { children: ReactNode }) {
         return;
       }
 
-      const metadata = await getObservationMetadata(data.observationId);
+      const metadata = await getTopicMetadata(data.observationId);
       if (isMonitoringAPIError(metadata)) {
         setIsLoading(false);
         setCurrentObservation(null);
@@ -156,7 +154,7 @@ export function ObservationsCTX({ children }: { children: ReactNode }) {
       setCurrentObservation({
         ...metadata,
         ...data,
-        cleanData: dataTransformFunction[metadata.topic.id](data),
+        cleanData: dataTransformFunction[metadata.topicType.id](data),
       });
     };
 

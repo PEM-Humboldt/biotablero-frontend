@@ -7,7 +7,7 @@ import { hashStringToRange } from "@utils/format";
 import { GetObservationInfo } from "@hooks/useReport/GetIndicatorInfo";
 
 import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
-import { type BarsData } from "pages/monitoring/types/observations";
+import { type BarsData } from "pages/monitoring/types/topics";
 import {
   getContrastColor,
   getSeriesColor,
