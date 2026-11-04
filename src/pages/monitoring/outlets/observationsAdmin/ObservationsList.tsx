@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
 import type { InitiativeByLocation } from "pages/monitoring/types/initiative";
 import {
-  type ObservationData,
-  type ObservationMetadata,
-} from "pages/monitoring/types/observations";
+  type TopicData,
+  type TopicMetadata,
+} from "pages/monitoring/types/topics";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import {
-  getObservationData,
-  getObservationMetadata,
-  getObservationsByInitiative,
+  getTopicData,
+  getTopicMetadata,
+  getTopicsByInitiative,
 } from "pages/monitoring/api/services/observations";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { LoadingDiv } from "@ui/LoadingDiv";
@@ -29,10 +29,10 @@ export function ObservationsList({
   const [errors, setErrors] = useState<string[]>([]);
   const [editObservation, setEditObservation] = useState<number | null>(null);
   const [observationsMetadata, setObservationsMetadata] = useState<
-    ObservationMetadata[]
+    TopicMetadata[]
   >([]);
   const [selectedObservationVersion, setSelectedObservationVersion] =
-    useState<ObservationData | null>(null);
+    useState<TopicData | null>(null);
 
   useEffect(() => {
     if (!fromInitiative) {
@@ -43,7 +43,7 @@ export function ObservationsList({
       setErrors([]);
       setIsLoading(true);
 
-      const res = await getObservationsByInitiative(fromInitiative.id);
+      const res = await getTopicsByInitiative(fromInitiative.id);
       setIsLoading(false);
 
       if (isMonitoringAPIError(res)) {
@@ -60,7 +60,7 @@ export function ObservationsList({
     setErrors([]);
     setIsLoading(true);
 
-    const res = await getObservationData(observationVersionId);
+    const res = await getTopicData(observationVersionId);
     setIsLoading(false);
     if (isMonitoringAPIError(res)) {
       setErrors(res.data.map((err) => err.msg));
@@ -75,7 +75,7 @@ export function ObservationsList({
     setIsLoading(true);
     setErrors([]);
 
-    const updatedObservation = await getObservationMetadata(observationId);
+    const updatedObservation = await getTopicMetadata(observationId);
     setIsLoading(false);
     if (isMonitoringAPIError(updatedObservation)) {
       setErrors(updatedObservation.data.map((err) => err.msg));

@@ -6,9 +6,9 @@ import {
   useState,
 } from "react";
 import type { TagData } from "pages/monitoring/types/initiative";
-import { type ObservationMetadata } from "pages/monitoring/types/observations";
+import { type TopicMetadata } from "pages/monitoring/types/topics";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import { updateObservationName } from "pages/monitoring/api/services/observations";
+import { updateTopicName } from "pages/monitoring/api/services/observations";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { Button } from "@ui/shadCN/component/button";
 import { TagsGroupsRender } from "pages/monitoring/ui/TagsGroupsRender";
@@ -20,7 +20,7 @@ import {
 } from "pages/monitoring/ui/TagSelector";
 
 import { INITIATIVE_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS } from "@config/monitoring";
-import type { TagInObservation } from "pages/monitoring/types/odataResponse";
+import type { TagInTopic } from "pages/monitoring/types/odataResponse";
 import {
   addTagToObservation,
   removeTagFromObservation,
@@ -31,7 +31,7 @@ import { toast } from "sonner";
 import { UserRoundCheck } from "lucide-react";
 import { observationTagCategories } from "pages/monitoring/outlets/observationsAdmin/layout/observationTagCategories";
 
-const getTagId = (tag: TagInObservation | TagData) =>
+const getTagId = (tag: TagInTopic | TagData) =>
   isTagRelated(tag) ? tag.tag.id : tag.id;
 
 export function ObservationHeader({
@@ -39,7 +39,7 @@ export function ObservationHeader({
   editMode,
   onUpdateSuccess,
 }: {
-  observation: ObservationMetadata;
+  observation: TopicMetadata;
   editMode: boolean;
   onUpdateSuccess: () => Promise<void>;
 }) {
@@ -49,14 +49,14 @@ export function ObservationHeader({
   );
   const [observationName, setObservationName] = useState(observation.name);
 
-  const tagsRef = useRef<TagInObservation[]>([]);
+  const tagsRef = useRef<TagInTopic[]>([]);
 
   useEffect(() => {
     tagsRef.current = observation.tags;
   }, [observation.tags]);
 
   const savedTagsSetter = () =>
-    observationTagCategories.reduce<Record<number, TagInObservation[]>>(
+    observationTagCategories.reduce<Record<number, TagInTopic[]>>(
       (all, current) => {
         const categoryId = current.tagCategoryId;
 
@@ -69,10 +69,10 @@ export function ObservationHeader({
     );
 
   const [tags, setTags] =
-    useState<Record<number, (TagInObservation | TagData)[]>>(savedTagsSetter);
+    useState<Record<number, (TagInTopic | TagData)[]>>(savedTagsSetter);
 
   const updateTags = useCallback(
-    (categoryId: number) => (updatedTags: (TagInObservation | TagData)[]) => {
+    (categoryId: number) => (updatedTags: (TagInTopic | TagData)[]) => {
       setTags((oldTags) => {
         const newState = {
           ...oldTags,
@@ -114,7 +114,7 @@ export function ObservationHeader({
       }
 
       if (sanitizedName !== observation.name) {
-        const res = await updateObservationName(observation.id, sanitizedName);
+        const res = await updateTopicName(observation.id, sanitizedName);
         if (isMonitoringAPIError(res)) {
           setErrors((old) => ({
             ...old,
@@ -211,7 +211,7 @@ export function ObservationHeader({
         <h4 className="*:block">
           <span>{observation.name}</span>
           <span className="text-base italic font-light">
-            {observation.topic.name}
+            {observation.topicType.name}
           </span>
         </h4>
 

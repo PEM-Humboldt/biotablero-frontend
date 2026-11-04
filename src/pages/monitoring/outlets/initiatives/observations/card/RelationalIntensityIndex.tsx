@@ -7,7 +7,7 @@ import { INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY } from "@config/monitoring";
 import { GetObservationInfo } from "@hooks/useReport/GetIndicatorInfo";
 
 import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
-import type { BarsData } from "pages/monitoring/types/observations";
+import type { BarsData } from "pages/monitoring/types/topics";
 import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/observations/card/ui/GraphInfoSelector";
 import { getContrastColor } from "pages/monitoring/outlets/initiatives/observations/card/utils/colors";
 import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";

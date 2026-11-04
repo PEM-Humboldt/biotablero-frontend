@@ -5,9 +5,9 @@ import {
   MessageCircleWarning,
   Network,
 } from "lucide-react";
-import { type ObservationVersionTextType } from "pages/monitoring/types/observations";
+import { type TopicVersionTextType } from "pages/monitoring/types/topics";
 
-export const observationVersionTexts: ObservationVersionTextType[] = [
+export const observationVersionTexts: TopicVersionTextType[] = [
   {
     key: "description",
     label: "¿Qué dice este indicador?",

@@ -46,11 +46,11 @@ export function GetObservationInfo({
     );
 
     const lastVersion = currentObservation.versions.at(-1);
-    const { name, topic: type, version } = currentObservation;
+    const { name, topicType: type, version } = currentObservation;
 
     const sectionInfo: Omit<IndicatorSection, "graphs"> = {
-      title: currentObservation.name ?? currentObservation.topic.name,
-      type: currentObservation.topic.name,
+      title: currentObservation.name ?? currentObservation.topicType.name,
+      type: currentObservation.topicType.name,
       creationDate: currentObservation.creationDate,
       lastUpdate: lastVersion?.creationDate ?? currentObservation.creationDate,
       version: currentObservation.version,

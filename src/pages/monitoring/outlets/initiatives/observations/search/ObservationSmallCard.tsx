@@ -7,14 +7,14 @@ import { Button } from "@ui/shadCN/component/button";
 import { LOCALE } from "@config/global";
 
 import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
-import type { ObservationMetadata } from "pages/monitoring/types/observations";
+import type { TopicMetadata } from "pages/monitoring/types/topics";
 import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
 import { TagsGroupsRender } from "pages/monitoring/ui/TagsGroupsRender";
 
 export function ObservationSmallCard({
   observation,
 }: {
-  observation: ObservationMetadata;
+  observation: TopicMetadata;
 }) {
   const { currentObservation } = useObservationsCTX();
   const isCurrent =
@@ -53,7 +53,7 @@ export function ObservationSmallCard({
         isCurrent ? "bg-muted outline-primary" : "bg-background shadow-2xl",
       )}
     >
-      <h4 className="mb-1 text-balance">{observation.topic.name}</h4>
+      <h4 className="mb-1 text-balance">{observation.topicType.name}</h4>
       <div className="flex flex-wrap m-1 ml-0 gap-2">
         <TagsGroupsRender
           tags={observation.tags.map((t) => t.tag)}

@@ -10,8 +10,8 @@ export interface GeneralStatsType {
 }
 
 export interface InitiativeStats {
-  totalMunicipalities: number;
-  totalObservations: number;
+  TotalMunicipalities: number;
+  TotalTopics: number;
 }
 
 export interface InitiativeStatsComplete
@@ -46,13 +46,13 @@ export type DemographicStatsType = {
   organization: BarsInfo[];
 };
 
-export type ObservationsStatsType = {
-  observationsByScale: BarsInfo[];
+export type TopicsStatsType = {
+  topicsByScale: BarsInfo[];
 };
 
 export type StatsResponseMap = {
   General: GeneralStatsType;
   Ecosystems: EcosystemsStatsType;
   Demographic: DemographicStatsType;
-  Indicators: ObservationsStatsType;
+  Indicators: TopicsStatsType;
 };

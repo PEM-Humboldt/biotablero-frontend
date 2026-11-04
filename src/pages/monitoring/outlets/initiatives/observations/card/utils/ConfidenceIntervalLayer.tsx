@@ -1,9 +1,6 @@
 import type { InferX, InferY, LineCustomSvgLayerProps } from "@nivo/line";
 import { area, curveLinear } from "d3-shape";
-import type {
-  LineData,
-  LineDataValues,
-} from "pages/monitoring/types/observations";
+import type { LineData, LineDataValues } from "pages/monitoring/types/topics";
 
 interface ComputedPoint {
   data: LineDataValues;
