@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { type TopicVersionTextType } from "pages/monitoring/types/topics";
 
-export const observationVersionTexts: TopicVersionTextType[] = [
+export const topicVersionTexts: TopicVersionTextType[] = [
   {
     key: "description",
     label: "¿Qué dice este indicador?",

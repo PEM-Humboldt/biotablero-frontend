@@ -58,7 +58,7 @@ export function GetObservationInfo({
       EcosystemTag: tags[4] ?? [],
       description: currentObservation?.description ?? "",
       singleMap,
-      url: `${window.location.origin}/Monitoreo/Iniciativas/${currentObservation.initiativeId}/Indicadores/${currentObservation.observationId}`,
+      url: `${window.location.origin}/Monitoreo/Iniciativas/${currentObservation.initiativeId}/Indicadores/${currentObservation.topicId}`,
       card: {
         methodology: currentObservation?.methodology ?? "",
         interpretation: currentObservation?.interpretation ?? "",
@@ -74,7 +74,7 @@ export function GetObservationInfo({
       sectionInfo,
       mapUrl,
       mapElementId,
-      sectionUrl: `${window.location.origin}/Monitoreo/Iniciativas/${currentObservation.initiativeId}/Indicadores/${currentObservation.observationId}`,
+      sectionUrl: `${window.location.origin}/Monitoreo/Iniciativas/${currentObservation.initiativeId}/Indicadores/${currentObservation.topicId}`,
     });
 
     return () => {
