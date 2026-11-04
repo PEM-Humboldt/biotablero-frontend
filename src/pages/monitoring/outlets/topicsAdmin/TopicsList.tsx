@@ -16,22 +16,20 @@ import { Button } from "@ui/shadCN/component/button";
 import { ScanSearch } from "lucide-react";
 import { cn } from "@ui/shadCN/lib/utils";
 import { motion } from "motion/react";
-import { ObservationVersionCard } from "pages/monitoring/outlets/observationsAdmin//observationsList/ObservationVersionCard";
-import { ObservationHeader } from "pages/monitoring/outlets/observationsAdmin/observationsList/ObservationHeader";
-import { uiText } from "pages/monitoring/outlets/observationsAdmin/layout/uiText";
+import { TopicVersionCard } from "pages/monitoring/outlets/topicsAdmin/topicsList/TopicVersionCard";
+import { TopicHeader } from "pages/monitoring/outlets/topicsAdmin/topicsList/TopicHeader";
+import { uiText } from "pages/monitoring/outlets/topicsAdmin/layout/uiText";
 
-export function ObservationsList({
+export function TopicsList({
   fromInitiative,
 }: {
   fromInitiative: InitiativeByLocation | null;
 }) {
   const [isLoading, setIsLoading] = useState(true);
   const [errors, setErrors] = useState<string[]>([]);
-  const [editObservation, setEditObservation] = useState<number | null>(null);
-  const [observationsMetadata, setObservationsMetadata] = useState<
-    TopicMetadata[]
-  >([]);
-  const [selectedObservationVersion, setSelectedObservationVersion] =
+  const [editTopic, setEditTopic] = useState<number | null>(null);
+  const [topicsMetadata, setTopicsMetadata] = useState<TopicMetadata[]>([]);
+  const [selectedTopicVersion, setSelectedTopicVersion] =
     useState<TopicData | null>(null);
 
   useEffect(() => {
@@ -39,7 +37,7 @@ export function ObservationsList({
       return;
     }
 
-    const fetchObservationsMetadata = async () => {
+    const fetchTopicsMetadata = async () => {
       setErrors([]);
       setIsLoading(true);
 
@@ -50,61 +48,59 @@ export function ObservationsList({
         setErrors(res.data.map((err) => err.msg));
         return [];
       }
-      setObservationsMetadata(res);
+      setTopicsMetadata(res);
     };
 
-    void fetchObservationsMetadata();
+    void fetchTopicsMetadata();
   }, [fromInitiative]);
 
-  const handleGetVersion = useCallback(async (observationVersionId: number) => {
+  const handleGetVersion = useCallback(async (topicVersionId: number) => {
     setErrors([]);
     setIsLoading(true);
 
-    const res = await getTopicData(observationVersionId);
+    const res = await getTopicData(topicVersionId);
     setIsLoading(false);
     if (isMonitoringAPIError(res)) {
       setErrors(res.data.map((err) => err.msg));
-      setSelectedObservationVersion(null);
+      setSelectedTopicVersion(null);
       return;
     }
 
-    setSelectedObservationVersion(res);
+    setSelectedTopicVersion(res);
   }, []);
 
-  const updateObservationMetadata = async (observationId: number) => {
+  const updateTopicMetadata = async (topicId: number) => {
     setIsLoading(true);
     setErrors([]);
 
-    const updatedObservation = await getTopicMetadata(observationId);
+    const updatedTopic = await getTopicMetadata(topicId);
     setIsLoading(false);
-    if (isMonitoringAPIError(updatedObservation)) {
-      setErrors(updatedObservation.data.map((err) => err.msg));
+    if (isMonitoringAPIError(updatedTopic)) {
+      setErrors(updatedTopic.data.map((err) => err.msg));
       return;
     }
 
-    setObservationsMetadata((oldObservations) => {
-      const newObservations = oldObservations.map((oldObservation) =>
-        oldObservation.id === updatedObservation.id
-          ? updatedObservation
-          : oldObservation,
+    setTopicsMetadata((oldTopics) => {
+      const newTopics = oldTopics.map((oldTopic) =>
+        oldTopic.id === updatedTopic.id ? updatedTopic : oldTopic,
       );
-      return newObservations;
+      return newTopics;
     });
   };
 
-  const handleSetObservationToEdit = useCallback(
-    (observationId: number | null) => {
-      setEditObservation(observationId);
+  const handleSetTopicToEdit = useCallback(
+    (topicId: number | null) => {
+      setEditTopic(topicId);
 
       if (
-        observationId !== null &&
-        selectedObservationVersion &&
-        selectedObservationVersion.observationId !== observationId
+        topicId !== null &&
+        selectedTopicVersion &&
+        selectedTopicVersion.topicId !== topicId
       ) {
-        setSelectedObservationVersion(null);
+        setSelectedTopicVersion(null);
       }
     },
-    [selectedObservationVersion],
+    [selectedTopicVersion],
   );
 
   return (
@@ -125,8 +121,8 @@ export function ObservationsList({
         aria-label={uiText.observationsList.listDescription.sr}
         className="space-y-4"
       >
-        {observationsMetadata.map((observation) => {
-          const isEditModeOn = observation.id === editObservation;
+        {topicsMetadata.map((observation) => {
+          const isEditModeOn = observation.id === editTopic;
 
           return (
             <motion.li
@@ -143,9 +139,7 @@ export function ObservationsList({
               <motion.div layout="position" className="flex flex-col gap-2">
                 <Button
                   onClick={() =>
-                    handleSetObservationToEdit(
-                      isEditModeOn ? null : observation.id,
-                    )
+                    handleSetTopicToEdit(isEditModeOn ? null : observation.id)
                   }
                   className="ml-auto"
                 >
@@ -154,12 +148,10 @@ export function ObservationsList({
                     : "Iniciar el modo de edición"}
                 </Button>
 
-                <ObservationHeader
-                  observation={observation}
+                <TopicHeader
+                  topic={observation}
                   editMode={isEditModeOn}
-                  onUpdateSuccess={() =>
-                    updateObservationMetadata(observation.id)
-                  }
+                  onUpdateSuccess={() => updateTopicMetadata(observation.id)}
                 />
 
                 <div
@@ -174,7 +166,7 @@ export function ObservationsList({
                   <ul className="border-t border-t-muted py-2 flex flex-wrap gap-2">
                     {observation.versions.map((version) => {
                       const isThisVersionSelected =
-                        version.id === selectedObservationVersion?.id;
+                        version.id === selectedTopicVersion?.id;
 
                       return (
                         <li
@@ -183,7 +175,7 @@ export function ObservationsList({
                           <Button
                             onClick={() =>
                               isThisVersionSelected
-                                ? setSelectedObservationVersion(null)
+                                ? setSelectedTopicVersion(null)
                                 : void handleGetVersion(version.id)
                             }
                             variant={
@@ -210,21 +202,20 @@ export function ObservationsList({
                   </ul>
                 </div>
 
-                {selectedObservationVersion &&
-                  selectedObservationVersion.observationId ===
-                    observation.id && (
+                {selectedTopicVersion &&
+                  selectedTopicVersion.topicId === observation.id && (
                     <>
-                      <ObservationVersionCard
-                        observationData={selectedObservationVersion}
+                      <TopicVersionCard
+                        topicData={selectedTopicVersion}
                         editingThis={isEditModeOn}
                         onUpdateSuccess={() =>
-                          handleGetVersion(selectedObservationVersion.id)
+                          handleGetVersion(selectedTopicVersion.id)
                         }
                       />
 
                       {isEditModeOn && (
                         <Button
-                          onClick={() => handleSetObservationToEdit(null)}
+                          onClick={() => handleSetTopicToEdit(null)}
                           className="ml-auto"
                         >
                           {"cerrar el modo de edición"}

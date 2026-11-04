@@ -5,7 +5,7 @@ import type {
 import { TagData } from "./initiative";
 import { LucideIcon } from "lucide-react";
 
-export enum ObservationMetric {
+export enum TopicMetric {
   OCCUPATION_SPECIES = 1,
   DETECTION_PROBABILITY_WITHOUT_COVARIABLES = 2,
   SPECIES_DIVERSITY = 3,
@@ -18,7 +18,7 @@ export function isTagInTopic(tag: TagData | TagInTopic): tag is TagInTopic {
   return "initiativeTagId" in tag;
 }
 
-export type TopicDescription = { id: ObservationMetric; name: string };
+export type TopicDescription = { id: TopicMetric; name: string };
 export type TopicVersion = {
   id: number;
   creationDate: string;
@@ -80,7 +80,7 @@ export type TopicGroup = {
 
 export interface TopicData {
   id: number;
-  observationId: number;
+  topicId: number;
   creationDate: string;
   version: number;
   description?: string;
@@ -135,7 +135,7 @@ export type CleanDataType = {
 
 export type TopicVersionTexts = Omit<
   TopicData,
-  "id" | "observationId" | "creationDate" | "version" | "groups"
+  "id" | "topicId" | "creationDate" | "version" | "groups"
 >;
 
 export type TopicVersionTextType = {

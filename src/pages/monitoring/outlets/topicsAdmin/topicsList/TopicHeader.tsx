@@ -22,24 +22,24 @@ import {
 import { INITIATIVE_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS } from "@config/monitoring";
 import type { TagInTopic } from "pages/monitoring/types/odataResponse";
 import {
-  addTagToObservation,
-  removeTagFromObservation,
+  addTagToTopic,
+  removeTagFromTopic,
 } from "pages/monitoring/api/services/tags";
 import { validationExemption } from "pages/monitoring/ui/initiativesAdmin/utils/fieldClientValidations";
-import { observationNameNotExist } from "pages/monitoring/outlets/observationsAdmin/utils/observationValidations";
+import { topicNameNotExist } from "pages/monitoring/outlets/topicsAdmin/utils/topicValidations";
 import { toast } from "sonner";
 import { UserRoundCheck } from "lucide-react";
-import { observationTagCategories } from "pages/monitoring/outlets/observationsAdmin/layout/observationTagCategories";
+import { topicTagCategories } from "pages/monitoring/outlets/topicsAdmin/layout/topicTagCategories";
 
 const getTagId = (tag: TagInTopic | TagData) =>
   isTagRelated(tag) ? tag.tag.id : tag.id;
 
-export function ObservationHeader({
-  observation,
+export function TopicHeader({
+  topic,
   editMode,
   onUpdateSuccess,
 }: {
-  observation: TopicMetadata;
+  topic: TopicMetadata;
   editMode: boolean;
   onUpdateSuccess: () => Promise<void>;
 }) {
@@ -47,26 +47,23 @@ export function ObservationHeader({
   const [errors, setErrors] = useState<{ input?: string[]; global?: string[] }>(
     {},
   );
-  const [observationName, setObservationName] = useState(observation.name);
+  const [topicName, setTopicName] = useState(topic.name);
 
   const tagsRef = useRef<TagInTopic[]>([]);
 
   useEffect(() => {
-    tagsRef.current = observation.tags;
-  }, [observation.tags]);
+    tagsRef.current = topic.tags;
+  }, [topic.tags]);
 
   const savedTagsSetter = () =>
-    observationTagCategories.reduce<Record<number, TagInTopic[]>>(
-      (all, current) => {
-        const categoryId = current.tagCategoryId;
+    topicTagCategories.reduce<Record<number, TagInTopic[]>>((all, current) => {
+      const categoryId = current.tagCategoryId;
 
-        all[categoryId] = observation.tags.filter((tag) => {
-          return tag.tag.category.id === categoryId;
-        });
-        return all;
-      },
-      {},
-    );
+      all[categoryId] = topic.tags.filter((tag) => {
+        return tag.tag.category.id === categoryId;
+      });
+      return all;
+    }, {});
 
   const [tags, setTags] =
     useState<Record<number, (TagInTopic | TagData)[]>>(savedTagsSetter);
@@ -94,17 +91,17 @@ export function ObservationHeader({
 
     try {
       const [sanitizedName, validationErrors] = (
-        await new StrValidator(observationName)
+        await new StrValidator(topicName)
           .sanitize()
           .isRequired()
           .hasLengthMoreThan(3)
           .hasLengthLessOrEqualThan(120)
           .customAsync(
             validationExemption(
-              observationNameNotExist(observation.initiativeId),
-              observation.name === observationName,
+              topicNameNotExist(topic.initiativeId),
+              topic.name === topicName,
             ),
-            "Ya existe otra observación con ese nombre",
+            "Ya existe otra temática con ese nombre",
           )
       ).result;
 
@@ -113,20 +110,20 @@ export function ObservationHeader({
         return null;
       }
 
-      if (sanitizedName !== observation.name) {
-        const res = await updateTopicName(observation.id, sanitizedName);
+      if (sanitizedName !== topic.name) {
+        const res = await updateTopicName(topic.id, sanitizedName);
         if (isMonitoringAPIError(res)) {
           setErrors((old) => ({
             ...old,
             global: [
-              "Se presentó un error actualizando el nombre de la observación",
+              "Se presentó un error actualizando el nombre de la temática",
               ...res.data.map((err) => err.msg),
             ],
           }));
 
           return;
         }
-        setObservationName(res.name);
+        setTopicName(res.name);
       }
 
       const flatTagsIds = Object.values(tags).flat().map(getTagId);
@@ -143,8 +140,8 @@ export function ObservationHeader({
 
       if (diffTagsIds.remove.length > 0) {
         const res = await Promise.all(
-          diffTagsIds.remove.map(({ observationTagId }) =>
-            removeTagFromObservation(observationTagId),
+          diffTagsIds.remove.map(({ topicTagId }) =>
+            removeTagFromTopic(topicTagId),
           ),
         );
 
@@ -166,9 +163,7 @@ export function ObservationHeader({
 
       if (diffTagsIds.add.length > 0) {
         const res = await Promise.all(
-          diffTagsIds.add.map((tagId) =>
-            addTagToObservation(observation.id, tagId),
-          ),
+          diffTagsIds.add.map((tagId) => addTagToTopic(topic.id, tagId)),
         );
 
         const resErrors = res.filter(isMonitoringAPIError);
@@ -189,9 +184,9 @@ export function ObservationHeader({
 
       await onUpdateSuccess();
 
-      toast("Información de la observación actualizada", {
+      toast("Información de la temática actualizada", {
         position: "bottom-right",
-        description: `La información de la observación ${observationName} fue correctamente actualizada`,
+        description: `La información de la temática ${topicName} fue correctamente actualizada`,
         icon: <UserRoundCheck className="size-8 text-primary" />,
         className: "px-6! gap-6! border-2! border-primary!",
       });
@@ -202,22 +197,22 @@ export function ObservationHeader({
 
   const handleReset = () => {
     setTags(savedTagsSetter());
-    setObservationName(observation.name);
+    setTopicName(topic.name);
   };
 
   return !editMode ? (
     <header className="flex">
       <div className="flex-1">
         <h4 className="*:block">
-          <span>{observation.name}</span>
+          <span>{topic.name}</span>
           <span className="text-base italic font-light">
-            {observation.topicType.name}
+            {topic.topicType.name}
           </span>
         </h4>
 
         <TagsGroupsRender
-          tags={observation.tags.map((t) => t.tag)}
-          groupId={observation.name.replaceAll(" ", "")}
+          tags={topic.tags.map((t) => t.tag)}
+          groupId={topic.name.replaceAll(" ", "")}
           colorIndexOffset={3}
         />
       </div>
@@ -234,18 +229,18 @@ export function ObservationHeader({
       />
 
       <LabeledInput
-        inputName={`observation-${observation.id}_name`}
+        inputName={`topic-${topic.id}_name`}
         inputMaxLength={120}
         required={true}
-        texts={{ label: "Nombre de la observación" }}
-        state={observationName}
-        stateSetter={setObservationName}
+        texts={{ label: "Nombre de la temática" }}
+        state={topicName}
+        stateSetter={setTopicName}
         validationErrors={errors?.input ?? []}
         autoComplete="off"
       />
 
-      <div className="flex gap-12" title="Etiquetas de la observación">
-        {observationTagCategories.map((tagGroup) => {
+      <div className="flex gap-12" title="Etiquetas de la temática">
+        {topicTagCategories.map((tagGroup) => {
           const tagCategoryId = tagGroup.tagCategoryId;
 
           return (
@@ -258,8 +253,8 @@ export function ObservationHeader({
               fixedSearchParams={INITIATIVE_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS}
               maxTagsAmount={tagGroup.maxTagsAmount}
               texts={tagGroup.uiText}
-              relatedId={observation.id}
-              parentRelationKey="observationTagId"
+              relatedId={topic.id}
+              parentRelationKey="topicTagId"
             />
           );
         })}

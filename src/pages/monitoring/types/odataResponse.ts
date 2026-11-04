@@ -125,7 +125,7 @@ export interface ODataTag extends HasId {
 }
 
 export interface TagInTopic {
-  observationTagId: number;
+  topicTagId: number;
   tag: Omit<ODataTag, "categoryName">;
 }
 

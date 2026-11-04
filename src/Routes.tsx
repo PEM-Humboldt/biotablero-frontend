@@ -16,7 +16,7 @@ import { Help } from "pages/monitoring/outlets/Help";
 
 import { MyProfile } from "pages/monitoring/outlets/MyProfile";
 import { InitiativesAdmin } from "pages/monitoring/outlets/InitiativesAdmin";
-import { ObservationsAdmin } from "pages/monitoring/outlets/ObservationsAdmin";
+import { TopicsAdmin } from "pages/monitoring/outlets/TopicsAdmin";
 import { TagsAdmin } from "pages/monitoring/outlets/TagsAdmin";
 import { Logs } from "pages/monitoring/outlets/Logs";
 import { ToS } from "pages/TOS";
@@ -110,8 +110,8 @@ export const routes = createBrowserRouter([
                   }),
               },
               {
-                path: "Observaciones",
-                Component: ObservationsAdmin,
+                path: "Tematicas",
+                Component: TopicsAdmin,
                 loader: () =>
                   checkNLoad({
                     requirements: { roles: ["Admin"] },
