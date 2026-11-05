@@ -25,26 +25,24 @@ import {
   getTopicsByInitiative,
 } from "pages/monitoring/api/services/topics";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
-import { OBSERVATIONS_PER_PAGE } from "@config/monitoring";
+import { TOPICS_PER_PAGE } from "@config/monitoring";
 import {
   dataTransformBarGraph,
   dataTransformLineGraph,
 } from "pages/monitoring/utils/indicatorsTransformers";
 
-type ObservationContextValues = {
-  observations: TopicMetadata[];
+type TopicsContextValues = {
+  topics: TopicMetadata[];
   isLoading: boolean;
   errors: string[];
-  currentObservation: (TopicMetadata & TopicData & CleanDataType) | null;
-  setSearchObservations: Dispatch<SetStateAction<ODataParams>>;
+  currentTopic: (TopicMetadata & TopicData & CleanDataType) | null;
+  setSearchTopics: Dispatch<SetStateAction<ODataParams>>;
   currentPage: number;
   setCurrentPage: (page: number) => void;
-  observationsAmount: number;
+  topicsAmount: number;
 };
 
-const ObservationsContext = createContext<ObservationContextValues | null>(
-  null,
-);
+const TopicsContext = createContext<TopicsContextValues | null>(null);
 
 const dataTransformFunction = {
   [TopicMetric.OCCUPATION_SPECIES]: dataTransformLineGraph,
@@ -56,30 +54,30 @@ const dataTransformFunction = {
   [TopicMetric.COLLECTIVE_ACTION_PARTICIPATION]: dataTransformBarGraph,
 };
 
-export function ObservationsCTX({ children }: { children: ReactNode }) {
+export function TopicsCTX({ children }: { children: ReactNode }) {
   const { initiativeId, detailItem } = useParams();
 
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [searchParams, setSearchParams] = useState<ODataParams>({
-    top: OBSERVATIONS_PER_PAGE,
+    top: TOPICS_PER_PAGE,
   });
-  const [observations, setObservations] = useState<TopicMetadata[]>([]);
-  const [currentObservation, setCurrentObservation] = useState<
+  const [topics, setTopics] = useState<TopicMetadata[]>([]);
+  const [currentTopic, setCurrentTopic] = useState<
     (TopicMetadata & TopicData & CleanDataType) | null
   >(null);
   const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const observationsAmount = useRef(0);
+  const topicsAmount = useRef(0);
   const prevSearchParamsRef = useRef(searchParams);
 
-  const currentObservationId = detailItem;
+  const currentTopicId = detailItem;
   const isNewFilter = searchParams !== prevSearchParamsRef.current;
   const resolvedPage = isNewFilter ? 1 : currentPage;
 
   useEffect(() => {
-    const fetchObservations = async () => {
+    const fetchTopics = async () => {
       setIsLoading(true);
       setErrors([]);
 
@@ -88,49 +86,49 @@ export function ObservationsCTX({ children }: { children: ReactNode }) {
         setIsLoading(false);
         if (isMonitoringAPIError(res)) {
           setErrors(res.data.map((err) => err.msg));
-          setObservations([]);
+          setTopics([]);
           return;
         }
 
-        setObservations(res.toSorted((a, b) => b.id - a.id));
-        observationsAmount.current = res.length;
+        setTopics(res.toSorted((a, b) => b.id - a.id));
+        topicsAmount.current = res.length;
       } else {
-        const skip = (resolvedPage - 1) * OBSERVATIONS_PER_PAGE;
+        const skip = (resolvedPage - 1) * TOPICS_PER_PAGE;
         const res = await getTopics({
           ...searchParams,
           skip,
-          top: OBSERVATIONS_PER_PAGE,
+          top: TOPICS_PER_PAGE,
         });
         setIsLoading(false);
         if (isMonitoringAPIError(res)) {
           setErrors(res.data.map((err) => err.msg));
-          setObservations([]);
+          setTopics([]);
           return;
         }
 
-        setObservations(res.value);
-        observationsAmount.current = res["@odata.count"];
+        setTopics(res.value);
+        topicsAmount.current = res["@odata.count"];
       }
     };
 
     prevSearchParamsRef.current = searchParams;
-    void fetchObservations();
+    void fetchTopics();
   }, [searchParams, resolvedPage, initiativeId]);
 
   useEffect(() => {
-    if (!currentObservationId) {
-      setCurrentObservation(null);
+    if (!currentTopicId) {
+      setCurrentTopic(null);
       return;
     }
 
-    const fetchObservationData = async () => {
+    const fetchTopicData = async () => {
       setIsLoading(true);
       setErrors([]);
 
-      const data = await getTopicData(Number(currentObservationId));
+      const data = await getTopicData(Number(currentTopicId));
       if (isMonitoringAPIError(data)) {
         setIsLoading(false);
-        setCurrentObservation(null);
+        setCurrentTopic(null);
         setErrors(data.data.map((err) => err.msg));
         return;
       }
@@ -138,54 +136,52 @@ export function ObservationsCTX({ children }: { children: ReactNode }) {
       const metadata = await getTopicMetadata(data.topicId);
       if (isMonitoringAPIError(metadata)) {
         setIsLoading(false);
-        setCurrentObservation(null);
+        setCurrentTopic(null);
         setErrors(metadata.data.map((err) => err.msg));
         return;
       }
 
       if (initiativeId && Number(initiativeId) !== metadata.initiativeId) {
         void navigate(
-          `/Monitoreo/Iniciativas/${metadata.initiativeId}/Indicadores/${currentObservationId}`,
+          `/Monitoreo/Iniciativas/${metadata.initiativeId}/Indicadores/${currentTopicId}`,
         );
         return;
       }
 
       setIsLoading(false);
-      setCurrentObservation({
+      setCurrentTopic({
         ...metadata,
         ...data,
         cleanData: dataTransformFunction[metadata.topicType.id](data),
       });
     };
 
-    void fetchObservationData();
-  }, [currentObservationId, navigate, initiativeId]);
+    void fetchTopicData();
+  }, [currentTopicId, navigate, initiativeId]);
 
   return (
-    <ObservationsContext.Provider
+    <TopicsContext.Provider
       value={{
-        observations,
+        topics: topics,
         isLoading,
         errors,
-        setSearchObservations: setSearchParams,
-        currentObservation: currentObservation,
+        setSearchTopics: setSearchParams,
+        currentTopic: currentTopic,
         currentPage,
         setCurrentPage,
-        observationsAmount: observationsAmount.current,
+        topicsAmount: topicsAmount.current,
       }}
     >
       {children}
-    </ObservationsContext.Provider>
+    </TopicsContext.Provider>
   );
 }
 
-export function useObservationsCTX() {
-  const context = useContext(ObservationsContext);
+export function useTopicsCTX() {
+  const context = useContext(TopicsContext);
 
   if (!context) {
-    throw new Error(
-      "useObservationsCTX must be used within the ObservationsCTX",
-    );
+    throw new Error("useTopicsCTX must be used within the TopicsCTX");
   }
 
   return context;
