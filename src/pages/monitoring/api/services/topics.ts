@@ -35,7 +35,7 @@ export async function getTopicsByInitiative(initiativeId: number) {
 /**
  * Retrieves the data values of the specified topic needed for rendering.
  *
- * @param topicId - The number of the indicator in DB
+ * @param topicId - The number of the topic in DB
  *
  * @returns A `Promise` resolving to:
  * - On success: An `TopicData` object
@@ -79,7 +79,7 @@ export async function updateTopicData(
 /**
  * Retrieves all the metadata from the specified topic.
  *
- * @param topicId - The number of the indicator in DB
+ * @param topicId - The number of the topic in DB
  *
  * @returns A `Promise` resolving to:
  * - On success: An `TopicMetadata` object

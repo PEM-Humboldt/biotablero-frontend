@@ -10,8 +10,8 @@ export interface GeneralStatsType {
 }
 
 export interface InitiativeStats {
-  TotalMunicipalities: number;
-  TotalTopics: number;
+  totalMunicipalities: number;
+  totalTopics: number;
 }
 
 export interface InitiativeStatsComplete

@@ -7,14 +7,14 @@ import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
 import { Combobox } from "@ui/ComboBox";
 import { cn } from "@ui/shadCN/lib/utils";
 import { hashStringToRange } from "@utils/format";
-import { GetObservationInfo } from "@hooks/useReport/GetIndicatorInfo";
+import { GetTopicInfo } from "@hooks/useReport/GetTopicInfo";
 
-import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
-import { ConfidenceIntervalLayer } from "pages/monitoring/outlets/initiatives/observations/card/utils/ConfidenceIntervalLayer";
+import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
+import { ConfidenceIntervalLayer } from "pages/monitoring/outlets/initiatives/topics/card/utils/ConfidenceIntervalLayer";
 import type { LineData } from "pages/monitoring/types/topics";
-import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
+import { uiText } from "pages/monitoring/outlets/initiatives/topics/layout/uiText";
 import { GraphLegend } from "@ui/GraphLegend";
-import { getSeriesColor } from "pages/monitoring/outlets/initiatives/observations/card/utils/colors";
+import { getSeriesColor } from "pages/monitoring/outlets/initiatives/topics/card/utils/colors";
 
 const customColorMap: Record<string, string> = {
   "Probabilidad de detección": GRAPHS_EXTENDED_COLOR_PALETTE[2],
@@ -22,12 +22,12 @@ const customColorMap: Record<string, string> = {
 };
 
 export function DetectionProbabilityWithoutCovariables() {
-  const { currentObservation } = useObservationsCTX();
+  const { currentTopic } = useTopicsCTX();
   const [selectedSpecie, setSelectedSpecie] = useState<string>("");
 
   const speciesOptions = useMemo(
     () =>
-      (currentObservation?.groups ?? []).map((group) => {
+      (currentTopic?.groups ?? []).map((group) => {
         const commonName = group.category?.description
           ? `${group.category?.description}, `
           : "";
@@ -36,36 +36,36 @@ export function DetectionProbabilityWithoutCovariables() {
           label: `${commonName}${group.category.name}`,
         };
       }),
-    [currentObservation?.groups],
+    [currentTopic?.groups],
   );
 
-  const { renderIndicatorInfo, keys } = useMemo(() => {
-    if (!currentObservation) {
-      return { renderIndicatorInfo: [], keys: [] };
+  const { renderTopicInfo, keys } = useMemo(() => {
+    if (!currentTopic) {
+      return { renderTopicInfo: [], keys: [] };
     }
 
-    const renderIndicatorInfo: (LineData & { id: string })[] = [];
+    const renderTopicInfo: (LineData & { id: string })[] = [];
     const keys: string[] = [];
 
-    ((currentObservation.cleanData ?? []) as LineData[]).forEach((serie) => {
+    ((currentTopic.cleanData ?? []) as LineData[]).forEach((serie) => {
       const key = serie.metricName || serie.id;
-      renderIndicatorInfo.push({ ...serie, id: key });
+      renderTopicInfo.push({ ...serie, id: key });
       keys.push(key);
     });
 
-    return { renderIndicatorInfo, keys };
-  }, [currentObservation]);
+    return { renderTopicInfo, keys };
+  }, [currentTopic]);
 
   const filteredData = useMemo(
     () =>
-      renderIndicatorInfo.filter(
+      renderTopicInfo.filter(
         (serie) => serie.scientificName === selectedSpecie,
       ),
-    [renderIndicatorInfo, selectedSpecie],
+    [renderTopicInfo, selectedSpecie],
   );
 
   const selectedSpecieTitle = useMemo(() => {
-    const current = currentObservation?.groups.find(
+    const current = currentTopic?.groups.find(
       (specie) => specie.category.name === selectedSpecie,
     );
 
@@ -75,17 +75,17 @@ export function DetectionProbabilityWithoutCovariables() {
           commonName: current.category.description,
         }
       : { name: undefined, commonName: undefined };
-  }, [currentObservation?.groups, selectedSpecie]);
+  }, [currentTopic?.groups, selectedSpecie]);
 
   useEffect(() => {
-    if (!currentObservation) {
+    if (!currentTopic) {
       return;
     }
 
     setSelectedSpecie(speciesOptions[0].value ?? "");
-  }, [currentObservation, speciesOptions]);
+  }, [currentTopic, speciesOptions]);
 
-  return !currentObservation ? null : (
+  return !currentTopic ? null : (
     <>
       <div className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300">
         {speciesOptions.length > 1 && (
@@ -93,7 +93,7 @@ export function DetectionProbabilityWithoutCovariables() {
             items={speciesOptions ?? []}
             value={selectedSpecie}
             setValue={setSelectedSpecie}
-            uiText={uiText.observationCard.detectionProbabilityWCov.selector}
+            uiText={uiText.topicCard.detectionProbabilityWCov.selector}
             icon={SearchIcon}
             keys={{ forLabel: "label", forValue: "value" }}
           />
@@ -118,7 +118,7 @@ export function DetectionProbabilityWithoutCovariables() {
         </h4>
       </div>
 
-      <GetObservationInfo
+      <GetTopicInfo
         graphId={
           selectedSpecieTitle.commonName
             ? `${selectedSpecieTitle.commonName}, ${selectedSpecieTitle.name}`
@@ -189,10 +189,7 @@ export function DetectionProbabilityWithoutCovariables() {
                       <tbody>
                         <tr>
                           <td>
-                            {
-                              uiText.observationCard.rangedTooltip
-                                .upperLimitTitle
-                            }
+                            {uiText.topicCard.rangedTooltip.upperLimitTitle}
                           </td>
                           <td>{point.data?.upperLimit ?? data}</td>
                         </tr>
@@ -202,10 +199,7 @@ export function DetectionProbabilityWithoutCovariables() {
                         </tr>
                         <tr>
                           <td>
-                            {
-                              uiText.observationCard.rangedTooltip
-                                .lowerLimitTitle
-                            }
+                            {uiText.topicCard.rangedTooltip.lowerLimitTitle}
                           </td>
                           <td>{point.data?.lowerLimit ?? data}</td>
                         </tr>
@@ -223,7 +217,7 @@ export function DetectionProbabilityWithoutCovariables() {
             isBar={false}
           />
         </>
-      </GetObservationInfo>
+      </GetTopicInfo>
     </>
   );
 }

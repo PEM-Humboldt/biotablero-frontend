@@ -3,24 +3,24 @@ import { ResponsiveLine } from "@nivo/line";
 
 import { GRAPHS_CONTRAST_COLOR_PALETTE } from "@config/color";
 import { GRAPH_ANIMATION_CONFIG } from "@config/global";
-import { OBSERVATION_MAX_COUNT_OCUPATION_SPECIES } from "@config/monitoring";
+import { TOPIC_OCUPATION_SPECIES_MAX_COUNT } from "@config/monitoring";
 import { cn } from "@ui/shadCN/lib/utils";
-import { GetObservationInfo } from "@hooks/useReport/GetIndicatorInfo";
+import { GetTopicInfo } from "@hooks/useReport/GetTopicInfo";
 import { hashStringToRange } from "@utils/format";
 
-import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
+import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
 import type { LineData } from "pages/monitoring/types/topics";
-import { getSeriesColor } from "pages/monitoring/outlets/initiatives/observations/card/utils/colors";
-import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
+import { getSeriesColor } from "pages/monitoring/outlets/initiatives/topics/card/utils/colors";
+import { uiText } from "pages/monitoring/outlets/initiatives/topics/layout/uiText";
 import { GraphLegend } from "@ui/GraphLegend";
 
 export function OccupationSpecies() {
-  const { currentObservation } = useObservationsCTX();
+  const { currentTopic } = useTopicsCTX();
   const [selectedSpecies, setSelectedSpecies] = useState<string[]>([]);
 
   const speciesOptions = useMemo(
     () =>
-      (currentObservation?.groups ?? []).map((group) => ({
+      (currentTopic?.groups ?? []).map((group) => ({
         commonName: group.category.description,
         name: group.category.name,
         color: getSeriesColor(
@@ -30,18 +30,18 @@ export function OccupationSpecies() {
           GRAPHS_CONTRAST_COLOR_PALETTE,
         ),
       })),
-    [currentObservation?.groups],
+    [currentTopic?.groups],
   );
 
-  const renderObservationInfo = useMemo(() => {
-    if (!currentObservation) {
+  const renderTopicInfo = useMemo(() => {
+    if (!currentTopic) {
       return [];
     }
 
-    const rawSeries = (currentObservation.cleanData ?? []) as LineData[];
+    const rawSeries = (currentTopic.cleanData ?? []) as LineData[];
 
     return rawSeries.map((line) => {
-      const matchedGroup = currentObservation.groups.find(
+      const matchedGroup = currentTopic.groups.find(
         (g) => g.category.name === line.scientificName,
       );
 
@@ -54,14 +54,12 @@ export function OccupationSpecies() {
 
       return { ...line, color };
     });
-  }, [currentObservation]);
+  }, [currentTopic]);
 
-  const filteredObservation = useMemo(
+  const filteredTopic = useMemo(
     () =>
-      renderObservationInfo.filter((i) =>
-        selectedSpecies.includes(i.scientificName),
-      ),
-    [renderObservationInfo, selectedSpecies],
+      renderTopicInfo.filter((i) => selectedSpecies.includes(i.scientificName)),
+    [renderTopicInfo, selectedSpecies],
   );
 
   const handleSelect = (item: string) => {
@@ -72,7 +70,7 @@ export function OccupationSpecies() {
 
     setSelectedSpecies((oldList) => {
       const newList = [...oldList, item];
-      if (newList.length > OBSERVATION_MAX_COUNT_OCUPATION_SPECIES) {
+      if (newList.length > TOPIC_OCUPATION_SPECIES_MAX_COUNT) {
         newList.shift();
       }
       return newList;
@@ -80,14 +78,14 @@ export function OccupationSpecies() {
   };
 
   useEffect(() => {
-    if (!currentObservation) {
+    if (!currentTopic) {
       return;
     }
 
     setSelectedSpecies(() => {
       const loadSpecies: string[] = [];
-      for (const specie of currentObservation.groups) {
-        if (loadSpecies.length === OBSERVATION_MAX_COUNT_OCUPATION_SPECIES) {
+      for (const specie of currentTopic.groups) {
+        if (loadSpecies.length === TOPIC_OCUPATION_SPECIES_MAX_COUNT) {
           break;
         }
 
@@ -95,19 +93,18 @@ export function OccupationSpecies() {
       }
       return loadSpecies;
     });
-  }, [currentObservation]);
+  }, [currentTopic]);
 
-  return !currentObservation ? null : (
+  return !currentTopic ? null : (
     <>
       <div
         className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300"
-        title={uiText.observationCard.ocupationSpecies.title}
+        title={uiText.topicCard.ocupationSpecies.title}
       >
-        {currentObservation.groups.length >
-          OBSERVATION_MAX_COUNT_OCUPATION_SPECIES && (
+        {currentTopic.groups.length > TOPIC_OCUPATION_SPECIES_MAX_COUNT && (
           <span className="italic text-sm text-primary">
-            {uiText.observationCard.ocupationSpecies.maxSelection(
-              OBSERVATION_MAX_COUNT_OCUPATION_SPECIES,
+            {uiText.topicCard.ocupationSpecies.maxSelection(
+              TOPIC_OCUPATION_SPECIES_MAX_COUNT,
             )}
           </span>
         )}
@@ -142,7 +139,7 @@ export function OccupationSpecies() {
         </ul>
       </div>
 
-      <GetObservationInfo
+      <GetTopicInfo
         graphId={selectedSpecies.toSorted().join(", ")}
         mapElementId={null}
         mapUrl={null}
@@ -150,7 +147,7 @@ export function OccupationSpecies() {
         <>
           <div className="w-full h-full aspect-video">
             <ResponsiveLine
-              data={filteredObservation}
+              data={filteredTopic}
               margin={{ top: 20, right: 40, bottom: 30, left: 40 }}
               motionConfig={GRAPH_ANIMATION_CONFIG}
               xScale={{ type: "point" }}
@@ -190,7 +187,7 @@ export function OccupationSpecies() {
           </div>
 
           <GraphLegend
-            keys={filteredObservation.map(
+            keys={filteredTopic.map(
               (i) => `${i.commonName}, ${i.scientificName}`,
             )}
             customColorList={GRAPHS_CONTRAST_COLOR_PALETTE}
@@ -198,7 +195,7 @@ export function OccupationSpecies() {
             labelClassName={{ complement: "italic" }}
           />
         </>
-      </GetObservationInfo>
+      </GetTopicInfo>
     </>
   );
 }

@@ -5,16 +5,16 @@ import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
 import { GRAPH_ANIMATION_CONFIG } from "@config/global";
 import { ResponsiveBar } from "@nivo/bar";
 
-import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
+import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
 import type { BarsData } from "pages/monitoring/types/topics";
 import {
   getContrastColor,
   getSeriesColor,
-} from "pages/monitoring/outlets/initiatives/observations/card//utils/colors";
+} from "pages/monitoring/outlets/initiatives/topics/card/utils/colors";
 import { GraphLegend } from "@ui/GraphLegend";
-import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/observations/card/ui/GraphInfoSelector";
-import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
-import { GetObservationInfo } from "@hooks/useReport/GetIndicatorInfo";
+import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/topics/card/ui/GraphInfoSelector";
+import { uiText } from "pages/monitoring/outlets/initiatives/topics/layout/uiText";
+import { GetTopicInfo } from "@hooks/useReport/GetTopicInfo";
 
 const customColorMap: Record<string, string> = {
   Mujeres: GRAPHS_EXTENDED_COLOR_PALETTE[10],
@@ -27,8 +27,8 @@ const customColorMap: Record<string, string> = {
 };
 
 export function CollectiveActionParticipation() {
-  const { currentObservation } = useObservationsCTX();
-  const data = currentObservation?.cleanData as BarsData;
+  const { currentTopic } = useTopicsCTX();
+  const data = currentTopic?.cleanData as BarsData;
 
   const { groups, keysByGroup, dataByDateByGroup } = useMemo(() => {
     const keysByGroup = new Map<string, Set<string>>();
@@ -65,7 +65,7 @@ export function CollectiveActionParticipation() {
     dataByDateByGroup.forEach((datesMap, parentKey) => {
       datesMap.forEach((dataMap) => {
         const amountKey =
-          uiText.observationCard.collectiveActionParticipation.amountKey;
+          uiText.topicCard.collectiveActionParticipation.amountKey;
         const total = dataMap[amountKey] as number;
 
         if (total > 0) {
@@ -110,7 +110,7 @@ export function CollectiveActionParticipation() {
     <>
       <div className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300">
         <GraphInfoSelector
-          uiText={uiText.observationCard.collectiveActionParticipation.selector}
+          uiText={uiText.topicCard.collectiveActionParticipation.selector}
           options={groups}
           currentSelection={currentGroup}
           updateCurrent={(val: string | string[]) => {
@@ -121,11 +121,7 @@ export function CollectiveActionParticipation() {
         />
       </div>
 
-      <GetObservationInfo
-        graphId={currentGroup}
-        mapElementId={null}
-        mapUrl={null}
-      >
+      <GetTopicInfo graphId={currentGroup} mapElementId={null} mapUrl={null}>
         <>
           <div className="w-full h-full aspect-video">
             <ResponsiveBar
@@ -179,7 +175,7 @@ export function CollectiveActionParticipation() {
                         x={-5}
                         y={8}
                       >
-                        {uiText.observationCard.collectiveActionParticipation.amountLabel(
+                        {uiText.topicCard.collectiveActionParticipation.amountLabel(
                           Number(total),
                         )}
                       </text>
@@ -215,7 +211,7 @@ export function CollectiveActionParticipation() {
 
           <GraphLegend keys={displayKeys} customColorMap={customColorMap} />
         </>
-      </GetObservationInfo>
+      </GetTopicInfo>
     </>
   );
 }

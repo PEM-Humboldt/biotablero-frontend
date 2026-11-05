@@ -6,28 +6,23 @@ import { cn } from "@ui/shadCN/lib/utils";
 import { Button } from "@ui/shadCN/component/button";
 import { LOCALE } from "@config/global";
 
-import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
+import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
 import type { TopicMetadata } from "pages/monitoring/types/topics";
-import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
+import { uiText } from "pages/monitoring/outlets/initiatives/topics/layout/uiText";
 import { TagsGroupsRender } from "pages/monitoring/ui/TagsGroupsRender";
 
-export function ObservationSmallCard({
-  observation,
-}: {
-  observation: TopicMetadata;
-}) {
-  const { currentObservation } = useObservationsCTX();
-  const isCurrent =
-    currentObservation && observation.id === currentObservation.topicId;
+export function TopicSmallCard({ topic }: { topic: TopicMetadata }) {
+  const { currentTopic } = useTopicsCTX();
+  const isCurrent = currentTopic && topic.id === currentTopic.topicId;
 
   const { since, until } = useMemo(
     () =>
-      observation.versions.length === 1
+      topic.versions.length === 1
         ? {
-            since: new Date(observation.versions[0].creationDate),
+            since: new Date(topic.versions[0].creationDate),
             until: null,
           }
-        : observation.versions.reduce(
+        : topic.versions.reduce(
             (acc, v) => {
               const current = new Date(v.creationDate);
               if (current < acc.since) {
@@ -39,11 +34,11 @@ export function ObservationSmallCard({
               return acc;
             },
             {
-              since: new Date(observation.versions[0].creationDate),
-              until: new Date(observation.versions[0].creationDate),
+              since: new Date(topic.versions[0].creationDate),
+              until: new Date(topic.versions[0].creationDate),
             },
           ),
-    [observation.versions],
+    [topic.versions],
   );
 
   return (
@@ -53,11 +48,11 @@ export function ObservationSmallCard({
         isCurrent ? "bg-muted outline-primary" : "bg-background shadow-2xl",
       )}
     >
-      <h4 className="mb-1 text-balance">{observation.topicType.name}</h4>
+      <h4 className="mb-1 text-balance">{topic.topicType.name}</h4>
       <div className="flex flex-wrap m-1 ml-0 gap-2">
         <TagsGroupsRender
-          tags={observation.tags.map((t) => t.tag)}
-          groupId={observation.name.replaceAll(" ", "")}
+          tags={topic.tags.map((t) => t.tag)}
+          groupId={topic.name.replaceAll(" ", "")}
           colorIndexOffset={3}
         />
       </div>
@@ -75,7 +70,7 @@ export function ObservationSmallCard({
           {!isCurrent && (
             <Button variant="ghost-clean" className="px-1!" asChild>
               <Link
-                to={`/Monitoreo/Iniciativas/${observation.initiativeId}/Indicadores/${observation.versions[0].id}`}
+                to={`/Monitoreo/Iniciativas/${topic.initiativeId}/Indicadores/${topic.versions[0].id}`}
                 title={uiText.search.card.gotoBtn.title}
                 aria-label={uiText.search.card.gotoBtn.sr}
               >
@@ -90,7 +85,7 @@ export function ObservationSmallCard({
           <dl className="text-sm mb-2 flex justify-between gap-2 *:m-0! *:flex *:flex-col text-center *:items-center">
             <div>
               <dt>{uiText.search.card.nVersions.title}</dt>
-              <dd className="font-normal">{observation.versions.length}</dd>
+              <dd className="font-normal">{topic.versions.length}</dd>
             </div>
 
             <div>
@@ -112,14 +107,14 @@ export function ObservationSmallCard({
             </div>
           </dl>
 
-          {observation.versions
+          {topic.versions
             .toSorted((a, b) => a.version - b.version)
             .map((v) => {
               const date = new Date(v.creationDate);
 
               return (
                 <div
-                  key={`version_${observation.id}_${v.version}`}
+                  key={`version_${topic.id}_${v.version}`}
                   className="flex gap-2 justify-between p-1 rounded items-center hover:bg-muted"
                 >
                   <div className="text-sm flex flex-col *:m-0!">
@@ -128,10 +123,10 @@ export function ObservationSmallCard({
                       {date.toLocaleDateString(LOCALE)}
                     </time>
                   </div>
-                  {!(isCurrent && currentObservation.version === v.version) && (
+                  {!(isCurrent && currentTopic.version === v.version) && (
                     <Button variant="ghost-clean" className="px-1!" asChild>
                       <Link
-                        to={`/Monitoreo/Iniciativas/${observation.initiativeId}/Indicadores/${v.id}`}
+                        to={`/Monitoreo/Iniciativas/${topic.initiativeId}/Indicadores/${v.id}`}
                         title={uiText.search.card.gotoBtn.title}
                         aria-label={uiText.search.card.gotoBtn.sr}
                       >

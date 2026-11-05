@@ -3,9 +3,9 @@ import { useEffect, type ReactElement } from "react";
 import { useReport } from "@hooks/useReport";
 import type { IndicatorSection, IndicatorTag } from "@appTypes/report";
 
-import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
+import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
 
-export function GetObservationInfo({
+export function GetTopicInfo({
   graphId,
   mapUrl,
   mapElementId,
@@ -18,16 +18,16 @@ export function GetObservationInfo({
   singleMap?: boolean;
   children: ReactElement;
 }) {
-  const { currentObservation } = useObservationsCTX();
+  const { currentTopic } = useTopicsCTX();
   const { setCurrentSectionPool } = useReport();
 
   useEffect(() => {
-    if (!currentObservation) {
+    if (!currentTopic) {
       setCurrentSectionPool(null);
       return;
     }
 
-    const tags = currentObservation.tags.reduce<Record<number, IndicatorTag[]>>(
+    const tags = currentTopic.tags.reduce<Record<number, IndicatorTag[]>>(
       (all, current) => {
         const tag = current.tag;
         if (!all[tag.category.id]) {
@@ -45,25 +45,25 @@ export function GetObservationInfo({
       {},
     );
 
-    const lastVersion = currentObservation.versions.at(-1);
-    const { name, topicType: type, version } = currentObservation;
+    const lastVersion = currentTopic.versions.at(-1);
+    const { name, topicType: type, version } = currentTopic;
 
     const sectionInfo: Omit<IndicatorSection, "graphs"> = {
-      title: currentObservation.name ?? currentObservation.topicType.name,
-      type: currentObservation.topicType.name,
-      creationDate: currentObservation.creationDate,
-      lastUpdate: lastVersion?.creationDate ?? currentObservation.creationDate,
-      version: currentObservation.version,
+      title: currentTopic.name ?? currentTopic.topicType.name,
+      type: currentTopic.topicType.name,
+      creationDate: currentTopic.creationDate,
+      lastUpdate: lastVersion?.creationDate ?? currentTopic.creationDate,
+      version: currentTopic.version,
       BiologicalGroupTag: tags[3] ?? [],
       EcosystemTag: tags[4] ?? [],
-      description: currentObservation?.description ?? "",
+      description: currentTopic?.description ?? "",
       singleMap,
-      url: `${window.location.origin}/Monitoreo/Iniciativas/${currentObservation.initiativeId}/Indicadores/${currentObservation.topicId}`,
+      url: `${window.location.origin}/Monitoreo/Iniciativas/${currentTopic.initiativeId}/Indicadores/${currentTopic.topicId}`,
       card: {
-        methodology: currentObservation?.methodology ?? "",
-        interpretation: currentObservation?.interpretation ?? "",
-        considerations: currentObservation?.considerations ?? "",
-        authorship: currentObservation?.authorship ?? "",
+        methodology: currentTopic?.methodology ?? "",
+        interpretation: currentTopic?.interpretation ?? "",
+        considerations: currentTopic?.considerations ?? "",
+        authorship: currentTopic?.authorship ?? "",
       },
     };
 
@@ -74,7 +74,7 @@ export function GetObservationInfo({
       sectionInfo,
       mapUrl,
       mapElementId,
-      sectionUrl: `${window.location.origin}/Monitoreo/Iniciativas/${currentObservation.initiativeId}/Indicadores/${currentObservation.topicId}`,
+      sectionUrl: `${window.location.origin}/Monitoreo/Iniciativas/${currentTopic.initiativeId}/Indicadores/${currentTopic.topicId}`,
     });
 
     return () => {
@@ -86,7 +86,7 @@ export function GetObservationInfo({
     mapElementId,
     mapUrl,
     children,
-    currentObservation,
+    currentTopic,
     setCurrentSectionPool,
   ]);
 

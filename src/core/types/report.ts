@@ -21,7 +21,7 @@ export type SectionInfo = {
 export enum ReportType {
   NONE,
   SEARCH_INDICATORS,
-  MONITORING_INDICATORS,
+  MONITORING_TOPICS,
 }
 
 export type MCReportModelProps = {

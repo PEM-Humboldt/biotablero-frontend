@@ -90,7 +90,7 @@ export const uiText = {
       title: "Iniciativas",
       gotoBtn: { title: "Ver más información", label: "Ver" },
     },
-    indicators: {
+    topics: {
       title: "Indicadores",
       gotoBtn: { title: "Ir al indicador", label: "Ir" },
     },

@@ -23,7 +23,7 @@ export const uiText = {
         label: "Año",
         placeholder: "¿De qué añó es el indicador?",
       },
-      indicatorsAmount: (current: number, total: number) =>
+      topicsAmount: (current: number, total: number) =>
         `${current}/${total} indicadores`,
       resetSearchBtn: {
         sr: "Reiniciar búsqueda",
@@ -47,9 +47,9 @@ export const uiText = {
     },
   },
 
-  observationCard: {
+  topicCard: {
     noSelection: "Selecciona un indicador",
-    noObservations: "Esta iniciativa todavía no tiene indicadores asociados",
+    noTopcis: "Esta iniciativa todavía no tiene indicadores asociados",
     titleBar: {
       tagsTitle: "Etiquetas",
       lastUpdate: (dateString: string) =>

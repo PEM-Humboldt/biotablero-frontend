@@ -1,17 +1,17 @@
-import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
+import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
 import { TopicMetric } from "pages/monitoring/types/topics";
-import { OccupationSpecies } from "pages/monitoring/outlets/initiatives/observations/card/OccupationSpecies";
-import { DetectionProbabilityWithoutCovariables } from "pages/monitoring/outlets/initiatives/observations/card/DetectionProbabilityWithoutCovariables";
-import { SpeciesDiversity } from "pages/monitoring/outlets/initiatives/observations/card/SpeciesDiversity";
-import { RelativeSpeciesUseByGroup } from "pages/monitoring/outlets/initiatives/observations/card/RelativeSpeciesUseByGroup";
-import { RelationalIntensityIndex } from "pages/monitoring/outlets/initiatives/observations/card/RelationalIntensityIndex";
-import { CollectiveActionParticipation } from "pages/monitoring/outlets/initiatives/observations/card/CollectiveActionParticipation";
+import { OccupationSpecies } from "pages/monitoring/outlets/initiatives/topics/card/OccupationSpecies";
+import { DetectionProbabilityWithoutCovariables } from "pages/monitoring/outlets/initiatives/topics/card/DetectionProbabilityWithoutCovariables";
+import { SpeciesDiversity } from "pages/monitoring/outlets/initiatives/topics/card/SpeciesDiversity";
+import { RelativeSpeciesUseByGroup } from "pages/monitoring/outlets/initiatives/topics/card/RelativeSpeciesUseByGroup";
+import { RelationalIntensityIndex } from "pages/monitoring/outlets/initiatives/topics/card/RelationalIntensityIndex";
+import { CollectiveActionParticipation } from "pages/monitoring/outlets/initiatives/topics/card/CollectiveActionParticipation";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { useReport } from "@hooks/useReport";
 import { useEffect } from "react";
 
 export function GraphSelector() {
-  const { currentObservation } = useObservationsCTX();
+  const { currentTopic } = useTopicsCTX();
   const { initiativeInfo } = useInitiativeCTX();
   const { reportContextResolver } = useReport();
 
@@ -22,11 +22,11 @@ export function GraphSelector() {
     reportContextResolver(initiativeInfo);
   }, [initiativeInfo, reportContextResolver]);
 
-  if (!currentObservation) {
+  if (!currentTopic) {
     return null;
   }
 
-  switch (currentObservation.topicType.id) {
+  switch (currentTopic.topicType.id) {
     case TopicMetric.OCCUPATION_SPECIES:
       return <OccupationSpecies />;
 

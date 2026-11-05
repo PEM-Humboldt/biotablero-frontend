@@ -4,41 +4,41 @@ import { ResponsiveLine } from "@nivo/line";
 import { hashStringToRange } from "@utils/format";
 import { GRAPHS_CONTRAST_COLOR_PALETTE } from "@config/color";
 import { GRAPH_ANIMATION_CONFIG } from "@config/global";
-import { GetObservationInfo } from "@hooks/useReport/GetIndicatorInfo";
+import { GetTopicInfo } from "@hooks/useReport/GetTopicInfo";
 
-import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
-import { ConfidenceIntervalLayer } from "pages/monitoring/outlets/initiatives/observations/card/utils/ConfidenceIntervalLayer";
+import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
+import { ConfidenceIntervalLayer } from "pages/monitoring/outlets/initiatives/topics/card/utils/ConfidenceIntervalLayer";
 import type { LineData } from "pages/monitoring/types/topics";
-import { getSeriesColor } from "pages/monitoring/outlets/initiatives/observations/card/utils/colors";
-import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
-import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/observations/card/ui/GraphInfoSelector";
+import { getSeriesColor } from "pages/monitoring/outlets/initiatives/topics/card/utils/colors";
+import { uiText } from "pages/monitoring/outlets/initiatives/topics/layout/uiText";
+import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/topics/card/ui/GraphInfoSelector";
 import { GraphLegend } from "@ui/GraphLegend";
 
 export function SpeciesDiversity() {
-  const { currentObservation } = useObservationsCTX();
+  const { currentTopic } = useTopicsCTX();
 
   const [selectedSpecie, setSelectedSpecie] = useState("");
   const [selectedIndex, setSelectedIndex] = useState("");
 
   const speciesList = useMemo(() => {
-    if (!currentObservation) {
+    if (!currentTopic) {
       return [];
     }
     const uniqueSpecies = new Set<string>();
 
-    currentObservation.groups.map((group) => {
+    currentTopic.groups.map((group) => {
       uniqueSpecies.add(group.category.name);
     });
 
     return [...uniqueSpecies];
-  }, [currentObservation]);
+  }, [currentTopic]);
 
   const indexesList = useMemo(() => {
-    if (!currentObservation?.groups) {
+    if (!currentTopic?.groups) {
       return [];
     }
 
-    const [currentGroup] = currentObservation.groups.filter(
+    const [currentGroup] = currentTopic.groups.filter(
       (group) => group.category.name === selectedSpecie,
     );
 
@@ -51,7 +51,7 @@ export function SpeciesDiversity() {
     );
 
     return [...uniqueIndex];
-  }, [currentObservation?.groups, selectedSpecie]);
+  }, [currentTopic?.groups, selectedSpecie]);
 
   useEffect(() => {
     if (speciesList.length === 0) {
@@ -72,11 +72,11 @@ export function SpeciesDiversity() {
     minY: number | "auto";
     maxY: number | "auto";
   }>(() => {
-    if (!currentObservation?.cleanData) {
+    if (!currentTopic?.cleanData) {
       return { filteredData: [], minY: "auto", maxY: "auto" };
     }
 
-    const result = (currentObservation.cleanData as LineData[]).reduce(
+    const result = (currentTopic.cleanData as LineData[]).reduce(
       (acc, data) => {
         if (
           data.scientificName !== selectedSpecie ||
@@ -105,13 +105,13 @@ export function SpeciesDiversity() {
       minY: result.minYvalue === Infinity ? "auto" : result.minYvalue,
       maxY: result.maxYvalue === -Infinity ? "auto" : result.maxYvalue,
     };
-  }, [currentObservation?.cleanData, selectedSpecie, selectedIndex]);
+  }, [currentTopic?.cleanData, selectedSpecie, selectedIndex]);
 
   return (
     <>
       <div className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300">
         <GraphInfoSelector
-          uiText={uiText.observationCard.speciesDiversity.groupSelector}
+          uiText={uiText.topicCard.speciesDiversity.groupSelector}
           options={speciesList}
           currentSelection={selectedSpecie}
           updateCurrent={(s: unknown) => {
@@ -123,7 +123,7 @@ export function SpeciesDiversity() {
         />
 
         <GraphInfoSelector
-          uiText={uiText.observationCard.speciesDiversity.indexSelector}
+          uiText={uiText.topicCard.speciesDiversity.indexSelector}
           options={indexesList}
           currentSelection={selectedIndex}
           updateCurrent={(s: unknown) => {
@@ -134,7 +134,7 @@ export function SpeciesDiversity() {
         />
       </div>
 
-      <GetObservationInfo
+      <GetTopicInfo
         graphId={`${selectedSpecie}, ${selectedIndex}`}
         mapElementId={null}
         mapUrl={null}
@@ -151,7 +151,7 @@ export function SpeciesDiversity() {
                 max: maxY,
               }}
               axisLeft={{
-                legend: uiText.observationCard.speciesDiversity.leftAxisLegend,
+                legend: uiText.topicCard.speciesDiversity.leftAxisLegend,
                 legendOffset: -40,
               }}
               motionConfig={GRAPH_ANIMATION_CONFIG}
@@ -207,25 +207,17 @@ export function SpeciesDiversity() {
                       <tbody>
                         <tr>
                           <td>
-                            {
-                              uiText.observationCard.rangedTooltip
-                                .upperLimitTitle
-                            }
+                            {uiText.topicCard.rangedTooltip.upperLimitTitle}
                           </td>
                           <td>{point.data?.upperLimit ?? data}</td>
                         </tr>
                         <tr>
-                          <td>
-                            {uiText.observationCard.rangedTooltip.valueTitle}
-                          </td>
+                          <td>{uiText.topicCard.rangedTooltip.valueTitle}</td>
                           <td>{data}</td>
                         </tr>
                         <tr>
                           <td>
-                            {
-                              uiText.observationCard.rangedTooltip
-                                .lowerLimitTitle
-                            }
+                            {uiText.topicCard.rangedTooltip.lowerLimitTitle}
                           </td>
                           <td>{point.data?.lowerLimit ?? data}</td>
                         </tr>
@@ -242,7 +234,7 @@ export function SpeciesDiversity() {
             isBar={false}
           />
         </>
-      </GetObservationInfo>
+      </GetTopicInfo>
     </>
   );
 }

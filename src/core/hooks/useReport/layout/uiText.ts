@@ -1,4 +1,4 @@
-import { uiText as reportInputTextUi } from "@ui/addMCIndicatorToReport/layout/uiText";
+import { uiText as reportInputTextUi } from "@ui/addMCTopicToReport/layout/uiText";
 
 export const uiText = {
   downloadReportError: "Error al generar el pdf:",

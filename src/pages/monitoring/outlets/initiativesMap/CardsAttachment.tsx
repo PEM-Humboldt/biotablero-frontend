@@ -60,7 +60,7 @@ export function CardsAttachment({ className }: { className?: string }) {
   }, [departmentId]);
 
   useEffect(() => {
-    const fetchIndicators = async () => {
+    const fetchTopics = async () => {
       if (!initiativeId) {
         setTopics([]);
         return;
@@ -79,7 +79,7 @@ export function CardsAttachment({ className }: { className?: string }) {
       setTopics(res);
     };
 
-    void fetchIndicators();
+    void fetchTopics();
   }, [initiativeId]);
 
   return (
@@ -111,7 +111,7 @@ export function CardsAttachment({ className }: { className?: string }) {
                         strokeWidth={1.5}
                         aria-hidden="true"
                       />
-                      {uiText.cardsAttachment.indicators.title}
+                      {uiText.cardsAttachment.topics.title}
                     </>
                   ) : (
                     <>
@@ -199,7 +199,7 @@ export function CardsAttachment({ className }: { className?: string }) {
                     topics.map((topic) => {
                       return (
                         <DataSheetSmallCard
-                          key={`indicatorsSmallCard_${topic.id}`}
+                          key={`topicSmallCard_${topic.id}`}
                           title={topic.topicType.name}
                           tags={topic.tags.map((t) => t.tag)}
                           bottonLeftInfo={
@@ -208,10 +208,8 @@ export function CardsAttachment({ className }: { className?: string }) {
                           link={{
                             href: `/Monitoreo/Iniciativas/${topic.initiativeId}/Indicadores/${topic.id}`,
                             icon: ChevronRight,
-                            label:
-                              uiText.cardsAttachment.indicators.gotoBtn.label,
-                            title:
-                              uiText.cardsAttachment.indicators.gotoBtn.title,
+                            label: uiText.cardsAttachment.topics.gotoBtn.label,
+                            title: uiText.cardsAttachment.topics.gotoBtn.title,
                           }}
                         />
                       );
