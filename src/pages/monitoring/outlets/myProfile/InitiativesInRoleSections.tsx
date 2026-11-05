@@ -49,8 +49,8 @@ export function InitiativesInRoleSections() {
           className={cn(
             "grid gap-4",
             sectionInfo.actions.editRole
-              ? "grid-cols-[repeat(auto-fill,minmax(500px,1fr))]"
-              : "grid-cols-[repeat(auto-fill,minmax(400px,1fr))]",
+              ? "grid-cols-[repeat(auto-fill,minmax(300px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(500px,1fr))]"
+              : "grid-cols-[repeat(auto-fill,minmax(300px,1fr))] md:grid-cols-[repeat(auto-fill,minmax(400px,1fr))]",
           )}
         >
           {initiatives.map((initiative) => (
@@ -104,7 +104,7 @@ function InitiativeFocusArea({
   return (
     <li
       className={cn(
-        "w-full flex rounded-lg overflow-hidden outline-2 -outline-offset-2 outline-transparent hover:outline-primary transition-[background-color,outline-color] duration-300 ease-in-out",
+        "w-full flex flex-col md:flex-row rounded-lg overflow-hidden outline-2 -outline-offset-2 outline-transparent hover:outline-primary transition-[background-color,outline-color] duration-300 ease-in-out",
         initiative.id !== currentFocusAreaEdit
           ? "bg-background"
           : "bg-input/50 outline-primary",

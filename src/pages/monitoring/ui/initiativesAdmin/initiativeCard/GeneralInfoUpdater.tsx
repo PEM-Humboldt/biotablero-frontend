@@ -140,15 +140,15 @@ export function GeneralInfoUpdater({ title }: GeneralInfoUpdaterProps) {
             {sectionInfo.current?.description}
           </div>
 
-          <div className="flex flex-wrap gap-x-10 gap-y-4">
-            <div className="flex-1 min-w-[350px] max-w-[65ch]">
+          <div className="flex flex-col md:flex-row flex-wrap gap-x-10 gap-y-4">
+            <div className="flex-1 max-w-[65ch]">
               <h5 className="text-primary mb-0!">
                 {uiText.initiative.module.general.field.objectiveHelper}
               </h5>
               {sectionInfo.current?.objective ??
                 uiText.initiative.unasignedFallback}
             </div>
-            <div className="flex-1 min-w-[300px] max-w-[65ch]">
+            <div className="flex-1 max-w-[65ch]">
               <h5 className="text-primary mb-0!">
                 {uiText.initiative.module.general.field.baselineHelper}
               </h5>

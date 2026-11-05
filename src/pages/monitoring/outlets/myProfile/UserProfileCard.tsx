@@ -17,9 +17,12 @@ export function UserProfileCard() {
       ) : (
         <CircleUserRound className="size-40 text-primary/50" strokeWidth={2} />
       )}
-      <ul aria-label="Datos registrados" className="flex-2">
+      <ul
+        aria-label="Datos registrados"
+        className="flex-2 text-sm md:text-base"
+      >
         <li
-          className="text-3xl font-normal mb-4"
+          className="text-xl lg:text-3xl font-normal mb-4"
           aria-label={uiText.profileCard.fullNameSrTitle}
         >
           {user.firstName} {user.lastName}

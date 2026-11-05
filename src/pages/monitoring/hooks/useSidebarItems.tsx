@@ -34,6 +34,7 @@ export function useSidebarItems() {
     "Indicadores",
     "Recursos",
     "Ayudas",
+    "MiPerfil",
     "Admin",
   ];
 
@@ -90,7 +91,7 @@ export function useSidebarItems() {
               description:
                 "Gestiona tu perfil y las iniciativas en las que participas",
               icon: UserRoundCheck,
-              linkTo: "MiPerfil",
+              linkTo: "/Monitoreo/MiPerfil",
               group: "user",
             },
           ] satisfies SidebarItem[])

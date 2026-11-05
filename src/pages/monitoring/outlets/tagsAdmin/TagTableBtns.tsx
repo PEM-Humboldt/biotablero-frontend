@@ -22,13 +22,13 @@ export function TagTableButtons({
   }
 
   return (
-    <>
+    <div className="flex">
       <TagFormButton
         value={tagId}
         onActionSuccess={onActionSuccess}
         editTagAction={tagEditAction}
       />
       <TagDeleteButton value={tagId} onActionSuccess={onActionSuccess} />
-    </>
+    </div>
   );
 }

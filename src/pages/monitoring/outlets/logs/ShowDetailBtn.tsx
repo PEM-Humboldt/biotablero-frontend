@@ -58,17 +58,20 @@ export function ShowLogDetailsButton({ value }: { value: unknown }) {
             : uiText.table.detailsBtn.defaultText}
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-h-[80vh] flex flex-col p-4 md:p-8 overflow-hidden">
+      <DialogContent className="max-h-[80vh] flex flex-col p-4 md:p-8">
         {error && <div>{error}</div>}
-        {log && (
-          <>
-            <div className="pb-2">
-              <DialogHeader>
-                <DialogTitle>Registro del sistema</DialogTitle>
-              </DialogHeader>
-              <DialogDescription>Detalles del log {log.id}</DialogDescription>
-            </div>
 
+        <div className="pb-2">
+          <DialogHeader>
+            <DialogTitle>Registro del sistema</DialogTitle>
+          </DialogHeader>
+          <DialogDescription>
+            {log ? `Detalles del log ${log.id}` : "Cargando detalles..."}
+          </DialogDescription>
+        </div>
+
+        {log && (
+          <div className="overflow-y-auto">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 [&>p]:m-0 [&>p]:flex [&>p]:flex-col [&>p>span]:first:font-semibold [&>p>span]:first:text-primary">
               <p>
                 <span>Id</span>
@@ -102,7 +105,7 @@ export function ShowLogDetailsButton({ value }: { value: unknown }) {
                 {log.message}
               </div>
             </div>
-          </>
+          </div>
         )}
       </DialogContent>
     </Dialog>

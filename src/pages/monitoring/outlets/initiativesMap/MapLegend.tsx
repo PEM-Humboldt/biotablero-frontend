@@ -38,7 +38,7 @@ import {
   Minimize2,
 } from "lucide-react";
 import { cn } from "@ui/shadCN/lib/utils";
-import { HORIZONTAL_BREAKPOINT } from "@config/global";
+import { ScreenBreakpoint } from "@config/global";
 
 export function MapLegend({
   leastInitiativesPerDepartment,
@@ -66,7 +66,7 @@ export function MapLegend({
   const { departmentId, initiativeId } = useParams();
   const [expanded, setExpanded] = useState(() => {
     if (typeof window !== "undefined") {
-      return window.innerWidth >= HORIZONTAL_BREAKPOINT.xl;
+      return window.innerWidth >= ScreenBreakpoint.XL;
     }
     return true;
   });
