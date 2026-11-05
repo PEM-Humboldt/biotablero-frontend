@@ -1,6 +1,6 @@
 import L from "leaflet";
 
-import { COUNTRY_BOUNDS, HORIZONTAL_BREAKPOINT } from "@config/global";
+import { COUNTRY_BOUNDS, ScreenBreakpoint } from "@config/global";
 import {
   INITIATIVES_MAP_PADDING_SM,
   INITIATIVES_MAP_PADDING_LG,
@@ -9,25 +9,25 @@ import {
 const padding = {
   get south() {
     return typeof window !== "undefined" &&
-      window.innerWidth < HORIZONTAL_BREAKPOINT.xl
+      window.innerWidth < ScreenBreakpoint.XL
       ? INITIATIVES_MAP_PADDING_SM.south
       : INITIATIVES_MAP_PADDING_LG.south;
   },
   get north() {
     return typeof window !== "undefined" &&
-      window.innerWidth < HORIZONTAL_BREAKPOINT.xl
+      window.innerWidth < ScreenBreakpoint.XL
       ? INITIATIVES_MAP_PADDING_SM.north
       : INITIATIVES_MAP_PADDING_LG.north;
   },
   get east() {
     return typeof window !== "undefined" &&
-      window.innerWidth < HORIZONTAL_BREAKPOINT.xl
+      window.innerWidth < ScreenBreakpoint.XL
       ? INITIATIVES_MAP_PADDING_SM.east
       : INITIATIVES_MAP_PADDING_LG.east;
   },
   get west() {
     return typeof window !== "undefined" &&
-      window.innerWidth < HORIZONTAL_BREAKPOINT.xl
+      window.innerWidth < ScreenBreakpoint.XL
       ? INITIATIVES_MAP_PADDING_SM.west
       : INITIATIVES_MAP_PADDING_LG.west;
   },

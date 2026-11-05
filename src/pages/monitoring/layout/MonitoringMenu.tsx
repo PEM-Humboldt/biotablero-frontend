@@ -3,7 +3,7 @@ import { NavLink, useLocation } from "react-router";
 import { cn } from "@ui/shadCN/lib/utils";
 import {
   BREAKPOINT_PROFILE_BTN_ON_MENU,
-  HORIZONTAL_BREAKPOINT,
+  ScreenBreakpoint,
 } from "@config/global";
 import {
   Tooltip,
@@ -77,7 +77,7 @@ function MonitoringMenuBtn({
   activePath: string[];
 }) {
   const { initiativeSubPathsExclusion } = useSidebarItems();
-  const isSidebar = window.innerWidth >= HORIZONTAL_BREAKPOINT.xl;
+  const isSidebar = window.innerWidth >= ScreenBreakpoint.XL;
 
   const isAction = "action" in item;
   const isActionActive = isAction && item.isActive;
@@ -126,7 +126,7 @@ function MonitoringMenuBtn({
           side={isSidebar ? "right" : "bottom"}
           align="center"
           className={cn(
-            "max-w-[250px] text-center text-balance",
+            "max-w-[250px] text-centerrtext-balance",
             "xl:ml-1 xl:max-w-[320px] xl:text-left",
           )}
         >

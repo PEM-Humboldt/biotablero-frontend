@@ -5,6 +5,7 @@ import type { GetKeysWithStringValues } from "@appTypes/utils";
 
 import type { ODataInitiativeUserRequest } from "pages/monitoring/types/odataResponse";
 import type { JoinRequestStatus } from "pages/monitoring/types/userJoinRequest";
+import { ScreenBreakpoint } from "@config/global";
 
 type FilterJoinRequestsCallback = (
   status: JoinRequestStatus,
@@ -28,8 +29,13 @@ export function JoinRequestFilterButtons({
   menuSettings: FilterJoinRequestSettings[];
   filteringCallback: FilterJoinRequestsCallback;
 }) {
+  const isPhone = window.innerWidth < ScreenBreakpoint.SM;
+
   return (
-    <ButtonGroup>
+    <ButtonGroup
+      orientation={isPhone ? "vertical" : "horizontal"}
+      className="w-full"
+    >
       {menuSettings.map(({ label, status, sortBy, newerFirst }) => (
         <Button
           key={status}

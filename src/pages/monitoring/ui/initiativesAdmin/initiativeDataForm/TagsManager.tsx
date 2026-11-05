@@ -76,7 +76,7 @@ export function TagsManager({
         <ErrorsList errorItems={validationErrors} />
       )}
 
-      <div className="flex gap-10">
+      <div className="flex flex-col md:flex-row gap-10">
         {initiativeTagCategories.map((tagGroup) => {
           const tagCategoryId = tagGroup.tagCategoryId;
           return (
