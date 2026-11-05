@@ -1,6 +1,4 @@
 import { LOCALE } from "@config/global";
-import { LocationCompleteInfo } from "../types/odataResponse";
-import { LocationObj } from "../types/initiative";
 
 /**
  * Formats the date value of a log into a localized string.
@@ -71,14 +69,14 @@ export function formatLogDescription<T>(value: T) {
 }
 
 /**
- * Formats an indicator dates objects to a date or a date range into a localized, human-readable string.
+ * Formats a topic dates objects to a date or a date range into a localized, human-readable string.
  *
- * @param dateObject - The Indicator date object.
+ * @param dateObject - The topic date object.
  * @param dateEndObject - The optional ending date object to create a range.
  *
  * @returns A localized date or range string based on the `LOCALE` configuration.
  */
-export function indicatorsDateFormatter(
+export function topicsDateFormatter(
   dateObject: { year: number; month: number },
   dateEndObject?: { year: number; month: number },
 ) {

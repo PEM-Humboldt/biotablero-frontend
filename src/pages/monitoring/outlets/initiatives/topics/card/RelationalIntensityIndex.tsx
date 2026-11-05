@@ -3,21 +3,21 @@ import { useEffect, useMemo, useState } from "react";
 import { type BarDatum, ResponsiveBar } from "@nivo/bar";
 import { GRAPHS_GRADIENT_COLOR_PALETTE } from "@config/color";
 import { GRAPH_ANIMATION_CONFIG } from "@config/global";
-import { INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY } from "@config/monitoring";
-import { GetObservationInfo } from "@hooks/useReport/GetIndicatorInfo";
+import { TOPIC_RELATIONAL_INTENSITY_MAX_COUNT } from "@config/monitoring";
+import { GetTopicInfo } from "@hooks/useReport/GetTopicInfo";
 
-import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
+import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
 import type { BarsData } from "pages/monitoring/types/topics";
-import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/observations/card/ui/GraphInfoSelector";
-import { getContrastColor } from "pages/monitoring/outlets/initiatives/observations/card/utils/colors";
-import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
+import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/topics/card/ui/GraphInfoSelector";
+import { getContrastColor } from "pages/monitoring/outlets/initiatives/topics/card/utils/colors";
+import { uiText } from "pages/monitoring/outlets/initiatives/topics/layout/uiText";
 
 export function RelationalIntensityIndex() {
-  const { currentObservation } = useObservationsCTX();
+  const { currentTopic } = useTopicsCTX();
 
   const [selectedDates, setSelectedDates] = useState<string[]>([]);
 
-  const data = currentObservation?.cleanData as BarsData;
+  const data = currentTopic?.cleanData as BarsData;
 
   const { dataByDate, allDates } = useMemo(() => {
     const dataByDate: Record<string, { actor: string; value: number }[]> = {};
@@ -44,7 +44,7 @@ export function RelationalIntensityIndex() {
         dataByDate[date].length;
 
       dataByDate[date].push({
-        actor: uiText.observationCard.relationalIntensityIndex.averageLabel,
+        actor: uiText.topicCard.relationalIntensityIndex.averageLabel,
         value: Number(average.toFixed(2)),
       });
     }
@@ -61,7 +61,7 @@ export function RelationalIntensityIndex() {
     setSelectedDates((oldDates) => {
       const newList = [...oldDates, date];
 
-      if (newList.length > INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY) {
+      if (newList.length > TOPIC_RELATIONAL_INTENSITY_MAX_COUNT) {
         newList.shift();
       }
       return allDates.filter((date) => newList.includes(date));
@@ -72,7 +72,7 @@ export function RelationalIntensityIndex() {
     if (allDates.length > 0 && selectedDates.length === 0) {
       const preselectAmount = Math.max(
         1,
-        Math.min(INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY, allDates.length) - 1,
+        Math.min(TOPIC_RELATIONAL_INTENSITY_MAX_COUNT, allDates.length) - 1,
       );
       setSelectedDates(allDates.slice(0, preselectAmount));
     }
@@ -83,14 +83,12 @@ export function RelationalIntensityIndex() {
       <div className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300">
         <GraphInfoSelector
           uiText={{
-            title:
-              uiText.observationCard.relationalIntensityIndex.selector.title,
-            label:
-              uiText.observationCard.relationalIntensityIndex.selector.label,
+            title: uiText.topicCard.relationalIntensityIndex.selector.title,
+            label: uiText.topicCard.relationalIntensityIndex.selector.label,
             instruction:
-              allDates.length > INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY
-                ? uiText.observationCard.relationalIntensityIndex.selector.maxSelection(
-                    INDICATOR_MAX_COUNT_RELATIONAL_INTENSITY,
+              allDates.length > TOPIC_RELATIONAL_INTENSITY_MAX_COUNT
+                ? uiText.topicCard.relationalIntensityIndex.selector.maxSelection(
+                    TOPIC_RELATIONAL_INTENSITY_MAX_COUNT,
                   )
                 : undefined,
           }}
@@ -105,7 +103,7 @@ export function RelationalIntensityIndex() {
         />
       </div>
 
-      <GetObservationInfo
+      <GetTopicInfo
         graphId={selectedDates.toReversed().join(", ")}
         mapElementId={null}
         mapUrl={null}
@@ -143,7 +141,7 @@ export function RelationalIntensityIndex() {
 
             {selectedDates.toReversed().map((date) => (
               <div
-                key={`observationSection_${date}`}
+                key={`topicSection_${date}`}
                 className="flex-1 hover:bg-grey-light rounded"
               >
                 <ResponsiveBar
@@ -159,8 +157,7 @@ export function RelationalIntensityIndex() {
                   colors={(bar) => {
                     if (
                       bar.indexValue ===
-                      uiText.observationCard.relationalIntensityIndex
-                        .averageLabel
+                      uiText.topicCard.relationalIntensityIndex.averageLabel
                     ) {
                       return GRAPHS_GRADIENT_COLOR_PALETTE[0];
                     }
@@ -213,10 +210,10 @@ export function RelationalIntensityIndex() {
             ))}
           </div>
           <p className="text-sm italic mb-4 text-center">
-            {uiText.observationCard.relationalIntensityIndex.bottomLegend}
+            {uiText.topicCard.relationalIntensityIndex.bottomLegend}
           </p>
         </>
-      </GetObservationInfo>
+      </GetTopicInfo>
     </>
   );
 }

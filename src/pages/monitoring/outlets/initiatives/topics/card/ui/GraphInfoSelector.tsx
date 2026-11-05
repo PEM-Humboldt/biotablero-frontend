@@ -7,7 +7,7 @@ import { hashStringToRange } from "@utils/format";
 import {
   getContrastColor,
   getSeriesColor,
-} from "pages/monitoring/outlets/initiatives/observations/card/utils/colors";
+} from "pages/monitoring/outlets/initiatives/topics/card/utils/colors";
 import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
 
 export function GraphInfoSelector({

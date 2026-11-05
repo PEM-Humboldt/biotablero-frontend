@@ -24,7 +24,7 @@ export const fetchContext = async (
   }
 
   switch (reportType) {
-    case ReportType.MONITORING_INDICATORS:
+    case ReportType.MONITORING_TOPICS:
       return await fetchInitiativeContext(context as InitiativeCompleteInfo);
 
     case ReportType.SEARCH_INDICATORS:

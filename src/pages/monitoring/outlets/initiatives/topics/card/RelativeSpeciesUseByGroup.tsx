@@ -4,21 +4,21 @@ import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
 import { GRAPH_ANIMATION_CONFIG } from "@config/global";
 import { ResponsiveBar } from "@nivo/bar";
 import { hashStringToRange } from "@utils/format";
-import { GetObservationInfo } from "@hooks/useReport/GetIndicatorInfo";
+import { GetTopicInfo } from "@hooks/useReport/GetTopicInfo";
 
-import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
+import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
 import { type BarsData } from "pages/monitoring/types/topics";
 import {
   getContrastColor,
   getSeriesColor,
-} from "pages/monitoring/outlets/initiatives/observations/card/utils/colors";
+} from "pages/monitoring/outlets/initiatives/topics/card/utils/colors";
 import { GraphLegend } from "@ui/GraphLegend";
-import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/observations/card/ui/GraphInfoSelector";
-import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
+import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/topics/card/ui/GraphInfoSelector";
+import { uiText } from "pages/monitoring/outlets/initiatives/topics/layout/uiText";
 
 export function RelativeSpeciesUseByGroup() {
-  const { currentObservation } = useObservationsCTX();
-  const data = currentObservation?.cleanData as BarsData;
+  const { currentTopic } = useTopicsCTX();
+  const data = currentTopic?.cleanData as BarsData;
 
   const groupsList = useMemo(() => [...(data.keys.parent ?? [])], [data]);
   const [selectedParent, setSelectedParent] = useState("");
@@ -77,7 +77,7 @@ export function RelativeSpeciesUseByGroup() {
     <>
       <div className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300">
         <GraphInfoSelector
-          uiText={uiText.observationCard.relativeSpeciesUseByGroup.selector}
+          uiText={uiText.topicCard.relativeSpeciesUseByGroup.selector}
           options={groupsList}
           currentSelection={selectedParent}
           updateCurrent={(val: string | string[]) => {
@@ -88,11 +88,7 @@ export function RelativeSpeciesUseByGroup() {
         />
       </div>
 
-      <GetObservationInfo
-        graphId={selectedParent}
-        mapElementId={null}
-        mapUrl={null}
-      >
+      <GetTopicInfo graphId={selectedParent} mapElementId={null} mapUrl={null}>
         <>
           <div className="w-full h-full aspect-video">
             <ResponsiveBar
@@ -158,7 +154,7 @@ export function RelativeSpeciesUseByGroup() {
 
           <GraphLegend keys={displayKeys} labelClassName={{ key: "italic" }} />
         </>
-      </GetObservationInfo>
+      </GetTopicInfo>
     </>
   );
 }

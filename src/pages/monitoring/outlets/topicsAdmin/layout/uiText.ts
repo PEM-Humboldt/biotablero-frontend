@@ -2,12 +2,12 @@ import { LOCALE } from "@config/global";
 
 export const uiText = {
   mainHeader: {
-    pageTitle: { title: "Administrar Observaciones", subtitle: "" },
-    title: "Administrar Observaciones",
-    uploadObservationBtn: {
-      label: "Cargar observaciones",
-      sr: "Cargar información de observaciones a una iniciativa",
-      title: "Cargar observaciones a una iniciativa",
+    pageTitle: { title: "Administrar Temáticas", subtitle: "" },
+    title: "Administrar temáticas",
+    uploadTopicBtn: {
+      label: "Cargar temáticas",
+      sr: "Cargar información de temáticas asociadas a una iniciativa",
+      title: "Cargar temáticas asociadas a una iniciativa",
     },
   },
 
@@ -24,8 +24,8 @@ export const uiText = {
 
     selectInitiativeBtn: {
       label: "",
-      sr: "Ver Observaciones de la iniciativa",
-      title: "Ver Observaciones de la iniciativa",
+      sr: "Ver temáticas de la iniciativa",
+      title: "Ver termáticas de la iniciativa",
     },
 
     deselectInitiativeBtn: {
@@ -35,12 +35,12 @@ export const uiText = {
     },
   },
 
-  observationsList: {
+  topicsList: {
     noInitiative:
-      "Selecciona una iniciativa para poder administrar sus observaciones",
-    loadind: "Cargando información de las observaciones...",
+      "Selecciona una iniciativa para poder administrar sus temáticas",
+    loadind: "Cargando información de las temáticas...",
 
-    listDescription: { sr: "Observaciones relacionadas" },
+    listDescription: { sr: "Temáticas relacionadas" },
     versionsListDescription: {
       sr: "Selecciona la varsion para revisar",
       label: "Versiones",
@@ -50,16 +50,16 @@ export const uiText = {
       label: "Selecciona la version a editar",
     },
     openVersionBtn: {
-      sr: (version: number, observationDate: Date) =>
-        `Ver la version ${version} de ${observationDate.toLocaleDateString(LOCALE)}`,
-      title: (version: number, observationDate: Date) =>
-        `Ver la version ${version} de ${observationDate.toLocaleDateString(LOCALE)}`,
-      label: (_version: number, observationDate: Date) =>
-        observationDate.toLocaleDateString(LOCALE),
+      sr: (version: number, topicDate: Date) =>
+        `Ver la version ${version} de ${topicDate.toLocaleDateString(LOCALE)}`,
+      title: (version: number, topicDate: Date) =>
+        `Ver la version ${version} de ${topicDate.toLocaleDateString(LOCALE)}`,
+      label: (_version: number, topicDate: Date) =>
+        topicDate.toLocaleDateString(LOCALE),
     },
   },
 
-  observationVersionCard: {
+  topicVersionCard: {
     saveBtn: {
       sr: "Guardar cambios",
       title: "Guardar cambios",
@@ -69,11 +69,11 @@ export const uiText = {
     updatedToast: {
       title: "Textos de version actualizados",
       description: (versionNumber: number, creationDate: Date) =>
-        `Los textos esta observación en la version ${versionNumber} de ${creationDate.toLocaleDateString(LOCALE)} han sido actualizados correctamente.`,
+        `Los textos esta temática en la version ${versionNumber} de ${creationDate.toLocaleDateString(LOCALE)} han sido actualizados correctamente.`,
     },
     editVersionTitlePrefix: "Version del ",
     noTextInThisVersion: (textField: string) =>
-      `No hay textos asociados con '${textField}' en esta versión de la observación`,
+      `No hay textos asociados con '${textField}' en esta versión de la temática`,
     textEditorPlaceHolder: "Este indicador...",
   },
 };

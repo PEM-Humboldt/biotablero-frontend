@@ -100,7 +100,7 @@ function getDocumentModel(
   sections: Map<string, IndicatorSection | SearchSection>,
 ) {
   switch (reportType) {
-    case ReportType.MONITORING_INDICATORS:
+    case ReportType.MONITORING_TOPICS:
       return (
         <CMIndicatorReportModel
           metadata={metadata}
@@ -169,7 +169,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       segments.includes(required),
     );
 
-    return fullPath ? ReportType.MONITORING_INDICATORS : ReportType.NONE;
+    return fullPath ? ReportType.MONITORING_TOPICS : ReportType.NONE;
   }, [pathname]);
 
   const reportContextResolver = useCallback(

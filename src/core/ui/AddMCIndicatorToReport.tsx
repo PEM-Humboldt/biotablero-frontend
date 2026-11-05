@@ -13,9 +13,9 @@ import {
 import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 import { REPORT_NOTE_MAX_LENGTH } from "@config/report";
 import { inputWarnColor } from "@utils/ui";
-import { uiText } from "@ui/addMCIndicatorToReport/layout/uiText";
+import { uiText } from "@ui/addMCTopicToReport/layout/uiText";
 
-export function AddMCIndicatorToReport() {
+export function AddMCTopicToReport() {
   const { user } = useUserCTX();
   const { addSection, isLoading, hasSections, toggleEditor } = useReport();
 
