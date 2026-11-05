@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@ui/shadCN/component/select";
-import observationsSearchBkg from "@assets/indicatorsSearchBKG.jpg";
+import topicsSearchBkg from "@assets/indicatorsSearchBKG.jpg";
 import { Button } from "@ui/shadCN/component/button";
 import { Combobox } from "@ui/ComboBox";
 import { MONITORING_YEARS_AVAILABLE } from "@config/monitoring";
@@ -25,14 +25,14 @@ import type {
   ODataTag,
 } from "pages/monitoring/types/odataResponse";
 import { getColombianDepartments } from "pages/monitoring/utils/manageLocation";
-import { uiText } from "pages/monitoring/outlets/observationsSearch/layout/uiText";
-import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
+import { uiText } from "pages/monitoring/outlets/topicsSearch/layout/uiText";
+import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
 
 export function SearchInput() {
-  const { setSearchObservations: setSearchIndicators } = useObservationsCTX();
+  const { setSearchTopics: setSearchIndicators } = useTopicsCTX();
   const debouncedSearch = useRef(debouncer(setSearchIndicators)).current;
 
-  const [searchObservation, setSearchObservation] = useState("");
+  const [searchTopic, setSearchTopic] = useState("");
   const [filterInitiative, setFilterInitiative] = useState("");
   const [filterEcosystem, setFilterEcosystem] = useState("");
   const [filterBiologicalGroup, setFilterBiologicalGroup] = useState("");
@@ -52,14 +52,14 @@ export function SearchInput() {
   }, []);
 
   const searchFilter = useMemo(() => {
-    const lower = searchObservation.toLocaleLowerCase();
+    const lower = searchTopic.toLocaleLowerCase();
 
     const filterMap = {
-      [searchObservation]: `contains(tolower(name), '${lower}') or contains(tolower(topic/name), '${lower}')`,
+      [searchTopic]: `contains(tolower(name), '${lower}') or contains(tolower(topic/name), '${lower}')`,
       [filterInitiative]: `initiativeId eq ${filterInitiative}`,
-      [filterEcosystem]: `ObservationTags/any(l: l/tag/id eq ${filterEcosystem})`,
-      [filterBiologicalGroup]: `ObservationTags/any(l: l/tag/id eq ${filterBiologicalGroup})`,
-      [filterDepartment]: `ObservationLocations/any(l: l/location/parent/id eq ${filterDepartment})`,
+      [filterEcosystem]: `TopicTags/any(l: l/tag/id eq ${filterEcosystem})`,
+      [filterBiologicalGroup]: `TopicTags/any(l: l/tag/id eq ${filterBiologicalGroup})`,
+      [filterDepartment]: `TopicLocations/any(l: l/location/parent/id eq ${filterDepartment})`,
       [filterYear]: `Versions/any(l: year(l/creationDate) eq ${filterYear})`,
     };
 
@@ -70,7 +70,7 @@ export function SearchInput() {
       return filter ? `${filter} and ${query}` : query;
     }, "");
   }, [
-    searchObservation,
+    searchTopic,
     filterInitiative,
     filterEcosystem,
     filterBiologicalGroup,
@@ -84,7 +84,7 @@ export function SearchInput() {
   }, [searchFilter]);
 
   const handleReset = () => {
-    setSearchObservation("");
+    setSearchTopic("");
     setFilterInitiative("");
     setFilterEcosystem("");
     setFilterBiologicalGroup("");
@@ -95,7 +95,7 @@ export function SearchInput() {
   return (
     <header
       className="w-full p-4 lg:p-8 bg-cover bg-center"
-      style={{ backgroundImage: `url(${observationsSearchBkg})` }}
+      style={{ backgroundImage: `url(${topicsSearchBkg})` }}
     >
       <div className="max-w-[1600px] mx-auto">
         <div className="w-full lg:w-[60%] lg:max-w-[600px] rounded-xl outline-2 -outline-offset-1 overflow-hidden outline-primary">
@@ -111,16 +111,16 @@ export function SearchInput() {
                 htmlFor="searchIndicator"
                 className="text-primary-foreground font-normal"
               >
-                {uiText.searchInput.observationSearch.label}
+                {uiText.searchInput.topicSearch.label}
               </label>
               <InputGroup>
                 <InputGroupInput
                   id="searchIndicator"
                   type="text"
-                  value={searchObservation}
-                  onChange={(e) => setSearchObservation(e.target.value)}
+                  value={searchTopic}
+                  onChange={(e) => setSearchTopic(e.target.value)}
                   className="placeholder:text-foreground"
-                  placeholder={uiText.searchInput.observationSearch.placeholder}
+                  placeholder={uiText.searchInput.topicSearch.placeholder}
                 />
                 <InputGroupAddon align="inline-end">
                   <SearchIcon className="text-accent" />
@@ -242,7 +242,7 @@ export function SearchInput() {
                     )}
                     {MONITORING_YEARS_AVAILABLE.map((year) => (
                       <SelectItem
-                        key={`observationYear_${year}`}
+                        key={`topciYear_${year}`}
                         value={String(year)}
                       >
                         {year}

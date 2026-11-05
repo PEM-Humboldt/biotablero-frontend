@@ -9,25 +9,25 @@ import {
 } from "lucide-react";
 
 import { LOCALE } from "@config/global";
-import { OBSERVATIONS_PER_PAGE } from "@config/monitoring";
+import { TOPICS_PER_PAGE } from "@config/monitoring";
 import { Button } from "@ui/shadCN/component/button";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import type { ODataParams } from "@appTypes/odata";
 import { TablePager } from "@composites/TablePager";
 
-import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
-import { uiText } from "pages/monitoring/outlets/observationsSearch/layout/uiText";
+import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
+import { uiText } from "pages/monitoring/outlets/topicsSearch/layout/uiText";
 import { makeInitiativeLocationsString } from "@utils/format";
 import { TagsGroupsRender } from "pages/monitoring/ui/TagsGroupsRender";
 
 export function SearchOutput() {
   const {
-    observations,
-    observationsAmount,
+    topics,
+    topicsAmount,
     currentPage,
     setCurrentPage,
-    setSearchObservations,
-  } = useObservationsCTX();
+    setSearchTopics: setSearchTopics,
+  } = useTopicsCTX();
 
   const [sortDate, setSortDate] = useState(0);
   const [sortName, setSortName] = useState(0);
@@ -37,14 +37,14 @@ export function SearchOutput() {
     const sortNameStr = ["", "name asc", "name desc"];
     const sortStr = sortNameStr[sortName] + sortDateStr[sortDate];
 
-    setSearchObservations({ orderby: sortStr as ODataParams["orderby"] });
-  }, [sortDate, sortName, setSearchObservations]);
+    setSearchTopics({ orderby: sortStr as ODataParams["orderby"] });
+  }, [sortDate, sortName, setSearchTopics]);
 
   return (
     <div className="max-w-[1600px] w-full space-y-4 mx-auto p-4 lg:p-8">
       <div className="flex gap-2 items-center">
         <div className="text-primary">
-          {uiText.searchOutput.searchResults(observationsAmount)}
+          {uiText.searchOutput.searchResults(topicsAmount)}
         </div>
         <ButtonGroup>
           <Button
@@ -91,24 +91,24 @@ export function SearchOutput() {
       </div>
 
       <ul className="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-4">
-        {observations.map((observation) => {
+        {topics.map((topic) => {
           const lastUpdate = new Date(
-            observation.versions[observation.versions.length - 1].creationDate,
+            topic.versions[topic.versions.length - 1].creationDate,
           );
 
           const initiativeLocations = makeInitiativeLocationsString(
-            observation?.locations ?? [],
+            topic?.locations ?? [],
             " / ",
           );
 
           return (
             <li
-              key={`observation_card${observation.id}`}
+              key={`topic_card${topic.id}`}
               className="relative flex flex-col gap-4 bg-background shadow-2xl outline outline-transparent hover:outline-primary rounded-xl overflow-hidden transition-colors duration-300"
             >
               <div className="relative mx-2 p-4">
                 <div className="pt-8">
-                  <h4 className="text-xl m-0">{observation.topicType.name}</h4>
+                  <h4 className="text-xl m-0">{topic.topicType.name}</h4>
                 </div>
 
                 <time
@@ -131,8 +131,8 @@ export function SearchOutput() {
                   title={uiText.searchOutput.card.initiative}
                   className="text-base/4 font-normal mb-0 px-2"
                 >
-                  {observation?.initiativeName ??
-                    `id: ${observation.initiativeId}, Nombre de la iniciativa`}
+                  {topic?.initiativeName ??
+                    `id: ${topic.initiativeId}, Nombre de la iniciativa`}
                 </div>
                 <div
                   title={uiText.searchOutput.card.location}
@@ -144,8 +144,8 @@ export function SearchOutput() {
                 </div>
 
                 <TagsGroupsRender
-                  tags={observation.tags.map((t) => t.tag)}
-                  groupId={observation.name.replace(" ", "")}
+                  tags={topic.tags.map((t) => t.tag)}
+                  groupId={topic.name.replace(" ", "")}
                   colorIndexOffset={3}
                 />
               </div>
@@ -159,7 +159,7 @@ export function SearchOutput() {
                   asChild
                 >
                   <Link
-                    to={`/Monitoreo/Iniciativas/${observation.initiativeId}/Indicadores/${observation.id}`}
+                    to={`/Monitoreo/Iniciativas/${topic.initiativeId}/Indicadores/${topic.id}`}
                     title={uiText.searchOutput.card.gotoBtn.title}
                     aria-label={uiText.searchOutput.card.gotoBtn.sr}
                   >
@@ -175,9 +175,9 @@ export function SearchOutput() {
 
       <TablePager
         currentPage={currentPage}
-        recordsAvailable={observationsAmount}
+        recordsAvailable={topicsAmount}
         onPageChange={setCurrentPage}
-        recordsPerPage={OBSERVATIONS_PER_PAGE}
+        recordsPerPage={TOPICS_PER_PAGE}
         paginated={5}
         className="py-4"
       />
