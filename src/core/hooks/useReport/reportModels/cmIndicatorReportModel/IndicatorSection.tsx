@@ -10,8 +10,9 @@ import type {
 } from "@appTypes/report";
 import { LOCALE } from "@config/global";
 import { REPORT_PAGE_SIZE } from "@config/report";
-import { Fragment } from "react";
+import { Fragment, ReactNode } from "react";
 import { documentInfo } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/documentInfo";
+import { parseSimpleMarkdown } from "@utils/textParser";
 
 export function IndicatorSection({
   section,
@@ -140,7 +141,10 @@ export function IndicatorSection({
       {section?.description ? (
         <View style={styles.quoteBox} wrap={false}>
           <Text style={styles.h4}>
-            {documentInfo.indicatorSection.sectionDescriptionLabel}
+            {parseSimpleMarkdown(
+              documentInfo.indicatorSection.sectionDescriptionLabel,
+              { renderToPdf: true },
+            )}
           </Text>
           <Text style={styles.quoteText}>{section.description}</Text>
         </View>
@@ -148,25 +152,31 @@ export function IndicatorSection({
 
       {section?.card?.methodology ? (
         <LabeledBlock label={documentInfo.indicatorSection.methodologyLabel}>
-          {section.card.methodology}
+          {parseSimpleMarkdown(section.card.methodology, { renderToPdf: true })}
         </LabeledBlock>
       ) : null}
 
       {section?.card?.interpretation ? (
         <LabeledBlock label={documentInfo.indicatorSection.interpretationLabel}>
-          {section.card.interpretation}
+          {parseSimpleMarkdown(section.card.interpretation, {
+            renderToPdf: true,
+          })}
         </LabeledBlock>
       ) : null}
 
       {section?.card?.considerations ? (
         <LabeledBlock label={documentInfo.indicatorSection.considerationsLabel}>
-          {section.card.considerations}
+          {parseSimpleMarkdown(section.card.considerations, {
+            renderToPdf: true,
+          })}
         </LabeledBlock>
       ) : null}
 
       {section?.card?.authorship ? (
         <LabeledBlock label={documentInfo.indicatorSection.authorshipLabel}>
-          {section.card.authorship}
+          {parseSimpleMarkdown(section.card.authorship, {
+            renderToPdf: true,
+          })}
         </LabeledBlock>
       ) : null}
 
@@ -220,7 +230,7 @@ export function LabeledBlock({
   children,
 }: {
   label: string;
-  children: string;
+  children: ReactNode;
 }) {
   if (!children) {
     return null;
@@ -229,7 +239,7 @@ export function LabeledBlock({
   return (
     <View style={styles.block} wrap={false}>
       <Text style={styles.h4}>{label}</Text>
-      <Text style={styles.paragraph}>{children}</Text>
+      <View style={styles.paragraph}>{children}</View>
     </View>
   );
 }

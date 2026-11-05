@@ -8,6 +8,7 @@ import {
   Tags,
   UserRoundCog,
   UserRoundCheck,
+  ScanEye,
 } from "lucide-react";
 
 import { ColombiaIconLucide } from "@ui/ColombiaIcon";
@@ -100,6 +101,14 @@ export function useSidebarItems() {
                 "Agrega y actualiza la información de las iniciativas",
               icon: UserRoundCog,
               linkTo: "Admin/Iniciativas",
+              group: 3,
+            },
+            {
+              label: "Observaciones",
+              description:
+                "Carga y actualiza las observaciones realizadas por las Iniciativas",
+              icon: ScanEye,
+              linkTo: "Admin/Observaciones",
               group: 3,
             },
             {

@@ -9,17 +9,16 @@ import {
 } from "lucide-react";
 
 import { LOCALE } from "@config/global";
-import { OBSERVATIONS_PER_PAGE, TAG_COLORS } from "@config/monitoring";
+import { OBSERVATIONS_PER_PAGE } from "@config/monitoring";
 import { Button } from "@ui/shadCN/component/button";
-import { cn } from "@ui/shadCN/lib/utils";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import type { ODataParams } from "@appTypes/odata";
 import { TablePager } from "@composites/TablePager";
 
 import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
-import { TagsRender } from "pages/monitoring/ui/TagsRender";
-import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
 import { uiText } from "pages/monitoring/outlets/observationsSearch/layout/uiText";
+import { makeInitiativeLocationsString } from "@utils/format";
+import { TagsGroupsRender } from "pages/monitoring/ui/TagsGroupsRender";
 
 export function SearchOutput() {
   const {
@@ -97,28 +96,10 @@ export function SearchOutput() {
             observation.versions[observation.versions.length - 1].creationDate,
           );
 
-          const initiativeLocations = (observation?.locations ?? [])
-            .map((l) => {
-              const municipality = l.locality !== null ? `, ${l.locality}` : "";
-              const locality = l.locality !== null ? ` - ${l.locality}` : "";
-
-              return `${l.location.parent?.name}${municipality}${locality}`;
-            })
-            .join(" / ");
-
-          const tagsGrouped = (observation.tags || []).reduce<
-            Record<number, { group: string; tags: string[] }>
-          >((all, tag) => {
-            if (!all[tag.tag.category.id]) {
-              all[tag.tag.category.id] = {
-                group: translateTagCategory(tag.tag.category.name),
-                tags: [],
-              };
-            }
-            all[tag.tag.category.id].tags.push(tag.tag.name);
-
-            return all;
-          }, {});
+          const initiativeLocations = makeInitiativeLocationsString(
+            observation?.locations ?? [],
+            " / ",
+          );
 
           return (
             <li
@@ -162,23 +143,11 @@ export function SearchOutput() {
                     : "ubicación"}
                 </div>
 
-                {Object.keys(tagsGrouped).length > 0 && (
-                  <div className="flex flex-col m-1 gap-2">
-                    {Object.values(tagsGrouped).map((tags, i) => {
-                      const colorValues = TAG_COLORS[i % TAG_COLORS.length];
-                      const colorSet = `${colorValues.bg} ${colorValues.fg}`;
-
-                      return (
-                        <TagsRender
-                          key={`tags_${tags.group}_${i}`}
-                          tags={tags.tags}
-                          srTitle={tags.group}
-                          className={cn(colorSet, "font-normal")}
-                        />
-                      );
-                    })}
-                  </div>
-                )}
+                <TagsGroupsRender
+                  tags={observation.tags.map((t) => t.tag)}
+                  groupId={observation.name.replace(" ", "")}
+                  colorIndexOffset={3}
+                />
               </div>
 
               <div className="text-right mt-auto">

@@ -54,6 +54,32 @@ export async function getObservationData(observationId: number) {
   return res;
 }
 
+export async function updateObservationData(
+  observationId: number,
+  payload: Record<
+    | "description"
+    | "methodology"
+    | "interpretation"
+    | "considerations"
+    | "authorship",
+    string
+  >,
+) {
+  const res = await monitoringAPI<ObservationData>({
+    type: "put",
+    endpoint: `ObservationVersion/${observationId}`,
+    options: {
+      data: payload,
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    },
+  });
+
+  return res;
+}
+
 /**
  * Retrieves all the metadata from the specified observation.
  *
@@ -67,6 +93,25 @@ export async function getObservationMetadata(observationId: number) {
   const res = await monitoringAPI<ObservationMetadata>({
     type: "get",
     endpoint: `Observation/${observationId}`,
+  });
+
+  return res;
+}
+
+export async function updateObservationName(
+  observationId: number,
+  name: string,
+) {
+  const res = await monitoringAPI<ObservationMetadata>({
+    type: "put",
+    endpoint: `Observation/${observationId}`,
+    options: {
+      data: { Name: name },
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    },
   });
 
   return res;

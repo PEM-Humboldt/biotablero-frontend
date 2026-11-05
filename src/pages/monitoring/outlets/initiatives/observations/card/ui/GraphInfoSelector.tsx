@@ -8,7 +8,7 @@ import {
   getContrastColor,
   getSeriesColor,
 } from "pages/monitoring/outlets/initiatives/observations/card/utils/colors";
-import { GRAPHS_CONTRAST_COLOR_PALETTE } from "@config/color";
+import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
 
 export function GraphInfoSelector({
   uiText,
@@ -16,8 +16,7 @@ export function GraphInfoSelector({
   currentSelection,
   updateCurrent,
   singleSelect = true,
-  colorFromOptionHash = false,
-  highContrast = false,
+  customColorList,
 }: {
   uiText: { title: string; label: string; instruction?: string };
   options: string[] | { title: string; subtitle?: string }[];
@@ -26,9 +25,10 @@ export function GraphInfoSelector({
     | Dispatch<SetStateAction<string | string[]>>
     | ((select: string | string[]) => void);
   singleSelect?: boolean;
-  colorFromOptionHash?: boolean;
-  highContrast?: boolean;
+  customColorList?: string[];
 }) {
+  const customColors = customColorList && customColorList.length > 0;
+
   return (
     <div title={uiText.title}>
       <h4 className="text-base/2 text-primary ">{uiText.label}</h4>
@@ -45,13 +45,14 @@ export function GraphInfoSelector({
             ? title === current
             : currentSelection.includes(title);
 
-          const bgColor = colorFromOptionHash
+          const bgColor = customColors
             ? getSeriesColor(
                 hashStringToRange(
                   title,
-                  highContrast ? GRAPHS_CONTRAST_COLOR_PALETTE.length : 30,
+                  customColorList?.length ??
+                    GRAPHS_EXTENDED_COLOR_PALETTE.length,
                 ),
-                highContrast ? GRAPHS_CONTRAST_COLOR_PALETTE : undefined,
+                customColorList ?? GRAPHS_EXTENDED_COLOR_PALETTE,
               )
             : undefined;
 
@@ -62,7 +63,7 @@ export function GraphInfoSelector({
               <Button
                 variant={isSelected ? "default" : "outline"}
                 style={
-                  colorFromOptionHash
+                  customColors
                     ? {
                         backgroundColor: bgColor,
                         borderColor: bgColor,
@@ -71,10 +72,11 @@ export function GraphInfoSelector({
                     : undefined
                 }
                 className={cn(
-                  "w-full h-auto min-h-9 whitespace-normal wrap-break-word text-center flex items-center justify-center gap-1.5",
+                  "w-full h-auto min-h-9 whitespace-normal wrap-break-word text-center flex items-center justify-center gap-1.5 text-sm",
                   singleSelect && isSelected ? "" : "hover:cursor-pointer",
                   "opacity-100! border! border-primary py-1 px-4",
                 )}
+                size="sm"
                 onClick={() => updateCurrent(title)}
                 aria-pressed={isSelected}
                 disabled={singleSelect ? isSelected : false}

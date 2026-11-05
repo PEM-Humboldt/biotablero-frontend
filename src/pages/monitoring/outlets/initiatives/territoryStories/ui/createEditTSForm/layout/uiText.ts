@@ -2,11 +2,6 @@ export const uiText = {
   loading: "Cargando...",
   create: "Crear relato del territorio",
 
-  errors: {
-    createdButErrImageUpload:
-      "El relato fue creado correctamente, pero sucedió un problema al subir las imágenes",
-  },
-
   titleInput: {
     label: "Título",
     placeholder: "Este es el título de mi relato",
@@ -106,16 +101,41 @@ export const uiText = {
     },
   },
 
+  uploadErrors: {
+    images: "Error al cargar las imágenes",
+    videos: "Error al cargar los videos",
+    enable: "Error al cambiar la visibilidad del relato",
+  },
+
   toast: {
-    creation: {
-      title: "Melo melo caramelo",
-      description: (storyTitle: string) =>
-        `El relato '${storyTitle}' fue creado con éxito`,
+    creation: (errors: string[]) => {
+      const errorsStr =
+        errors.length > 0
+          ? `, pero sucedieron los siguientes errores: ${errors.join(", ")}.`
+          : ".";
+
+      return {
+        title:
+          errors.length > 0
+            ? "Relato creado pero tiene errores"
+            : "Relato creado correctamente",
+        description: (storyTitle: string) =>
+          `El relato '${storyTitle}' fue creado${errorsStr}`,
+      };
     },
-    update: {
-      title: "Melo remelo remelanie",
-      description: (storyTitle: string) =>
-        `El relato '${storyTitle}' fue actualizado con éxito`,
+    update: (errors: string[]) => {
+      const errorsStr =
+        errors.length > 0
+          ? `, pero sucedieron los siguientes errores: ${errors.join(", ")}.`
+          : ".";
+
+      return {
+        title: errors
+          ? "Relato actualizado pero tiene errores"
+          : "Relato actualizado correctamente",
+        description: (storyTitle: string) =>
+          `El relato '${storyTitle}' fue actualizado${errorsStr}`,
+      };
     },
   },
 };
