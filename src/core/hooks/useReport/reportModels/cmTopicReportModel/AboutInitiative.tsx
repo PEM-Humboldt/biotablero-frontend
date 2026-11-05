@@ -1,21 +1,17 @@
 import { View, Text, Link, Page } from "@react-pdf/renderer";
-import { styles } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/styles";
+import { styles } from "@hooks/useReport/reportModels/cmTopicReportModel/layout/styles";
 import { colors } from "@hooks/useReport/layout/theme";
-import { Header } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/header";
-import { Footer } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/footer";
-import type {
-  IndicatorContext,
-  IndicatorTag,
-  ReportMetadata,
-} from "@appTypes/report";
+import { Header } from "@hooks/useReport/reportModels/cmTopicReportModel/layout/header";
+import { Footer } from "@hooks/useReport/reportModels/cmTopicReportModel/layout/footer";
+import type { TopicContext, TopicTag, ReportMetadata } from "@appTypes/report";
 import { REPORT_PAGE_SIZE } from "@config/report";
-import { documentInfo } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/documentInfo";
+import { documentInfo } from "@hooks/useReport/reportModels/cmTopicReportModel/layout/documentInfo";
 
 export function InitiativeSection({
   context,
   metadata,
 }: {
-  context: IndicatorContext;
+  context: TopicContext;
   metadata: ReportMetadata;
 }) {
   return (
@@ -129,7 +125,7 @@ export function InitiativeSection({
   );
 }
 
-function LinkList({ title, items }: { title: string; items: IndicatorTag[] }) {
+function LinkList({ title, items }: { title: string; items: TopicTag[] }) {
   if (!items.length) {
     return null;
   }

@@ -35,7 +35,7 @@ import { useUserCTX } from "@hooks/UserCTX";
 import { fetchContext } from "@hooks/useReport/utils/fetchModuleContext";
 import { makeMapImg } from "@hooks/useReport/utils/makeMapImg";
 import { makeGraphImg } from "@hooks/useReport/utils/makeGraphImg";
-import { CMIndicatorReportModel } from "@hooks/useReport/reportModels/CMIndicatorReportModel";
+import { CMTopicsReportModel } from "@hooks/useReport/reportModels/CMTopicsReportModel";
 import { SearchIndicatorReportModel } from "@hooks/useReport/reportModels/SearchIndicatorReportModel";
 import { LOCALE } from "@config/global";
 import { ReportDocumentTree } from "@hooks/useReport/reportModels/ReportDocumentTree";
@@ -44,8 +44,8 @@ import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import {
   ReportType,
   type GraphDTO,
-  type IndicatorContext,
-  type IndicatorSection,
+  type TopicContext,
+  type TopicSection,
   type ReportContextType,
   type ReportMetadata,
   type SearchContext,
@@ -82,7 +82,7 @@ import type { SearchState } from "pages/search/hooks/SearchReducer";
 // TODO: crear el back de Consultas para poder manejar sus propias métricas, de momento está enlazado a Monitoreo
 import { sendReportDownloadReason } from "pages/monitoring/api/services/report";
 
-const mcIndicatorPathComponents = ["Monitoreo", "Iniciativas", "Indicadores"];
+const mcTopicPathComponents = ["Monitoreo", "Iniciativas", "Indicadores"];
 const searchComponents = ["Consultas"];
 
 const revokeGraphUrls = (graph: GraphDTO) => {
@@ -96,16 +96,16 @@ const revokeGraphUrls = (graph: GraphDTO) => {
 function getDocumentModel(
   reportType: ReportType,
   metadata: ReportMetadata,
-  context: IndicatorContext | SearchContext,
-  sections: Map<string, IndicatorSection | SearchSection>,
+  context: TopicContext | SearchContext,
+  sections: Map<string, TopicSection | SearchSection>,
 ) {
   switch (reportType) {
     case ReportType.MONITORING_TOPICS:
       return (
-        <CMIndicatorReportModel
+        <CMTopicsReportModel
           metadata={metadata}
-          context={context as IndicatorContext}
-          sections={sections as Map<string, IndicatorSection>}
+          context={context as TopicContext}
+          sections={sections as Map<string, TopicSection>}
         />
       );
 
@@ -149,10 +149,10 @@ export function ReportCTX({ children }: { children: ReactNode }) {
   // Estados de integración
   const [whyDownload, setWhyDownload] = useState("");
   const [docContext, setDocContext] = useState<
-    IndicatorContext | SearchContext | null
+    TopicContext | SearchContext | null
   >(null);
   const [docSections, setDocSections] = useState<
-    Map<string, SearchSection | IndicatorSection>
+    Map<string, SearchSection | TopicSection>
   >(new Map());
 
   // Funcionalidad
@@ -165,7 +165,7 @@ export function ReportCTX({ children }: { children: ReactNode }) {
       return ReportType.SEARCH_INDICATORS;
     }
 
-    const fullPath = mcIndicatorPathComponents.every((required) =>
+    const fullPath = mcTopicPathComponents.every((required) =>
       segments.includes(required),
     );
 
@@ -510,8 +510,8 @@ export function ReportCTX({ children }: { children: ReactNode }) {
         reportType === ReportType.SEARCH_INDICATORS
           ? `Polígono-${(docContext as SearchContext).area.polygonId}`
           : StrValidator.sanitizeToURLSlug(
-              (docContext as IndicatorContext).initiativeShortName ??
-                (docContext as IndicatorContext).initiativeName,
+              (docContext as TopicContext).initiativeShortName ??
+                (docContext as TopicContext).initiativeName,
             ).slice(0, 8);
       const nameDate = new Date(
         creationDate.getTime() - creationDate.getTimezoneOffset() * 60000,

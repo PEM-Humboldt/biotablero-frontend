@@ -253,7 +253,7 @@ export const styles = StyleSheet.create({
   },
   noteText: { fontSize: 9.5, color: "#5f4a1e", fontStyle: "italic" },
 
-  indicatorImage: {
+  topicImage: {
     width: "100%",
     borderRadius: 6,
     marginBottom: 10,

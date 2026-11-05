@@ -1,6 +1,6 @@
 import {
-  type IndicatorContext,
-  type IndicatorTag,
+  type TopicContext,
+  type TopicTag,
   type FetchReportContext,
   ReportType,
 } from "@appTypes/report";
@@ -90,8 +90,8 @@ async function fetchInitiativeContext(
   const tagGroup = { 1: "politicalTags", 2: "socialTags" } as const;
 
   const { politicalTags, socialTags } = initiativeInfo.tags.reduce<{
-    politicalTags: IndicatorTag[];
-    socialTags: IndicatorTag[];
+    politicalTags: TopicTag[];
+    socialTags: TopicTag[];
   }>(
     (all, current) => {
       const group = tagGroup[current.tag.category.id as keyof typeof tagGroup];
@@ -109,7 +109,7 @@ async function fetchInitiativeContext(
     { politicalTags: [], socialTags: [] },
   );
 
-  const contextData: IndicatorContext = {
+  const contextData: TopicContext = {
     initiativeName: initiativeInfo.name,
     initiativeShortName: initiativeInfo.shortName,
     initiativeLocation: makeInitiativeLocationsString(
