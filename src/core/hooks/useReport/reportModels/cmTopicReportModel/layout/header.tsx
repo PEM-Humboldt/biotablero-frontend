@@ -1,5 +1,5 @@
 import { View, Text } from "@react-pdf/renderer";
-import { styles } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/styles";
+import { styles } from "@hooks/useReport/reportModels/cmTopicReportModel/layout/styles";
 
 export function Header({
   title,

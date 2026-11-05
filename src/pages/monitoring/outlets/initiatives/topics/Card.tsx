@@ -13,7 +13,7 @@ import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
 import type { TopicMetadata } from "pages/monitoring/types/topics";
 import { GraphSelector } from "pages/monitoring/outlets/initiatives/topics/card/GraphSelector";
 import { uiText } from "pages/monitoring/outlets/initiatives/topics/layout/uiText";
-import { AddMCTopicToReport } from "@ui/AddMCIndicatorToReport";
+import { AddMCTopicToReport } from "@ui/AddMCTopicToReport";
 import { useLocation, useParams } from "react-router";
 import { InitiativeError } from "pages/monitoring/outlets/initiatives/InitiativeError";
 import { parseSimpleMarkdown } from "@utils/textParser";

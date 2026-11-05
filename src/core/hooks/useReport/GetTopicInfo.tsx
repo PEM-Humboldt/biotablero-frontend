@@ -1,7 +1,7 @@
 import { useEffect, type ReactElement } from "react";
 
 import { useReport } from "@hooks/useReport";
-import type { IndicatorSection, IndicatorTag } from "@appTypes/report";
+import type { TopicSection, TopicTag } from "@appTypes/report";
 
 import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
 
@@ -27,7 +27,7 @@ export function GetTopicInfo({
       return;
     }
 
-    const tags = currentTopic.tags.reduce<Record<number, IndicatorTag[]>>(
+    const tags = currentTopic.tags.reduce<Record<number, TopicTag[]>>(
       (all, current) => {
         const tag = current.tag;
         if (!all[tag.category.id]) {
@@ -48,7 +48,7 @@ export function GetTopicInfo({
     const lastVersion = currentTopic.versions.at(-1);
     const { name, topicType: type, version } = currentTopic;
 
-    const sectionInfo: Omit<IndicatorSection, "graphs"> = {
+    const sectionInfo: Omit<TopicSection, "graphs"> = {
       title: currentTopic.name ?? currentTopic.topicType.name,
       type: currentTopic.topicType.name,
       creationDate: currentTopic.creationDate,

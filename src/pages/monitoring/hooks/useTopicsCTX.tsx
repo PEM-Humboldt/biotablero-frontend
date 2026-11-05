@@ -29,7 +29,7 @@ import { TOPICS_PER_PAGE } from "@config/monitoring";
 import {
   dataTransformBarGraph,
   dataTransformLineGraph,
-} from "pages/monitoring/utils/indicatorsTransformers";
+} from "pages/monitoring/utils/topcisDataTransformers";
 
 type TopicsContextValues = {
   topics: TopicMetadata[];

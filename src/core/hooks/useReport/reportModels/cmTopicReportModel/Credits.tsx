@@ -1,10 +1,10 @@
 import { Page, View, Text } from "@react-pdf/renderer";
 import { REPORT_PAGE_SIZE } from "@config/report";
 import type { ReportMetadata } from "@appTypes/report";
-import { styles } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/styles";
+import { styles } from "@hooks/useReport/reportModels/cmTopicReportModel/layout/styles";
 import { colors } from "@hooks/useReport/layout/theme";
-import { Footer } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/footer";
-import { documentInfo } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/documentInfo";
+import { Footer } from "@hooks/useReport/reportModels/cmTopicReportModel/layout/footer";
+import { documentInfo } from "@hooks/useReport/reportModels/cmTopicReportModel/layout/documentInfo";
 
 export function Credits({ metadata }: { metadata: ReportMetadata }) {
   return (

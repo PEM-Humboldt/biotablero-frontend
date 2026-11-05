@@ -11,7 +11,7 @@ export const documentInfo = {
       `${locations} · Desde ${since}`,
     madeInDate: "Generado",
     madeInBy: "Elaborado por",
-    indicatorsAmount: "Indicadores",
+    topicsAmount: "Indicadores",
   },
 
   aboutInitiative: {
@@ -30,15 +30,15 @@ export const documentInfo = {
     },
   },
 
-  indicatorSection: {
+  topicSection: {
     creationDateLabel: "Creación",
     lastUpdateLabel: "Última actualización",
-    indicatorUrlLabel: "enlace",
+    topciUrlLabel: "enlace",
     tagsLabel: {
       ecosystem: "Ecosistemas estratégicos",
       biologicalGroup: "Escala biológica",
     },
-    indicatorMapLabel: "Mapa del indicador",
+    topicMapLabel: "Mapa del indicador",
     grapMapLabel: (graphName: string) =>
       `Mapa del indicador para los valores de ${graphName}`,
     metricsInGraphLabel: (graphName: string) =>
