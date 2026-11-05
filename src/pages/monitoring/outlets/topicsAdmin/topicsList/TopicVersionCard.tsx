@@ -23,7 +23,7 @@ import { topicVersionTexts } from "pages/monitoring/outlets/topicsAdmin/layout/t
 import { uiText } from "pages/monitoring/outlets/topicsAdmin/layout/uiText";
 import { UserRoundCheck } from "lucide-react";
 import { toast } from "sonner";
-import { OBSERVATION_VERSION_DESCRIPTION_FIELD_MAX_LENGHT } from "@config/monitoring";
+import { TOPIC_VERSION_DESCRIPTION_FIELD_MAX_LENGHT } from "@config/monitoring";
 
 export function TopicVersionCard({
   topicData,
@@ -69,7 +69,7 @@ export function TopicVersionCard({
         const [validatedText, validationErrors] = new StrValidator(
           topicText,
         ).hasLengthLessOrEqualThan(
-          OBSERVATION_VERSION_DESCRIPTION_FIELD_MAX_LENGHT,
+          TOPIC_VERSION_DESCRIPTION_FIELD_MAX_LENGHT,
         ).result;
 
         if (validationErrors.length > 0) {
@@ -109,9 +109,9 @@ export function TopicVersionCard({
     await onUpdateSuccess();
     setResetKey((prev) => prev + 1);
 
-    toast(uiText.observationVersionCard.updatedToast.title, {
+    toast(uiText.topicVersionCard.updatedToast.title, {
       position: "bottom-right",
-      description: uiText.observationVersionCard.updatedToast.description(
+      description: uiText.topicVersionCard.updatedToast.description(
         topicData.version,
         new Date(topicData.creationDate),
       ),
@@ -135,7 +135,7 @@ export function TopicVersionCard({
       {!editingThis ? (
         <div className="p-4 space-y-4">
           <div className="text-lg text-primary font-normal">
-            {uiText.observationVersionCard.editVersionTitlePrefix}
+            {uiText.topicVersionCard.editVersionTitlePrefix}
             <time dateTime={topicVersionDate.toISOString()}>
               {topicVersionDate.toLocaleDateString(LOCALE, {
                 year: "numeric",
@@ -159,7 +159,7 @@ export function TopicVersionCard({
                 <div className="markdown-renderer">
                   {description !== undefined && description !== ""
                     ? parseSimpleMarkdown(description)
-                    : uiText.observationVersionCard.noTextInThisVersion(
+                    : uiText.topicVersionCard.noTextInThisVersion(
                         topicInfo.label,
                       )}
                 </div>
@@ -191,18 +191,18 @@ export function TopicVersionCard({
           <div className="flex flex-row-reverse justify-between">
             <Button
               disabled={isLoading}
-              title={uiText.observationVersionCard.saveBtn.title}
-              aria-label={uiText.observationVersionCard.saveBtn.sr}
+              title={uiText.topicVersionCard.saveBtn.title}
+              aria-label={uiText.topicVersionCard.saveBtn.sr}
             >
-              {uiText.observationVersionCard.saveBtn.label}
+              {uiText.topicVersionCard.saveBtn.label}
             </Button>
             <Button
               type="reset"
               variant="outline_destructive"
-              title={uiText.observationVersionCard.cancelBtn.title}
-              aria-label={uiText.observationVersionCard.cancelBtn.sr}
+              title={uiText.topicVersionCard.cancelBtn.title}
+              aria-label={uiText.topicVersionCard.cancelBtn.sr}
             >
-              {uiText.observationVersionCard.cancelBtn.label}
+              {uiText.topicVersionCard.cancelBtn.label}
             </Button>
           </div>
         </form>
@@ -235,14 +235,14 @@ function SectionTextEditor({
         id={`richText_${sectionData.key}`}
         textToLoad={textToLoad}
         textStateRef={topicTextRef}
-        placeholder={uiText.observationVersionCard.textEditorPlaceHolder}
+        placeholder={uiText.topicVersionCard.textEditorPlaceHolder}
         className="bg-background"
         editorNamespace={`richText_${sectionData.key}`}
         describedBy={
           errors.length > 0 ? `errors_text_${sectionData.key}` : undefined
         }
         counter={true}
-        maxLength={(OBSERVATION_VERSION_DESCRIPTION_FIELD_MAX_LENGHT / 3) * 2}
+        maxLength={(TOPIC_VERSION_DESCRIPTION_FIELD_MAX_LENGHT / 3) * 2}
       />
     </fieldset>
   );

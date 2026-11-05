@@ -29,8 +29,8 @@ import { uiText } from "pages/monitoring/outlets/topicsSearch/layout/uiText";
 import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
 
 export function SearchInput() {
-  const { setSearchTopics: setSearchIndicators } = useTopicsCTX();
-  const debouncedSearch = useRef(debouncer(setSearchIndicators)).current;
+  const { setSearchTopics } = useTopicsCTX();
+  const debouncedSearch = useRef(debouncer(setSearchTopics)).current;
 
   const [searchTopic, setSearchTopic] = useState("");
   const [filterInitiative, setFilterInitiative] = useState("");
@@ -108,14 +108,14 @@ export function SearchInput() {
           >
             <div>
               <label
-                htmlFor="searchIndicator"
+                htmlFor="searchTopic"
                 className="text-primary-foreground font-normal"
               >
                 {uiText.searchInput.topicSearch.label}
               </label>
               <InputGroup>
                 <InputGroupInput
-                  id="searchIndicator"
+                  id="searchTopic"
                   type="text"
                   value={searchTopic}
                   onChange={(e) => setSearchTopic(e.target.value)}

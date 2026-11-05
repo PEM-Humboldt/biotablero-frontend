@@ -10,7 +10,7 @@ import { Portfolio } from "pages/Portfolio";
 import { InitiativesMap } from "pages/monitoring/outlets/InitiativesMap";
 import { Initiatives } from "pages/monitoring/outlets/Initiatives";
 import { Resources as MonitoringResources } from "pages/monitoring/outlets/Resources";
-import { ObservationsSearch } from "pages/monitoring/outlets/ObservationsSearch";
+import { TopicsSearch } from "pages/monitoring/outlets/TopicsSearch";
 import { Manager as ResourcesManager } from "pages/monitoring/outlets/resources/Manager";
 import { Help } from "pages/monitoring/outlets/Help";
 
@@ -66,7 +66,7 @@ export const routes = createBrowserRouter([
           },
           {
             path: "Indicadores",
-            Component: ObservationsSearch,
+            Component: TopicsSearch,
           },
           {
             path: "Recursos",

@@ -111,22 +111,19 @@ export function TopicsList({
       />
 
       {isLoading && (
-        <LoadingDiv
-          text={uiText.observationsList.loadind}
-          className="absolute"
-        />
+        <LoadingDiv text={uiText.topicsList.loadind} className="absolute" />
       )}
 
       <ul
-        aria-label={uiText.observationsList.listDescription.sr}
+        aria-label={uiText.topicsList.listDescription.sr}
         className="space-y-4"
       >
-        {topicsMetadata.map((observation) => {
-          const isEditModeOn = observation.id === editTopic;
+        {topicsMetadata.map((topic) => {
+          const isEditModeOn = topic.id === editTopic;
 
           return (
             <motion.li
-              key={`observationCard_${observation.id}`}
+              key={`topicCard_${topic.id}`}
               layout
               transition={{
                 layout: { type: "spring", stiffness: 350, damping: 25 },
@@ -139,7 +136,7 @@ export function TopicsList({
               <motion.div layout="position" className="flex flex-col gap-2">
                 <Button
                   onClick={() =>
-                    handleSetTopicToEdit(isEditModeOn ? null : observation.id)
+                    handleSetTopicToEdit(isEditModeOn ? null : topic.id)
                   }
                   className="ml-auto"
                 >
@@ -149,29 +146,23 @@ export function TopicsList({
                 </Button>
 
                 <TopicHeader
-                  topic={observation}
+                  topic={topic}
                   editMode={isEditModeOn}
-                  onUpdateSuccess={() => updateTopicMetadata(observation.id)}
+                  onUpdateSuccess={() => updateTopicMetadata(topic.id)}
                 />
 
-                <div
-                  aria-label={
-                    uiText.observationsList.versionsListDescription.sr
-                  }
-                >
+                <div aria-label={uiText.topicsList.versionsListDescription.sr}>
                   {isEditModeOn
-                    ? uiText.observationsList.versionsListDescriptionEdit.label
-                    : uiText.observationsList.versionsListDescription.label}
+                    ? uiText.topicsList.versionsListDescriptionEdit.label
+                    : uiText.topicsList.versionsListDescription.label}
 
                   <ul className="border-t border-t-muted py-2 flex flex-wrap gap-2">
-                    {observation.versions.map((version) => {
+                    {topic.versions.map((version) => {
                       const isThisVersionSelected =
                         version.id === selectedTopicVersion?.id;
 
                       return (
-                        <li
-                          key={`observation-${observation.id}_version-${version.id}`}
-                        >
+                        <li key={`topic-${topic.id}_version-${version.id}`}>
                           <Button
                             onClick={() =>
                               isThisVersionSelected
@@ -181,17 +172,17 @@ export function TopicsList({
                             variant={
                               isThisVersionSelected ? "default" : "outline"
                             }
-                            title={uiText.observationsList.openVersionBtn.sr(
+                            title={uiText.topicsList.openVersionBtn.sr(
                               version.version,
                               new Date(version.creationDate),
                             )}
-                            aria-label={uiText.observationsList.openVersionBtn.sr(
+                            aria-label={uiText.topicsList.openVersionBtn.sr(
                               version.version,
                               new Date(version.creationDate),
                             )}
                           >
                             <ScanSearch className="size-6" />
-                            {uiText.observationsList.openVersionBtn.label(
+                            {uiText.topicsList.openVersionBtn.label(
                               version.version,
                               new Date(version.creationDate),
                             )}
@@ -203,7 +194,7 @@ export function TopicsList({
                 </div>
 
                 {selectedTopicVersion &&
-                  selectedTopicVersion.topicId === observation.id && (
+                  selectedTopicVersion.topicId === topic.id && (
                     <>
                       <TopicVersionCard
                         topicData={selectedTopicVersion}

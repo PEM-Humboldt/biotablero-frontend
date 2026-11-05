@@ -15,21 +15,21 @@ import {
   InputGroupInput,
 } from "@ui/shadCN/component/input-group";
 
-import { useObservationsCTX } from "pages/monitoring/hooks/useObservationsCTX";
-import { ObservationSmallCard } from "pages/monitoring/outlets/initiatives/observations/search/ObservationSmallCard";
+import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
+import { TopicSmallCard } from "pages/monitoring/outlets/initiatives/topics/search/TopicSmallCard";
 import { fuzzySearch } from "pages/monitoring/utils/search";
-import { uiText } from "pages/monitoring/outlets/initiatives/observations/layout/uiText";
+import { uiText } from "pages/monitoring/outlets/initiatives/topics/layout/uiText";
 import { cn } from "@ui/shadCN/lib/utils";
 
 export function Search() {
-  const { observations: allInitiativeObservations } = useObservationsCTX();
+  const { topics: allInitiativeTopics } = useTopicsCTX();
   const [lookFor, setLookFor] = useState("");
   const [biologicalGroup, setBiologicalGroup] = useState("");
   const [ecosystem, setEcosystem] = useState("");
   const [selectedYear, setSelectedYear] = useState("");
 
   const {
-    sortedObservations,
+    sortedTopics,
     presentBiologicalGroups,
     presentEcosystems,
     presentYears,
@@ -38,41 +38,39 @@ export function Search() {
     const ecosystems: Record<number, string> = {};
     const years = new Set<number>();
 
-    const observationsWithMaxDate = allInitiativeObservations.map(
-      (observation) => {
-        let maxTimestamp = 0;
+    const topicsWithMaxDate = allInitiativeTopics.map((topic) => {
+      let maxTimestamp = 0;
 
-        for (const v of observation.versions) {
-          const dateObj = new Date(v.creationDate);
-          years.add(dateObj.getFullYear());
+      for (const v of topic.versions) {
+        const dateObj = new Date(v.creationDate);
+        years.add(dateObj.getFullYear());
 
-          const time = dateObj.getTime();
-          if (time > maxTimestamp) {
-            maxTimestamp = time;
-          }
+        const time = dateObj.getTime();
+        if (time > maxTimestamp) {
+          maxTimestamp = time;
         }
+      }
 
-        for (const { tag } of observation.tags) {
-          if (tag.category.id === 3 && !biologicalGroups[tag.id]) {
-            biologicalGroups[tag.id] = tag.name;
-          } else if (tag.category.id === 4 && !ecosystems[tag.id]) {
-            ecosystems[tag.id] = tag.name;
-          }
+      for (const { tag } of topic.tags) {
+        if (tag.category.id === 3 && !biologicalGroups[tag.id]) {
+          biologicalGroups[tag.id] = tag.name;
+        } else if (tag.category.id === 4 && !ecosystems[tag.id]) {
+          ecosystems[tag.id] = tag.name;
         }
+      }
 
-        return { observation, maxTimestamp };
-      },
-    );
+      return { topic, maxTimestamp };
+    });
 
-    observationsWithMaxDate.sort((a, b) => b.maxTimestamp - a.maxTimestamp);
+    topicsWithMaxDate.sort((a, b) => b.maxTimestamp - a.maxTimestamp);
 
     return {
-      sortedObservations: observationsWithMaxDate.map((i) => i.observation),
+      sortedTopics: topicsWithMaxDate.map((i) => i.topic),
       presentBiologicalGroups: biologicalGroups,
       presentEcosystems: ecosystems,
       presentYears: years,
     };
-  }, [allInitiativeObservations]);
+  }, [allInitiativeTopics]);
 
   const sanitizedLookFor = useMemo(
     () =>
@@ -89,9 +87,9 @@ export function Search() {
     Object.keys(presentEcosystems).length && ecosystem !== "";
   const filterByYear = presentYears.size && selectedYear !== "";
 
-  const filteredObservations = useMemo(() => {
-    return sortedObservations.filter((observation) => {
-      const sanitizedName = observation.name
+  const filteredTopics = useMemo(() => {
+    return sortedTopics.filter((topic) => {
+      const sanitizedName = topic.name
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .toLocaleLowerCase();
@@ -99,13 +97,11 @@ export function Search() {
       return (
         fuzzySearch(sanitizedLookFor, sanitizedName) &&
         (!filterByBiologicalGroups ||
-          observation.tags.some(
-            (tag) => tag.tag.id === Number(biologicalGroup),
-          )) &&
+          topic.tags.some((tag) => tag.tag.id === Number(biologicalGroup))) &&
         (!filterByEcosystem ||
-          observation.tags.some((tag) => tag.tag.id === Number(ecosystem))) &&
+          topic.tags.some((tag) => tag.tag.id === Number(ecosystem))) &&
         (!filterByYear ||
-          observation.versions.some(
+          topic.versions.some(
             (version) =>
               new Date(version.creationDate).getFullYear() ===
               Number(selectedYear),
@@ -113,7 +109,7 @@ export function Search() {
       );
     });
   }, [
-    sortedObservations,
+    sortedTopics,
     sanitizedLookFor,
     filterByBiologicalGroups,
     biologicalGroup,
@@ -130,7 +126,7 @@ export function Search() {
     setSelectedYear("");
   };
 
-  if (allInitiativeObservations.length === 0) {
+  if (allInitiativeTopics.length === 0) {
     return null;
   }
 
@@ -221,17 +217,17 @@ export function Search() {
           )}
         >
           <div className="text-primary text-sm font-normal p-2">
-            {uiText.search.module.indicatorsAmount(
-              filteredObservations.length,
-              allInitiativeObservations.length,
+            {uiText.search.module.topicsAmount(
+              filteredTopics.length,
+              allInitiativeTopics.length,
             )}
           </div>
 
           <div className="flex flex-col p-2 md:p-1 gap-4 overflow-auto scrollbar-custom">
-            {filteredObservations.map((observation) => (
-              <ObservationSmallCard
-                key={`smallCartObservation_${observation.id}`}
-                observation={observation}
+            {filteredTopics.map((topic) => (
+              <TopicSmallCard
+                key={`smallCartTopic_${topic.id}`}
+                topic={topic}
               />
             ))}
           </div>

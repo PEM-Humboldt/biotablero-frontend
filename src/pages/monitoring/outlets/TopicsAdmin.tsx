@@ -19,10 +19,10 @@ export function TopicsAdmin() {
       <header>
         <h3>{uiText.mainHeader.title}</h3>
         <Button
-          title={uiText.mainHeader.uploadObservationBtn.title}
-          aria-label={uiText.mainHeader.uploadObservationBtn.title}
+          title={uiText.mainHeader.uploadTopicBtn.title}
+          aria-label={uiText.mainHeader.uploadTopicBtn.title}
         >
-          {uiText.mainHeader.uploadObservationBtn.label}
+          {uiText.mainHeader.uploadTopicBtn.label}
         </Button>
       </header>
 
@@ -34,7 +34,7 @@ export function TopicsAdmin() {
 
         <div className="p-4 bg-background rounded-lg space-y-4">
           {!currentInitiative ? (
-            uiText.observationsList.noInitiative
+            uiText.topicsList.noInitiative
           ) : (
             <TopicsList fromInitiative={currentInitiative} />
           )}
