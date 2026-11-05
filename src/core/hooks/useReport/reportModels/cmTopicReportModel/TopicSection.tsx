@@ -1,24 +1,20 @@
 import { View, Page, Text, Image, Link } from "@react-pdf/renderer";
 import { colors } from "@hooks/useReport/layout/theme";
-import { styles } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/styles";
-import { Header } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/header";
-import { Footer } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/footer";
-import type {
-  IndicatorSection,
-  IndicatorTag,
-  ReportMetadata,
-} from "@appTypes/report";
+import { styles } from "@hooks/useReport/reportModels/cmTopicReportModel/layout/styles";
+import { Header } from "@hooks/useReport/reportModels/cmTopicReportModel/layout/header";
+import { Footer } from "@hooks/useReport/reportModels/cmTopicReportModel/layout/footer";
+import type { TopicSection, TopicTag, ReportMetadata } from "@appTypes/report";
 import { LOCALE } from "@config/global";
 import { REPORT_PAGE_SIZE } from "@config/report";
 import { Fragment, ReactNode } from "react";
-import { documentInfo } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/documentInfo";
+import { documentInfo } from "@hooks/useReport/reportModels/cmTopicReportModel/layout/documentInfo";
 import { parseSimpleMarkdown } from "@utils/textParser";
 
-export function IndicatorSection({
+export function TopicSection({
   section,
   metadata,
 }: {
-  section: IndicatorSection;
+  section: TopicSection;
   metadata: ReportMetadata;
 }) {
   return (
@@ -32,7 +28,7 @@ export function IndicatorSection({
       <View style={styles.dateRow}>
         <View style={styles.dateItem}>
           <Text style={styles.dateLabel}>
-            {documentInfo.indicatorSection.creationDateLabel}
+            {documentInfo.topicSection.creationDateLabel}
           </Text>
           <Text style={styles.dateVal}>
             {new Date(section.creationDate).toLocaleDateString(LOCALE, {
@@ -44,7 +40,7 @@ export function IndicatorSection({
         </View>
         <View style={styles.dateItem}>
           <Text style={styles.dateLabel}>
-            {documentInfo.indicatorSection.lastUpdateLabel}
+            {documentInfo.topicSection.lastUpdateLabel}
           </Text>
           <Text style={styles.dateVal}>
             {new Date(section.lastUpdate).toLocaleDateString(LOCALE, {
@@ -59,7 +55,7 @@ export function IndicatorSection({
       <View style={styles.dateRow}>
         <View style={styles.dateItem}>
           <Text style={styles.dateLabel}>
-            {documentInfo.indicatorSection.indicatorUrlLabel}
+            {documentInfo.topicSection.topciUrlLabel}
           </Text>
           <Link
             src={section.url}
@@ -72,12 +68,12 @@ export function IndicatorSection({
 
       <View style={{ marginBottom: 6 }}>
         <TagCategory
-          label={documentInfo.indicatorSection.tagsLabel.ecosystem}
+          label={documentInfo.topicSection.tagsLabel.ecosystem}
           items={section.EcosystemTag}
           type="ecosystem"
         />
         <TagCategory
-          label={documentInfo.indicatorSection.tagsLabel.biologicalGroup}
+          label={documentInfo.topicSection.tagsLabel.biologicalGroup}
           items={section.BiologicalGroupTag}
           type="biologicalGroup"
         />
@@ -88,11 +84,11 @@ export function IndicatorSection({
           <View style={styles.graphStateRow}>
             <View style={styles.graphStateItem}>
               <Text style={styles.graphStateText}>
-                {documentInfo.indicatorSection.indicatorMapLabel}
+                {documentInfo.topicSection.topicMapLabel}
               </Text>
             </View>
           </View>
-          <Image src={section.graphs[0].mapUrl} style={styles.indicatorImage} />
+          <Image src={section.graphs[0].mapUrl} style={styles.topicImage} />
         </View>
       )}
 
@@ -103,11 +99,11 @@ export function IndicatorSection({
               <View style={styles.graphStateRow}>
                 <View style={styles.graphStateItem}>
                   <Text style={styles.graphStateText}>
-                    {documentInfo.indicatorSection.grapMapLabel(graph.id)}
+                    {documentInfo.topicSection.grapMapLabel(graph.id)}
                   </Text>
                 </View>
               </View>
-              <Image src={graph.mapUrl} style={styles.indicatorImage} />
+              <Image src={graph.mapUrl} style={styles.topicImage} />
             </View>
           )}
 
@@ -115,20 +111,20 @@ export function IndicatorSection({
             <View style={styles.graphStateRow}>
               <View style={styles.graphStateItem}>
                 <Text style={styles.graphStateText}>
-                  {documentInfo.indicatorSection.metricsInGraphLabel(graph.id)}
+                  {documentInfo.topicSection.metricsInGraphLabel(graph.id)}
                 </Text>
               </View>
             </View>
 
             {graph.blobUrl && (
-              <Image src={graph.blobUrl} style={styles.indicatorImage} />
+              <Image src={graph.blobUrl} style={styles.topicImage} />
             )}
           </View>
 
           {graph.userNote && (
             <View style={styles.noteBox} wrap={false}>
               <Text style={styles.noteLabel}>
-                {documentInfo.indicatorSection.userNoteTitleLabel(
+                {documentInfo.topicSection.userNoteTitleLabel(
                   metadata.madeBy.name ?? metadata.madeBy.username,
                 )}
               </Text>
@@ -142,7 +138,7 @@ export function IndicatorSection({
         <View style={styles.quoteBox} wrap={false}>
           <Text style={styles.h4}>
             {parseSimpleMarkdown(
-              documentInfo.indicatorSection.sectionDescriptionLabel,
+              documentInfo.topicSection.sectionDescriptionLabel,
               { renderToPdf: true },
             )}
           </Text>
@@ -151,13 +147,13 @@ export function IndicatorSection({
       ) : null}
 
       {section?.card?.methodology ? (
-        <LabeledBlock label={documentInfo.indicatorSection.methodologyLabel}>
+        <LabeledBlock label={documentInfo.topicSection.methodologyLabel}>
           {parseSimpleMarkdown(section.card.methodology, { renderToPdf: true })}
         </LabeledBlock>
       ) : null}
 
       {section?.card?.interpretation ? (
-        <LabeledBlock label={documentInfo.indicatorSection.interpretationLabel}>
+        <LabeledBlock label={documentInfo.topicSection.interpretationLabel}>
           {parseSimpleMarkdown(section.card.interpretation, {
             renderToPdf: true,
           })}
@@ -165,7 +161,7 @@ export function IndicatorSection({
       ) : null}
 
       {section?.card?.considerations ? (
-        <LabeledBlock label={documentInfo.indicatorSection.considerationsLabel}>
+        <LabeledBlock label={documentInfo.topicSection.considerationsLabel}>
           {parseSimpleMarkdown(section.card.considerations, {
             renderToPdf: true,
           })}
@@ -173,7 +169,7 @@ export function IndicatorSection({
       ) : null}
 
       {section?.card?.authorship ? (
-        <LabeledBlock label={documentInfo.indicatorSection.authorshipLabel}>
+        <LabeledBlock label={documentInfo.topicSection.authorshipLabel}>
           {parseSimpleMarkdown(section.card.authorship, {
             renderToPdf: true,
           })}
@@ -201,7 +197,7 @@ function TagCategory({
   type,
 }: {
   label: string;
-  items: IndicatorTag[];
+  items: TopicTag[];
   type?: keyof typeof pillColors;
 }) {
   if (!items || items.length === 0) {

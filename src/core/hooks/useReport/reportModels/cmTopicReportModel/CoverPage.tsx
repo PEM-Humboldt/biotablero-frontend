@@ -1,25 +1,25 @@
 import { Page, View, Text, Image, Link } from "@react-pdf/renderer";
 import InitiativeReportCover from "@assets/InitiativeReportCover.png";
 
-import type { IndicatorContext, ReportMetadata } from "@appTypes/report";
+import type { TopicContext, ReportMetadata } from "@appTypes/report";
 
-import { styles } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/styles";
+import { styles } from "@hooks/useReport/reportModels/cmTopicReportModel/layout/styles";
 import {
   Wordmark,
   Slogan,
   HumboldtLogo,
-} from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/branding";
-import { documentInfo } from "@hooks/useReport/reportModels/cmIndicatorReportModel/layout/documentInfo";
+} from "@hooks/useReport/reportModels/cmTopicReportModel/layout/branding";
+import { documentInfo } from "@hooks/useReport/reportModels/cmTopicReportModel/layout/documentInfo";
 import { REPORT_PAGE_SIZE } from "@config/report";
 
 export function CoverPage({
   context,
   metadata,
-  indicatorsAmount,
+  topicsAmount,
 }: {
-  context: IndicatorContext;
+  context: TopicContext;
   metadata: ReportMetadata;
-  indicatorsAmount: number;
+  topicsAmount: number;
 }) {
   return (
     <Page
@@ -72,9 +72,9 @@ export function CoverPage({
           </View>
           <View style={styles.coverMetaItem}>
             <Text style={styles.coverMetaLabel}>
-              {documentInfo.coverPage.indicatorsAmount}
+              {documentInfo.coverPage.topicsAmount}
             </Text>
-            <Text style={styles.coverMetaValue}>{indicatorsAmount}</Text>
+            <Text style={styles.coverMetaValue}>{topicsAmount}</Text>
           </View>
         </View>
       </View>
