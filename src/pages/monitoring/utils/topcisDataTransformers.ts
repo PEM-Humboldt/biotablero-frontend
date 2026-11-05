@@ -128,3 +128,65 @@ export function dataTransformBarGraph(data: TopicData): BarsData {
     keys: dataGroupsBy,
   };
 }
+
+/**
+ * Serializes graph dataset structures into a flat CSV string format. It detects the input type and flattens the nested data accordingly.
+ *
+ * @param graphData - The dataset used for rendering the graphs, either as an array of line series (`LineData[]`) or a bar chart object (`BarsData`).
+ *
+ * @returns A formatted CSV string representing the flattened data, or an empty string if the dataset is empty or invalid.
+ */
+export function serializeGraphDataToCSV(
+  graphData: LineData[] | BarsData,
+): string {
+  let flatData: Record<string, any>[] = [];
+
+  if (Array.isArray(graphData)) {
+    graphData.forEach((serie) => {
+      serie.data.forEach((point) => {
+        flatData.push({
+          id: serie.id,
+          Nombre: serie.scientificName,
+          ...(serie.commonName ? { "Nombre Común": serie.commonName } : {}),
+          Métrica: serie.metricName,
+          Fecha: point.x,
+          Valor: point.y,
+          ...(point.hasLimits
+            ? {
+                "Límite Superior": point.upperLimit,
+                "Límite Inferior": point.lowerLimit,
+              }
+            : {}),
+        });
+      });
+    });
+  } else if (graphData && Array.isArray(graphData.values)) {
+    flatData = graphData.values.map((item) => ({
+      ...(item.parent ? { Grupo: item.parent } : {}),
+      Nombre: item.name,
+      ...(item.commonName ? { "Nombre Común": item.commonName } : {}),
+      Fecha: item.date,
+      Valor: item.value,
+    }));
+  } else {
+    return "";
+  }
+
+  if (flatData.length === 0) return "";
+
+  const headers = Object.keys(flatData[0]);
+  const csvRows = [
+    headers.join(","),
+    ...flatData.map((row) =>
+      headers
+        .map((header) => {
+          const value = row[header];
+          const strValue = String(value ?? "").replace(/"/g, '""');
+          return `"${strValue}"`;
+        })
+        .join(","),
+    ),
+  ];
+
+  return csvRows.join("\n");
+}
