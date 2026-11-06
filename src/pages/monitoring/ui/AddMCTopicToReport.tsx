@@ -1,23 +1,23 @@
-import { useState } from "react";
-import { ClipboardPlus, FileDown, FolderDown } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
+import { ClipboardPlus, FileDown, FolderDown } from "lucide-react";
+import { useState } from "react";
 
-import { useReport } from "@hooks/useReport";
 import { Button } from "@ui/shadCN/component/button";
+import { useReport } from "@hooks/useReport";
 import { useUserCTX } from "@hooks/UserCTX";
+import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@ui/shadCN/component/popover";
-import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 import { REPORT_NOTE_MAX_LENGTH } from "@config/report";
-import { inputWarnColor } from "@utils/ui";
-import { uiText } from "@ui/addMCTopicToReport/layout/uiText";
 import { StrValidator } from "@utils/strValidator";
+import { inputWarnColor } from "@utils/ui";
 
-import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
 import { graphDataToCSV } from "pages/monitoring/utils/topcisDataTransformers";
+import { uiText } from "pages/monitoring/ui/addMCTopicToReport/layout/uiText";
+import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
 
 export function AddMCTopicToReport() {
   const { user } = useUserCTX();
