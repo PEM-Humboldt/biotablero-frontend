@@ -1,22 +1,22 @@
 import { BadgeCheck, type LucideIcon } from "lucide-react";
 
 import { ErrorsList } from "@ui/LabelingWithErrors";
-import { Spinner } from "@ui/shadCN/component/spinner";
+import { parseSimpleMarkdown } from "@utils/textParser";
 import {
   Tabs,
+  TabsContent,
   TabsList,
   TabsTrigger,
-  TabsContent,
 } from "@ui/shadCN/component/tabs";
+import { Spinner } from "@ui/shadCN/component/spinner";
 
-import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
 import type { TopicMetadata } from "pages/monitoring/types/topics";
+import { AddMCTopicToReport } from "pages/monitoring/ui/AddMCTopicToReport";
 import { GraphSelector } from "pages/monitoring/outlets/initiatives/topics/card/GraphSelector";
-import { uiText } from "pages/monitoring/outlets/initiatives/topics/layout/uiText";
-import { AddMCTopicToReport } from "@ui/AddMCTopicToReport";
-import { useLocation, useParams } from "react-router";
 import { InitiativeError } from "pages/monitoring/outlets/initiatives/InitiativeError";
-import { parseSimpleMarkdown } from "@utils/textParser";
+import { uiText } from "pages/monitoring/outlets/initiatives/topics/layout/uiText";
+import { useLocation, useParams } from "react-router";
+import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
 
 interface RouterState {
   from?: string;

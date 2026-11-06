@@ -7,9 +7,9 @@ import { useEffect, useState } from "react";
 
 import { ShortInfo } from "@composites/ShortInfo";
 import DownloadCSV from "@ui/DownloadCSV";
-import { AddSearchIndicatorToReportBtn } from "@ui/AddSearchIndicatorToReport";
 
 import type { TextsObject } from "pages/search/types/texts";
+import { AddSearchIndicatorToReportBtn } from "pages/search/ui/AddSearchIndicatorToReport";
 
 // TODO: Merecemos mejor que material, borrar apenas se
 // se actualice Search a la nueva UI
