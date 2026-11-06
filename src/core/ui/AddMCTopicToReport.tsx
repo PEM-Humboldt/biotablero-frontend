@@ -14,9 +14,10 @@ import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 import { REPORT_NOTE_MAX_LENGTH } from "@config/report";
 import { inputWarnColor } from "@utils/ui";
 import { uiText } from "@ui/addMCTopicToReport/layout/uiText";
-import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
-import { serializeGraphDataToCSV } from "pages/monitoring/utils/topcisDataTransformers";
 import { StrValidator } from "@utils/strValidator";
+
+import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
+import { graphDataToCSV } from "pages/monitoring/utils/topcisDataTransformers";
 
 export function AddMCTopicToReport() {
   const { user } = useUserCTX();
@@ -36,7 +37,7 @@ export function AddMCTopicToReport() {
     if (!currentTopic) {
       return;
     }
-    const csvString = serializeGraphDataToCSV(currentTopic?.cleanData);
+    const csvString = graphDataToCSV(currentTopic);
 
     if (!csvString) {
       return;
