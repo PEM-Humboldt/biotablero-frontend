@@ -376,7 +376,7 @@
   }
 
   .table-form-display {
-    @apply w-full bg-white min-w-max;
+    @apply w-full bg-white;
 
     & thead {
       @apply bg-muted/30 [&_th]:py-1 border-b border-b-primary/30 text-left text-primary [&_th]:font-normal [&_th]:text-base;
@@ -388,7 +388,6 @@
 
     & td,
     & th {
-      /* 2. Añadimos whitespace-nowrap para que el texto no salte de línea ni se superponga */
       @apply px-2 whitespace-nowrap;
     }
   }
