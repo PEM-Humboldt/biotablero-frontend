@@ -57,7 +57,7 @@ export function ResourcesList({
                       : null,
                   )}
                 </td>
-                <td>{resource.initiative.name}</td>
+                <td>{resource.initiative.name || "---"}</td>
                 <td className="table-form-actions">
                   <Button
                     type="button"

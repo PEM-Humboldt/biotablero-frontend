@@ -6,11 +6,16 @@ import { Button } from "@ui/shadCN/component/button";
 import bannerUrl from "@assets/resourcesBanner.png";
 
 import { useUserInMonitoringCTX } from "pages/monitoring/hooks/useUserInitiativesCTX";
-import { RoleInInitiative } from "pages/monitoring/types/catalog";
+import {
+  RoleInInitiative,
+  RoleInMonitoring,
+} from "pages/monitoring/types/catalog";
 import { uiText } from "pages/monitoring/outlets/resources/layout/uiText";
+import { useUserCTX } from "@hooks/UserCTX";
 
 export function Header() {
   const { userInitiativesAs } = useUserInMonitoringCTX();
+  const { user } = useUserCTX();
   const navigate = useNavigate();
   const userLinkedInitiatives = useMemo(
     () => [
@@ -19,6 +24,8 @@ export function Header() {
     ],
     [userInitiativesAs],
   );
+
+  const isAlly = user?.roles.includes(RoleInMonitoring.ALLY);
 
   return (
     <header
@@ -33,7 +40,7 @@ export function Header() {
         <div className="w-full max-w-[500px] text-balance">
           {uiText.header.legend}
         </div>
-        {userLinkedInitiatives.length > 0 && (
+        {(isAlly || userLinkedInitiatives.length > 0) && (
           <Button
             onClick={() => void navigate("/Monitoreo/Recursos/Admin")}
             className="self-end w-fit"
