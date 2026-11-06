@@ -1,30 +1,31 @@
-import { useState } from "react";
-import { ClipboardPlus, FileClock, FilePlus2 } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
+import { ClipboardPlus, FileClock, FilePlus2 } from "lucide-react";
+import { useState } from "react";
 
-import { useReport } from "@hooks/useReport";
 import { Button } from "@ui/shadCN/component/button";
-import { useUserCTX } from "@hooks/UserCTX";
+import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@ui/shadCN/component/popover";
-import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 import { REPORT_NOTE_MAX_LENGTH } from "@config/report";
 import { inputWarnColor } from "@utils/ui";
-import { uiText } from "@ui/addMCTopicToReport/layout/uiText";
-import { useSearchDispatchCTX } from "pages/search/hooks/SearchContext";
+import { useReport } from "@hooks/useReport";
+import { useUserCTX } from "@hooks/UserCTX";
+
 import { SearchUpdated } from "pages/search/hooks/SearchReducer";
+import { uiText } from "pages/search/ui/addSearchIndicatorToReport/layout/uiText";
+import { useSearchDispatchCTX } from "pages/search/hooks/SearchContext";
 
 export function AddSearchIndicatorToReportBtn({
   wrapperId,
-  overWriteLabel,
+  overwriteLabel,
   inButtonGroup = false,
   className,
 }: {
   wrapperId: string;
-  overWriteLabel?: string;
+  overwriteLabel?: string;
   inButtonGroup?: boolean;
   className?: string;
 }) {
@@ -44,7 +45,7 @@ export function AddSearchIndicatorToReportBtn({
     setNoteText("");
   };
 
-  const labelReady = overWriteLabel || uiText.addToReportBtn.label.ready;
+  const labelReady = overwriteLabel || uiText.addToReportBtn.label.ready;
 
   const sr = !user
     ? uiText.addToReportBtn.sr.notLogged

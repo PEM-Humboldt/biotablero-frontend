@@ -21,7 +21,7 @@ export const uiText = {
   downloadTopicDataBtn: {
     title: "Descargar los datos y archivos del indicador",
     sr: "Descargar datos del indicador",
-    label: "DescargarArchivos",
+    label: "Descargar Datos",
   },
 
   addNotePopover: {
