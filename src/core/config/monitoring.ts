@@ -151,6 +151,7 @@ export const TOPICS_PER_PAGE = 7;
 export const TOPIC_OCUPATION_SPECIES_MAX_COUNT = 3;
 export const TOPIC_RELATIONAL_INTENSITY_MAX_COUNT = 3;
 export const TOPIC_VERSION_DESCRIPTION_FIELD_MAX_LENGHT = 3000;
+export const TOPIC_RELATIONAL_INTENSITY_HIGHLIGT_VALUE = "Agregado";
 
 // Help
 export const HELP_YOUTUBE_VIDEO_URL = "www.youtube.com/watch?v=z2Ida2a2hHQ";
