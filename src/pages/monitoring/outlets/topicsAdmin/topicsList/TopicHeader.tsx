@@ -30,6 +30,7 @@ import { topicNameNotExist } from "pages/monitoring/outlets/topicsAdmin/utils/to
 import { toast } from "sonner";
 import { UserRoundCheck } from "lucide-react";
 import { topicTagCategories } from "pages/monitoring/outlets/topicsAdmin/layout/topicTagCategories";
+import { uiText } from "../layout/uiText";
 
 const getTagId = (tag: TagInTopic | TagData) =>
   isTagRelated(tag) ? tag.tag.id : tag.id;
@@ -101,7 +102,7 @@ export function TopicHeader({
               topicNameNotExist(topic.initiativeId),
               topic.name === topicName,
             ),
-            "Ya existe otra temática con ese nombre",
+            uiText.topicCard.errors.sameName,
           )
       ).result;
 
@@ -116,7 +117,7 @@ export function TopicHeader({
           setErrors((old) => ({
             ...old,
             global: [
-              "Se presentó un error actualizando el nombre de la temática",
+              uiText.topicCard.errors.cantUpdateName,
               ...res.data.map((err) => err.msg),
             ],
           }));
@@ -150,7 +151,7 @@ export function TopicHeader({
           setErrors((old) => ({
             ...old,
             global: [
-              "Se presentó un error quitando las etiquetas",
+              uiText.topicCard.errors.cantRemoveTag,
               ...resErrors
                 .map((error) => error.data.map((err) => err.msg))
                 .flat(),
@@ -171,7 +172,7 @@ export function TopicHeader({
           setErrors((old) => ({
             ...old,
             global: [
-              "Se presentó un error agregando las etiquetas",
+              uiText.topicCard.errors.cantAddTag,
               ...resErrors
                 .map((error) => error.data.map((err) => err.msg))
                 .flat(),
@@ -184,9 +185,9 @@ export function TopicHeader({
 
       await onUpdateSuccess();
 
-      toast("Información de la temática actualizada", {
+      toast(uiText.topicCard.updatedToast.title, {
         position: "bottom-right",
-        description: `La información de la temática ${topicName} fue correctamente actualizada`,
+        description: uiText.topicCard.updatedToast.description(topicName),
         icon: <UserRoundCheck className="size-8 text-primary" />,
         className: "px-6! gap-6! border-2! border-primary!",
       });
@@ -232,14 +233,14 @@ export function TopicHeader({
         inputName={`topic-${topic.id}_name`}
         inputMaxLength={120}
         required={true}
-        texts={{ label: "Nombre de la temática" }}
+        texts={uiText.topicCard.input}
         state={topicName}
         stateSetter={setTopicName}
         validationErrors={errors?.input ?? []}
         autoComplete="off"
       />
 
-      <div className="flex gap-12" title="Etiquetas de la temática">
+      <div className="flex gap-12" title={uiText.topicCard.tagsTitle}>
         {topicTagCategories.map((tagGroup) => {
           const tagCategoryId = tagGroup.tagCategoryId;
 
@@ -261,13 +262,21 @@ export function TopicHeader({
       </div>
 
       <div className="flex flex-row-reverse justify-between">
-        <Button disabled={isLoading}>Guardar</Button>
+        <Button
+          disabled={isLoading}
+          title={uiText.topicCard.saveBtn.title}
+          aria-label={uiText.topicCard.saveBtn.sr}
+        >
+          {uiText.topicCard.saveBtn.label}
+        </Button>
         <Button
           type="reset"
           variant="outline_destructive"
           onClick={() => console.warn("reset header")}
+          title={uiText.topicCard.cancelBtn.title}
+          aria-label={uiText.topicCard.cancelBtn.sr}
         >
-          Reset
+          {uiText.topicCard.cancelBtn.label}
         </Button>
       </div>
     </form>

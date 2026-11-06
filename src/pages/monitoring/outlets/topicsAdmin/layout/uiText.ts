@@ -59,6 +59,30 @@ export const uiText = {
     },
   },
 
+  topicCard: {
+    errors: {
+      sameName: "Ya existe otra temática con ese nombre",
+      cantUpdateName:
+        "Se presentó un error actualizando el nombre de la temática",
+      cantRemoveTag: "Se presentó un error al eliminar las etiquetas",
+      cantAddTag: "Se presentó un error al agregar las etiquetas",
+    },
+    saveBtn: {
+      sr: "Guardar cambios",
+      title: "Guardar cambios",
+      label: "Guardar",
+    },
+    input: { label: "Nombre de la temática", placeholder: "Indice de..." },
+    tagsTitle: "Etiqueta de la temática",
+    cancelBtn: { sr: "Cancelar", title: "Cancelar", label: "Cancelar" },
+
+    updatedToast: {
+      title: "Información de la temática actualizada",
+      description: (topicName: string) =>
+        `La información de la temática ${topicName} fue correctamente actualizada`,
+    },
+  },
+
   topicVersionCard: {
     saveBtn: {
       sr: "Guardar cambios",

@@ -3,7 +3,10 @@ import { useEffect, useMemo, useState } from "react";
 import { type BarDatum, ResponsiveBar } from "@nivo/bar";
 import { GRAPHS_GRADIENT_COLOR_PALETTE } from "@config/color";
 import { GRAPH_ANIMATION_CONFIG } from "@config/global";
-import { TOPIC_RELATIONAL_INTENSITY_MAX_COUNT } from "@config/monitoring";
+import {
+  TOPIC_RELATIONAL_INTENSITY_HIGHLIGT_VALUE,
+  TOPIC_RELATIONAL_INTENSITY_MAX_COUNT,
+} from "@config/monitoring";
 import { GetTopicInfo } from "@hooks/useReport/GetTopicInfo";
 
 import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
@@ -32,21 +35,6 @@ export function RelationalIntensityIndex() {
       }
 
       dataByDate[value.date].push({ actor: value.name, value: value.value });
-    }
-
-    for (const date in dataByDate) {
-      if (dataByDate[date].length === 0) {
-        continue;
-      }
-
-      const average =
-        dataByDate[date].reduce((sum, cur) => sum + cur.value, 0) /
-        dataByDate[date].length;
-
-      dataByDate[date].push({
-        actor: uiText.topicCard.relationalIntensityIndex.averageLabel,
-        value: Number(average.toFixed(2)),
-      });
     }
 
     return { dataByDate: dataByDate, allDates };
@@ -157,7 +145,7 @@ export function RelationalIntensityIndex() {
                   colors={(bar) => {
                     if (
                       bar.indexValue ===
-                      uiText.topicCard.relationalIntensityIndex.averageLabel
+                      TOPIC_RELATIONAL_INTENSITY_HIGHLIGT_VALUE
                     ) {
                       return GRAPHS_GRADIENT_COLOR_PALETTE[0];
                     }
