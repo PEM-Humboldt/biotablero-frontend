@@ -7,7 +7,7 @@ import {
   UsersRound,
 } from "lucide-react";
 import { Profile } from "pages/monitoring/outlets/initiatives/Profile";
-import { Observations } from "pages/monitoring/outlets/initiatives/Observations";
+import { Topics } from "pages/monitoring/outlets/initiatives/Topics";
 import { TerritoryStories } from "pages/monitoring/outlets/initiatives/TerritoryStories";
 import { Collaborators } from "pages/monitoring/outlets/initiatives/Collaborators";
 
@@ -28,7 +28,7 @@ export const initiativeTabs = new Map<
     "indicators",
     {
       label: "Indicadores",
-      component: Observations,
+      component: Topics,
       slug: "Indicadores",
       icon: ChartBar,
     },

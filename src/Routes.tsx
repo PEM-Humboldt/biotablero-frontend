@@ -10,13 +10,13 @@ import { Portfolio } from "pages/Portfolio";
 import { InitiativesMap } from "pages/monitoring/outlets/InitiativesMap";
 import { Initiatives } from "pages/monitoring/outlets/Initiatives";
 import { Resources as MonitoringResources } from "pages/monitoring/outlets/Resources";
-import { ObservationsSearch } from "pages/monitoring/outlets/ObservationsSearch";
+import { TopicsSearch } from "pages/monitoring/outlets/TopicsSearch";
 import { Manager as ResourcesManager } from "pages/monitoring/outlets/resources/Manager";
 import { Help } from "pages/monitoring/outlets/Help";
 
 import { MyProfile } from "pages/monitoring/outlets/MyProfile";
 import { InitiativesAdmin } from "pages/monitoring/outlets/InitiativesAdmin";
-import { ObservationsAdmin } from "pages/monitoring/outlets/ObservationsAdmin";
+import { TopicsAdmin } from "pages/monitoring/outlets/TopicsAdmin";
 import { TagsAdmin } from "pages/monitoring/outlets/TagsAdmin";
 import { Logs } from "pages/monitoring/outlets/Logs";
 import { ToS } from "pages/TOS";
@@ -66,7 +66,7 @@ export const routes = createBrowserRouter([
           },
           {
             path: "Indicadores",
-            Component: ObservationsSearch,
+            Component: TopicsSearch,
           },
           {
             path: "Recursos",
@@ -110,8 +110,8 @@ export const routes = createBrowserRouter([
                   }),
               },
               {
-                path: "Observaciones",
-                Component: ObservationsAdmin,
+                path: "Tematicas",
+                Component: TopicsAdmin,
                 loader: () =>
                   checkNLoad({
                     requirements: { roles: ["Admin"] },
