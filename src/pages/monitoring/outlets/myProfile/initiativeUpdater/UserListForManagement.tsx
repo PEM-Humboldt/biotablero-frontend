@@ -53,14 +53,14 @@ export function UsersListForManagement({
             return (
               <li
                 key={user.id}
-                className="flex gap-4 hover:bg-background py-2 px-4 items-center rounded-lg hover:outline hover:shadow-lg hover:outline-primary/50"
+                className="flex flex-wrap gap-4 hover:bg-background py-2 px-4 items-center justify-between rounded-lg hover:outline hover:shadow-lg hover:outline-primary/50"
               >
                 <div className="flex-1 flex gap-4 items-center">
                   {user?.externalData?.picture && (
                     <img
                       src={user.externalData.picture}
                       alt=""
-                      className="w-12 h-12 rounded-full"
+                      className="hidden md:block! w-12 h-12 rounded-full"
                     />
                   )}
 

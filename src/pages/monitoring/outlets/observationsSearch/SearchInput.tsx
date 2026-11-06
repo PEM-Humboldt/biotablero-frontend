@@ -94,7 +94,7 @@ export function SearchInput() {
 
   return (
     <header
-      className="w-full p-8 bg-cover bg-center"
+      className="w-full p-4 lg:p-8 bg-cover bg-center"
       style={{ backgroundImage: `url(${observationsSearchBkg})` }}
     >
       <div className="max-w-[1600px] mx-auto">
@@ -150,7 +150,7 @@ export function SearchInput() {
               />
             </div>
 
-            <div className="flex *:flex-1 gap-2">
+            <div className="flex flex-wrap *:flex-1 gap-2">
               <div>
                 <label
                   htmlFor="ecosystemTagFilter"
@@ -198,7 +198,7 @@ export function SearchInput() {
               </div>
             </div>
 
-            <div className="flex *:flex-1 gap-2">
+            <div className="flex flex-wrap *:flex-1 gap-2">
               <div>
                 <label
                   htmlFor="departmentFilter"

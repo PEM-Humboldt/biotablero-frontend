@@ -53,9 +53,7 @@ export function TagsUpdater({ title }: TagsUpdaterProps) {
       </div>
 
       {!editThis ? (
-        <div className="flex gap-x-8 gap-y-4 flex-wrap items-end *:flex-[1_1_350px]">
-          <TagsList sectionInfo={tagsInfo.current ?? []} />
-        </div>
+        <TagsList sectionInfo={tagsInfo.current ?? []} />
       ) : (
         <form aria-labelledby={`${initiativeId}_tags`}>
           <TagsManager
@@ -87,7 +85,7 @@ function TagsList({ sectionInfo }: { sectionInfo: TagInInitiative[] | null }) {
   }, [sectionInfo]);
 
   return (
-    <div className="flex gap-10">
+    <div className="flex flex-col md:flex-row gap-10">
       {initiativeTagCategories.map((tagGroup) => {
         const tagCategoryId = tagGroup.tagCategoryId;
         return (

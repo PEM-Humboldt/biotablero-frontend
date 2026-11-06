@@ -17,12 +17,12 @@ export function HeaderTS({
 }) {
   const { initiativeInfo } = useInitiativeCTX();
 
-  const bannerUrl = uiText.header.imgFallback;
-  // (initiativeInfo?.bannerUrl as string) || uiText.header.imgFallback;
+  const bannerUrl =
+    (initiativeInfo?.bannerUrl as string) || uiText.header.imgFallback;
 
   return (
     <header
-      className="relative w-full h-[120px] md:h-[260px] flex items-center justify-center overflow-hidden bg-primary"
+      className="relative w-full min-h-[120px] md:min-h-[260px] flex items-center justify-center overflow-hidden bg-primary"
       style={{
         backgroundImage: `url('${bannerUrl}')`,
         backgroundSize: "cover",

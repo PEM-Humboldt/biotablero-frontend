@@ -143,7 +143,7 @@ export function SpeciesDiversity() {
           <div className="w-full h-full aspect-video">
             <ResponsiveLine
               data={filteredData}
-              margin={{ top: 20, right: 30, bottom: 30, left: 60 }}
+              margin={{ top: 20, right: 40, bottom: 30, left: 60 }}
               xScale={{ type: "point" }}
               yScale={{
                 type: "linear",

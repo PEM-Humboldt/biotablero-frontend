@@ -42,7 +42,7 @@ export function TerritoryStoriesList() {
           {uiText.storiesList.noStories}
         </div>
       ) : (
-        <ul className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-8 px-4 xl:px-8 pb-16 pt-4">
+        <ul className="grid grid-cols-[repeat(auto-fill,minmax(350px,1fr))] gap-4 xl:gap-8 px-4 xl:px-8 pb-16 pt-4">
           {renderStories.map((story) => {
             const featuredImg = getFeaturedImage(story);
 
@@ -53,7 +53,7 @@ export function TerritoryStoriesList() {
                     <img
                       src={featuredImg.url}
                       alt={featuredImg.alt}
-                      className="aspect-3/2  lg:max-h-[400px] object-cover object-center"
+                      className="aspect-video w-full object-cover"
                     />
                     <h3 className="py-2 px-4 text-lg font-normal m-0">
                       {story.title}

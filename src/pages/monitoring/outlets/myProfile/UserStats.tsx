@@ -57,12 +57,12 @@ function StatsCard({
   const text = uiText.profileStats.statsUiInfo[statName].text;
 
   return (
-    <li className="flex flex-[1_1_200px] flex-col justify-center gap-2 items-center p-4">
+    <li className="flex flex-[1_1_200px] flex-row md:flex-col justify-center gap-x-4 gap-y-2 items-center p-4">
       <span className="bg-grey-light p-4 rounded-full w-fit" aria-hidden="true">
         <Icon className="size-12 text-primary" strokeWidth={1} />
       </span>
       <span className="text-primary text-5xl font-bold">{statValue}</span>
-      <span className="text-center text-balance font-normal text-lg/6">
+      <span className="md:text-center text-balance font-normal md:text-lg/6">
         {text}
       </span>
     </li>

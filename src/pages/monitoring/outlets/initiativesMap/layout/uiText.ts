@@ -98,7 +98,7 @@ export const uiText = {
   },
 
   mapLegend: {
-    title: "Información del mapa",
+    title: "Sobre el mapa",
     labelSr:
       "Información para la lectura del mapa y selección de departamentos",
     description:

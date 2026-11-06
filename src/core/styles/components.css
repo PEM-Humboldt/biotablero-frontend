@@ -87,25 +87,32 @@
 
         /* NOTE: Col id */
         &:first-child {
-          @apply w-[30%];
+          @apply hidden md:table-cell w-[30%];
         }
 
-        /* NOTE: Cols fecha y usuario */
-        &:nth-child(2),
+        /* NOTE: Cols fecha */
+        &:nth-child(2) {
+          @apply md:w-[15%];
+        }
+
+        /* NOTE: Cols usuario */
         &:nth-child(3) {
-          @apply w-[15%];
+          @apply hidden md:table-cell w-[15%];
         }
 
         /* NOTE: Col tipo */
         &:nth-child(4) {
-          @apply w-[10%];
+          @apply hidden md:table-cell w-[10%];
         }
 
         /* NOTE: Col descripcion completa el 100% */
+        &:nth-child(5) {
+          @apply md:w-[10%];
+        }
 
         /* NOTE: Col acción */
         &:last-child {
-          @apply w-[10%] text-center;
+          @apply md:w-[10%] text-center;
         }
       }
     }
@@ -146,29 +153,29 @@
 
   /* NOTE: para manejar los estilos de renderizado de los relatos del territorio */
   .markdown-renderer {
-    @apply text-lg leading-relaxed text-foreground break-words;
+    @apply text-base lg:text-lg leading-relaxed text-foreground break-words;
 
     /* Párrafos y espaciado general */
     & p {
-      @apply mb-4 last:mb-0 text-lg;
+      @apply mb-4 last:mb-0 text-base lg:text-lg;
     }
 
     /* Headings dinámicos (h1-h6) */
     & h1 {
-      @apply text-5xl font-bold mt-8 mb-4;
+      @apply text-4xl lg:text-5xl font-bold mt-8 mb-4;
     }
     & h2 {
-      @apply text-4xl font-bold mt-6 mb-3;
+      @apply text-3xl lg:text-4xl font-bold mt-6 mb-3;
     }
     & h3 {
-      @apply text-3xl font-normal mt-5 mb-2;
+      @apply text-2xl lg:text-3xl font-normal mt-5 mb-2;
     }
     & h4 {
-      @apply text-2xl font-normal mt-4 mb-2;
+      @apply text-xl lg:text-2xl font-normal mt-4 mb-2;
     }
     & h5,
     & h6 {
-      @apply text-lg font-normal mt-4 mb-2;
+      @apply text-lg lg:text-xl font-normal mt-4 mb-2;
     }
 
     /* Listas */
@@ -333,26 +340,31 @@
 
       & td,
       & th {
-        @apply px-3 py-1 truncate;
+        @apply px-3 py-1;
 
         /* NOTE: Col categoría */
         &:first-child {
-          @apply w-[15%];
+          @apply hidden md:table-cell md:w-[15%] md:truncate;
         }
 
         /* NOTE: Col nombre */
         &:nth-child(2) {
-          @apply w-[20%];
+          @apply md:w-[20%];
         }
 
         /* NOTE: Col nombre largo*/
         &:nth-child(3) {
-          @apply w-[30%];
+          @apply hidden md:table-cell md:w-[30%] md:truncate;
+        }
+
+        /* NOTE: Col url*/
+        &:nth-child(4) {
+          @apply hidden md:table-cell md:truncate;
         }
 
         /* NOTE: Col acción */
         &:last-child {
-          @apply w-[20%] text-center;
+          @apply md:w-[20%] text-center;
         }
       }
     }
@@ -360,11 +372,11 @@
 
   /* NOTE: Para inputs de lista */
   .table-form-display-container {
-    @apply border border-primary/30 rounded-lg mb-2 overflow-hidden;
+    @apply border border-primary/30 w-full max-w-full rounded-lg mb-2 overflow-x-auto;
   }
 
   .table-form-display {
-    @apply table-fixed w-full bg-white;
+    @apply w-full bg-white;
 
     & thead {
       @apply bg-muted/30 [&_th]:py-1 border-b border-b-primary/30 text-left text-primary [&_th]:font-normal [&_th]:text-base;
@@ -376,7 +388,7 @@
 
     & td,
     & th {
-      @apply px-2;
+      @apply px-2 whitespace-nowrap;
     }
   }
 

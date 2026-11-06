@@ -16,7 +16,7 @@ export const initiativeTagCategories: {
     maxTagsAmount: INITIATIVE_TAGS_LIMIT_POLITICAL_CTX,
     uiText: {
       itemNotFound: `No hay coincidencias, para solicitar la creación de esa etiqueta, escribe a ${SUPPORT_EMAIL}`,
-      trigger: "Añadir etiqueta de contexto político",
+      trigger: "Añadir etiqueta",
       inputPlaceholder: "¿Cómo se llama la etiqueta que buscas?",
     },
   },
@@ -26,7 +26,7 @@ export const initiativeTagCategories: {
     maxTagsAmount: INITIATIVE_TAGS_LIMIT_CULTURAL_CTX,
     uiText: {
       itemNotFound: `No hay coincidencias, para solicitar la creación de esa etiqueta, escribe a ${SUPPORT_EMAIL}`,
-      trigger: "Añadir etiqueta de contexto social",
+      trigger: "Añadir etiqueta",
       inputPlaceholder: "¿Cómo se llama la etiqueta que buscas?",
     },
   },

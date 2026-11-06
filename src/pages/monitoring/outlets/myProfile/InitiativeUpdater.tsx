@@ -99,7 +99,7 @@ export function InitiativeUpdater() {
 
       {error && <ErrorsList errorItems={[error]} />}
 
-      <div className="w-full p-4 bg-background rounded-xl">
+      <div className="w-full p-2 md:p-4 bg-background rounded-xl">
         {initiativesAsLeader && initiativesAsLeader?.length > 1 && (
           <Combobox
             items={initiativesAsLeader}

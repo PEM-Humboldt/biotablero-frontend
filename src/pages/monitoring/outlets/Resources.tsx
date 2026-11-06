@@ -212,7 +212,7 @@ export function Resources() {
             <ODataSearchBar
               components={searchBarComponents}
               setSearchParams={setSearchParams}
-              className="[&_input]:text-foreground [&_select]:bg-background [&_select]:text-foreground flex-wrap! p-0 mb-1 font-normal"
+              className="[&_input]:text-foreground [&_select]:bg-background [&_select]:text-foreground p-0 mb-2 shrink-0 flex-wrap"
               filterInjection={filtersInjected}
               reset={uiText.searchBar.reset}
             />

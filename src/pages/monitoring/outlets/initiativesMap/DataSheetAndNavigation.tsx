@@ -23,8 +23,10 @@ import { uiText } from "pages/monitoring/outlets/initiativesMap/layout/uiText";
 
 export function DataSheetAndNavigation({
   initiatives,
+  className,
 }: {
   initiatives: InitiativeByLocation[];
+  className?: string;
 }) {
   const navigate = useNavigate();
   const [locations, setLocations] = useState<Record<number, string>>({});
@@ -80,14 +82,14 @@ export function DataSheetAndNavigation({
   }, [departmentId, currentInitiative, locations]);
 
   return (
-    <div className="absolute top-1 left-1 w-106 lg:top-4 lg:left-4 z-10 rounded-lg shadow-md">
+    <div className={className}>
       <PageTitleUpdater
         title={"Iniciativas"}
         subtitle={statsScope || "Colombia"}
       />
 
       <Collapsible open={expanded} onOpenChange={setExpanded}>
-        <header className="bg-primary px-4 h-12 border border-primary/50 border-b-0 rounded-t-lg flex gap-2 justify-between items-center">
+        <header className="bg-primary px-4 h-12 flex gap-2 justify-between items-center">
           <h4
             className="uppercase text-primary-foreground mb-0"
             aria-label={title}
@@ -119,7 +121,7 @@ export function DataSheetAndNavigation({
 
             <CollapsibleTrigger asChild>
               <Button
-                className="p-0 text-primary-foreground"
+                className="hidden xl:inline-flex p-0 text-primary-foreground"
                 variant="link"
                 size="icon"
                 title={
@@ -149,7 +151,7 @@ export function DataSheetAndNavigation({
           </div>
         </header>
 
-        <div className="bg-background flex flex-col items-start border border-primary/50 border-t-0 rounded-b-lg p-2">
+        <div className="bg-background flex flex-col items-start p-2">
           <div
             className="text-xl font-normal w-full px-2 m-0 pb-2 border-b border-b-muted"
             aria-hidden="true"
@@ -157,7 +159,7 @@ export function DataSheetAndNavigation({
             {statsScope}
           </div>
 
-          <CollapsibleContent className="data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up overflow-hidden">
+          <CollapsibleContent className="data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up w-full">
             {initiativeId && (
               <Button
                 onClick={() =>

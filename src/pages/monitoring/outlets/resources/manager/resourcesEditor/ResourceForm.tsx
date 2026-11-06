@@ -356,7 +356,7 @@ export function ResourceForm({
   };
 
   return !resource ? null : (
-    <div className="p-4 flex gap-12 *:flex-1">
+    <div className="p-4 flex flex-col lg:flex-row gap-12 *:flex-1">
       <ResourceInfo currentHelper={helper} resourceType={resourceType} />
       <form
         className="space-y-4 [&_label]:text-primary [&_label]:font-normal"
@@ -512,7 +512,7 @@ export function ResourceForm({
           className="bg-accent/10 p-4 border border-accent rounded-lg"
         />
 
-        <div className="flex flex-row-reverse justify-between gap-2">
+        <div className="flex flex-row-reverse flex-wrap justify-between gap-2">
           <Button disabled={!tos || isLoading}>
             {resource.isDraft ? "Guardar" : "Publicar"}
           </Button>

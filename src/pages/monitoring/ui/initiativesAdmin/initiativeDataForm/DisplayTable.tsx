@@ -49,7 +49,7 @@ export function DisplayTable<T, R extends object>({
   }
 
   return (
-    <div className={"table-form-display-container"}>
+    <div className="table-form-display-container">
       <table className={cn("table-form-display", className)}>
         <caption className="sr-only">{title}</caption>
 

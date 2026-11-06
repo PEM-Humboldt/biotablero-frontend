@@ -20,18 +20,23 @@ import {
 } from "pages/monitoring/types/catalog";
 import { useUserCTX } from "@hooks/UserCTX";
 
+const groupsInfo = {
+  common: { label: "", sr: "" },
+  user: { label: "", sr: "Administrar tu cuenta" },
+  admin: { label: "Administrar", sr: "Administrar el módulo" },
+};
+
 export function useSidebarItems() {
   const { user } = useUserCTX();
   const { toggleSidebar, open } = useSidebar();
 
-  const groupsInfo = useMemo(
-    () => ({
-      1: { label: "", sr: "" },
-      2: { label: "", sr: "Administrar tu cuenta" },
-      3: { label: "Administrar", sr: "Administrar el módulo" },
-    }),
-    [],
-  );
+  const initiativeSubPathsExclusion = [
+    "Indicadores",
+    "Recursos",
+    "Ayudas",
+    "MiPerfil",
+    "Admin",
+  ];
 
   const itemsList = useMemo<SidebarItem[]>(
     () => [
@@ -42,7 +47,7 @@ export function useSidebarItems() {
           "Busca y localiza todas las iniciativas de monitoreo que se están realizando",
         icon: ColombiaIconLucide,
         linkTo: "/Monitoreo",
-        group: 1,
+        group: "common",
       },
       {
         label: "Indicadores",
@@ -50,7 +55,7 @@ export function useSidebarItems() {
           "Busca y visualiza los indicadores de biodiversidad de todas las iniciativas",
         icon: ChartBar,
         linkTo: "/Monitoreo/Indicadores",
-        group: 1,
+        group: "common",
       },
       {
         label: "Recursos",
@@ -58,7 +63,7 @@ export function useSidebarItems() {
           "Busca y comparte guías, herramientas y materiales para el monitoreo",
         icon: BookMarked,
         linkTo: "/Monitoreo/Recursos",
-        group: 1,
+        group: "common",
       },
       {
         label: "Ayudas",
@@ -66,7 +71,7 @@ export function useSidebarItems() {
           "Resuelve las dudas más frecuentes sobre monitoreo y el uso de la plataforma",
         icon: BadgeQuestionMark,
         linkTo: "/Monitoreo/Ayudas",
-        group: 1,
+        group: "common",
       },
       {
         label: "Glosario",
@@ -75,33 +80,33 @@ export function useSidebarItems() {
         icon: NotepadText,
         action: toggleSidebar,
         isActive: open,
-        group: 1,
+        group: "common",
       },
 
       // NOTE: items para usuarios registrados en biotablero
       ...(user && !user.roles.includes(RoleInMonitoring.ADMIN)
-        ? [
+        ? ([
             {
               label: "Mi Perfil",
               description:
                 "Gestiona tu perfil y las iniciativas en las que participas",
               icon: UserRoundCheck,
-              linkTo: "MiPerfil",
-              group: 2,
+              linkTo: "/Monitoreo/MiPerfil",
+              group: "user",
             },
-          ]
+          ] satisfies SidebarItem[])
         : []),
 
       // NOTE: items para administradores de biotablero
       ...(user && user.roles.includes(RoleInMonitoring.ADMIN)
-        ? [
+        ? ([
             {
               label: "Iniciativas",
               description:
                 "Agrega y actualiza la información de las iniciativas",
               icon: UserRoundCog,
               linkTo: "Admin/Iniciativas",
-              group: 3,
+              group: "admin",
             },
             {
               label: "Observaciones",
@@ -109,7 +114,7 @@ export function useSidebarItems() {
                 "Carga y actualiza las observaciones realizadas por las Iniciativas",
               icon: ScanEye,
               linkTo: "Admin/Observaciones",
-              group: 3,
+              group: "admin",
             },
             {
               label: "Etiquetas",
@@ -117,7 +122,7 @@ export function useSidebarItems() {
                 "Crea y administra las etiquetas que son usadas en las iniciativas",
               icon: Tags,
               linkTo: "Admin/Etiquetas",
-              group: 3,
+              group: "admin",
             },
             {
               label: "Logs",
@@ -125,9 +130,9 @@ export function useSidebarItems() {
                 "Consulta y descarga los registros de actividad de la plataforma",
               icon: Logs,
               linkTo: "Admin/Registros",
-              group: 3,
+              group: "admin",
             },
-          ]
+          ] satisfies SidebarItem[])
         : []),
     ],
     [toggleSidebar, open, user],
@@ -135,7 +140,12 @@ export function useSidebarItems() {
 
   const items = useMemo(() => {
     return itemsList.reduce<
-      Record<number, { label: string; sr: string; items: SidebarItem[] }>
+      Partial<
+        Record<
+          SidebarItem["group"],
+          { label: string; sr: string; items: SidebarItem[] }
+        >
+      >
     >((all, current) => {
       const groupKey = current.group;
 
@@ -152,5 +162,5 @@ export function useSidebarItems() {
     }, {});
   }, [itemsList, groupsInfo]);
 
-  return items;
+  return { items, initiativeSubPathsExclusion };
 }

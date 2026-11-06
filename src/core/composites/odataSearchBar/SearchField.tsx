@@ -37,8 +37,9 @@ export function SearchField<T>({
           {...commonParams}
           onChange={onUpdateSearch}
           disabled={disable}
+          className="bg-background"
         >
-          <NativeSelectOption value="">
+          <NativeSelectOption value="" className="w-full truncate">
             {component.placeholder ?? ""}
           </NativeSelectOption>
 

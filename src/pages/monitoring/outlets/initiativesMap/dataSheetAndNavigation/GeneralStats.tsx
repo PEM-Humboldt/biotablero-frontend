@@ -18,7 +18,7 @@ export function GeneralStats() {
   const { isLoading, errors, stats } = useStats("General");
 
   return (
-    <>
+    <div className="grid grid-cols-[repeat(auto-fill,minmax(350px,1fr))]">
       <ErrorsList
         errorItems={errors}
         className="bg-accent/10 border border-accent p-4 rounded-lg"
@@ -65,7 +65,7 @@ export function GeneralStats() {
         )}
         description={uiText.stats.general.initiativeSupport.description}
       />
-    </>
+    </div>
   );
 }
 

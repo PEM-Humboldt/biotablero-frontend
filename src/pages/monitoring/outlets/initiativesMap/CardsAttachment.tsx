@@ -28,7 +28,7 @@ import { DataSheetSmallCard } from "pages/monitoring/outlets/initiativesMap/data
 import { uiText } from "pages/monitoring/outlets/initiativesMap/layout/uiText";
 import { makeInitiativeLocationsString } from "@utils/format";
 
-export function CardsAttachment() {
+export function CardsAttachment({ className }: { className?: string }) {
   const { departmentId, initiativeId } = useParams();
   const [initiatives, setInitiatives] = useState<InitiativeByLocation[]>([]);
   const [observations, setIndicators] = useState<ObservationMetadata[]>([]);
@@ -89,13 +89,7 @@ export function CardsAttachment() {
       aria-hidden={!departmentId}
       // NOTE: para que no sea accesible al teclado cuando está oculto
       {...(!departmentId ? { inert: "" } : {})}
-      className={cn(
-        "absolute z-10 w-74 bottom-1 left-1 lg:top-16 lg:left-112 rounded-lg shadow-2xl h-fit",
-        "transition-all duration-300 ease-in-out",
-        !departmentId
-          ? "-translate-y-100 opacity-0 pointer-events-none"
-          : " translate-y-0  opacity-100",
-      )}
+      className={className}
     >
       {isLoading ? (
         <LoadingDiv />
@@ -105,7 +99,7 @@ export function CardsAttachment() {
             <section>
               <div
                 className={cn(
-                  "flex gap-2 justify-between bg-primary transition-all duration-300 text-primary-foreground px-2 rounded-t-lg border border-primary/50",
+                  "flex gap-2 justify-between bg-primary transition-all duration-300 text-primary-foreground px-4 h-12 xl:h-auto! xl:px-2",
                   expanded ? "" : "rounded-b-lg",
                 )}
               >
@@ -133,7 +127,7 @@ export function CardsAttachment() {
 
                 <CollapsibleTrigger asChild>
                   <Button
-                    className="p-0 text-primary-foreground"
+                    className="hidden xl:inline-flex! p-0 text-primary-foreground"
                     variant="link"
                     title={
                       expanded
@@ -162,7 +156,7 @@ export function CardsAttachment() {
               </div>
 
               <CollapsibleContent className="data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up overflow-hidden">
-                <div className="bg-grey-light rounded-b-lg p-3 space-y-3 border border-primary/50 h-auto max-h-60 lg:max-h-160 overflow-y-auto scrollbar-custom">
+                <div className="bg-grey-light p-3 space-y-3 lg:h-130 xl:h-auto max-h-160 overflow-y-auto scrollbar-custom">
                   <ErrorsList
                     errorItems={errors}
                     className="bg-accent/10 p-2 rounded-lg border border-accent"
