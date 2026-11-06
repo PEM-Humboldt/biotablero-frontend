@@ -18,6 +18,11 @@ export const uiText = {
     sr: "Abrir panel para editar y descargar mi reporte",
     label: "Descargar reporte",
   },
+  downloadTopicDataBtn: {
+    title: "Descargar los datos y archivos del indicador",
+    sr: "Descargar datos del indicador",
+    label: "Descargar Datos",
+  },
 
   addNotePopover: {
     placeholder: "Mis observaciones...",

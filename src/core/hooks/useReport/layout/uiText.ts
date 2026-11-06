@@ -1,5 +1,3 @@
-import { uiText as reportInputTextUi } from "@ui/addMCTopicToReport/layout/uiText";
-
 export const uiText = {
   downloadReportError: "Error al generar el pdf:",
 
@@ -38,8 +36,15 @@ export const uiText = {
         "Este es el esquema actual del reporte con la información que has añadido, acá puedes cambiar el orden de las secciones y las gráficas, agregar o eliminar notas, gráficas y secciones.",
     },
     footer: {
-      input: reportInputTextUi.downloadDialog.input,
-      downloadBtn: reportInputTextUi.downloadDialog.downloadBtn,
+      input: {
+        label: "¿Cuál es el objetivo de este reporte que estás creando?",
+        placeholder: "Estoy creando este reporte para...",
+      },
+      downloadBtn: {
+        title: "Descargar reporte",
+        sr: "Descargar reporte",
+        label: "Descargar",
+      },
       closeBtn: {
         title: "Cerrar editor",
         sr: "Cerrar editor",

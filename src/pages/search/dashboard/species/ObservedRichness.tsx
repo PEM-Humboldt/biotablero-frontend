@@ -12,7 +12,6 @@ import SmallStackedBar, {
   type SmallStackedBarData,
 } from "@composites/charts/SmallStackedBar";
 import { TextBoxes } from "@ui/TextBoxes";
-import { AddSearchIndicatorToReportBtn } from "@ui/AddSearchIndicatorToReport";
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { GetSearchIndicatorInfo } from "@hooks/useReport/GetSearchIndicatorInfo";
 import { GraphLegend } from "@ui/GraphLegend";
@@ -33,6 +32,7 @@ import {
 import type { TextsObject } from "pages/search/types/texts";
 import { getMetricTexts } from "pages/search/utils/texts";
 import { SearchUpdated } from "pages/search/hooks/SearchReducer";
+import { AddSearchIndicatorToReportBtn } from "pages/search/ui/AddSearchIndicatorToReport";
 import type { AreaIdBasic } from "pages/search/types/dashboard";
 import type { MetricTypesMap } from "pages/search/types/metrics";
 
@@ -463,7 +463,7 @@ export function ObservedRichness() {
 
             <AddSearchIndicatorToReportBtn
               wrapperId="StatsOnSpecies"
-              overWriteLabel="Agregar tablas"
+              overwriteLabel="Agregar tablas"
               className="w-full"
             />
           </>
