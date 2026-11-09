@@ -2,11 +2,11 @@ export const uiText = {
   addToReportBtn: {
     title: {
       notLogged: "Inicia sesión para crear reportes",
-      logged: `Hacer anotacion y sumar al reporte`,
+      logged: `Hacer anotación y sumar al reporte`,
     },
     sr: {
       notLogged: "Inicia sesión para crear reportes",
-      logged: `Hacer anotacion y sumar al reporte`,
+      logged: `Hacer anotación y sumar al reporte`,
     },
     label: {
       loading: "Agregando...",
