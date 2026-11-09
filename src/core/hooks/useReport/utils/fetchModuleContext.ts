@@ -11,7 +11,6 @@ import {
 } from "pages/monitoring/api/services/initiatives";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
-import { makeLocationsString } from "@hooks/useReport/utils/formatters";
 import type { SearchState } from "pages/search/hooks/SearchReducer";
 import { makeInitiativeLocationsString } from "@utils/format";
 

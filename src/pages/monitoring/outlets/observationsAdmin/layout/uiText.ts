@@ -46,8 +46,8 @@ export const uiText = {
       label: "Versiones",
     },
     versionsListDescriptionEdit: {
-      sr: "Selecciona la version a editar",
-      label: "Selecciona la version a editar",
+      sr: "Selecciona la versión a editar",
+      label: "Selecciona la versión a editar",
     },
     openVersionBtn: {
       sr: (version: number, observationDate: Date) =>
