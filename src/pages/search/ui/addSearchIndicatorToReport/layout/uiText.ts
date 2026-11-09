@@ -2,11 +2,11 @@ export const uiText = {
   addToReportBtn: {
     title: {
       notLogged: "Inicia sesión para crear reportes",
-      logged: `Hacer anotacion y sumar al reporte`,
+      logged: `Hacer anotación y sumar al reporte`,
     },
     sr: {
       notLogged: "Inicia sesión para crear reportes",
-      logged: `Hacer anotacion y sumar al reporte`,
+      logged: `Hacer anotación y sumar al reporte`,
     },
     label: {
       loading: "Agregando...",
@@ -17,8 +17,8 @@ export const uiText = {
   addNotePopover: {
     placeholder: "Mis observaciones...",
     addBtn: {
-      title: "Agregar con mi anotacion",
-      sr: "Agregar con mi anotacion",
+      title: "Agregar con mi anotación",
+      sr: "Agregar con mi anotación",
       label: (isLoading: boolean) => (isLoading ? "Agregando..." : "Agregar"),
     },
     cancelBtn: {
