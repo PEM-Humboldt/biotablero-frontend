@@ -37,6 +37,7 @@ import { ImagesUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCa
 import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 import { AdminInitiativeUpdateCtx } from "pages/monitoring/ui/initiativesAdmin/hooks/useAdminUpdateContext";
 import { TagsUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/TagsUpdater";
+import { MonitoringEventsEditor } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/MonitoringEventsEditor";
 
 export function InitiativeCard({
   initiative,
@@ -90,14 +91,23 @@ export function InitiativeCard({
     const res = await changeInitiativeStatus(initiative.enabled, initiative.id);
 
     if (isMonitoringAPIError(res)) {
-      setErrors((oldErr) => [...oldErr, ...res.data.map((error) => error.msg)]);
+      setErrors((oldErr) => [...oldErr, ...res.data.map((err) => err.msg)]);
 
       return;
     }
 
-    setCurrentEdit(res.enabled ? "none" : null);
+    const initiativeUpdated = await getInitiative(initiative.id);
+    if (isMonitoringAPIError(initiativeUpdated)) {
+      setErrors((oldErr) => [
+        ...oldErr,
+        ...initiativeUpdated.data.map((err) => err.msg),
+      ]);
 
-    void updater(res);
+      return;
+    }
+
+    setCurrentEdit(initiativeUpdated.enabled ? "none" : null);
+    void updater(initiativeUpdated);
     setIsLoading(false);
   };
 
@@ -148,7 +158,7 @@ export function InitiativeCard({
         subtitle={initiative.name}
       />
       <article className="flex flex-col gap-2 p-4 mt-1 mb-2 rounded-lg">
-        <div className="flex items-baseline gap-2 px-2 ">
+        <div className="flex items-center gap-2 px-2 ">
           <h3 className="text-5xl font-normal flex-1 mb-0! text-primary">
             {initiative.name}
           </h3>
@@ -159,6 +169,8 @@ export function InitiativeCard({
               className="flex items-center"
             />
           )}
+
+          <MonitoringEventsEditor initiative={initiative} />
 
           <InitiativeStatusDialog
             active={initiative.enabled}

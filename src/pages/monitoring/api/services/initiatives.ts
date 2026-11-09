@@ -140,7 +140,7 @@ export async function changeInitiativeStatus(
   const endpoint = isEnabled ? "Disable" : "Enable";
   const method = isEnabled ? "delete" : "post";
 
-  const res = await monitoringAPI<InitiativeCompleteInfo>({
+  const res = await monitoringAPI({
     type: method,
     endpoint: `Initiative/${endpoint}/${initiativeId}`,
   });
