@@ -6,7 +6,6 @@ import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import { TagsRender } from "pages/monitoring/ui/TagsRender";
 import { uiText } from "pages/monitoring/outlets/initiatives/layout/uiText";
 import { TagInInitiative } from "pages/monitoring/types/odataResponse";
-import { cn } from "@ui/shadCN/lib/utils";
 
 export function TagsAndContact() {
   const { initiativeInfo } = useInitiativeCTX();

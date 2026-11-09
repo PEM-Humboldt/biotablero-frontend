@@ -228,7 +228,7 @@ export function ComboboxOData<T>({
         uiText={{
           itemNotFound: (() => {
             if (isLoading) {
-              return uiText?.loading ?? "Cargando...";
+              return uiText?.isLoading ?? "Cargando...";
             }
             if (!loadOnEmpty && !searchParams.filter) {
               return uiText?.onEmptySearch ?? "";
