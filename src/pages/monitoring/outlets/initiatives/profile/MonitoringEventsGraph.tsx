@@ -14,7 +14,7 @@ import { INITIATIVE_MONITORING_EVENTS_HORIZONTAL_TICS } from "@config/monitoring
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { Spinner } from "@ui/shadCN/component/spinner";
 
-import { getInitiativeMonitoringEvents } from "pages/monitoring/api/services/initiatives";
+import { getInitiativeMonitoringEvents } from "pages/monitoring/api/services/monitoringEvents";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
 import type { InitiativeMonitoringEvent } from "pages/monitoring/types/stats";
