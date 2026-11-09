@@ -70,10 +70,14 @@ export function generateLinearTicks(
  *
  * @param bins - The numeric bin values.
  * @param grouped - Defines which bins are shown as ranges instead of values,
- * or `null`to show every bin as a single value.
+ * or `null` to show every bin as a single value.
  * @param grouped.fromIndex - Index of the first bin to be shown as a range.
  * @param grouped.tillIndex - Index (exclusive) at which the grouping stops.
  * If omitted, grouping continues up to the last bin.
+ * @param compresorFromIndex - The array index at which all subsequent bins are grouped
+ * into a single "greater than" (`>X`) category. If `null`, no compression is applied.
+ *
+ * @returns An array of string labels formatted for the histogram bins.
  */
 export function makeCustomHistogramBinsLabels(
   bins: number[],
