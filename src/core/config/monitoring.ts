@@ -160,3 +160,4 @@ export const HELP_YOUTUBE_VIDEO_URL = "www.youtube.com/watch?v=z2Ida2a2hHQ";
 export const MONITORING_EVENTS_EDITOR_LIST_AMOUNT = 5;
 export const MONITORING_EVENTS_MIN_PER_MONTH = 1;
 export const MONITORING_EVENTS_MAX_PER_MONTH = 100;
+export const MONITORING_STARTING_YEAR = 2025;
