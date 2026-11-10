@@ -3,7 +3,7 @@ import { useRef, useEffect } from "react";
 import { useUserCTX } from "@hooks/UserCTX";
 import defaultProfileImageUrl from "@assets/icons/user_icon.svg?url";
 import { Button } from "@ui/shadCN/component/button";
-import { DoorClosed, CircleUserRound, DoorOpen, Bell } from "lucide-react";
+import { DoorClosed, CircleUserRound, DoorOpen } from "lucide-react";
 import { useNavigate } from "react-router";
 import { RoleInMonitoring } from "pages/monitoring/types/catalog";
 import { BREAKPOINT_PROFILE_BTN_ON_MENU } from "@config/global";
@@ -21,17 +21,6 @@ export function Uim() {
     <div className="flex items-center ml-auto px-3">
       {user ? (
         <>
-          {/* NOTE: Desactivado mientras se realiza la funcionalidad de notificaciones
-			<Button
-            onClick={() => console.log("Notificaciones")}
-            variant="link"
-            title="Notificaciones"
-            size="icon-lg"
-            aria-label="Ver notificaciones"
-          >
-            <Bell className="size-4 md:size-5" aria-hidden="true" />
-          </Button> */}
-
           <Button
             onClick={() => {
               if (
