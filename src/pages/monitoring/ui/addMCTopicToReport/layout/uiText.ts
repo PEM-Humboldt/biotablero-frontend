@@ -14,7 +14,7 @@ export const uiText = {
     },
   },
   editReportBtn: {
-    title: "Abrir panel de edicion",
+    title: "Abrir panel de edición",
     sr: "Abrir panel para editar y descargar mi reporte",
     label: "Descargar reporte",
   },
@@ -27,8 +27,8 @@ export const uiText = {
   addNotePopover: {
     placeholder: "Mis observaciones...",
     addBtn: {
-      title: "Agregar con mi anotacion",
-      sr: "Agregar con mi anotacion",
+      title: "Agregar con mi anotación",
+      sr: "Agregar con mi anotación",
       label: (isLoading: boolean) => (isLoading ? "Agregando..." : "Agregar"),
     },
     cancelBtn: {
