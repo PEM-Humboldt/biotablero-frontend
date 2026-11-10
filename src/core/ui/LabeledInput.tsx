@@ -23,8 +23,8 @@ interface LabeledInputProps
   inputMaxLength?: number;
   required?: boolean;
   texts: { label?: string; sr?: string; placeholder?: string };
-  state: string;
-  stateSetter: (value: string) => void;
+  state: string | number;
+  stateSetter: (value: string | number) => void;
   validator?: () => Promise<unknown> | unknown;
   validationErrors: string[];
 }

@@ -89,11 +89,15 @@ export async function createMonitoringEvent(
  * - On success: an `MonitoringEvent` object.
  * - On failure: A `ApiRequestError` object.
  */
-export async function updateMonitoringEven(eventId: number, amount: number) {
+export async function updateMonitoringEvent(
+  eventId: number,
+  amount: number,
+  date: Date,
+) {
   const res = await monitoringAPI<MonitoringEvent>({
     type: "put",
     endpoint: `MonitoringEvents/${eventId}`,
-    options: { data: { Value: amount } },
+    options: { data: { Value: amount, Date: date.toISOString() } },
   });
 
   return res;
