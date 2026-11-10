@@ -12,14 +12,6 @@ export enum ScreenBreakpoint {
   XL2 = 1536,
 } // Breakpoints de pantalla
 
-export const HORIZONTAL_BREAKPOINT = {
-  sm: 640, // tablet vertical
-  md: 768, // tablet horizontal
-  lg: 1024,
-  xl: 1280, // escritorio
-  "2xl": 1536,
-}; //Breakpoints de pantalla ;
-
 export const BREAKPOINT_PROFILE_BTN_ON_MENU = ScreenBreakpoint.SM;
 
 export const COUNTRY_BOUNDS: LatLngBoundsLiteral = [

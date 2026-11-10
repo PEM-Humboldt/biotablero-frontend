@@ -55,7 +55,7 @@ export function SearchInput() {
     const lower = searchTopic.toLocaleLowerCase();
 
     const filterMap = {
-      [searchTopic]: `contains(tolower(name), '${lower}') or contains(tolower(topic/name), '${lower}')`,
+      [searchTopic]: `contains(tolower(name), '${lower}') or contains(tolower(topicType/name), '${lower}')`,
       [filterInitiative]: `initiativeId eq ${filterInitiative}`,
       [filterEcosystem]: `TopicTags/any(l: l/tag/id eq ${filterEcosystem})`,
       [filterBiologicalGroup]: `TopicTags/any(l: l/tag/id eq ${filterBiologicalGroup})`,
