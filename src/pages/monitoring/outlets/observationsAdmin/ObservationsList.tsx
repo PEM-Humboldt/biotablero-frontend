@@ -116,7 +116,7 @@ export function ObservationsList({
 
       {isLoading && (
         <LoadingDiv
-          text={uiText.observationsList.loadind}
+          text={uiText.observationsList.loading}
           className="absolute"
         />
       )}

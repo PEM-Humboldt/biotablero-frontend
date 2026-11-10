@@ -38,11 +38,11 @@ export const uiText = {
   observationsList: {
     noInitiative:
       "Selecciona una iniciativa para poder administrar sus observaciones",
-    loadind: "Cargando información de las observaciones...",
+    loading: "Cargando información de las observaciones...",
 
     listDescription: { sr: "Observaciones relacionadas" },
     versionsListDescription: {
-      sr: "Selecciona la varsion para revisar",
+      sr: "Selecciona la versión para revisar",
       label: "Versiones",
     },
     versionsListDescriptionEdit: {
@@ -51,9 +51,9 @@ export const uiText = {
     },
     openVersionBtn: {
       sr: (version: number, observationDate: Date) =>
-        `Ver la version ${version} de ${observationDate.toLocaleDateString(LOCALE)}`,
+        `Ver la versión ${version} de ${observationDate.toLocaleDateString(LOCALE)}`,
       title: (version: number, observationDate: Date) =>
-        `Ver la version ${version} de ${observationDate.toLocaleDateString(LOCALE)}`,
+        `Ver la versión ${version} de ${observationDate.toLocaleDateString(LOCALE)}`,
       label: (_version: number, observationDate: Date) =>
         observationDate.toLocaleDateString(LOCALE),
     },
@@ -67,11 +67,11 @@ export const uiText = {
     },
     cancelBtn: { sr: "Cancelar", title: "Cancelar", label: "Cancelar" },
     updatedToast: {
-      title: "Textos de version actualizados",
+      title: "Textos de versión actualizados",
       description: (versionNumber: number, creationDate: Date) =>
-        `Los textos esta observación en la version ${versionNumber} de ${creationDate.toLocaleDateString(LOCALE)} han sido actualizados correctamente.`,
+        `Los textos esta observación en la versión ${versionNumber} de ${creationDate.toLocaleDateString(LOCALE)} han sido actualizados correctamente.`,
     },
-    editVersionTitlePrefix: "Version del ",
+    editVersionTitlePrefix: "Versión del ",
     noTextInThisVersion: (textField: string) =>
       `No hay textos asociados con '${textField}' en esta versión de la observación`,
     textEditorPlaceHolder: "Este indicador...",

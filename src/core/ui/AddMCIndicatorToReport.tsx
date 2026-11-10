@@ -123,7 +123,7 @@ export function AddMCIndicatorToReport() {
         {uiText.editReportBtn.label}
       </Button>
 
-      {/* NOTE: Mock para el video, debe agregarse la funcionalidad */}
+      {/* TODO: Mock para el video, debe agregarse la funcionalidad */}
       <Button
         disabled={!hasSections}
         size="sm"
