@@ -195,6 +195,7 @@ export function OccupationSpecies() {
             )}
             customColorList={GRAPHS_CONTRAST_COLOR_PALETTE}
             isBar={false}
+            labelClassName={{ complement: "italic" }}
           />
         </>
       </GetObservationInfo>

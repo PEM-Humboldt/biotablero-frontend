@@ -26,7 +26,6 @@ export type MonitoringAPIParams = {
         data?: QueryParams;
         oData?: Partial<ODataParams>;
         timeout?: number;
-        validateStatus?: (status: number) => boolean;
         headers?: Record<string, string>;
         responseType?: ResponseType;
         signal?: GenericAbortSignal;

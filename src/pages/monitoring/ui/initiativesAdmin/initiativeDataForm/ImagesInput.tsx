@@ -28,6 +28,7 @@ import {
   INITIATIVE_IMG_BANNER_WIDTH_MAX,
   INITIATIVE_IMG_BANNER_WIDTH_MIN,
   MONITORING_IMG_ALLOWED_FORMATS,
+  INITIATIVES_IMG_MAX_FILE_SIZE,
 } from "@config/monitoring";
 
 import type { ImagesData } from "pages/monitoring/types/initiative";
@@ -133,7 +134,7 @@ export function ImagesInput({
     "imageUrl",
     (validations: ImgValidator) =>
       validations
-        .maxSize(1)
+        .maxSize(INITIATIVES_IMG_MAX_FILE_SIZE)
         .isFormat(MONITORING_IMG_ALLOWED_FORMATS)
         .validateDimensions({
           maxWidth: INITIATIVE_IMG_GENERAL_WIDTH_MAX,
@@ -147,7 +148,7 @@ export function ImagesInput({
     "bannerUrl",
     (validations: ImgValidator) =>
       validations
-        .maxSize(1)
+        .maxSize(INITIATIVES_IMG_MAX_FILE_SIZE)
         .isFormat(MONITORING_IMG_ALLOWED_FORMATS)
         .validateDimensions({
           maxWidth: INITIATIVE_IMG_BANNER_WIDTH_MAX,
