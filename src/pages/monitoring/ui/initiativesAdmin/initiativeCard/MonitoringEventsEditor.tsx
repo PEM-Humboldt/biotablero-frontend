@@ -1,4 +1,5 @@
 import { ODataParams } from "@appTypes/odata";
+import { ODataSearchBar } from "@composites/ODataSearchBar";
 import { TablePager } from "@composites/TablePager";
 import { LOCALE } from "@config/global";
 import { MONITORING_EVENTS_EDITOR_LIST_AMOUNT } from "@config/monitoring";
@@ -21,6 +22,7 @@ import {
 } from "pages/monitoring/types/initiative";
 import { MonitoringEvent } from "pages/monitoring/types/monitoringEvents";
 import { useEffect, useRef, useState } from "react";
+import { monitoringEventsSearchBarComponents } from "./layout/monitoringEventsSearchBarComponents";
 
 export function MonitoringEventsEditor({
   initiative,
@@ -63,6 +65,13 @@ export function MonitoringEventsEditor({
     void fetchMonitoringEvents();
   }, [initiative.id, searchParams]);
 
+  const handleMonitoringEventSortToggle = () => {
+    setSearchParams((old) => ({
+      ...old,
+      orderby: old.orderby === "date asc" ? "date desc" : "date asc",
+    }));
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -81,8 +90,19 @@ export function MonitoringEventsEditor({
         </DialogHeader>
         // NOTE: Agregar form para añadir evento de monitoreo
         <br />
-        // NOTE: Agregar buscador por fechas
-        {monitoringEvents.length > 0 ? (
+        <div>
+          <ODataSearchBar
+            components={monitoringEventsSearchBarComponents}
+            setSearchParams={setSearchParams}
+            className="bg-accent *:flex-1!"
+            submit="Filtrar"
+            reset="Borrar filtro"
+          />
+          <Button onClick={handleMonitoringEventSortToggle}>
+            Ordenar de mar recientes a mas lejanas{" "}
+          </Button>
+        </div>
+        {monitoringEvents.length > 0 && (
           <ul>
             {monitoringEvents.map((event) => {
               const eventDate = new Date(event.date).toLocaleDateString(
@@ -91,7 +111,7 @@ export function MonitoringEventsEditor({
               );
 
               return (
-                <li>
+                <li key={event.id}>
                   <div>
                     fecha: {eventDate}
                     eventos: {event.value}
@@ -104,16 +124,14 @@ export function MonitoringEventsEditor({
               );
             })}
           </ul>
-        ) : (
-          "Esta iniciativa todavía no tiene eventos de monitoreo registrados"
         )}
         <DialogFooter className="lg:justify-center">
           <TablePager
             currentPage={currentPage}
             recordsAvailable={monitoringEventsCount.current}
-            recordsPerPage={5}
+            recordsPerPage={MONITORING_EVENTS_EDITOR_LIST_AMOUNT}
             onPageChange={setCurrentPage}
-            paginated={MONITORING_EVENTS_EDITOR_LIST_AMOUNT}
+            paginated={1}
           />
         </DialogFooter>
       </DialogContent>
