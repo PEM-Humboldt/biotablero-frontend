@@ -38,7 +38,7 @@ export function MonitoringEventsEditor({
   const [currentPage, setCurrentPage] = useState(1);
   const [searchParams, setSearchParams] = useState<ODataParams>({
     top: MONITORING_EVENTS_EDITOR_LIST_AMOUNT,
-    orderby: "date asc",
+    orderby: "date desc",
   });
 
   const fetchMonitoringEvents = useCallback(async () => {
@@ -102,73 +102,89 @@ export function MonitoringEventsEditor({
   }, [currentPage]);
 
   return (
-    <div>
-      <h4>Eventos de monitoreo comunitario</h4>
-      <p className="sr-only">
-        Agrega, edita o elimina eventos de monitoreo comunitario realizados por
-        la iniciativa '{initiative.name}'
-      </p>
-
-      {isLoading && <LoadingDiv />}
-
-      <ErrorsList errorItems={errors} />
-
-      <NewMonitoringEventForm
-        initiativeId={initiative.id}
-        onSuccess={fetchMonitoringEvents}
-      />
-
+    <div className="p-2">
       <div>
-        <ODataSearchBar
-          components={monitoringEventsSearchBarComponents}
-          setSearchParams={setSearchParams}
-          className="bg-accent *:flex-1!"
-          submit="Filtrar"
-          reset="Borrar filtro"
+        <h4 className="text-2xl text-primary">
+          Administrar los eventos de monitoreo comunitario
+        </h4>
+        <p className="sr-only">
+          Agrega, edita o elimina eventos de monitoreo comunitario realizados
+          por la iniciativa '{initiative.name}'
+        </p>
+
+        {isLoading && <LoadingDiv className="mb-2" />}
+
+        <ErrorsList
+          errorItems={errors}
+          className="bg-accent/10 p-2 mb-2 rounded-lg border border-accent"
         />
-        <Button onClick={handleMonitoringEventSortToggle}>
-          Ordenar de mar recientes a mas lejanas{" "}
-        </Button>
       </div>
 
-      {monitoringEvents.length > 0 && (
-        <ul>
-          {monitoringEvents.map((event) => {
-            const eventDate = new Date(event.date).toLocaleDateString(LOCALE, {
-              year: "numeric",
-              month: "long",
-              timeZone: "UTC",
-            });
+      <div className="flex flex-wrap items-start gap-4 *:flex-1">
+        <NewMonitoringEventForm
+          initiativeId={initiative.id}
+          onSuccess={fetchMonitoringEvents}
+        />
 
-            return (
-              <li key={event.id}>
-                <div>
-                  fecha: {eventDate}
-                  eventos: {event.value}
-                </div>
-                <div>
-                  <MonitoringEventUpdater
-                    event={event}
-                    updater={handleUpdateMonitoringEvent(event.id)}
-                  />
-                  <Button
-                    onClick={() => void handleDeleteMonitoringEvent(event.id)}
-                  >
-                    Borrar
-                  </Button>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-      <TablePager
-        currentPage={currentPage}
-        recordsAvailable={monitoringEventsCount.current}
-        recordsPerPage={MONITORING_EVENTS_EDITOR_LIST_AMOUNT}
-        onPageChange={setCurrentPage}
-        paginated={1}
-      />
+        <div>
+          <div>
+            <ODataSearchBar
+              components={monitoringEventsSearchBarComponents}
+              setSearchParams={setSearchParams}
+              className="bg-accent flex-col items-stretch lg:flex-row lg:items-end *:flex-1!  "
+              submit="Filtrar"
+              reset="Borrar filtro"
+            />
+            <Button onClick={handleMonitoringEventSortToggle}>
+              Ordenar de mar recientes a mas lejanas{" "}
+            </Button>
+          </div>
+
+          {monitoringEvents.length > 0 && (
+            <ul>
+              {monitoringEvents.map((event) => {
+                const eventDate = new Date(event.date).toLocaleDateString(
+                  LOCALE,
+                  {
+                    year: "numeric",
+                    month: "long",
+                    timeZone: "UTC",
+                  },
+                );
+
+                return (
+                  <li key={event.id}>
+                    <div>
+                      fecha: {eventDate}
+                      eventos: {event.value}
+                    </div>
+                    <div>
+                      <MonitoringEventUpdater
+                        event={event}
+                        updater={handleUpdateMonitoringEvent(event.id)}
+                      />
+                      <Button
+                        onClick={() =>
+                          void handleDeleteMonitoringEvent(event.id)
+                        }
+                      >
+                        Borrar
+                      </Button>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+          <TablePager
+            currentPage={currentPage}
+            recordsAvailable={monitoringEventsCount.current}
+            recordsPerPage={MONITORING_EVENTS_EDITOR_LIST_AMOUNT}
+            onPageChange={setCurrentPage}
+            paginated={1}
+          />
+        </div>
+      </div>
     </div>
   );
 }

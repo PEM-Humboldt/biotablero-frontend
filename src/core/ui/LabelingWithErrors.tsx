@@ -63,17 +63,15 @@ export function LegendAndErrors({
   children: ReactNode;
 }) {
   return (
-    <legend className="contents">
-      <div
-        className={cn(
-          "p-0 flex flex-wrap gap-2 text-primary items-baseline text-lg",
-          className,
-        )}
-      >
-        <span className="font-normal">{children}</span>
+    <legend
+      className={cn(
+        "p-0 flex flex-wrap gap-2 items-baseline text-lg text-primary",
+        className,
+      )}
+    >
+      <span className="font-normal">{children}</span>
 
-        <ErrorsList role="alert" errorItems={validationErrors} />
-      </div>
+      <ErrorsList role="alert" errorItems={validationErrors} />
     </legend>
   );
 }

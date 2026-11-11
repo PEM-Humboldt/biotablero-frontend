@@ -96,12 +96,18 @@ export function NewMonitoringEventForm({
   );
 
   return (
-    <form onSubmit={handleSubmit} onReset={handleResetForm}>
-      Crear nuevo grupo de eventos de monitoreo comunitario
+    <form
+      onSubmit={handleSubmit}
+      onReset={handleResetForm}
+      className="p-4 border border-primary bg-muted rounded-lg [&_label]:text-primary [&_label]:font-normal space-y-2"
+    >
+      <h4 className="text-primary text-balance text-xl">
+        Crear nuevo grupo de eventos de monitoreo
+      </h4>
+
       <LabeledInput
         inputName={`newEventAmount`}
         inputType="number"
-        required={true}
         state={newEventAmount}
         stateSetter={(value) => setNewEventAmount(Number(value))}
         validationErrors={errors.amount ?? []}
@@ -111,13 +117,16 @@ export function NewMonitoringEventForm({
         }}
       />
       <fieldset>
-        <LegendAndErrors validationErrors={errors.date ?? []}>
+        <LegendAndErrors
+          validationErrors={errors.date ?? []}
+          className="text-base"
+        >
           ¿Cuándo sucedieron los eventos de monitoreo?
         </LegendAndErrors>
 
         <div className="flex gap-2">
           <Select value={year} onValueChange={(e) => setYear(e)}>
-            <SelectTrigger>
+            <SelectTrigger className="bg-background">
               <SelectValue placeholder="Año" />
             </SelectTrigger>
             <SelectContent>
@@ -130,7 +139,7 @@ export function NewMonitoringEventForm({
           </Select>
 
           <Select value={month} onValueChange={(e) => setMonth(e)}>
-            <SelectTrigger>
+            <SelectTrigger className="bg-background">
               <SelectValue placeholder="Mes" />
             </SelectTrigger>
             <SelectContent>
@@ -146,11 +155,15 @@ export function NewMonitoringEventForm({
       <div>
         <ErrorsList errorItems={errors.root ?? []} />
 
-        <Button disabled={isLoading}>
-          {isLoading ? "Creando eventos..." : "Crear"}
-        </Button>
+        <div className="flex flex-row-reverse flex-wrap gap-2 mt-6 justify-between">
+          <Button disabled={isLoading}>
+            {isLoading ? "Creando eventos..." : "Crear"}
+          </Button>
 
-        <Button type="reset">Reiniciar</Button>
+          <Button type="reset" variant="outline_destructive">
+            Reiniciar
+          </Button>
+        </div>
       </div>
     </form>
   );
