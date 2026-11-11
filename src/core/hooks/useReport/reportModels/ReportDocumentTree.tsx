@@ -1,4 +1,4 @@
-import type { IndicatorSection, SearchSection } from "@appTypes/report";
+import type { TopicSection, SearchSection } from "@appTypes/report";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import { Button } from "@ui/shadCN/component/button";
 import { useReport } from "@hooks/useReport";
@@ -27,7 +27,7 @@ import { uiText } from "@hooks/useReport/layout/uiText";
 export function ReportDocumentTree({
   documentSections,
 }: {
-  documentSections: Map<string, SearchSection | IndicatorSection>;
+  documentSections: Map<string, SearchSection | TopicSection>;
 }) {
   return documentSections.size === 0 ? (
     <div className="flex flex-col gap-4 items-center h-full p-8 m-4 text-center font-normal text-3xl text-primary">

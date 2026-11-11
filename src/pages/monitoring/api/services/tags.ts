@@ -120,22 +120,19 @@ export async function removeTagFromInitiative(tagInInitiativeId: number) {
   return res;
 }
 
-export async function addTagToObservation(
-  observationId: number,
-  tagId: number,
-) {
+export async function addTagToTopic(topicId: number, tagId: number) {
   const res = await monitoringAPI<TagInInitiative>({
     type: "post",
-    endpoint: `ObservationTag?observationId=${observationId}&tagId=${tagId}`,
+    endpoint: `TopicTag?topicId=${topicId}&tagId=${tagId}`,
   });
 
   return res;
 }
 
-export async function removeTagFromObservation(tagInObservationId: number) {
+export async function removeTagFromTopic(tagInTopicId: number) {
   const res = await monitoringAPI<undefined>({
     type: "delete",
-    endpoint: `ObservationTag/${tagInObservationId}`,
+    endpoint: `TopicTag/${tagInTopicId}`,
   });
 
   return res;

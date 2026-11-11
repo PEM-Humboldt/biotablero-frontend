@@ -13,7 +13,7 @@ import {
 import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 import { REPORT_NOTE_MAX_LENGTH } from "@config/report";
 import { inputWarnColor } from "@utils/ui";
-import { uiText } from "@ui/addMCIndicatorToReport/layout/uiText";
+import { uiText } from "@ui/addMCTopicToReport/layout/uiText";
 import { useSearchDispatchCTX } from "pages/search/hooks/SearchContext";
 import { SearchUpdated } from "pages/search/hooks/SearchReducer";
 

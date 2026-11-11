@@ -1,0 +1,160 @@
+import { useEffect, useMemo, useState } from "react";
+
+import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
+import { GRAPH_ANIMATION_CONFIG } from "@config/global";
+import { ResponsiveBar } from "@nivo/bar";
+import { hashStringToRange } from "@utils/format";
+import { GetTopicInfo } from "@hooks/useReport/GetTopicInfo";
+
+import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
+import { type BarsData } from "pages/monitoring/types/topics";
+import {
+  getContrastColor,
+  getSeriesColor,
+} from "pages/monitoring/outlets/initiatives/topics/card/utils/colors";
+import { GraphLegend } from "@ui/GraphLegend";
+import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/topics/card/ui/GraphInfoSelector";
+import { uiText } from "pages/monitoring/outlets/initiatives/topics/layout/uiText";
+
+export function RelativeSpeciesUseByGroup() {
+  const { currentTopic } = useTopicsCTX();
+  const data = currentTopic?.cleanData as BarsData;
+
+  const groupsList = useMemo(() => [...(data.keys.parent ?? [])], [data]);
+  const [selectedParent, setSelectedParent] = useState("");
+
+  useEffect(() => {
+    setSelectedParent(groupsList[0]);
+  }, [groupsList]);
+
+  const { displayKeys, displayData } = useMemo(() => {
+    if (!data) {
+      return { displayKeys: [], displayData: [] };
+    }
+
+    const keys = new Set<string>();
+    const dataByDate: Map<string, Record<string, number | string>> = new Map();
+
+    for (const value of data.values) {
+      if (value.parent !== selectedParent) {
+        continue;
+      }
+
+      keys.add(value.name);
+
+      let current = dataByDate.get(value.date);
+      if (!current) {
+        current = { date: value.date, total: 0 };
+      }
+
+      current = {
+        ...current,
+        [value.name]: value.value,
+        total: (current.total as number) + value.value,
+      };
+      dataByDate.set(value.date, current);
+    }
+
+    dataByDate.forEach((data) => {
+      const total = data.total as number;
+
+      if (total > 0) {
+        for (const key of keys) {
+          if (typeof data[key] === "number") {
+            data[key] = (data[key] * 100) / total;
+          }
+        }
+      }
+    });
+
+    return {
+      displayKeys: [...keys],
+      displayData: [...dataByDate.values()],
+    };
+  }, [data, selectedParent]);
+
+  return (
+    <>
+      <div className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300">
+        <GraphInfoSelector
+          uiText={uiText.topicCard.relativeSpeciesUseByGroup.selector}
+          options={groupsList}
+          currentSelection={selectedParent}
+          updateCurrent={(val: string | string[]) => {
+            if (typeof val === "string") {
+              setSelectedParent(val);
+            }
+          }}
+        />
+      </div>
+
+      <GetTopicInfo graphId={selectedParent} mapElementId={null} mapUrl={null}>
+        <>
+          <div className="w-full h-full aspect-video">
+            <ResponsiveBar
+              data={displayData}
+              keys={displayKeys}
+              indexBy="date"
+              layout="horizontal"
+              margin={{ top: 0, right: 30, bottom: 30, left: 120 }}
+              motionConfig={GRAPH_ANIMATION_CONFIG}
+              padding={0.4}
+              colors={(bar) =>
+                getSeriesColor(
+                  hashStringToRange(
+                    String(bar.id),
+                    GRAPHS_EXTENDED_COLOR_PALETTE.length,
+                  ),
+                  GRAPHS_EXTENDED_COLOR_PALETTE,
+                )
+              }
+              enableGridX={true}
+              enableGridY={false}
+              theme={{ grid: { line: { strokeDasharray: "1 1" } } }}
+              valueScale={{ type: "linear", min: 0, max: 100 }}
+              axisBottom={{
+                tickValues: [0, 20, 40, 60, 80, 100],
+                format: (v) => `${v}%`,
+              }}
+              axisLeft={{
+                tickSize: 5,
+                tickPadding: 5,
+                tickRotation: 0,
+                legendPosition: "middle",
+                legendOffset: -40,
+              }}
+              labelSkipWidth={12}
+              labelSkipHeight={12}
+              labelTextColor={(bar) => getContrastColor(bar.color)}
+              valueFormat={(v) => `${Number(v.toFixed(2))}%`}
+              tooltip={(bar) => {
+                return (
+                  <div
+                    className="bg-background px-4 py-2 shadow-md rounded flex flex-col items-center"
+                    style={{ pointerEvents: "none", whiteSpace: "nowrap" }}
+                  >
+                    <div className="flex flex-col text-center text-sm mb-1 *:m-0!">
+                      <span className="font-normal">
+                        <span
+                          className="inline-block w-3 h-3 mr-1 rounded-full"
+                          style={{ backgroundColor: bar.color }}
+                        />
+                        {bar.id}
+                      </span>
+                      <span className="text-lg font-normal">
+                        {Number(bar.value.toFixed(3))}%
+                      </span>
+                      <span className="italic">{bar.indexValue}</span>
+                    </div>
+                  </div>
+                );
+              }}
+            />
+          </div>
+
+          <GraphLegend keys={displayKeys} labelClassName={{ key: "italic" }} />
+        </>
+      </GetTopicInfo>
+    </>
+  );
+}

@@ -22,8 +22,8 @@ import {
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import type { InitiativeByLocation } from "pages/monitoring/types/initiative";
 import { getInitiativeLocations } from "pages/monitoring/api/services/initiatives";
-import type { ObservationMetadata } from "pages/monitoring/types/observations";
-import { getObservationsByInitiative } from "pages/monitoring/api/services/observations";
+import type { TopicMetadata } from "pages/monitoring/types/topics";
+import { getTopicsByInitiative } from "pages/monitoring/api/services/topics";
 import { DataSheetSmallCard } from "pages/monitoring/outlets/initiativesMap/dataSheetAndNavigation/DataSheetSmallCard";
 import { uiText } from "pages/monitoring/outlets/initiativesMap/layout/uiText";
 import { makeInitiativeLocationsString } from "@utils/format";
@@ -31,7 +31,7 @@ import { makeInitiativeLocationsString } from "@utils/format";
 export function CardsAttachment({ className }: { className?: string }) {
   const { departmentId, initiativeId } = useParams();
   const [initiatives, setInitiatives] = useState<InitiativeByLocation[]>([]);
-  const [observations, setIndicators] = useState<ObservationMetadata[]>([]);
+  const [topics, setTopics] = useState<TopicMetadata[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [expanded, setExpanded] = useState(true);
@@ -60,26 +60,26 @@ export function CardsAttachment({ className }: { className?: string }) {
   }, [departmentId]);
 
   useEffect(() => {
-    const fetchIndicators = async () => {
+    const fetchTopics = async () => {
       if (!initiativeId) {
-        setIndicators([]);
+        setTopics([]);
         return;
       }
 
       setIsLoading(true);
-      const res = await getObservationsByInitiative(Number(initiativeId));
+      const res = await getTopicsByInitiative(Number(initiativeId));
 
       setIsLoading(false);
       if (isMonitoringAPIError(res)) {
         setErrors(res.data.map((err) => err.msg));
-        setIndicators([]);
+        setTopics([]);
         return;
       }
 
-      setIndicators(res);
+      setTopics(res);
     };
 
-    void fetchIndicators();
+    void fetchTopics();
   }, [initiativeId]);
 
   return (
@@ -111,7 +111,7 @@ export function CardsAttachment({ className }: { className?: string }) {
                         strokeWidth={1.5}
                         aria-hidden="true"
                       />
-                      {uiText.cardsAttachment.indicators.title}
+                      {uiText.cardsAttachment.topics.title}
                     </>
                   ) : (
                     <>
@@ -195,25 +195,21 @@ export function CardsAttachment({ className }: { className?: string }) {
                     })}
 
                   {initiativeId &&
-                    observations.length > 0 &&
-                    observations.map((observation) => {
+                    topics.length > 0 &&
+                    topics.map((topic) => {
                       return (
                         <DataSheetSmallCard
-                          key={`indicatorsSmallCard_${observation.id}`}
-                          title={observation.topic.name}
-                          tags={observation.tags.map((t) => t.tag)}
+                          key={`topicSmallCard_${topic.id}`}
+                          title={topic.topicType.name}
+                          tags={topic.tags.map((t) => t.tag)}
                           bottonLeftInfo={
-                            observation.versions[
-                              observation.versions.length - 1
-                            ]
+                            topic.versions[topic.versions.length - 1]
                           }
                           link={{
-                            href: `/Monitoreo/Iniciativas/${observation.initiativeId}/Indicadores/${observation.id}`,
+                            href: `/Monitoreo/Iniciativas/${topic.initiativeId}/Indicadores/${topic.id}`,
                             icon: ChevronRight,
-                            label:
-                              uiText.cardsAttachment.indicators.gotoBtn.label,
-                            title:
-                              uiText.cardsAttachment.indicators.gotoBtn.title,
+                            label: uiText.cardsAttachment.topics.gotoBtn.label,
+                            title: uiText.cardsAttachment.topics.gotoBtn.title,
                           }}
                         />
                       );
@@ -222,7 +218,7 @@ export function CardsAttachment({ className }: { className?: string }) {
                   {(departmentId &&
                     !initiativeId &&
                     initiatives.length === 0) ||
-                    (initiativeId && observations.length === 0 && (
+                    (initiativeId && topics.length === 0 && (
                       <div className="bg-background border border-primary rounded-lg text-lg font-normal text-center text-primary p-4">
                         {uiText.cardsAttachment.noItems}
                       </div>

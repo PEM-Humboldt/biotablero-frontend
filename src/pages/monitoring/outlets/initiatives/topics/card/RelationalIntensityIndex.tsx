@@ -1,0 +1,207 @@
+import { useEffect, useMemo, useState } from "react";
+
+import { type BarDatum, ResponsiveBar } from "@nivo/bar";
+import { GRAPHS_GRADIENT_COLOR_PALETTE } from "@config/color";
+import { GRAPH_ANIMATION_CONFIG } from "@config/global";
+import {
+  TOPIC_RELATIONAL_INTENSITY_HIGHLIGHT_VALUE,
+  TOPIC_RELATIONAL_INTENSITY_MAX_COUNT,
+} from "@config/monitoring";
+import { GetTopicInfo } from "@hooks/useReport/GetTopicInfo";
+
+import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
+import type { BarsData } from "pages/monitoring/types/topics";
+import { GraphInfoSelector } from "pages/monitoring/outlets/initiatives/topics/card/ui/GraphInfoSelector";
+import { getContrastColor } from "pages/monitoring/outlets/initiatives/topics/card/utils/colors";
+import { uiText } from "pages/monitoring/outlets/initiatives/topics/layout/uiText";
+
+export function RelationalIntensityIndex() {
+  const { currentTopic } = useTopicsCTX();
+
+  const [selectedDates, setSelectedDates] = useState<string[]>([]);
+
+  const data = currentTopic?.cleanData as BarsData;
+
+  const { dataByDate, allDates } = useMemo(() => {
+    const dataByDate: Record<string, { actor: string; value: number }[]> = {};
+    const sortedTime = [...data.keys.dateSorter!.keys()].sort((a, b) => b - a);
+    const allDates = sortedTime.map(
+      (time) => data.keys.dateSorter?.get(time) ?? "",
+    );
+
+    for (const value of data.values) {
+      if (!dataByDate[value.date]) {
+        dataByDate[value.date] = [];
+      }
+
+      dataByDate[value.date].push({ actor: value.name, value: value.value });
+    }
+
+    return { dataByDate: dataByDate, allDates };
+  }, [data]);
+
+  const handleSelect = (date: string) => {
+    if (selectedDates.includes(date)) {
+      setSelectedDates((oldDate) => oldDate.filter((d) => d !== date));
+      return;
+    }
+
+    setSelectedDates((oldDates) => {
+      const newList = [...oldDates, date];
+
+      if (newList.length > TOPIC_RELATIONAL_INTENSITY_MAX_COUNT) {
+        newList.shift();
+      }
+      return allDates.filter((date) => newList.includes(date));
+    });
+  };
+
+  useEffect(() => {
+    if (allDates.length > 0 && selectedDates.length === 0) {
+      const preselectAmount = Math.max(
+        1,
+        Math.min(TOPIC_RELATIONAL_INTENSITY_MAX_COUNT, allDates.length) - 1,
+      );
+      setSelectedDates(allDates.slice(0, preselectAmount));
+    }
+  }, [allDates, selectedDates]);
+
+  return (
+    <>
+      <div className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300">
+        <GraphInfoSelector
+          uiText={{
+            title: uiText.topicCard.relationalIntensityIndex.selector.title,
+            label: uiText.topicCard.relationalIntensityIndex.selector.label,
+            instruction:
+              allDates.length > TOPIC_RELATIONAL_INTENSITY_MAX_COUNT
+                ? uiText.topicCard.relationalIntensityIndex.selector.maxSelection(
+                    TOPIC_RELATIONAL_INTENSITY_MAX_COUNT,
+                  )
+                : undefined,
+          }}
+          options={allDates.toReversed()}
+          currentSelection={selectedDates}
+          singleSelect={false}
+          updateCurrent={(val: string | string[]) => {
+            if (typeof val === "string") {
+              handleSelect(val);
+            }
+          }}
+        />
+      </div>
+
+      <GetTopicInfo
+        graphId={selectedDates.toReversed().join(", ")}
+        mapElementId={null}
+        mapUrl={null}
+      >
+        <>
+          <div className="flex w-full h-full aspect-video">
+            <div className="w-[150px]">
+              <ResponsiveBar
+                data={
+                  dataByDate[allDates[0]].map((d) => ({
+                    ...d,
+                    value: null,
+                  })) as unknown as BarDatum[]
+                }
+                indexBy="actor"
+                layout="horizontal"
+                margin={{ top: 0, right: 0, bottom: 60, left: 150 }}
+                motionConfig={GRAPH_ANIMATION_CONFIG}
+                padding={0.4}
+                valueScale={{ type: "linear", min: -1.0, max: 1.0 }}
+                indexScale={{ type: "band", round: true }}
+                colors="transparent"
+                axisTop={null}
+                axisRight={null}
+                axisBottom={null}
+                axisLeft={{
+                  tickSize: 0,
+                  tickPadding: 10,
+                  tickRotation: 0,
+                }}
+                enableGridX={false}
+                enableGridY={false}
+              />
+            </div>
+
+            {selectedDates.toReversed().map((date) => (
+              <div
+                key={`topicSection_${date}`}
+                className="flex-1 hover:bg-grey-light rounded"
+              >
+                <ResponsiveBar
+                  data={dataByDate[date]}
+                  keys={["value"]}
+                  indexBy="actor"
+                  layout="horizontal"
+                  margin={{ top: 0, right: 10, bottom: 60, left: 10 }}
+                  motionConfig={GRAPH_ANIMATION_CONFIG}
+                  padding={0.4}
+                  valueScale={{ type: "linear", min: -1.0, max: 1.0 }}
+                  indexScale={{ type: "band", round: true }}
+                  colors={(bar) => {
+                    if (
+                      bar.indexValue ===
+                      TOPIC_RELATIONAL_INTENSITY_HIGHLIGHT_VALUE
+                    ) {
+                      return GRAPHS_GRADIENT_COLOR_PALETTE[0];
+                    }
+                    return bar.value! >= 0
+                      ? GRAPHS_GRADIENT_COLOR_PALETTE[5]
+                      : GRAPHS_GRADIENT_COLOR_PALETTE[9];
+                  }}
+                  axisTop={null}
+                  axisRight={null}
+                  axisLeft={null}
+                  enableGridX={true}
+                  enableGridY={true}
+                  theme={{ grid: { line: { strokeDasharray: "1 1" } } }}
+                  axisBottom={{
+                    tickValues: [-1.0, -0.5, 0, 0.5, 1.0],
+                    legend: date,
+                    legendPosition: "middle",
+                    legendOffset: 40,
+                  }}
+                  labelSkipWidth={20}
+                  labelTextColor={(label) => getContrastColor(label.color)}
+                  markers={[
+                    {
+                      axis: "x",
+                      value: 0,
+                      lineStyle: { stroke: "#64748b", strokeWidth: 1 },
+                    },
+                  ]}
+                  tooltip={({ value, indexValue, color }) => {
+                    return (
+                      <div
+                        className="bg-background px-4 py-2 shadow-md rounded flex flex-col items-center"
+                        style={{ pointerEvents: "none", whiteSpace: "nowrap" }}
+                      >
+                        <div className="flex flex-col text-center text-sm mb-1 *:m-0!">
+                          <span className="font-normal">
+                            <span
+                              className="inline-block w-3 h-3 mr-1 rounded-full"
+                              style={{ backgroundColor: color }}
+                            />
+                            {indexValue}
+                          </span>
+                          <span className="text-lg font-normal">{value}</span>
+                        </div>
+                      </div>
+                    );
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+          <p className="text-sm italic mb-4 text-center">
+            {uiText.topicCard.relationalIntensityIndex.bottomLegend}
+          </p>
+        </>
+      </GetTopicInfo>
+    </>
+  );
+}

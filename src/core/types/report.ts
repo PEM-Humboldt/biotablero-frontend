@@ -11,7 +11,7 @@ export type SectionInfo = {
   graphId: string;
   sectionInfo:
     | Omit<SearchSection, "graphs" | "mapUrl">
-    | Omit<IndicatorSection, "graphs" | "mapUrl">;
+    | Omit<TopicSection, "graphs" | "mapUrl">;
   graphComponent: ReactElement;
   mapUrl: string | null;
   mapElementId: string | null;
@@ -21,13 +21,13 @@ export type SectionInfo = {
 export enum ReportType {
   NONE,
   SEARCH_INDICATORS,
-  MONITORING_INDICATORS,
+  MONITORING_TOPICS,
 }
 
 export type MCReportModelProps = {
   metadata: ReportMetadata;
-  context: IndicatorContext;
-  sections: Map<string, IndicatorSection>;
+  context: TopicContext;
+  sections: Map<string, TopicSection>;
 };
 export type SearchReportModelProps = {
   metadata: ReportMetadata;
@@ -67,7 +67,7 @@ export type ReportContextType = {
     graphStateId?: string,
   ) => void;
   downloadReport: () => Promise<void>;
-  documentSections: Map<string, SearchSection | IndicatorSection>;
+  documentSections: Map<string, SearchSection | TopicSection>;
   addLeaveCallback: (callback: () => void) => void;
 };
 
@@ -104,20 +104,20 @@ export type SearchContext = {
 };
 
 // Indicadores
-export type IndicatorTag = {
+export type TopicTag = {
   name: string;
   fullName?: string;
   url?: string;
 };
 
-export type IndicatorSection = {
+export type TopicSection = {
   title: string;
   type: string;
   creationDate: string;
   lastUpdate: string;
   version: number;
-  BiologicalGroupTag: IndicatorTag[];
-  EcosystemTag: IndicatorTag[];
+  BiologicalGroupTag: TopicTag[];
+  EcosystemTag: TopicTag[];
   graphs: GraphDTO[];
   singleMap: boolean;
   description: string;
@@ -130,7 +130,7 @@ export type IndicatorSection = {
   };
 };
 
-export type IndicatorContext = {
+export type TopicContext = {
   initiativeName: string;
   initiativeShortName?: string;
   initiativeLocation: string;
@@ -143,8 +143,8 @@ export type IndicatorContext = {
     monitoringEvents: number;
   };
   initiativeUrl: string;
-  politicalTags: IndicatorTag[];
-  socialTags: IndicatorTag[];
+  politicalTags: TopicTag[];
+  socialTags: TopicTag[];
 };
 
 // General
@@ -157,22 +157,7 @@ export type ReportMetadata = {
   };
 };
 
-export type ReportInfo = {
-  metadata: ReportMetadata;
-} & (
-  | {
-      type: "Indicator";
-      context: IndicatorContext;
-      sections: IndicatorSection[];
-    }
-  | {
-      type: "Search";
-      context: SearchContext;
-      sections: SearchSection[];
-    }
-);
-
 export type FetchReportContext = {
-  data: IndicatorContext | SearchContext | null;
+  data: TopicContext | SearchContext | null;
   errors: string[];
 };

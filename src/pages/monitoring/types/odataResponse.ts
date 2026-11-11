@@ -5,7 +5,7 @@ import type {
   VideoObjectTS,
 } from "pages/monitoring/types/territoryStory";
 import type { SendedJoinInitiativeInvitation } from "pages/monitoring/types/userJoinRequest";
-import type { ObservationMetadata } from "pages/monitoring/types/observations";
+import type { TopicMetadata } from "pages/monitoring/types/topics";
 
 // NOTE: Logs
 export interface ODataLogEntryShort extends HasId {
@@ -124,8 +124,8 @@ export interface ODataTag extends HasId {
   categoryName: string;
 }
 
-export interface TagInObservation {
-  observationTagId: number;
+export interface TagInTopic {
+  topicTagId: number;
   tag: Omit<ODataTag, "categoryName">;
 }
 
@@ -195,4 +195,4 @@ export type ODataResourceType = ODataResponse<ResourceType>;
 export type ODataMonitoringResources = ODataResponse<MonitoringResourceShort>;
 export type ODataSendedInvitations =
   ODataResponse<SendedJoinInitiativeInvitation>;
-export type ODataObservations = ODataResponse<ObservationMetadata>;
+export type ODataTopics = ODataResponse<TopicMetadata>;

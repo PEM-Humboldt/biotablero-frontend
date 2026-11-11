@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import type { ODataTag } from "pages/monitoring/types/odataResponse";
 import { Button } from "@ui/shadCN/component/button";
 import type { LucideIcon } from "lucide-react";
-import type { ObservationVersion } from "pages/monitoring/types/observations";
+import type { TopicVersion } from "pages/monitoring/types/topics";
 import { TagsGroupsRender } from "pages/monitoring/ui/TagsGroupsRender";
 
 export function DataSheetSmallCard({
@@ -15,7 +15,7 @@ export function DataSheetSmallCard({
   title: string;
   tags?: Omit<ODataTag, "categoryName">[];
   location?: string;
-  bottonLeftInfo?: Date | ObservationVersion;
+  bottonLeftInfo?: Date | TopicVersion;
   link: {
     href: string;
     label?: string;
