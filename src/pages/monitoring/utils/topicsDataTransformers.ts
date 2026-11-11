@@ -1,8 +1,11 @@
-import type {
+import {
   BarsData,
   BarDataValues,
   TopicData,
   LineData,
+  TopicMetric,
+  TopicMetadata,
+  CleanDataType,
 } from "pages/monitoring/types/topics";
 import { topicsDateFormatter } from "pages/monitoring/utils/formatters";
 
@@ -127,4 +130,101 @@ export function dataTransformBarGraph(data: TopicData): BarsData {
     values: [...dataByDate.values()].flat(),
     keys: dataGroupsBy,
   };
+}
+
+/**
+ * Flattens a graph dataset of `LineData[]` structure into an array of records.
+ *
+ * @param graphData - An array of line series (`LineData[]`) to serialize.
+ *
+ * @returns An array of flattened objects representing the data points, ready for CSV conversion.
+ */
+function serializeTopicSeries(
+  graphData: LineData[],
+): Record<string, number | string | undefined>[] {
+  return graphData.flatMap((serie) =>
+    serie.data.map((point) => ({
+      id: serie.id,
+      Nombre: serie.scientificName,
+      ...(serie.commonName ? { "Nombre Común": serie.commonName } : {}),
+      Métrica: serie.metricName,
+      Fecha: point.x,
+      Valor: point.y,
+      ...(point.hasLimits
+        ? {
+            "Límite Superior": point.upperLimit,
+            "Límite Inferior": point.lowerLimit,
+          }
+        : {}),
+    })),
+  );
+}
+
+/**
+ * Flattens a graph dataset of `BarsData` structure into an array of records.
+ *
+ * @param graphData - The `BarsData` object containing nested bar data values to serialize.
+ *
+ * @returns An array of flattened objects representing the data points, ready for CSV conversion.
+ */
+function serializeTopicBars(
+  graphData: BarsData,
+): Record<string, number | string | undefined>[] {
+  return graphData.values.map((item) => ({
+    ...(item.parent ? { Grupo: item.parent } : {}),
+    Nombre: item.name,
+    ...(item.commonName ? { "Nombre Común": item.commonName } : {}),
+    Fecha: item.date,
+    Valor: item.value,
+  }));
+}
+
+/**
+ * Converts a topic's graph data into a formatted CSV string based on its metric type.
+ *
+ * @param topic - An object combining the topic's metadata, data, and clean graph data (`TopicMetadata & TopicData & CleanDataType`).
+ *
+ * @returns A formatted CSV string representing the flattened data, or an empty string if the dataset is empty, invalid, or of an unknown type.
+ */
+export function graphDataToCSV(
+  topic: TopicMetadata & TopicData & CleanDataType,
+): string {
+  let serializedData: Record<string, number | string | undefined>[] = [];
+
+  switch (topic.topicType.id) {
+    case TopicMetric.OCCUPATION_SPECIES:
+    case TopicMetric.DETECTION_PROBABILITY_WITHOUT_COVARIABLES:
+    case TopicMetric.SPECIES_DIVERSITY:
+      serializedData = serializeTopicSeries(topic.cleanData as LineData[]);
+      break;
+
+    case TopicMetric.RELATIVE_SPECIES_USE_BY_GROUP:
+    case TopicMetric.RELATIONAL_INTENSITY_INDEX:
+    case TopicMetric.COLLECTIVE_ACTION_PARTICIPATION:
+      serializedData = serializeTopicBars(topic.cleanData as BarsData);
+      break;
+
+    default:
+      console.warn("Unknoun graph type to serialize");
+  }
+
+  if (serializedData.length === 0) {
+    return "";
+  }
+
+  const headers = Object.keys(serializedData[0]);
+  const csvRows = [
+    headers.join(","),
+    ...serializedData.map((row) =>
+      headers
+        .map((header) => {
+          const value = row[header];
+          const strValue = String(value ?? "").replace(/"/g, '""');
+          return `"${strValue}"`;
+        })
+        .join(","),
+    ),
+  ];
+
+  return csvRows.join("\n");
 }

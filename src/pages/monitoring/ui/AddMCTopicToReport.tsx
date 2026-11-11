@@ -1,23 +1,28 @@
-import { useState } from "react";
-import { ClipboardPlus, FileDown, FolderDown } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
+import { ClipboardPlus, FileDown, FolderDown } from "lucide-react";
+import { useState } from "react";
 
-import { useReport } from "@hooks/useReport";
 import { Button } from "@ui/shadCN/component/button";
+import { useReport } from "@hooks/useReport";
 import { useUserCTX } from "@hooks/UserCTX";
+import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@ui/shadCN/component/popover";
-import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 import { REPORT_NOTE_MAX_LENGTH } from "@config/report";
+import { StrValidator } from "@utils/strValidator";
 import { inputWarnColor } from "@utils/ui";
-import { uiText } from "@ui/addMCTopicToReport/layout/uiText";
+
+import { graphDataToCSV } from "pages/monitoring/utils/topicsDataTransformers";
+import { uiText } from "pages/monitoring/ui/addMCTopicToReport/layout/uiText";
+import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
 
 export function AddMCTopicToReport() {
   const { user } = useUserCTX();
   const { addSection, isLoading, hasSections, toggleEditor } = useReport();
+  const { currentTopic } = useTopicsCTX();
 
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [noteText, setNoteText] = useState("");
@@ -26,6 +31,38 @@ export function AddMCTopicToReport() {
     setIsPopoverOpen(false);
     await addSection(noteText.trim() ? noteText : undefined);
     setNoteText("");
+  };
+
+  const handleSerializeDataDownload = () => {
+    if (!currentTopic) {
+      return;
+    }
+    const csvString = graphDataToCSV(currentTopic);
+
+    if (!csvString) {
+      return;
+    }
+
+    // NOTE: el primer caracter es para que excel no muestre vainas raras con las tildes en el csv
+    const blob = new Blob(["\uFEFF" + csvString], {
+      type: "text/csv;charset=utf-8;",
+    });
+
+    const sanitizedName = StrValidator.sanitizeToURLSlug(
+      currentTopic.topicType.name,
+    );
+
+    const fileName = `Datos_${sanitizedName}_${new Date().toISOString().slice(0, 10)}.csv`;
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    document.body.appendChild(link);
+    link.href = url;
+    link.setAttribute("download", fileName);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -123,17 +160,15 @@ export function AddMCTopicToReport() {
         {uiText.editReportBtn.label}
       </Button>
 
-      {/* TODO: Mock para el video, debe agregarse la funcionalidad */}
       <Button
-        disabled={!hasSections}
         size="sm"
         variant="ghost-clean"
-        onClick={() => toggleEditor(true)}
-        title={uiText.editReportBtn.title}
-        aria-label={uiText.editReportBtn.sr}
+        onClick={handleSerializeDataDownload}
+        title={uiText.downloadTopicDataBtn.title}
+        aria-label={uiText.downloadTopicDataBtn.sr}
       >
         <FolderDown />
-        Descargar archivos
+        {uiText.downloadTopicDataBtn.label}
       </Button>
     </div>
   );

@@ -166,7 +166,7 @@ export function TopicsCTX({ children }: { children: ReactNode }) {
         isLoading,
         errors,
         setSearchTopics: setSearchParams,
-        currentTopic: currentTopic,
+        currentTopic,
         currentPage,
         setCurrentPage,
         topicsAmount: topicsAmount.current,
