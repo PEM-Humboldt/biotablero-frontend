@@ -8,11 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@ui/shadCN/component/select";
-import {
-  MONITORING_EVENTS_MAX_PER_MONTH,
-  MONITORING_EVENTS_MIN_PER_MONTH,
-  MONITORING_STARTING_YEAR,
-} from "@config/monitoring";
+import { MONITORING_STARTING_YEAR } from "@config/monitoring";
 import { months } from "@utils/dates";
 import {
   isAmountValid,

@@ -120,7 +120,7 @@ export function MonitoringEventsEditor({
         />
       </div>
 
-      <div className="flex flex-wrap items-start gap-4 *:flex-1">
+      <div className="flex flex-wrap gap-4 *:flex-1">
         <NewMonitoringEventForm
           initiativeId={initiative.id}
           onSuccess={fetchMonitoringEvents}
