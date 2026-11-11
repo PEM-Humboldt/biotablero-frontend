@@ -26,7 +26,8 @@ export function BasicInfo() {
   );
 
   const initiativeUsers = initiativeInfo.users
-    .map((u) => u.externalData?.fullName || u.externalData?.username)
+    .map((u) => u.externalData?.fullName || u.userName || null)
+    .filter(Boolean)
     .join(uiText.profile.basicInfo.usersSeparator);
 
   return (

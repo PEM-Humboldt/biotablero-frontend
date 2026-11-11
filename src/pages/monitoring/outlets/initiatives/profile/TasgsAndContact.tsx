@@ -23,7 +23,7 @@ export function TagsAndContact() {
     ) ?? [];
 
   return !initiativeInfo ? null : (
-    <div className="flex-1 space-y-4 px-2 lg:px-4 [&_h4]:m-0 self-end">
+    <div className="flex-1 space-y-4 [&_h4]:m-0 self-start xl:self-end">
       {initiativeInfo.contacts?.map((contact) => (
         <Button
           key={`contactInfo_${contact.email}`}

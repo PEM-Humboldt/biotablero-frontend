@@ -54,7 +54,7 @@ const SheetContent = React.forwardRef<
   React.ElementRef<typeof SheetPrimitive.Content>,
   SheetContentProps
 >(({ className, children, ...props }, ref) => (
-  <SheetPortal forceMount>
+  <SheetPortal>
     <SheetPrimitive.Overlay asChild>
       <motion.div
         initial={{ opacity: 0 }}
@@ -90,7 +90,6 @@ const SheetContent = React.forwardRef<
     </SheetPrimitive.Content>
   </SheetPortal>
 ));
-SheetContent.displayName = SheetPrimitive.Content.displayName;
 SheetContent.displayName = SheetPrimitive.Content.displayName;
 
 const SheetHeader = ({

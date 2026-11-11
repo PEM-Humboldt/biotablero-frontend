@@ -165,7 +165,10 @@ export function ODataSearchBar<T>({
       {components.map((component, i) => (
         <label
           key={`${component.label}_${i}`}
-          className={`${i === 0 ? "flex-2" : "flex-1"} text-left text-base`}
+          className={cn(
+            i === 0 ? "flex-[2_0_auto]" : "flex-[1_1_auto]",
+            "text-left text-base min-w-0",
+          )}
           htmlFor={component.label}
         >
           {component.label}

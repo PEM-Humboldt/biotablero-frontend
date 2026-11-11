@@ -7,7 +7,7 @@ export function Observations() {
   return (
     <ReportCTX>
       <ObservationsCTX>
-        <div className="flex flex-col lg:flex-row min-h-full">
+        <div className="bg-grey-light p-4 gap-4 grid grid-cols-1 lg:grid-cols-[1fr_2fr] xl:grid-cols-[1fr_3fr]">
           <Search />
 
           <Card />

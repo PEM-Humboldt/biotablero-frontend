@@ -22,13 +22,13 @@ export function Profile() {
         <Banner />
 
         <main className="w-full space-y-4 lg:space-y-8">
-          <header className="flex gap-2 max-w-[1200px] mx-auto mt-4 py-4 md:py-8 px-4 md:px-8">
+          <header className="flex flex-col md:flex-row gap-4 md:gap-6 max-w-[1200px] mx-auto mt-4 py-4 md:py-8 px-4 md:px-8">
             <Binoculars
               className="size-[34px] text-accent min-w-10"
               strokeWidth={1.5}
             />
 
-            <div className="flex-3 flex-wrap">
+            <div className="flex-2 xl:flex-3 flex-wrap">
               <BasicInfo />
               <Stats />
             </div>
@@ -47,7 +47,7 @@ export function Profile() {
             return (
               <div
                 key={`textInfo_${textInfo.valueKey}`}
-                className="flex gap-2 max-w-[1200px] mx-auto px-4 md:px-8"
+                className="flex flex-col md:flex-row gap-2 max-w-[1200px] mx-auto px-4 md:px-8"
               >
                 <textInfo.Icon
                   className="size-[34px] -translate-y-1 text-accent min-w-10"

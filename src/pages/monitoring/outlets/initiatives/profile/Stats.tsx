@@ -57,7 +57,7 @@ export function Stats() {
       className="bg-accent/10 border border-accent rounded-lg p-4"
     />
   ) : (
-    <div className="flex flex-wrap gap-2 lg:gap-4 *:flex-1">
+    <div className="flex flex-wrap gap-2 lg:gap-4 *:flex-[1_1_200px]">
       {profileStats.map((stat) => {
         const displayValue = new Intl.NumberFormat("es-CO", {
           maximumFractionDigits: 0,
@@ -70,7 +70,7 @@ export function Stats() {
             className="flex shadow-sm rounded-lg p-3 items-start outline outline-transparent hover:outline-primary transition-colors duration-200"
           >
             <stat.icon
-              className="size-4 lg:size-10 flex-1"
+              className="size-8 xl:size-10! shrink-0!"
               strokeWidth={1}
               aria-hidden="true"
             />

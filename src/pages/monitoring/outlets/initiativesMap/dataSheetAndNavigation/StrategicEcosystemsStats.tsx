@@ -53,7 +53,7 @@ export function StrategicEcosystemsStats() {
           <Accordion
             type="single"
             collapsible
-            className="flex flex-col m-2 gap-2 [&_h3]:m-0! *:outline-none! *:shadow-none!"
+            className="grid grid-cols-[repeat(auto-fill,minmax(350px,1fr))] m-2 gap-2 [&_h3]:m-0! *:outline-none! *:shadow-none!"
           >
             {Object.entries(ecosystemsAndDefinitions).map(
               ([name, description]) => (

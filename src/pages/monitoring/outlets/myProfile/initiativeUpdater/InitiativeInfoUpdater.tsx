@@ -148,9 +148,9 @@ export function InitiativeInfoUpdater({
         setCurrentEdit,
       }}
     >
-      <article className="flex flex-col gap-2 p-4 mt-1 mb-2 rounded-lg">
+      <article className="flex flex-col gap-2 p-2 md:p-4 mt-1 mb-2 rounded-lg">
         <div className="flex items-baseline gap-2 px-2 ">
-          <h3 className="text-5xl font-normal flex-1 mb-0! text-primary">
+          <h3 className="text-2xl md:text-5xl font-normal flex-1 mb-0! text-primary">
             {initiativeInfoGrouped.general.name}
           </h3>
           {errors.length > 0 && (

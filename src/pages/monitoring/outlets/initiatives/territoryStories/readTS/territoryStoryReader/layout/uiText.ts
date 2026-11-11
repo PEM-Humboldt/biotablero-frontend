@@ -32,13 +32,13 @@ export const uiText = {
 
     mediaGallery: {
       images: {
-        title: "Galería de imágenes",
+        title: "Imágenes",
         srGalleryDescription:
           "Visualizador de fotos y videos del relato actual. Usa las flechas para navegar entre el contenido.",
       },
       videos: {
         loading: "Cargando la información de los videos...",
-        title: "Galería de videos",
+        title: "Videos",
         openLink: { title: "Abrir en Youtube" },
         srGalleryDescription: "Reproductor de videos de YouTube",
       },

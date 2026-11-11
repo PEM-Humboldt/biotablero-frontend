@@ -70,7 +70,7 @@ export function MediaGallery({ story }: { story: TerritoryStoryFull }) {
   return (
     <Tabs
       defaultValue={tabsConfig[0].value}
-      className="mx-4 lg:mx-8 rounded-lg! overflow-hidden"
+      className="mt-4 mx-2 lg:mx-4 xl:mx-8 rounded-lg! overflow-hidden"
     >
       <TabsList className="w-full h-auto flex *:flex-1 p-0! m-0!">
         {tabsConfig.map((tab) => {
@@ -79,7 +79,7 @@ export function MediaGallery({ story }: { story: TerritoryStoryFull }) {
             <TabsTrigger
               key={tab.value}
               value={tab.value}
-              className="group text-lg border-b-2 border-b-primary data-[state=active]:border-b-accent data-[state=active]:bg-background data-[state=active]:text-primary data-[state=inactive]:hover:bg-primary data-[state=inactive]:hover:text-background text-primary justify-start p-0 cursor-pointer data-[state=active]:cursor-auto"
+              className="group text-lg border-b-2 border-b-primary data-[state=active]:border-b-accent data-[state=active]:bg-background data-[state=active]:text-primary data-[state=inactive]:hover:bg-primary data-[state=inactive]:hover:text-background text-primary justify-start p-0 cursor-pointer opacity-50 data-[state=active]:opacity-100 data-[state=active]:cursor-auto"
             >
               <Icon
                 className="p-2 mr-2 size-9 group-data-[state=active]:text-accent-foreground group-data-[state=active]:bg-accent"

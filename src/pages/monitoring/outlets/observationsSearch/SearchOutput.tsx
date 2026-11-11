@@ -41,7 +41,7 @@ export function SearchOutput() {
   }, [sortDate, sortName, setSearchObservations]);
 
   return (
-    <div className="max-w-[1600px] w-full space-y-4 mx-auto p-8">
+    <div className="max-w-[1600px] w-full space-y-4 mx-auto p-4 lg:p-8">
       <div className="flex gap-2 items-center">
         <div className="text-primary">
           {uiText.searchOutput.searchResults(observationsAmount)}
@@ -90,7 +90,7 @@ export function SearchOutput() {
         </ButtonGroup>
       </div>
 
-      <ul className="grid grid-cols-[repeat(auto-fill,minmax(350px,1fr))] gap-4">
+      <ul className="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-4">
         {observations.map((observation) => {
           const lastUpdate = new Date(
             observation.versions[observation.versions.length - 1].creationDate,

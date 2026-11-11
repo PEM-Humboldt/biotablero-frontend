@@ -6,7 +6,7 @@ import { Button } from "@ui/shadCN/component/button";
 import { cn } from "@ui/shadCN/lib/utils";
 
 import { uiText } from "core/layout/mainLayout/footer/layout/uiText";
-import { ButtonGroup } from "@mui/material";
+import { ButtonGroup } from "@ui/shadCN/component/button-group";
 
 interface FooterProps {
   logos: Set<Collaborators>;
@@ -22,67 +22,65 @@ export function Footer({ logos, className }: FooterProps) {
 
   return (
     <footer
-      className={cn(
-        "bg-grey-dark p-4 pt-1 md:px-8 flex text-background justify-between items-start",
-        className,
-      )}
+      className={cn("bg-grey-dark p-4 pt-1 md:px-8 text-background", className)}
     >
-      <div className="pt-3">
-        {collaborators.length > 0 && (
-          <a href={uiText.IAVH.url}>
-            <img
-              src={uiText.IAVH.img}
-              alt={uiText.IAVH.linkAlt}
-              className="w-12 h-12 md:w-18 md:h-18"
-            />
+      <ButtonGroup className="gap-2 ml-auto mb-2 lg:mb-0">
+        <Button
+          title={uiText.citationTooltip}
+          variant="link"
+          size="sm"
+          className="p-0 text-accent text-sm"
+          onClick={handleCitationClick}
+        >
+          {uiText.uiTxt.links.citation}
+        </Button>
+        <Button
+          title={uiText.tosTooltip}
+          variant="link"
+          size="sm"
+          className="p-0 text-accent text-sm"
+          asChild
+        >
+          <a href={`mailto:${uiText.IAVH.contact}`}>
+            {uiText.uiTxt.links.contact}
           </a>
-        )}
-        <div className="text-sm mt-1">
-          {uiText.IAVH.tag}
-          <br />
-          <b>{uiText.IAVH.name}</b>
-        </div>
-      </div>
+        </Button>
+        <Button
+          title={uiText.tosTooltip}
+          variant="link"
+          size="sm"
+          className="p-0 **:p-0 text-accent text-sm"
+          asChild
+        >
+          <Link to="TerminosCondiciones">{uiText.uiTxt.links.tos}</Link>
+        </Button>
+      </ButtonGroup>
 
-      <div className="text-right space-y-4">
-        <ButtonGroup className="space-x-2">
-          <Button
-            title={uiText.citationTooltip}
-            variant="link"
-            size="sm"
-            className="p-0 text-accent text-sm"
-            onClick={handleCitationClick}
-          >
-            {uiText.uiTxt.links.citation}
-          </Button>
-          <Button
-            title={uiText.tosTooltip}
-            variant="link"
-            size="sm"
-            className="p-0 text-accent text-sm"
-            asChild
-          >
-            <a href={`mailto:${uiText.IAVH.contact}`}>
-              {uiText.uiTxt.links.contact}
+      <div className="flex flex-col md:flex-row md:items-center gap-4 flex-1">
+        <div className="flex gap-2 xl:flex-col items-center xl:items-start">
+          {collaborators.length > 0 && (
+            <a href={uiText.IAVH.url}>
+              <img
+                src={uiText.IAVH.img}
+                alt={uiText.IAVH.linkAlt}
+                className="object-contain object-center w-16 h-16 md:w-18 md:h-18"
+              />
             </a>
-          </Button>
-          <Button
-            title={uiText.tosTooltip}
-            variant="link"
-            size="sm"
-            className="p-0 **:p-0 text-accent text-sm"
-            asChild
-          >
-            <Link to="TerminosCondiciones">{uiText.uiTxt.links.tos}</Link>
-          </Button>
-        </ButtonGroup>
+          )}
+          <div className="text-sm text-balance">
+            {uiText.IAVH.tag}
+            <br />
+            <b>{uiText.IAVH.name}</b>
+          </div>
+        </div>
 
         {collaborators.length > 0 && (
-          <>
-            <div className="text-sm font-normal mb-1">
+          <div className="flex-1">
+            <div className="text-sm font-normal m-1 md:text-right">
               {uiText.uiTxt.collaboratorsTitle}
             </div>
-            <div className="flex flex-wrap gap-4 justify-end">
+
+            <div className="flex flex-wrap w-full gap-4 justify-evenly md:justify-end">
               {collaborators.map((collaborator) => (
                 <a
                   href={collaboratorsIcons[collaborator].url}
@@ -93,12 +91,12 @@ export function Footer({ logos, className }: FooterProps) {
                   <img
                     src={collaboratorsIcons[collaborator].img}
                     alt={collaborator}
-                    className="object-contain object-center w-14 h-8 md:w-18 md:h-12"
+                    className="object-contain object-center w-18 h-12"
                   />
                 </a>
               ))}
             </div>
-          </>
+          </div>
         )}
       </div>
     </footer>

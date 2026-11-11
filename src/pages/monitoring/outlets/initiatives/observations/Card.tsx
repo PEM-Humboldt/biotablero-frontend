@@ -55,7 +55,7 @@ export function Card() {
   }
 
   return (
-    <main className="flex-3 bg-[#f5f5f5]">
+    <main className="flex-3">
       <ErrorsList
         errorItems={errors}
         className="m-2 p-4 bg-accent/10 border border-accent rounded-lg"
@@ -68,21 +68,21 @@ export function Card() {
             : uiText.observationCard.noSelection}
         </div>
       ) : (
-        <div className="max-w-[1200px] ">
-          <header className="bg-primary mx-4 mt-2 p-4 flex gap-2 rounded-lg">
+        <div className="lg:block lg:sticky lg:top-2 max-w-[1200px] space-y-4">
+          <AddMCIndicatorToReport />
+
+          <header className="bg-primary p-4 flex justify-between gap-2 rounded-lg">
             {isLoading && (
               <Spinner className="text-primary-foreground size-8 self-center" />
             )}
 
-            <h3 className="m-0 flex flex-col flex-wrap flex-1 text-primary-foreground font-normal">
-              <span>{currentObservation.topic.name}</span>
+            <div className="text-primary-foreground font-normal">
+              <h3 className="m-0">{currentObservation.topic.name}</h3>
 
               <span className="text-base italic" title="Etiquetas">
                 {currentObservation.tags.map((t) => t.tag.name).join(" - ")}
               </span>
-
-              <AddMCIndicatorToReport />
-            </h3>
+            </div>
 
             <time
               dateTime={new Date(currentObservation.creationDate).toISOString()}
@@ -94,7 +94,7 @@ export function Card() {
             </time>
           </header>
 
-          <div className="flex flex-wrap flex-col md:flex-row gap-4 p-4">
+          <div className="flex flex-wrap flex-col xl:flex-row gap-4">
             <section className="flex-2 xl:flex-3 w-full h-full bg-background rounded-lg p-2 shadow-2xl">
               <h4 className="sr-only">
                 Gráfica de {currentObservation.topic.name}
@@ -118,12 +118,12 @@ export function Card() {
           </div>
 
           {Object.keys(indicatorTabs).length > 0 && (
-            <div className="bg-background mx-4 mb-4 rounded-b-lg overflow-hidden shadow-2xl">
+            <div className="bg-background rounded-b-lg overflow-hidden shadow-2xl">
               <Tabs
                 className="flex flex-col h-full"
                 defaultValue={indicatorTabs[0].label}
               >
-                <TabsList className="w-full h-auto flex *:flex-1 bg-accent p-0! m-0!">
+                <TabsList className="w-full h-auto flex *:flex-1 bg-accent gap-0 p-0! m-0!">
                   {indicatorTabs.map((tab) => (
                     <TabsTrigger
                       key={`tabTriggerIndicator_${tab.key}`}
