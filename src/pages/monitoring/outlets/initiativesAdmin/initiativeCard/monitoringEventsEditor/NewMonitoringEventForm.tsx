@@ -88,7 +88,7 @@ export function NewMonitoringEventForm({
     <form
       onSubmit={handleSubmit}
       onReset={handleResetForm}
-      className="p-4 border border-primary bg-muted rounded-lg [&_label]:text-primary [&_label]:font-normal space-y-2"
+      className="p-4 border border-primary/10 hover:border-primary animate-color duration-300 bg-muted rounded-lg [&_label]:text-primary [&_label]:font-normal space-y-2"
     >
       <h4 className="text-primary text-balance text-xl">
         Crear nuevo grupo de eventos de monitoreo

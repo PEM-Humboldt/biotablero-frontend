@@ -46,7 +46,7 @@ export async function isNewEvent(
     return res.data.map((err) => err.msg);
   }
 
-  if (res["@odata.count"] === 0) {
+  if (res["@odata.count"] !== 0) {
     return ["Ya existe un evento de monitoreo con esa fecha."];
   }
 

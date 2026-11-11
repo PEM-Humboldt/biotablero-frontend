@@ -11,6 +11,7 @@ import { FormEvent, useRef, useState } from "react";
 import { LabeledInput } from "@ui/LabeledInput";
 import { isAmountValid } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/monitoringEventsEditor/utils/formMonitoringEventsValidations";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
+import { SquarePen } from "lucide-react";
 
 export function MonitoringEventUpdater({
   event,
@@ -52,10 +53,17 @@ export function MonitoringEventUpdater({
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <Button>Editar</Button>
+        <Button
+          size="icon-sm"
+          variant="ghost-clean"
+          title="Editar la cantidad de eventos de monitoreo"
+          aria-label="Editar la cantidad de eventos de monitoreo"
+        >
+          <SquarePen />
+        </Button>
       </PopoverTrigger>
 
-      <PopoverContent className="w-[300px] lg:w-[450px]">
+      <PopoverContent className="w-[300px] lg:w-[450px] bg-input">
         <form
           onSubmit={handleSubmit}
           onReset={handleReset}

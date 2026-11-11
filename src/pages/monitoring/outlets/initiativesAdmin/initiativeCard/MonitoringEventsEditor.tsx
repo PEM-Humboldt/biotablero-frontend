@@ -23,6 +23,8 @@ import { ErrorsList } from "@ui/LabelingWithErrors";
 import { NewMonitoringEventForm } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/monitoringEventsEditor/NewMonitoringEventForm";
 import { MonitoringEventUpdater } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/monitoringEventsEditor/MonitoringEventUpdater";
 import { LoadingDiv } from "@ui/LoadingDiv";
+import { CalendarArrowDown, CalendarArrowUp, Trash2 } from "lucide-react";
+import { Spinner } from "@ui/shadCN/component/spinner";
 
 export function MonitoringEventsEditor({
   initiative,
@@ -112,7 +114,9 @@ export function MonitoringEventsEditor({
           por la iniciativa '{initiative.name}'
         </p>
 
-        {isLoading && <LoadingDiv className="mb-2" />}
+        {monitoringEvents.length === 0 && isLoading && (
+          <LoadingDiv className="mb-2" />
+        )}
 
         <ErrorsList
           errorItems={errors}
@@ -120,43 +124,65 @@ export function MonitoringEventsEditor({
         />
       </div>
 
-      <div className="flex flex-wrap gap-4 *:flex-1">
+      <div className="flex flex-wrap gap-4 *:flex-1 items-start">
         <NewMonitoringEventForm
           initiativeId={initiative.id}
           onSuccess={fetchMonitoringEvents}
         />
 
-        <div>
-          <div>
-            <ODataSearchBar
-              components={monitoringEventsSearchBarComponents}
-              setSearchParams={setSearchParams}
-              className="bg-accent flex-col items-stretch lg:flex-row lg:items-end *:flex-1!  "
-              submit="Filtrar"
-              reset="Borrar filtro"
-            />
-            <Button onClick={handleMonitoringEventSortToggle}>
-              Ordenar de mar recientes a mas lejanas{" "}
-            </Button>
-          </div>
+        {monitoringEvents.length > 0 && (
+          <div className="p-4 rounded-lg border border-primary/10 hover:border-primary animate-color duration-300">
+            <h4 className="text-primary text-balance text-xl">
+              Eventos de monitoreo registrados en la iniciativa
+            </h4>
 
-          {monitoringEvents.length > 0 && (
-            <ul>
+            <div className="bg-muted rounded-lg flex gap-2 items-end p-4">
+              <ODataSearchBar
+                components={monitoringEventsSearchBarComponents}
+                setSearchParams={setSearchParams}
+                className="m-0 p-0 flex-col items-stretch lg:flex-row lg:items-end"
+                submit="Filtrar"
+              />
+              <Button
+                size="icon"
+                onClick={handleMonitoringEventSortToggle}
+                title={
+                  searchParams.orderby === "date asc"
+                    ? "Ordenar del más reciente al más lejano"
+                    : "Ordenar del más lejano al más reciente"
+                }
+                aria-label={
+                  searchParams.orderby === "date asc"
+                    ? "Ordenar del más reciente al más lejano"
+                    : "Ordenar del más lejano al más reciente"
+                }
+              >
+                {searchParams.orderby === "date asc" ? (
+                  <CalendarArrowDown />
+                ) : (
+                  <CalendarArrowUp />
+                )}
+              </Button>
+            </div>
+
+            <ul className="my-2">
               {monitoringEvents.map((event) => {
-                const eventDate = new Date(event.date).toLocaleDateString(
-                  LOCALE,
-                  {
-                    year: "numeric",
-                    month: "long",
-                    timeZone: "UTC",
-                  },
-                );
+                const date = new Date(event.date);
+                const dateLabel = date.toISOString();
+                const eventDate = date.toLocaleDateString(LOCALE, {
+                  year: "numeric",
+                  month: "long",
+                  timeZone: "UTC",
+                });
 
                 return (
-                  <li key={event.id}>
+                  <li
+                    key={event.id}
+                    className="px-2 rounded hover:bg-muted even:bg-muted/30 flex [&>div]:first:flex-1 items-center"
+                  >
                     <div>
-                      fecha: {eventDate}
-                      eventos: {event.value}
+                      <span className="font-normal">{event.value}</span> eventos
+                      durante <time dateTime={dateLabel}>{eventDate}</time>
                     </div>
                     <div>
                       <MonitoringEventUpdater
@@ -167,23 +193,28 @@ export function MonitoringEventsEditor({
                         onClick={() =>
                           void handleDeleteMonitoringEvent(event.id)
                         }
+                        size="icon-sm"
+                        variant="ghost-clean"
+                        title="Borrar grupo de eventos de monitoreo"
+                        aria-label="Borrar grupo de eventos de monitoreo"
                       >
-                        Borrar
+                        <Trash2 />
                       </Button>
                     </div>
                   </li>
                 );
               })}
             </ul>
-          )}
-          <TablePager
-            currentPage={currentPage}
-            recordsAvailable={monitoringEventsCount.current}
-            recordsPerPage={MONITORING_EVENTS_EDITOR_LIST_AMOUNT}
-            onPageChange={setCurrentPage}
-            paginated={1}
-          />
-        </div>
+
+            <TablePager
+              currentPage={currentPage}
+              recordsAvailable={monitoringEventsCount.current}
+              recordsPerPage={MONITORING_EVENTS_EDITOR_LIST_AMOUNT}
+              onPageChange={setCurrentPage}
+              paginated={1}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

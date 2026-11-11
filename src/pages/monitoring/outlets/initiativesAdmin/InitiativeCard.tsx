@@ -172,8 +172,11 @@ export function InitiativeCard({
             />
           )}
 
-          <Button onClick={() => setEditMonitoringEvents((old) => !old)}>
-            Eventos de monitoreo
+          <Button
+            variant={editMonitoringEvents ? "default" : "outline"}
+            onClick={() => setEditMonitoringEvents((old) => !old)}
+          >
+            Monitoreo
           </Button>
 
           <InitiativeStatusDialog
