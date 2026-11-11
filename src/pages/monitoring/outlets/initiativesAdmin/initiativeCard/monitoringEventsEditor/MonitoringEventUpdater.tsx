@@ -35,10 +35,9 @@ export function MonitoringEventUpdater({
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!isAmountValid(eventsCount)) {
-      setErrors([
-        `debes ingresar un numero entre ${MONITORING_EVENTS_MIN_PER_MONTH} y ${MONITORING_EVENTS_MAX_PER_MONTH}`,
-      ]);
+    const amountValidation = isAmountValid(eventsCount);
+    if (amountValidation) {
+      setErrors(amountValidation);
       return;
     }
 

@@ -10,13 +10,15 @@ import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
  *
  * @param amount - The monitoring events made in the month
  *
- * @returns true if it is within range, false othewise
+ * @returns null if it is within range, an array with the errors othewise
  */
-export function isAmountValid(amount: number): boolean {
-  return (
-    amount >= MONITORING_EVENTS_MIN_PER_MONTH &&
-    amount <= MONITORING_EVENTS_MAX_PER_MONTH
-  );
+export function isAmountValid(amount: number): string[] | null {
+  return amount <= MONITORING_EVENTS_MIN_PER_MONTH ||
+    amount >= MONITORING_EVENTS_MAX_PER_MONTH
+    ? [
+        `debes ingresar un numero entre ${MONITORING_EVENTS_MIN_PER_MONTH} y ${MONITORING_EVENTS_MAX_PER_MONTH}`,
+      ]
+    : null;
 }
 
 /**
@@ -26,22 +28,27 @@ export function isAmountValid(amount: number): boolean {
  * @param date - The date containing the target month and year.
  *
  * @returns A `Promise` resolving to:
- * - On success: A `boolean`
- * - On failure: An array of error strings (`string[]`).
+ * - On success: null
+ * - On failure: an array with the errors
  */
 export async function isNewEvent(
   initiativeId: number,
   date: Date,
-): Promise<boolean | string[]> {
+): Promise<string[] | null> {
   const utcYear = date.getUTCFullYear();
   const utcMonth = date.getUTCMonth() + 1; // el offset de mes en JS;
 
   const res = await getMonitoringEventsByInitiative(initiativeId)({
     filter: `year(Date) eq ${utcYear} and month(Date) eq ${utcMonth}`,
   });
+
   if (isMonitoringAPIError(res)) {
     return res.data.map((err) => err.msg);
   }
 
-  return res["@odata.count"] === 0;
+  if (res["@odata.count"] === 0) {
+    return ["Ya existe un evento de monitoreo con esa fecha."];
+  }
+
+  return null;
 }

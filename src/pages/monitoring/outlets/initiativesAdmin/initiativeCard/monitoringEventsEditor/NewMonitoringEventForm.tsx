@@ -55,12 +55,9 @@ export function NewMonitoringEventForm({
     e.preventDefault();
     setErrors({});
 
-    if (!isAmountValid(newEventAmount)) {
-      setErrors({
-        amount: [
-          `Numero de eventos inválido. ingresa un número entre ${MONITORING_EVENTS_MIN_PER_MONTH} y ${MONITORING_EVENTS_MAX_PER_MONTH}.`,
-        ],
-      });
+    const amountValidation = isAmountValid(newEventAmount);
+    if (amountValidation) {
+      setErrors({ amount: amountValidation });
       return;
     }
 
@@ -68,12 +65,8 @@ export function NewMonitoringEventForm({
     const date = new Date(Date.UTC(Number(year), Number(month) - 1, 1));
     const isNewEventValid = await isNewEvent(initiativeId, date);
 
-    if (Array.isArray(isNewEventValid)) {
+    if (isNewEventValid) {
       setErrors({ date: isNewEventValid });
-      setIsLoading(false);
-      return;
-    } else if (!isNewEventValid) {
-      setErrors({ date: ["Ya existe un evento de monitoreo con esa fecha."] });
       setIsLoading(false);
       return;
     }
