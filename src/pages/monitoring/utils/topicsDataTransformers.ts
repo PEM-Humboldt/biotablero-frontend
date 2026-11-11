@@ -181,6 +181,8 @@ function serializeTopicBars(
 
 /**
  * Converts a topic's graph data into a formatted CSV string based on its metric type.
+ * It evaluates the metric type and routes the data to the appropriate serialization strategy.
+ * Automatically extracts headers, escapes internal double quotes, and formats the output.
  *
  * @param topic - An object combining the topic's metadata, data, and clean graph data (`TopicMetadata & TopicData & CleanDataType`).
  *

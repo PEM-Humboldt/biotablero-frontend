@@ -30,7 +30,7 @@ import { topicNameNotExist } from "pages/monitoring/outlets/topicsAdmin/utils/to
 import { toast } from "sonner";
 import { UserRoundCheck } from "lucide-react";
 import { topicTagCategories } from "pages/monitoring/outlets/topicsAdmin/layout/topicTagCategories";
-import { uiText } from "../layout/uiText";
+import { uiText } from "pages/monitoring/outlets/topicsAdmin/layout/uiText";
 
 const getTagId = (tag: TagInTopic | TagData) =>
   isTagRelated(tag) ? tag.tag.id : tag.id;

@@ -7,12 +7,12 @@ export enum RoleInInitiative {
   READER,
 }
 
-// NOTE: se usa como valor del enum el nombre que se le da
-// al tipo de usuario en el keycloak
+// NOTE: se usa como valor del enum el nombre del tipo de usuario en keycloak
 export enum RoleInMonitoring {
   NONE = "",
   USER = "User",
   ADMIN = "Admin",
+  ALLY = "Ally",
 }
 
 export type SidebarItem = {
