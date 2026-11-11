@@ -4,7 +4,7 @@ import { type BarDatum, ResponsiveBar } from "@nivo/bar";
 import { GRAPHS_GRADIENT_COLOR_PALETTE } from "@config/color";
 import { GRAPH_ANIMATION_CONFIG } from "@config/global";
 import {
-  TOPIC_RELATIONAL_INTENSITY_HIGHLIGT_VALUE,
+  TOPIC_RELATIONAL_INTENSITY_HIGHLIGHT_VALUE,
   TOPIC_RELATIONAL_INTENSITY_MAX_COUNT,
 } from "@config/monitoring";
 import { GetTopicInfo } from "@hooks/useReport/GetTopicInfo";
@@ -145,7 +145,7 @@ export function RelationalIntensityIndex() {
                   colors={(bar) => {
                     if (
                       bar.indexValue ===
-                      TOPIC_RELATIONAL_INTENSITY_HIGHLIGT_VALUE
+                      TOPIC_RELATIONAL_INTENSITY_HIGHLIGHT_VALUE
                     ) {
                       return GRAPHS_GRADIENT_COLOR_PALETTE[0];
                     }

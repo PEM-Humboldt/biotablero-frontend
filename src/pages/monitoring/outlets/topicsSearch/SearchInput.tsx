@@ -242,7 +242,7 @@ export function SearchInput() {
                     )}
                     {MONITORING_YEARS_AVAILABLE.map((year) => (
                       <SelectItem
-                        key={`topciYear_${year}`}
+                        key={`topicYear_${year}`}
                         value={String(year)}
                       >
                         {year}

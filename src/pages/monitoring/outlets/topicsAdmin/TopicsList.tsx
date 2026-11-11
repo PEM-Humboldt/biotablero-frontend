@@ -111,7 +111,7 @@ export function TopicsList({
       />
 
       {isLoading && (
-        <LoadingDiv text={uiText.topicsList.loadind} className="absolute" />
+        <LoadingDiv text={uiText.topicsList.loading} className="absolute" />
       )}
 
       <ul

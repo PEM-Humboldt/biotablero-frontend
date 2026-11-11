@@ -38,7 +38,7 @@ export async function getTopicsByInitiative(initiativeId: number) {
  * @param topicId - The number of the topic in DB
  *
  * @returns A `Promise` resolving to:
- * - On success: An `TopicData` object
+ * - On success: A `TopicData` object
  * - On failure: A `ApiRequestError` object.
  */
 export async function getTopicData(topicId: number) {
@@ -50,6 +50,16 @@ export async function getTopicData(topicId: number) {
   return res;
 }
 
+/**
+ * Updates the descriptions and explanations of the specified topic.
+ *
+ * @param topicId - The number of the topic in DB
+ * @param payload - An object containing the topic's description, methodology, interpretation, considerations, and authorship
+ *
+ * @returns A `Promise` resolving to:
+ * - On success: A `TopicData` object
+ * - On failure: A `ApiRequestError` object.
+ */
 export async function updateTopicData(
   topicId: number,
   payload: Record<
@@ -82,7 +92,7 @@ export async function updateTopicData(
  * @param topicId - The number of the topic in DB
  *
  * @returns A `Promise` resolving to:
- * - On success: An `TopicMetadata` object
+ * - On success: A `TopicMetadata` object
  * - On failure: A `ApiRequestError` object.
  */
 export async function getTopicMetadata(topicId: number) {
@@ -94,6 +104,16 @@ export async function getTopicMetadata(topicId: number) {
   return res;
 }
 
+/**
+ * Updates the name of the specified topic.
+ *
+ * @param topicId - The number of the topic in DB
+ * @param name - The new name for the topic
+ *
+ * @returns A `Promise` resolving to:
+ * - On success: A `TopicMetadata` object
+ * - On failure: A `ApiRequestError` object.
+ */
 export async function updateTopicName(topicId: number, name: string) {
   const res = await monitoringAPI<TopicMetadata>({
     type: "put",
