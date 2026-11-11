@@ -38,11 +38,11 @@ export const uiText = {
   topicsList: {
     noInitiative:
       "Selecciona una iniciativa para poder administrar sus temáticas",
-    loadind: "Cargando información de las temáticas...",
+    loading: "Cargando información de las temáticas...",
 
     listDescription: { sr: "Temáticas relacionadas" },
     versionsListDescription: {
-      sr: "Selecciona la varsion para revisar",
+      sr: "Selecciona la versión para revisar",
       label: "Versiones",
     },
     versionsListDescriptionEdit: {
@@ -51,9 +51,9 @@ export const uiText = {
     },
     openVersionBtn: {
       sr: (version: number, topicDate: Date) =>
-        `Ver la version ${version} de ${topicDate.toLocaleDateString(LOCALE)}`,
+        `Ver la versión ${version} de ${topicDate.toLocaleDateString(LOCALE)}`,
       title: (version: number, topicDate: Date) =>
-        `Ver la version ${version} de ${topicDate.toLocaleDateString(LOCALE)}`,
+        `Ver la versión ${version} de ${topicDate.toLocaleDateString(LOCALE)}`,
       label: (_version: number, topicDate: Date) =>
         topicDate.toLocaleDateString(LOCALE),
     },
@@ -72,7 +72,7 @@ export const uiText = {
       title: "Guardar cambios",
       label: "Guardar",
     },
-    input: { label: "Nombre de la temática", placeholder: "Indice de..." },
+    input: { label: "Nombre de la temática", placeholder: "Índice de..." },
     tagsTitle: "Etiqueta de la temática",
     cancelBtn: { sr: "Cancelar", title: "Cancelar", label: "Cancelar" },
 
@@ -91,9 +91,9 @@ export const uiText = {
     },
     cancelBtn: { sr: "Cancelar", title: "Cancelar", label: "Cancelar" },
     updatedToast: {
-      title: "Textos de version actualizados",
+      title: "Textos de versión actualizados",
       description: (versionNumber: number, creationDate: Date) =>
-        `Los textos esta temática en la version ${versionNumber} de ${creationDate.toLocaleDateString(LOCALE)} han sido actualizados correctamente.`,
+        `Los textos esta temática en la versión ${versionNumber} de ${creationDate.toLocaleDateString(LOCALE)} han sido actualizados correctamente.`,
     },
     editVersionTitlePrefix: "Version del ",
     noTextInThisVersion: (textField: string) =>

@@ -49,7 +49,7 @@ export const uiText = {
 
   topicCard: {
     noSelection: "Selecciona un indicador",
-    noTopcis: "Esta iniciativa todavía no tiene indicadores asociados",
+    noTopics: "Esta iniciativa todavía no tiene indicadores asociados",
     titleBar: {
       tagsTitle: "Etiquetas",
       lastUpdate: (dateString: string) =>
@@ -94,7 +94,7 @@ export const uiText = {
       selector: {
         itemNotFound: "No se encuentra esa especie",
         trigger: "Selecciona una especie",
-        inputPlaceholder: "Escibe el nombre para buscar la especie",
+        inputPlaceholder: "Escribe el nombre para buscar la especie",
       },
     },
 

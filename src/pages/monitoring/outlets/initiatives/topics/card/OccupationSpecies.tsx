@@ -3,7 +3,7 @@ import { ResponsiveLine } from "@nivo/line";
 
 import { GRAPHS_CONTRAST_COLOR_PALETTE } from "@config/color";
 import { GRAPH_ANIMATION_CONFIG } from "@config/global";
-import { TOPIC_OCUPATION_SPECIES_MAX_COUNT } from "@config/monitoring";
+import { TOPIC_OCCUPATION_SPECIES_MAX_COUNT } from "@config/monitoring";
 import { cn } from "@ui/shadCN/lib/utils";
 import { GetTopicInfo } from "@hooks/useReport/GetTopicInfo";
 import { hashStringToRange } from "@utils/format";
@@ -70,7 +70,7 @@ export function OccupationSpecies() {
 
     setSelectedSpecies((oldList) => {
       const newList = [...oldList, item];
-      if (newList.length > TOPIC_OCUPATION_SPECIES_MAX_COUNT) {
+      if (newList.length > TOPIC_OCCUPATION_SPECIES_MAX_COUNT) {
         newList.shift();
       }
       return newList;
@@ -85,7 +85,7 @@ export function OccupationSpecies() {
     setSelectedSpecies(() => {
       const loadSpecies: string[] = [];
       for (const specie of currentTopic.groups) {
-        if (loadSpecies.length === TOPIC_OCUPATION_SPECIES_MAX_COUNT) {
+        if (loadSpecies.length === TOPIC_OCCUPATION_SPECIES_MAX_COUNT) {
           break;
         }
 
@@ -101,10 +101,10 @@ export function OccupationSpecies() {
         className="p-4 shrink-0 space-y-4 border border-muted mb-0 rounded-lg hover:border-primary/50 transition-colors duration-300"
         title={uiText.topicCard.ocupationSpecies.title}
       >
-        {currentTopic.groups.length > TOPIC_OCUPATION_SPECIES_MAX_COUNT && (
+        {currentTopic.groups.length > TOPIC_OCCUPATION_SPECIES_MAX_COUNT && (
           <span className="italic text-sm text-primary">
             {uiText.topicCard.ocupationSpecies.maxSelection(
-              TOPIC_OCUPATION_SPECIES_MAX_COUNT,
+              TOPIC_OCCUPATION_SPECIES_MAX_COUNT,
             )}
           </span>
         )}

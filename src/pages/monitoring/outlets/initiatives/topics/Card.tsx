@@ -62,7 +62,7 @@ export function Card() {
       {!currentTopic ? (
         <div className="m-8 p-4 text-2xl bg-primary/10 text-primary rounded-lg border border-primary font-normal">
           {topics.length === 0
-            ? uiText.topicCard.noTopcis
+            ? uiText.topicCard.noTopics
             : uiText.topicCard.noSelection}
         </div>
       ) : (
