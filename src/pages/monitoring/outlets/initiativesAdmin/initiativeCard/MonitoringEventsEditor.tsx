@@ -24,7 +24,7 @@ import { NewMonitoringEventForm } from "pages/monitoring/outlets/initiativesAdmi
 import { MonitoringEventUpdater } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/monitoringEventsEditor/MonitoringEventUpdater";
 import { LoadingDiv } from "@ui/LoadingDiv";
 import { CalendarArrowDown, CalendarArrowUp, Trash2 } from "lucide-react";
-import { Spinner } from "@ui/shadCN/component/spinner";
+import { uiText } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/monitoringEventsEditor/layout/uiText";
 
 export function MonitoringEventsEditor({
   initiative,
@@ -106,13 +106,8 @@ export function MonitoringEventsEditor({
   return (
     <div className="p-2">
       <div>
-        <h4 className="text-2xl text-primary">
-          Administrar los eventos de monitoreo comunitario
-        </h4>
-        <p className="sr-only">
-          Agrega, edita o elimina eventos de monitoreo comunitario realizados
-          por la iniciativa '{initiative.name}'
-        </p>
+        <h4 className="text-2xl text-primary">{uiText.title}</h4>
+        <p className="sr-only">{uiText.description(initiative.name)}</p>
 
         {monitoringEvents.length === 0 && isLoading && (
           <LoadingDiv className="mb-2" />
@@ -133,7 +128,7 @@ export function MonitoringEventsEditor({
         {monitoringEvents.length > 0 && (
           <div className="p-4 rounded-lg border border-primary/10 hover:border-primary animate-color duration-300">
             <h4 className="text-primary text-balance text-xl">
-              Eventos de monitoreo registrados en la iniciativa
+              {uiText.eventsList.title}
             </h4>
 
             <div className="bg-muted rounded-lg flex gap-2 items-end p-4">
@@ -141,21 +136,17 @@ export function MonitoringEventsEditor({
                 components={monitoringEventsSearchBarComponents}
                 setSearchParams={setSearchParams}
                 className="m-0 p-0 flex-col items-stretch lg:flex-row lg:items-end"
-                submit="Filtrar"
+                submit={uiText.eventsList.searchBar.submitLabel}
               />
               <Button
                 size="icon"
                 onClick={handleMonitoringEventSortToggle}
-                title={
-                  searchParams.orderby === "date asc"
-                    ? "Ordenar del más reciente al más lejano"
-                    : "Ordenar del más lejano al más reciente"
-                }
-                aria-label={
-                  searchParams.orderby === "date asc"
-                    ? "Ordenar del más reciente al más lejano"
-                    : "Ordenar del más lejano al más reciente"
-                }
+                title={uiText.eventsList.searchBar.orderBtn.title(
+                  searchParams.orderby === "date asc",
+                )}
+                aria-label={uiText.eventsList.searchBar.orderBtn.title(
+                  searchParams.orderby === "date asc",
+                )}
               >
                 {searchParams.orderby === "date asc" ? (
                   <CalendarArrowDown />
@@ -167,13 +158,10 @@ export function MonitoringEventsEditor({
 
             <ul className="my-2">
               {monitoringEvents.map((event) => {
-                const date = new Date(event.date);
-                const dateLabel = date.toISOString();
-                const eventDate = date.toLocaleDateString(LOCALE, {
-                  year: "numeric",
-                  month: "long",
-                  timeZone: "UTC",
-                });
+                const eventDate = new Date(event.date).toLocaleDateString(
+                  LOCALE,
+                  { year: "numeric", month: "long", timeZone: "UTC" },
+                );
 
                 return (
                   <li
@@ -181,8 +169,7 @@ export function MonitoringEventsEditor({
                     className="px-2 rounded hover:bg-muted even:bg-muted/30 flex [&>div]:first:flex-1 items-center"
                   >
                     <div>
-                      <span className="font-normal">{event.value}</span> eventos
-                      durante <time dateTime={dateLabel}>{eventDate}</time>
+                      {uiText.eventsList.eventLabel(eventDate, event.value)}
                     </div>
                     <div>
                       <MonitoringEventUpdater
@@ -195,8 +182,8 @@ export function MonitoringEventsEditor({
                         }
                         size="icon-sm"
                         variant="ghost-clean"
-                        title="Borrar grupo de eventos de monitoreo"
-                        aria-label="Borrar grupo de eventos de monitoreo"
+                        title={uiText.eventsList.deleteEventBtn.title}
+                        aria-label={uiText.eventsList.deleteEventBtn.sr}
                       >
                         <Trash2 />
                       </Button>

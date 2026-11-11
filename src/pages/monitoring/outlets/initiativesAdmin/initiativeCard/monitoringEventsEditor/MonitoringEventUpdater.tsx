@@ -12,6 +12,7 @@ import { LabeledInput } from "@ui/LabeledInput";
 import { isAmountValid } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/monitoringEventsEditor/utils/formMonitoringEventsValidations";
 import { ButtonGroup } from "@ui/shadCN/component/button-group";
 import { SquarePen } from "lucide-react";
+import { uiText } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/monitoringEventsEditor/layout/uiText";
 
 export function MonitoringEventUpdater({
   event,
@@ -56,8 +57,8 @@ export function MonitoringEventUpdater({
         <Button
           size="icon-sm"
           variant="ghost-clean"
-          title="Editar la cantidad de eventos de monitoreo"
-          aria-label="Editar la cantidad de eventos de monitoreo"
+          title={uiText.eventsList.editPopup.triggerBtn.title}
+          aria-label={uiText.eventsList.editPopup.triggerBtn.sr}
         >
           <SquarePen />
         </Button>
@@ -69,32 +70,29 @@ export function MonitoringEventUpdater({
           onReset={handleReset}
           className="[&_label]:text-balance [&_label]:font-normal"
         >
-          <h4 className="sr-only">Actualizar eventos de monitoreo</h4>
+          <h4 className="sr-only">{uiText.eventsList.editPopup.titleSr}</h4>
           <LabeledInput
             inputName={`event_${eventDate}`}
             inputType="number"
             state={eventsCount}
             stateSetter={(value) => setEventsCount(Number(value))}
             validationErrors={errors}
-            texts={{
-              label: `¿Cuántos eventos de monitoreo se realizaron durante ${eventDate}?`,
-              placeholder: "1, 5, 100...",
-            }}
+            texts={uiText.eventsList.editPopup.inputTexts(eventDate)}
           />
 
           <div className="mt-4 flex flex-row-reverse flex-wrap gap-2 justify-between">
-            <Button>Guardar</Button>
+            <Button>{uiText.eventsList.editPopup.saveBtnLabel}</Button>
 
             <ButtonGroup>
               <Button type="reset" variant="outline_destructive">
-                Reiniciar
+                {uiText.eventsList.editPopup.resetBtnLabel}
               </Button>
               <Button
                 type="button"
                 variant="outline_destructive"
                 onClick={() => setIsOpen(false)}
               >
-                Cancelar
+                {uiText.eventsList.editPopup.cancelBtnLabel}
               </Button>
             </ButtonGroup>
           </div>

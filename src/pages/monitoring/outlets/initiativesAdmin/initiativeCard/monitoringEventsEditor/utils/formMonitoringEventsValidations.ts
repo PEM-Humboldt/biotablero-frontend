@@ -4,6 +4,7 @@ import {
 } from "@config/monitoring";
 import { getMonitoringEventsByInitiative } from "pages/monitoring/api/services/monitoringEvents";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import { uiText } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/monitoringEventsEditor/layout/uiText";
 
 /**
  * Checks if given amount of monitoring events is within a valid range
@@ -15,9 +16,7 @@ import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 export function isAmountValid(amount: number): string[] | null {
   return amount <= MONITORING_EVENTS_MIN_PER_MONTH ||
     amount >= MONITORING_EVENTS_MAX_PER_MONTH
-    ? [
-        `debes ingresar un numero entre ${MONITORING_EVENTS_MIN_PER_MONTH} y ${MONITORING_EVENTS_MAX_PER_MONTH}`,
-      ]
+    ? [uiText.validationErrors.invalidAmount]
     : null;
 }
 
@@ -47,7 +46,7 @@ export async function isNewEvent(
   }
 
   if (res["@odata.count"] !== 0) {
-    return ["Ya existe un evento de monitoreo con esa fecha."];
+    return [uiText.validationErrors.alreadyExist];
   }
 
   return null;

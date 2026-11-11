@@ -17,6 +17,7 @@ import {
 import { ErrorsList, LegendAndErrors } from "@ui/LabelingWithErrors";
 import { createMonitoringEvent } from "pages/monitoring/api/services/monitoringEvents";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import { uiText } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/monitoringEventsEditor/layout/uiText";
 
 const curretnYear = new Date().getFullYear();
 const currentMonth = new Date().getMonth();
@@ -91,7 +92,7 @@ export function NewMonitoringEventForm({
       className="p-4 border border-primary/10 hover:border-primary animate-color duration-300 bg-muted rounded-lg [&_label]:text-primary [&_label]:font-normal space-y-2"
     >
       <h4 className="text-primary text-balance text-xl">
-        Crear nuevo grupo de eventos de monitoreo
+        {uiText.newEventForm.title}
       </h4>
 
       <LabeledInput
@@ -100,23 +101,20 @@ export function NewMonitoringEventForm({
         state={newEventAmount}
         stateSetter={(value) => setNewEventAmount(Number(value))}
         validationErrors={errors.amount ?? []}
-        texts={{
-          label: `¿Cuántos eventos de monitoreo se realizaron?`,
-          placeholder: "1, 5, 25...",
-        }}
+        texts={uiText.newEventForm.amountInput}
       />
       <fieldset>
         <LegendAndErrors
           validationErrors={errors.date ?? []}
           className="text-base"
         >
-          ¿Cuándo sucedieron los eventos de monitoreo?
+          {uiText.newEventForm.dateLegend}
         </LegendAndErrors>
 
         <div className="flex gap-2">
           <Select value={year} onValueChange={(e) => setYear(e)}>
             <SelectTrigger className="bg-background">
-              <SelectValue placeholder="Año" />
+              <SelectValue placeholder={uiText.newEventForm.yearPlaceholder} />
             </SelectTrigger>
             <SelectContent>
               {years.map((year) => (
@@ -129,7 +127,7 @@ export function NewMonitoringEventForm({
 
           <Select value={month} onValueChange={(e) => setMonth(e)}>
             <SelectTrigger className="bg-background">
-              <SelectValue placeholder="Mes" />
+              <SelectValue placeholder={uiText.newEventForm.monthPlaceholder} />
             </SelectTrigger>
             <SelectContent>
               {monthsAvailable.map((month) => (
@@ -145,12 +143,21 @@ export function NewMonitoringEventForm({
         <ErrorsList errorItems={errors.root ?? []} />
 
         <div className="flex flex-row-reverse flex-wrap gap-2 mt-6 justify-between">
-          <Button disabled={isLoading}>
-            {isLoading ? "Creando eventos..." : "Crear"}
+          <Button
+            disabled={isLoading}
+            title={uiText.newEventForm.createBtn.title(isLoading)}
+            aria-label={uiText.newEventForm.createBtn.sr(isLoading)}
+          >
+            {uiText.newEventForm.createBtn.label(isLoading)}
           </Button>
 
-          <Button type="reset" variant="outline_destructive">
-            Reiniciar
+          <Button
+            type="reset"
+            variant="outline_destructive"
+            title={uiText.newEventForm.resetBtn.title}
+            aria-label={uiText.newEventForm.resetBtn.sr}
+          >
+            {uiText.newEventForm.resetBtn.label}
           </Button>
         </div>
       </div>

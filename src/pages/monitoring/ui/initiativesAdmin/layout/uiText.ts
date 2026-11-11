@@ -30,6 +30,18 @@ export const uiText = {
     enabled: "Activa",
     unasignedFallback: "Sin asignar",
 
+    monitoringEventBtn: {
+      sr: (open: boolean) =>
+        open
+          ? "Abrir el administrador de la iniciativa"
+          : "Abrir el administrador de eventos de monitoreo",
+      title: (open: boolean) =>
+        open
+          ? "Administrar la iniciativa"
+          : "Administrar de eventos de monitoreo",
+      label: (_open: boolean) => "Monitoreo",
+    },
+
     accordionResume: {
       disabledPresentation: ", Iniciativa inactiva",
       locationPresentation: "Iniciativa ubicada en:",

@@ -56,8 +56,9 @@ export function InitiativeCard({
   >(null);
 
   useEffect(() => {
-    setCurrentEdit(cardInfo?.enabled ? "none" : null);
-  }, [cardInfo?.enabled]);
+    setCurrentEdit(initiative.enabled ? "none" : null);
+    setEditMonitoringEvents((old) => (initiative.enabled ? old : false));
+  }, [initiative.enabled]);
 
   const getCardInfo = useCallback(async () => {
     setIsLoading(true);
@@ -175,8 +176,15 @@ export function InitiativeCard({
           <Button
             variant={editMonitoringEvents ? "default" : "outline"}
             onClick={() => setEditMonitoringEvents((old) => !old)}
+            disabled={!initiative.enabled}
+            title={uiText.initiative.monitoringEventBtn.title(
+              editMonitoringEvents,
+            )}
+            aria-label={uiText.initiative.monitoringEventBtn.sr(
+              editMonitoringEvents,
+            )}
           >
-            Monitoreo
+            {uiText.initiative.monitoringEventBtn.label(editMonitoringEvents)}
           </Button>
 
           <InitiativeStatusDialog
