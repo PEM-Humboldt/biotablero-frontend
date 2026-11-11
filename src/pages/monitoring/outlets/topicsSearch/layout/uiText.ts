@@ -4,7 +4,7 @@ export const uiText = {
 
     topicSearch: {
       label: "Nombre o tipo del indicador",
-      placeholder: "Excribe una palabra clave",
+      placeholder: "Escribe una palabra clave",
     },
 
     initiativeFilter: {
@@ -75,7 +75,7 @@ export const uiText = {
       },
       desc: {
         title: "Ordenar por fecha de creación, del más reciente al más antíguo",
-        sr: "Ordenar por fecha de alfabéticamente, de la Z a la A",
+        sr: "Ordenar por fecha de creación, del más reciente al más antíguo",
       },
     },
 

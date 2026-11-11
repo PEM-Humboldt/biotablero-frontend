@@ -23,7 +23,7 @@ import { topicVersionTexts } from "pages/monitoring/outlets/topicsAdmin/layout/t
 import { uiText } from "pages/monitoring/outlets/topicsAdmin/layout/uiText";
 import { UserRoundCheck } from "lucide-react";
 import { toast } from "sonner";
-import { TOPIC_VERSION_DESCRIPTION_FIELD_MAX_LENGHT } from "@config/monitoring";
+import { TOPIC_VERSION_DESCRIPTION_FIELD_MAX_LENGTH } from "@config/monitoring";
 
 export function TopicVersionCard({
   topicData,
@@ -69,7 +69,7 @@ export function TopicVersionCard({
         const [validatedText, validationErrors] = new StrValidator(
           topicText,
         ).hasLengthLessOrEqualThan(
-          TOPIC_VERSION_DESCRIPTION_FIELD_MAX_LENGHT,
+          TOPIC_VERSION_DESCRIPTION_FIELD_MAX_LENGTH,
         ).result;
 
         if (validationErrors.length > 0) {
@@ -242,7 +242,7 @@ function SectionTextEditor({
           errors.length > 0 ? `errors_text_${sectionData.key}` : undefined
         }
         counter={true}
-        maxLength={(TOPIC_VERSION_DESCRIPTION_FIELD_MAX_LENGHT / 3) * 2}
+        maxLength={(TOPIC_VERSION_DESCRIPTION_FIELD_MAX_LENGTH / 3) * 2}
       />
     </fieldset>
   );

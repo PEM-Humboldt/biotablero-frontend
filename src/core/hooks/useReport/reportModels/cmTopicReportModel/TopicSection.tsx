@@ -55,7 +55,7 @@ export function TopicSection({
       <View style={styles.dateRow}>
         <View style={styles.dateItem}>
           <Text style={styles.dateLabel}>
-            {documentInfo.topicSection.topciUrlLabel}
+            {documentInfo.topicSection.topicUrlLabel}
           </Text>
           <Link
             src={section.url}
@@ -99,7 +99,7 @@ export function TopicSection({
               <View style={styles.graphStateRow}>
                 <View style={styles.graphStateItem}>
                   <Text style={styles.graphStateText}>
-                    {documentInfo.topicSection.grapMapLabel(graph.id)}
+                    {documentInfo.topicSection.graphMapLabel(graph.id)}
                   </Text>
                 </View>
               </View>

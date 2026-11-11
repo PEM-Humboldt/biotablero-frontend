@@ -33,13 +33,13 @@ export const documentInfo = {
   topicSection: {
     creationDateLabel: "Creación",
     lastUpdateLabel: "Última actualización",
-    topciUrlLabel: "enlace",
+    topicUrlLabel: "enlace",
     tagsLabel: {
       ecosystem: "Ecosistemas estratégicos",
       biologicalGroup: "Escala biológica",
     },
     topicMapLabel: "Mapa del indicador",
-    grapMapLabel: (graphName: string) =>
+    graphMapLabel: (graphName: string) =>
       `Mapa del indicador para los valores de ${graphName}`,
     metricsInGraphLabel: (graphName: string) =>
       `Gráfica del indicador para los valores ${graphName}`,
