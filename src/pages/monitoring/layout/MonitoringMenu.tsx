@@ -126,7 +126,7 @@ function MonitoringMenuBtn({
           side={isSidebar ? "right" : "bottom"}
           align="center"
           className={cn(
-            "max-w-[250px] text-centerrtext-balance",
+            "max-w-[250px] text-center text-balance text-background",
             "xl:ml-1 xl:max-w-[320px] xl:text-left",
           )}
         >
