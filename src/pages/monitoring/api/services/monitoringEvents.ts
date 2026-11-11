@@ -71,7 +71,7 @@ export async function createMonitoringEvent(
       data: {
         InitiativeId: initiativeId,
         Value: amount,
-        Date: date.toISOString(),
+        Date: new Date(Date.UTC(date)).toISOString(),
       },
     },
   });

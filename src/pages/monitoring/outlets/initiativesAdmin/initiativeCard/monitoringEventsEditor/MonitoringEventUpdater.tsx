@@ -13,7 +13,7 @@ import {
 import { MonitoringEvent } from "pages/monitoring/types/monitoringEvents";
 import { FormEvent, useRef, useState } from "react";
 import { LabeledInput } from "@ui/LabeledInput";
-import { isAmountValid } from "../../utils/formMonitoringEventsValidations";
+import { isAmountValid } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/monitoringEventsEditor/utils/formMonitoringEventsValidations";
 
 export function MonitoringEventUpdater({
   event,

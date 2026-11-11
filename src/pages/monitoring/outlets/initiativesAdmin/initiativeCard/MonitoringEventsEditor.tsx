@@ -4,15 +4,6 @@ import { TablePager } from "@composites/TablePager";
 import { LOCALE } from "@config/global";
 import { MONITORING_EVENTS_EDITOR_LIST_AMOUNT } from "@config/monitoring";
 import { Button } from "@ui/shadCN/component/button";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@ui/shadCN/component/dialog";
 
 import {
   deleteMonitoringEvent,
@@ -27,10 +18,10 @@ import {
 } from "pages/monitoring/types/initiative";
 import { MonitoringEvent } from "pages/monitoring/types/monitoringEvents";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { monitoringEventsSearchBarComponents } from "./layout/monitoringEventsSearchBarComponents";
+import { monitoringEventsSearchBarComponents } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/monitoringEventsEditor/layout/monitoringEventsSearchBarComponents";
 import { ErrorsList } from "@ui/LabelingWithErrors";
-import { NewMonitoringEventForm } from "./monitoringEventsEditor/NewMonitoringEventForm";
-import { MonitoringEventUpdater } from "./monitoringEventsEditor/MonitoringEventUpdater";
+import { NewMonitoringEventForm } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/monitoringEventsEditor/NewMonitoringEventForm";
+import { MonitoringEventUpdater } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/monitoringEventsEditor/MonitoringEventUpdater";
 
 export function MonitoringEventsEditor({
   initiative,
@@ -72,10 +63,6 @@ export function MonitoringEventsEditor({
     }));
   };
 
-  const handleCreateMonitoringEvent = async (date: Date, amount: number) => {
-    console.log(date.toISOString(), amount);
-  };
-
   const handleUpdateMonitoringEvent =
     (eventId: number) => async (eventsAmount: number, eventDate: Date) => {
       setIsLoading(true);
@@ -114,80 +101,68 @@ export function MonitoringEventsEditor({
   }, [currentPage]);
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline" disabled={!initiative.enabled}>
-          Eventos de monitoreo
+    <div>
+      <h4>Eventos de monitoreo comunitario</h4>
+      <p className="sr-only">
+        Agrega, edita o elimina eventos de monitoreo comunitario realizados por
+        la iniciativa '{initiative.name}'
+      </p>
+
+      <ErrorsList errorItems={errors} />
+
+      <NewMonitoringEventForm initiativeId={initiative.id} />
+
+      <div>
+        <ODataSearchBar
+          components={monitoringEventsSearchBarComponents}
+          setSearchParams={setSearchParams}
+          className="bg-accent *:flex-1!"
+          submit="Filtrar"
+          reset="Borrar filtro"
+        />
+        <Button onClick={handleMonitoringEventSortToggle}>
+          Ordenar de mar recientes a mas lejanas{" "}
         </Button>
-      </DialogTrigger>
+      </div>
 
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Eventos de monitoreo comunitario</DialogTitle>
-          <DialogDescription className="sr-only">
-            Agrega, edita o elimina eventos de monitoreo comunitario realizados
-            por la iniciativa '{initiative.name}'
-          </DialogDescription>
-        </DialogHeader>
+      {monitoringEvents.length > 0 && (
+        <ul>
+          {monitoringEvents.map((event) => {
+            const eventDate = new Date(event.date).toLocaleDateString(LOCALE, {
+              year: "numeric",
+              month: "long",
+              timeZone: "UTC",
+            });
 
-        <ErrorsList errorItems={errors} />
-
-        <NewMonitoringEventForm create={handleCreateMonitoringEvent} />
-
-        <div>
-          <ODataSearchBar
-            components={monitoringEventsSearchBarComponents}
-            setSearchParams={setSearchParams}
-            className="bg-accent *:flex-1!"
-            submit="Filtrar"
-            reset="Borrar filtro"
-          />
-          <Button onClick={handleMonitoringEventSortToggle}>
-            Ordenar de mar recientes a mas lejanas{" "}
-          </Button>
-        </div>
-
-        {monitoringEvents.length > 0 && (
-          <ul>
-            {monitoringEvents.map((event) => {
-              const eventDate = new Date(event.date).toLocaleDateString(
-                LOCALE,
-                { year: "numeric", month: "long" },
-              );
-
-              return (
-                <li key={event.id}>
-                  <div>
-                    fecha: {eventDate}
-                    eventos: {event.value}
-                  </div>
-                  <div>
-                    <MonitoringEventUpdater
-                      event={event}
-                      updater={handleUpdateMonitoringEvent(event.id)}
-                    />
-                    <Button
-                      onClick={() => void handleDeleteMonitoringEvent(event.id)}
-                    >
-                      Borrar
-                    </Button>
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-
-        <DialogFooter className="lg:justify-center">
-          <TablePager
-            currentPage={currentPage}
-            recordsAvailable={monitoringEventsCount.current}
-            recordsPerPage={MONITORING_EVENTS_EDITOR_LIST_AMOUNT}
-            onPageChange={setCurrentPage}
-            paginated={1}
-          />
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+            return (
+              <li key={event.id}>
+                <div>
+                  fecha: {eventDate}
+                  eventos: {event.value}
+                </div>
+                <div>
+                  <MonitoringEventUpdater
+                    event={event}
+                    updater={handleUpdateMonitoringEvent(event.id)}
+                  />
+                  <Button
+                    onClick={() => void handleDeleteMonitoringEvent(event.id)}
+                  >
+                    Borrar
+                  </Button>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+      <TablePager
+        currentPage={currentPage}
+        recordsAvailable={monitoringEventsCount.current}
+        recordsPerPage={MONITORING_EVENTS_EDITOR_LIST_AMOUNT}
+        onPageChange={setCurrentPage}
+        paginated={1}
+      />
+    </div>
   );
 }

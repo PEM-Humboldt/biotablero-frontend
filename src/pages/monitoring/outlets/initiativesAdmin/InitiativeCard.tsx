@@ -10,6 +10,7 @@ import {
   INITIATIVE_LOCATIONS_MIN_AMOUNT,
 } from "@config/monitoring";
 import { PageTitleUpdater } from "@ui/PageTitleUpdater";
+import { Button } from "@ui/shadCN/component/button";
 
 import {
   RoleInInitiative,
@@ -37,7 +38,7 @@ import { ImagesUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCa
 import { uiText } from "pages/monitoring/ui/initiativesAdmin/layout/uiText";
 import { AdminInitiativeUpdateCtx } from "pages/monitoring/ui/initiativesAdmin/hooks/useAdminUpdateContext";
 import { TagsUpdater } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/TagsUpdater";
-import { MonitoringEventsEditor } from "pages/monitoring/ui/initiativesAdmin/initiativeCard/MonitoringEventsEditor";
+import { MonitoringEventsEditor } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/MonitoringEventsEditor";
 
 export function InitiativeCard({
   initiative,
@@ -47,6 +48,7 @@ export function InitiativeCard({
   updater: (value: InitiativeCompleteInfo) => void;
 }) {
   const [isLoading, setIsLoading] = useState(true);
+  const [editMonitoringEvents, setEditMonitoringEvents] = useState(false);
   const [cardInfo, setCardInfo] = useState<InitiativeCompleteInfo | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
   const [currentEdit, setCurrentEdit] = useState<
@@ -170,7 +172,9 @@ export function InitiativeCard({
             />
           )}
 
-          <MonitoringEventsEditor initiative={initiative} />
+          <Button onClick={() => setEditMonitoringEvents((old) => !old)}>
+            Eventos de monitoreo
+          </Button>
 
           <InitiativeStatusDialog
             active={initiative.enabled}
@@ -179,59 +183,69 @@ export function InitiativeCard({
           />
         </div>
 
-        <GeneralInfoUpdater title={uiText.initiative.module.general.title} />
+        {editMonitoringEvents ? (
+          <MonitoringEventsEditor initiative={initiative} />
+        ) : (
+          <>
+            <GeneralInfoUpdater
+              title={uiText.initiative.module.general.title}
+            />
+            <FormListUpdater
+              title={uiText.initiative.module.locations.title}
+              initiativeSection="locations"
+              AddItemComponent={LocationInput}
+              maxItems={INITIATIVE_LOCATIONS_MAX_AMOUNT}
+              minItems={INITIATIVE_LOCATIONS_MIN_AMOUNT}
+              renderCols={
+                new Map<string, keyof LocationObj>([
+                  [
+                    uiText.initiative.module.locations.tableCol[0],
+                    "department",
+                  ],
+                  [
+                    uiText.initiative.module.locations.tableCol[1],
+                    "municipality",
+                  ],
+                  [uiText.initiative.module.locations.tableCol[2], "locality"],
+                ])
+              }
+              renderRowsCallback={makeLocationObj}
+              backEndpoint="InitiativeLocation"
+            />
+            <div className="flex flex-col md:flex-row gap-2 items-start *:w-full">
+              <FormListUpdater
+                title={uiText.initiative.module.contacts.title}
+                initiativeSection="contacts"
+                AddItemComponent={ContactInput}
+                maxItems={INITIATIVE_CONTACTS_MAX_AMOUNT}
+                minItems={INITIATIVE_CONTACTS_MIN_AMOUNT}
+                renderCols={
+                  new Map<string, keyof InitiativeContact>([
+                    [uiText.initiative.module.contacts.tableCol[0], "email"],
+                    [uiText.initiative.module.contacts.tableCol[1], "phone"],
+                  ])
+                }
+                backEndpoint="InitiativeContact"
+              />
 
-        <FormListUpdater
-          title={uiText.initiative.module.locations.title}
-          initiativeSection="locations"
-          AddItemComponent={LocationInput}
-          maxItems={INITIATIVE_LOCATIONS_MAX_AMOUNT}
-          minItems={INITIATIVE_LOCATIONS_MIN_AMOUNT}
-          renderCols={
-            new Map<string, keyof LocationObj>([
-              [uiText.initiative.module.locations.tableCol[0], "department"],
-              [uiText.initiative.module.locations.tableCol[1], "municipality"],
-              [uiText.initiative.module.locations.tableCol[2], "locality"],
-            ])
-          }
-          renderRowsCallback={makeLocationObj}
-          backEndpoint="InitiativeLocation"
-        />
-
-        <div className="flex flex-col md:flex-row gap-2 items-start *:w-full">
-          <FormListUpdater
-            title={uiText.initiative.module.contacts.title}
-            initiativeSection="contacts"
-            AddItemComponent={ContactInput}
-            maxItems={INITIATIVE_CONTACTS_MAX_AMOUNT}
-            minItems={INITIATIVE_CONTACTS_MIN_AMOUNT}
-            renderCols={
-              new Map<string, keyof InitiativeContact>([
-                [uiText.initiative.module.contacts.tableCol[0], "email"],
-                [uiText.initiative.module.contacts.tableCol[1], "phone"],
-              ])
-            }
-            backEndpoint="InitiativeContact"
-          />
-
-          <FormListUpdater
-            title={uiText.initiative.module.users.title}
-            initiativeSection="users"
-            AddItemComponent={UsersInput}
-            maxItems={INITIATIVE_LEADERS_MAX_AMOUNT}
-            minItems={INITIATIVE_LEADERS_MIN_AMOUNT}
-            renderCols={
-              new Map<string, keyof UserItem>([
-                [uiText.initiative.module.contacts.tableCol[0], "userName"],
-              ])
-            }
-            backEndpoint="InitiativeUser"
-          />
-        </div>
-
-        <TagsUpdater title={uiText.initiative.module.tags.title} />
-
-        <ImagesUpdater title={uiText.initiative.module.images.title} />
+              <FormListUpdater
+                title={uiText.initiative.module.users.title}
+                initiativeSection="users"
+                AddItemComponent={UsersInput}
+                maxItems={INITIATIVE_LEADERS_MAX_AMOUNT}
+                minItems={INITIATIVE_LEADERS_MIN_AMOUNT}
+                renderCols={
+                  new Map<string, keyof UserItem>([
+                    [uiText.initiative.module.contacts.tableCol[0], "userName"],
+                  ])
+                }
+                backEndpoint="InitiativeUser"
+              />
+            </div>
+            <TagsUpdater title={uiText.initiative.module.tags.title} />
+            <ImagesUpdater title={uiText.initiative.module.images.title} />
+          </>
+        )}
       </article>
     </AdminInitiativeUpdateCtx.Provider>
   );

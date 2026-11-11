@@ -1,0 +1,153 @@
+import { Button } from "@ui/shadCN/component/button";
+import { FormEvent, useMemo, useState } from "react";
+import { LabeledInput } from "@ui/LabeledInput";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@ui/shadCN/component/select";
+import {
+  MONITORING_EVENTS_MAX_PER_MONTH,
+  MONITORING_EVENTS_MIN_PER_MONTH,
+  MONITORING_STARTING_YEAR,
+} from "@config/monitoring";
+import { months } from "@utils/dates";
+import {
+  isAmountValid,
+  isNewEvent,
+} from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/monitoringEventsEditor/utils/formMonitoringEventsValidations";
+import { ErrorsList, LegendAndErrors } from "@ui/LabelingWithErrors";
+import { createMonitoringEvent } from "pages/monitoring/api/services/monitoringEvents";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+
+const curretnYear = new Date().getFullYear();
+const currentMonth = new Date().getMonth();
+const years = Array.from(
+  { length: curretnYear - MONITORING_STARTING_YEAR + 1 },
+  (_, i) => curretnYear - i,
+);
+
+export function NewMonitoringEventForm({
+  initiativeId,
+}: {
+  initiativeId: number;
+}) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<
+    Partial<Record<"amount" | "date" | "root", string[]>>
+  >({});
+  const [month, setMonth] = useState(months[currentMonth].value);
+  const [year, setYear] = useState(String(curretnYear));
+  const [newEventAmount, setNewEventAmount] = useState(0);
+
+  const handleResetForm = () => {
+    setErrors({});
+    setNewEventAmount(0);
+    setYear(String(curretnYear));
+    setMonth(months[currentMonth].value);
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setErrors({});
+
+    if (!isAmountValid(newEventAmount)) {
+      setErrors({
+        amount: [
+          `Numero de eventos inválido. ingresa un número entre ${MONITORING_EVENTS_MIN_PER_MONTH} y ${MONITORING_EVENTS_MAX_PER_MONTH}.`,
+        ],
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    const date = new Date(Date.UTC(Number(year), Number(month) - 1, 1));
+    const isNewEventValid = await isNewEvent(initiativeId, date);
+
+    if (Array.isArray(isNewEventValid)) {
+      setErrors({ date: isNewEventValid });
+      setIsLoading(false);
+      return;
+    } else if (!isNewEventValid) {
+      setErrors({ date: ["Ya existe un evento de monitoreo con esa fecha."] });
+      setIsLoading(false);
+      return;
+    }
+
+    const res = await createMonitoringEvent(initiativeId, date, newEventAmount);
+    setIsLoading(false);
+    if (isMonitoringAPIError(res)) {
+      setErrors({ root: res.data.map((err) => err.msg) });
+    }
+  };
+
+  const monthsAvailable = useMemo(
+    () =>
+      year === String(curretnYear) ? months.slice(0, currentMonth + 1) : months,
+    [year],
+  );
+
+  return (
+    <form onSubmit={handleSubmit} onReset={handleResetForm}>
+      Crear nuevo grupo de eventos de monitoreo comunitario
+      <LabeledInput
+        inputName={`newEventAmount`}
+        inputType="number"
+        required={true}
+        state={newEventAmount}
+        stateSetter={(value) => setNewEventAmount(Number(value))}
+        validationErrors={errors.amount ?? []}
+        texts={{
+          label: `¿Cuántos eventos de monitoreo se realizaron?`,
+          placeholder: "1, 5, 25...",
+        }}
+      />
+      <fieldset>
+        <LegendAndErrors validationErrors={errors.date ?? []}>
+          ¿Cuándo sucedieron los eventos de monitoreo?
+        </LegendAndErrors>
+
+        <div className="flex gap-2">
+          <Select value={year} onValueChange={(e) => setYear(e)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Año" />
+            </SelectTrigger>
+            <SelectContent>
+              {years.map((year) => (
+                <SelectItem key={year} value={String(year)}>
+                  {year}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
+          <Select value={month} onValueChange={(e) => setMonth(e)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Mes" />
+            </SelectTrigger>
+            <SelectContent>
+              {monthsAvailable.map((month) => (
+                <SelectItem key={month.value} value={month.value}>
+                  {month.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </fieldset>
+      <div>
+        <ErrorsList errorItems={errors.root ?? []} />
+
+        <Button disabled={isLoading}>
+          {isLoading ? "Creando eventos..." : "Crear"}
+        </Button>
+
+        <Button disabled={isLoading} type="reset">
+          Reiniciar
+        </Button>
+      </div>
+    </form>
+  );
+}
