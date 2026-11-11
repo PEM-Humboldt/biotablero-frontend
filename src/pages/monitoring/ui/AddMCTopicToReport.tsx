@@ -15,7 +15,7 @@ import { REPORT_NOTE_MAX_LENGTH } from "@config/report";
 import { StrValidator } from "@utils/strValidator";
 import { inputWarnColor } from "@utils/ui";
 
-import { graphDataToCSV } from "pages/monitoring/utils/topcisDataTransformers";
+import { graphDataToCSV } from "pages/monitoring/utils/topicsDataTransformers";
 import { uiText } from "pages/monitoring/ui/addMCTopicToReport/layout/uiText";
 import { useTopicsCTX } from "pages/monitoring/hooks/useTopicsCTX";
 
