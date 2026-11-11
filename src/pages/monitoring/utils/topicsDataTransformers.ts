@@ -133,13 +133,12 @@ export function dataTransformBarGraph(data: TopicData): BarsData {
 }
 
 /**
- * Serializes graph dataset structures into a flat CSV string format. It detects the input type and flattens the nested data accordingly.
+ * Flattens a graph dataset of `LineData[]` structure into an array of records.
  *
- * @param graphData - The dataset used for rendering the graphs, either as an array of line series (`LineData[]`) or a bar chart object (`BarsData`).
+ * @param graphData - An array of line series (`LineData[]`) to serialize.
  *
- * @returns A formatted CSV string representing the flattened data, or an empty string if the dataset is empty or invalid.
+ * @returns An array of flattened objects representing the data points, ready for CSV conversion.
  */
-
 function serializeTopicSeries(
   graphData: LineData[],
 ): Record<string, number | string | undefined>[] {
@@ -161,6 +160,13 @@ function serializeTopicSeries(
   );
 }
 
+/**
+ * Flattens a graph dataset of `BarsData` structure into an array of records.
+ *
+ * @param graphData - The `BarsData` object containing nested bar data values to serialize.
+ *
+ * @returns An array of flattened objects representing the data points, ready for CSV conversion.
+ */
 function serializeTopicBars(
   graphData: BarsData,
 ): Record<string, number | string | undefined>[] {
@@ -173,6 +179,13 @@ function serializeTopicBars(
   }));
 }
 
+/**
+ * Converts a topic's graph data into a formatted CSV string based on its metric type.
+ *
+ * @param topic - An object combining the topic's metadata, data, and clean graph data (`TopicMetadata & TopicData & CleanDataType`).
+ *
+ * @returns A formatted CSV string representing the flattened data, or an empty string if the dataset is empty, invalid, or of an unknown type.
+ */
 export function graphDataToCSV(
   topic: TopicMetadata & TopicData & CleanDataType,
 ): string {
