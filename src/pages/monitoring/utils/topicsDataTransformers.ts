@@ -133,11 +133,11 @@ export function dataTransformBarGraph(data: TopicData): BarsData {
 }
 
 /**
- * Flattens line graph dataset structures into an array of key-value objects for CSV serialization.
+ * Flattens a graph dataset of `LineData[]` structure into an array of records.
  *
- * @param graphData - The dataset used for rendering line graphs (`LineData[]`).
+ * @param graphData - An array of line series (`LineData[]`) to serialize.
  *
- * @returns An array of flattened objects representing the future CSV rows.
+ * @returns An array of flattened objects representing the data points, ready for CSV conversion.
  */
 function serializeTopicSeries(
   graphData: LineData[],
@@ -161,11 +161,11 @@ function serializeTopicSeries(
 }
 
 /**
- * Flattens bar chart dataset structures into an array of key-value objects for CSV serialization.
+ * Flattens a graph dataset of `BarsData` structure into an array of records.
  *
- * @param graphData - The dataset used for rendering bar charts (`BarsData`).
+ * @param graphData - The `BarsData` object containing nested bar data values to serialize.
  *
- * @returns An array of flattened objects representing the future CSV rows.
+ * @returns An array of flattened objects representing the data points, ready for CSV conversion.
  */
 function serializeTopicBars(
   graphData: BarsData,
@@ -180,13 +180,13 @@ function serializeTopicBars(
 }
 
 /**
- * Serializes topic dataset structures into a flat CSV string format.
+ * Converts a topic's graph data into a formatted CSV string based on its metric type.
  * It evaluates the metric type and routes the data to the appropriate serialization strategy.
  * Automatically extracts headers, escapes internal double quotes, and formats the output.
  *
- * @param topic - The comprehensive topic object containing metadata, raw data, and cleaned data representations.
+ * @param topic - An object combining the topic's metadata, data, and clean graph data (`TopicMetadata & TopicData & CleanDataType`).
  *
- * @returns A formatted CSV string representing the flattened data, or an empty string if the dataset is empty or the metric type is unknown.
+ * @returns A formatted CSV string representing the flattened data, or an empty string if the dataset is empty, invalid, or of an unknown type.
  */
 export function graphDataToCSV(
   topic: TopicMetadata & TopicData & CleanDataType,
