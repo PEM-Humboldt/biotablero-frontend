@@ -31,8 +31,10 @@ const years = Array.from(
 
 export function NewMonitoringEventForm({
   initiativeId,
+  onSuccess,
 }: {
   initiativeId: number;
+  onSuccess: () => Promise<void>;
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<
@@ -80,7 +82,11 @@ export function NewMonitoringEventForm({
     setIsLoading(false);
     if (isMonitoringAPIError(res)) {
       setErrors({ root: res.data.map((err) => err.msg) });
+      return;
     }
+
+    handleResetForm();
+    void onSuccess();
   };
 
   const monthsAvailable = useMemo(
@@ -144,9 +150,7 @@ export function NewMonitoringEventForm({
           {isLoading ? "Creando eventos..." : "Crear"}
         </Button>
 
-        <Button disabled={isLoading} type="reset">
-          Reiniciar
-        </Button>
+        <Button type="reset">Reiniciar</Button>
       </div>
     </form>
   );

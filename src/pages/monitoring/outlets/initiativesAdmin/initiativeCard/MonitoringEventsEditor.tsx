@@ -22,6 +22,7 @@ import { monitoringEventsSearchBarComponents } from "pages/monitoring/outlets/in
 import { ErrorsList } from "@ui/LabelingWithErrors";
 import { NewMonitoringEventForm } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/monitoringEventsEditor/NewMonitoringEventForm";
 import { MonitoringEventUpdater } from "pages/monitoring/outlets/initiativesAdmin/initiativeCard/monitoringEventsEditor/MonitoringEventUpdater";
+import { LoadingDiv } from "@ui/LoadingDiv";
 
 export function MonitoringEventsEditor({
   initiative,
@@ -108,9 +109,14 @@ export function MonitoringEventsEditor({
         la iniciativa '{initiative.name}'
       </p>
 
+      {isLoading && <LoadingDiv />}
+
       <ErrorsList errorItems={errors} />
 
-      <NewMonitoringEventForm initiativeId={initiative.id} />
+      <NewMonitoringEventForm
+        initiativeId={initiative.id}
+        onSuccess={fetchMonitoringEvents}
+      />
 
       <div>
         <ODataSearchBar

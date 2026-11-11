@@ -42,7 +42,6 @@ export async function isNewEvent(
   if (isMonitoringAPIError(res)) {
     return res.data.map((err) => err.msg);
   }
-  console.log(res);
 
   return res["@odata.count"] === 0;
 }

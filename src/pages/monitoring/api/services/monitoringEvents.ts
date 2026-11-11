@@ -64,15 +64,15 @@ export async function createMonitoringEvent(
   date: Date,
   amount: number,
 ) {
+  const isoDate = new Date(
+    Date.UTC(date.getUTCFullYear(), date.getUTCMonth()),
+  ).toISOString();
+
   const res = await monitoringAPI<MonitoringEvent>({
     type: "post",
     endpoint: "MonitoringEvents",
     options: {
-      data: {
-        InitiativeId: initiativeId,
-        Value: amount,
-        Date: new Date(Date.UTC(date)).toISOString(),
-      },
+      data: { InitiativeId: initiativeId, Value: amount, Date: isoDate },
     },
   });
 
