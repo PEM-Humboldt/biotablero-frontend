@@ -5,10 +5,8 @@ import {
   ReportType,
 } from "@appTypes/report";
 import { LOCALE } from "@config/global";
-import {
-  getInitiativeMonitoringEvents,
-  getInitiativeStats,
-} from "pages/monitoring/api/services/initiatives";
+import { getInitiativeStats } from "pages/monitoring/api/services/initiatives";
+import { getInitiativeMonitoringEvents } from "pages/monitoring/api/services/monitoringEvents";
 import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
 import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
 import type { SearchState } from "pages/search/hooks/SearchReducer";

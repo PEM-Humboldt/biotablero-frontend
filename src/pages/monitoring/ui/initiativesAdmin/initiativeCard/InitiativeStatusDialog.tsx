@@ -28,7 +28,7 @@ export function InitiativeStatusDialog({
       <AlertDialogTrigger asChild>
         <Button
           size="icon"
-          variant="destructive"
+          variant={active ? "outline" : "destructive"}
           title={
             active
               ? uiText.initiative.module.status.disable

@@ -6,6 +6,7 @@ import type {
 } from "pages/monitoring/types/territoryStory";
 import type { SendedJoinInitiativeInvitation } from "pages/monitoring/types/userJoinRequest";
 import type { TopicMetadata } from "pages/monitoring/types/topics";
+import { MonitoringEvent } from "./monitoringEvents";
 
 // NOTE: Logs
 export interface ODataLogEntryShort extends HasId {
@@ -196,3 +197,4 @@ export type ODataMonitoringResources = ODataResponse<MonitoringResourceShort>;
 export type ODataSendedInvitations =
   ODataResponse<SendedJoinInitiativeInvitation>;
 export type ODataTopics = ODataResponse<TopicMetadata>;
+export type ODataMonitoringEvents = ODataResponse<MonitoringEvent>;

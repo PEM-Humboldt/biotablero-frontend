@@ -18,7 +18,6 @@ import type { UserJoinRequestData } from "pages/monitoring/types/userJoinRequest
 import type { JoinInitiativeDataForm } from "pages/monitoring/types/userJoinRequest";
 import type { RoleInInitiative } from "pages/monitoring/types/catalog";
 import type {
-  InitiativeMonitoringEvent,
   InitiativeRelated,
   InitiativeStats,
   StatsResponseMap,
@@ -140,7 +139,7 @@ export async function changeInitiativeStatus(
   const endpoint = isEnabled ? "Disable" : "Enable";
   const method = isEnabled ? "delete" : "post";
 
-  const res = await monitoringAPI<InitiativeCompleteInfo>({
+  const res = await monitoringAPI({
     type: method,
     endpoint: `Initiative/${endpoint}/${initiativeId}`,
   });
@@ -422,29 +421,6 @@ export async function getInitiativeStats(initiativeId: number) {
   const res = await monitoringAPI<InitiativeStats>({
     type: "get",
     endpoint: `InitiativeStats/${initiativeId}`,
-  });
-
-  return res;
-}
-
-/**
- * Retrieves the tracking events of a specific initiative, with an option to filter by year.
- *
- * @param initiativeId - The identifier of the initiative whose events are being requested.
- * @param year - Optional. The specific calendar year to filter the event history.
- *
- * @returns A `Promise` that resolves to:
- * - On success: An array of `InitiativeMonitoringEvent` objects.
- * - On failure: An `ApiRequestError` object.
- */
-export async function getInitiativeMonitoringEvents(
-  initiativeId: number,
-  year?: number,
-) {
-  const fetchFromYear = year ? `?year=${year}` : "";
-  const res = await monitoringAPI<InitiativeMonitoringEvent[]>({
-    type: "get",
-    endpoint: `InitiativeStats/GetMonitoringEvents/${initiativeId}${fetchFromYear}`,
   });
 
   return res;
