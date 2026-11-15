@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
+import { getKeycloak } from "@api/auth";
 import { RequestAPIObject, RasterAPIObject } from "pages/search/types/api";
 import { AreaIdBasic, AreaType, AreaId } from "pages/search/types/dashboard";
 import {
@@ -195,6 +196,25 @@ class SearchAPI {
     };
   }
 
+  /** ******* */
+  /** REPORTS */
+  /** ******* */
+
+  /**
+   * Send a report download with its reason
+   *
+   * @param description description associated to the download
+   */
+  static sendReportDownloadReason(description: string) {
+    return SearchAPI.makeAuthPostRequest(
+      "reports",
+      { description },
+      {
+        responseType: "json",
+      },
+    );
+  }
+
   /** ************** */
   /** BASE FUNCTIONS */
   /** ************** */
@@ -233,9 +253,9 @@ class SearchAPI {
   /**
    * Request an endpoint through a POST request
    *
-   * @param {String} endpoint endpoint to attach to url
-   * @param {Object} requestBody JSON object with the request body
-   * @param {Array} options config params to the request
+   * @param endpoint endpoint to attach to url
+   * @param requestBody JSON object with the request body
+   * @param options config params to the request
    */
   static makePostRequest(endpoint: string, requestBody: {}, options = {}) {
     const config: AxiosRequestConfig = {
@@ -252,6 +272,55 @@ class SearchAPI {
         if (error.response) message = error.response.status;
         if (error.request.statusText === "") message = "no-data-available";
         return Promise.reject(message);
+      });
+  }
+
+  /**
+   * Request an endpoint through a POST request
+   *
+   * @param endpoint endpoint to attach to url
+   * @param requestBody JSON object with the request body
+   * @param options config params to the request
+   */
+  static makeAuthPostRequest(endpoint: string, requestBody: {}, options = {}) {
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: "",
+    };
+    return getKeycloak()
+      .then((keycloak) => {
+        if (keycloak.authenticated) {
+          return keycloak
+            .updateToken(30)
+            .then(() => {
+              headers["Authorization"] = `Bearer ${keycloak.token}`;
+
+              const config: AxiosRequestConfig = {
+                headers: headers,
+                ...options,
+              };
+              return axios
+                .post(`${this.backEndUrl}/${endpoint}`, requestBody, config)
+                .then((res) => res.data)
+                .catch((error) => {
+                  let message = "Bad POST response. Try later";
+                  if (error.response) message = error.response.status;
+                  if (error.request.statusText === "")
+                    message = "no-data-available";
+                  return Promise.reject(message);
+                });
+            })
+            .catch((error) => {
+              console.error(
+                "Failed to refresh Keycloak token during request",
+                error,
+              );
+            });
+        }
+        return Promise.reject("Not authenticated");
+      })
+      .catch((err) => {
+        return Promise.reject("Failed to get keycloack instance");
       });
   }
 }
