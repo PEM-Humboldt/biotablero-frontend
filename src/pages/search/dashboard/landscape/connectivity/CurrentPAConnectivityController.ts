@@ -14,8 +14,6 @@ type DpcGraphData = ReturnType<CurrentPAConnectivityController["getGraphData"]>;
 
 export type CurrentPAConnGraphData = currentPAConn & { label: string };
 
-const ASSOCIATED_COLLECTION = "AreasProtegidas";
-
 export class CurrentPAConnectivityController {
   areaType: string = "";
   areaId: number = 0;
@@ -158,6 +156,7 @@ export class CurrentPAConnectivityController {
         dpc: Number(item.dpc),
         pa_id: Number(item.pa_id),
         pa_name: String(item.pa_name),
+        collection_id: Number(item.collection_id),
         category: item.category,
       });
       return acc;
@@ -214,18 +213,9 @@ export class CurrentPAConnectivityController {
       Promise<{ layer: string; bbox?: [number, number, number, number] }>
     > = [];
 
-    const collectionList = await SearchAPI.reqestCollections();
-    const collectionObj = collectionList.find(
-      (coll) => coll.name === ASSOCIATED_COLLECTION,
-    );
-
-    if (!collectionObj) {
-      throw new Error("Layers not found");
-    }
-
-    this.dpcData.forEach(({ pa_id: paId }) => {
+    this.dpcData.forEach(({ pa_id: paId, collection_id: collId }) => {
       const { request, source } = SearchAPI.requestCollectionLayer(
-        collectionObj?.id,
+        collId,
         paId,
       );
       requests.push(request);

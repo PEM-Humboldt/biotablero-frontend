@@ -51,6 +51,7 @@ export type MetricTypesMap = {
     dpc: number;
     pa_id: number;
     pa_name: string;
+    collection_id: number;
     category: "muy_alto" | "alto" | "medio" | "bajo" | "muy_bajo";
   }>;
 
