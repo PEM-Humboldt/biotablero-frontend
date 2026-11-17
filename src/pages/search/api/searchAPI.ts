@@ -17,8 +17,7 @@ class SearchAPI {
    * Check if search backend is up
    */
   static requestTestBackend(): Promise<Array<String>> {
-    // TODO: Bext agregó un endpoit de health, mejor usar ese
-    return SearchAPI.makeGetRequest(`redoc`);
+    return SearchAPI.makeGetRequest(`health`);
   }
 
   /** ****** */

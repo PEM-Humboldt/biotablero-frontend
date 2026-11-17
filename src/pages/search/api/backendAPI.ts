@@ -177,23 +177,6 @@ class BackendAPI {
   /** ******** */
 
   /**
-   * Get values for richness species gaps in the given area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Object>} Object with values of richness species gaps
-   */
-  static requestGaps(
-    areaType: string,
-    areaId: number | string,
-  ): Promise<Array<gaps>> {
-    return BackendAPI.makeGetRequest(
-      `richness/gaps?areaType=${areaType}&areaId=${areaId}`,
-    );
-  }
-
-  /**
    * Get values for richness species concentration in the given area
    *
    * @param {String} areaType area type id, f.e. "ea", "states"
@@ -208,81 +191,6 @@ class BackendAPI {
     return BackendAPI.makeGetRequest(
       `richness/concentration?areaType=${areaType}&areaId=${areaId}`,
     );
-  }
-
-  /** ********** */
-  /** PORTFOLIOS */
-  /** ********** */
-
-  /**
-   * Get all portfolios for a specific target within a given area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {Number} targetId target id to get results
-   *
-   * @return {Promise<Object>} Object with portfolios data
-   */
-  static requestPortfoliosByTarget(
-    areaType: string,
-    areaId: number | string,
-    targetId: number,
-  ): Promise<portfoliosByTarget> {
-    return BackendAPI.makeGetRequest(
-      `portfolios-ca/targets/${targetId}/values?areaType=${areaType}&areaId=${areaId}`,
-    );
-  }
-
-  /**
-   * Get list of targets with portfolios values within a given area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number} areaId area id to request, f.e. "CRQ", 24
-   *
-   * @return {Promise<Array>} Array of objects with targets list
-   */
-  static requestTargetsList(
-    areaType: string,
-    areaId: number | string,
-  ): Promise<Array<targetOrPortfolio>> {
-    return BackendAPI.makeGetRequest(
-      `portfolios-ca/targets/list?areaType=${areaType}&areaId=${areaId}`,
-    );
-  }
-
-  /**
-   * Get list of portfolios
-   *
-   * @return {Promise<Array>} Array of objects with targets list
-   */
-  static requestPortfoliosList(): Promise<Array<targetOrPortfolio>> {
-    return BackendAPI.makeGetRequest(`portfolios-ca/portfolios/list`);
-  }
-
-  /**
-   * Get the layer associated to a portfolio id in a given area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {Number} portfolioId portfolio id to get layer
-   *
-   * @return {Promise<Object>} layer object to be loaded in the map
-   */
-
-  static requestPortfoliosCALayer(
-    areaType: string,
-    areaId: string,
-    portfolioId: number,
-  ): { request: Promise<Object>; source: CancelTokenSource } {
-    const source = axios.CancelToken.source();
-    return {
-      request: BackendAPI.makeGetRequest(
-        `portfolios-ca/portfolios/layer?areaType=${areaType}&areaId=${areaId}&portfolioId=${portfolioId}`,
-        { cancelToken: source.token, responseType: "arraybuffer" },
-        true,
-      ),
-      source,
-    };
   }
 
   /**
@@ -376,31 +284,6 @@ class BackendAPI {
     };
   }
 
-  /**
-   * According to the strategic ecosystem type, get the footprint timeline geometry
-   * associated to the selected area
-   *
-   * @param {String} areaType area type id, f.e. "ea", "states"
-   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
-   * @param {String} seType strategic ecosystem type to request geometry
-   *
-   * @return {ShapeAPIObject} layer object to be loaded in the map
-   */
-  static requestHFLayerBySEInGeofence(
-    areaType: string,
-    areaId: string | number,
-    seType: string,
-  ) {
-    const source = axios.CancelToken.source();
-    return {
-      request: BackendAPI.makeGetRequest(
-        `${areaType}/${areaId}/se/layers/${seType}`,
-        { cancelToken: source.token },
-      ),
-      source,
-    };
-  }
-
   /** ************** */
   /** BASE FUNCTIONS */
   /** ************** */
@@ -438,20 +321,6 @@ class BackendAPI {
           message = "no-data-available";
         return Promise.reject(message);
       });
-  }
-
-  /**
-   * Recover details in the selected area
-   * @param {Number | String} idArea id area to request, f.e. ea
-   * @param {Number | String} idGeofence id geofence to request, f.e. idCAR
-   *
-   * @return {Promise<Object>} Object with values of selected area
-   */
-  static requestGeofenceDetails(
-    idArea: string | number,
-    idGeofence: string | number,
-  ): Promise<geofenceDetails> {
-    return BackendAPI.makeGetRequest(`${idArea}/${idGeofence}`);
   }
 }
 
