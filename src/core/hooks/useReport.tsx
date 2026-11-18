@@ -79,8 +79,8 @@ import { InputGroup, InputGroupAddon } from "@ui/shadCN/component/input-group";
 import type { InitiativeCompleteInfo } from "pages/monitoring/types/initiative";
 import type { SearchState } from "pages/search/hooks/SearchReducer";
 
-// TODO: crear el back de Consultas para poder manejar sus propias métricas, de momento está enlazado a Monitoreo
-import { sendReportDownloadReason } from "pages/monitoring/api/services/report";
+import { sendReportDownloadReason as sendCMReportDownloadReason } from "pages/monitoring/api/services/report";
+import SearchAPI from "pages/search/api/searchAPI";
 
 const mcTopicPathComponents = ["Monitoreo", "Iniciativas", "Indicadores"];
 const searchComponents = ["Consultas"];
@@ -536,17 +536,21 @@ export function ReportCTX({ children }: { children: ReactNode }) {
 
       document.body.removeChild(link);
 
-      void sendReportDownloadReason(
-        whyDownloadSanitized,
-        JSON.stringify(
-          {
-            name: `${user.firstName} ${user.lastName}`,
-            organization: user.organization,
-          },
-          null,
-          2,
-        ),
-      );
+      if (reportType === ReportType.SEARCH_INDICATORS) {
+        void SearchAPI.sendReportDownloadReason(whyDownloadSanitized);
+      } else {
+        void sendCMReportDownloadReason(
+          whyDownloadSanitized,
+          JSON.stringify(
+            {
+              name: `${user.firstName} ${user.lastName}`,
+              organization: user.organization,
+            },
+            null,
+            2,
+          ),
+        );
+      }
 
       setTimeout(() => URL.revokeObjectURL(pdfUrl), 1000);
 
