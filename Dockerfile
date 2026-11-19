@@ -9,6 +9,8 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 ENV NPM_CONFIG_LOGLEVEL=warn
 WORKDIR /app
 
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+
 COPY package.json .
 COPY pnpm-lock.yaml .
 
