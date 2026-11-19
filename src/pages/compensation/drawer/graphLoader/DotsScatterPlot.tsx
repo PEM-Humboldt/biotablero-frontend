@@ -75,7 +75,7 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
   elementOnClick,
 }) => {
   const affectedPercentages = dataJSON.map((x) =>
-    parseFloat(x.affected_percentage)
+    parseFloat(x.affected_percentage),
   );
 
   const dataList: Array<DataListTypes> = dataJSON.map((affectValue) => {
@@ -121,7 +121,7 @@ export const DotsScatterPlot: React.FC<ScatterProps> = ({
         max: Math.max(...affectedPercentages),
       },
       28,
-      "x"
+      "x",
     );
     return scale(parseFloat(xValue) + 2);
   };

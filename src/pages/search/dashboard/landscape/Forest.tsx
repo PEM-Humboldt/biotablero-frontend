@@ -1,0 +1,54 @@
+import { SearchAccordion } from "@ui/SearchAccordion";
+import ForestIntegrity from "pages/search/dashboard/landscape/forest/ForestIntegrity";
+import { useSearchStateCTX } from "pages/search/hooks/SearchContext";
+import { ForestLossPersistence } from "pages/search/dashboard/landscape/forest/ForestLossPersistence";
+import type { AccordionComponent, ComponentProps } from "pages/search/types/ui";
+
+export function Forest(props: ComponentProps) {
+  const { handleAccordionChange, openTab } = props;
+
+  const { searchType } = useSearchStateCTX();
+
+  //TODO: Habilitar seccion de integridad de bosques cuando se conecte el nuevo backend de consultas
+  const initialArray: Array<AccordionComponent> = [
+    {
+      label: {
+        id: "forestLP-2016-2021",
+        name: "Pérdida y persistencia",
+        collapsed: openTab !== "forestLP-2016-2021",
+      },
+      component: ForestLossPersistence,
+    },
+    /*{
+      label: {
+        id: "forestIntegrity",
+        name: "Integridad",
+        collapsed: openTab !== "forestIntegrity",
+      },
+      component: ForestIntegrity,
+    },*/
+  ];
+
+  let selected: Array<string> = [];
+
+  if (searchType !== "drawPolygon") {
+    selected = ["forestLP-2016-2021", "forestIntegrity"];
+  } else {
+    selected = ["forestLP-2016-2021"];
+  }
+
+  const componentsArray = initialArray.filter((f) =>
+    selected.includes(f.label.id),
+  );
+  return (
+    <div style={{ width: "100%" }}>
+      <SearchAccordion
+        componentsArray={componentsArray}
+        classNameDefault="m1"
+        classNameSelected="m1 accordionSelected"
+        handleChange={handleAccordionChange ? handleAccordionChange : () => {}}
+        level="2"
+      />
+    </div>
+  );
+}

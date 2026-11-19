@@ -1,0 +1,22 @@
+import * as geojson from "geojson";
+import { CancelTokenSource } from "axios";
+
+export interface ShapeAPIObject {
+  request: Promise<geojson.GeoJsonObject>;
+  source: CancelTokenSource;
+}
+
+export interface RasterAPIObject {
+  request: Promise<{ layer: string; bbox?: [number, number, number, number] }>;
+  source: CancelTokenSource;
+}
+
+export interface BlobAPIObject {
+  request: Promise<Blob>;
+  source: CancelTokenSource;
+}
+
+export interface RequestAPIObject<T> {
+  request: Promise<T>;
+  source: CancelTokenSource;
+}

@@ -1,0 +1,74 @@
+import type { GenericAbortSignal, InternalAxiosRequestConfig } from "axios";
+import { type ODataParams } from "@appTypes/odata";
+import type { QueryParams, RequestBody } from "@appTypes/htmlRequest";
+
+export interface ExtendedAxiosReqConfig extends InternalAxiosRequestConfig {
+  _retry?: boolean;
+}
+
+export type RequestData = RequestBody | FormData;
+
+export type ResponseType =
+  | "arraybuffer"
+  | "blob"
+  | "document"
+  | "json"
+  | "text"
+  | "stream";
+
+export type MonitoringAPIParams = {
+  endpoint: string;
+  getStatus?: boolean;
+} & (
+  | {
+      type: "get";
+      options?: {
+        data?: QueryParams;
+        oData?: Partial<ODataParams>;
+        timeout?: number;
+        headers?: Record<string, string>;
+        responseType?: ResponseType;
+        signal?: GenericAbortSignal;
+      };
+    }
+  | {
+      type: "delete";
+      options?: {
+        data?: QueryParams;
+        headers?: Record<string, string>;
+        responseType?: ResponseType;
+        signal?: GenericAbortSignal;
+      };
+    }
+  | {
+      type: "put" | "post";
+      options?: {
+        data?: RequestData;
+        headers?: Record<string, string>;
+        responseType?: ResponseType;
+        signal?: GenericAbortSignal;
+      };
+    }
+);
+
+export type ResponseWithStatus<T> = {
+  data: T;
+  status: number;
+};
+
+export type ImageUploadInfo = {
+  type: "banner" | "image";
+} & (
+  | {
+      action: "add";
+      file: File | null | undefined | string;
+    }
+  | {
+      action: "remove";
+    }
+);
+
+export type LogTypeValue = {
+  id: number;
+  name: string;
+};

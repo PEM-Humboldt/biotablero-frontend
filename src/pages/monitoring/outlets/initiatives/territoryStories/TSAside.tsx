@@ -1,0 +1,159 @@
+import type { TerritoryStoryShort } from "pages/monitoring/types/odataResponse";
+import { useEffect, useState } from "react";
+import { StoryTimestamp } from "pages/monitoring/outlets/initiatives/territoryStories/ui/StoryCreationInfo";
+import { Link, useParams } from "react-router";
+import { CirclePlus } from "lucide-react";
+
+import { Button } from "@ui/shadCN/component/button";
+import { getTerritoryStoriesFromInitiative } from "pages/monitoring/api/services/territoryStory";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import { ErrorsList } from "@ui/LabelingWithErrors";
+import { getFeaturedImage } from "pages/monitoring/outlets/initiatives/territoryStories/utils/getFeaturedImage";
+import { TERRITORY_STORIES_FROM_OTHER_INITIATIVE } from "@config/monitoring";
+
+import monitoringResources from "core/assets/MonitoringResources.jpg";
+import monitoringResourcesBg from "core/assets/MonitoringResourcesBG.jpg";
+
+export function TSAside() {
+  return (
+    <aside className="py-4 px-4 xl:px-8 xl:py-8">
+      <div className="sticky top-8 grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4">
+        <TSRecommendations />
+        <OtherMonitoringResources />
+      </div>
+    </aside>
+  );
+}
+
+function TSRecommendations() {
+  const { initiativeId } = useParams();
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<string[]>([]);
+  const [randomStories, setRandomStories] = useState<TerritoryStoryShort[]>([]);
+  const baseUrl = `/Monitoreo/Iniciativas/${initiativeId}/Relatos/`;
+
+  useEffect(() => {
+    // TODO: Script temporal mientras se definen los parámetros para
+    // halar las 3 historias random de otras iniciativas
+    const fetchStories = async () => {
+      if (!initiativeId) {
+        return;
+      }
+      setIsLoading(true);
+
+      const stories = await getTerritoryStoriesFromInitiative(
+        Number(initiativeId),
+      )({});
+      if (isMonitoringAPIError(stories)) {
+        setRandomStories([]);
+        setErrors(stories.data.map((err) => err.msg));
+        setIsLoading(false);
+        return;
+      }
+
+      const totalStories = stories.value;
+      const rndStories: TerritoryStoryShort[] = [];
+      while (
+        rndStories.length < TERRITORY_STORIES_FROM_OTHER_INITIATIVE &&
+        totalStories.length > 0
+      ) {
+        const randomStoryIndx = Math.floor(Math.random() * totalStories.length);
+        rndStories.push(...totalStories.splice(randomStoryIndx, 1));
+      }
+
+      setRandomStories(rndStories);
+      setIsLoading(false);
+    };
+
+    // TODO: activar cuando esté disponible el llamado a historias random
+    // void fetchStories();
+  }, [initiativeId]);
+
+  if (isLoading) {
+    return (
+      <div className="bg-muted text-lg text-primary border border-primary p-4 rounded-lg my-4">
+        Cargando...
+      </div>
+    );
+  }
+
+  return randomStories.length > 0 ? (
+    <div className="flex flex-col gap-2 mb-8">
+      <h3 className="text-primary text-lg font-normal m-0">
+        Relatos de otras iniciativas
+      </h3>
+      <ErrorsList
+        errorItems={errors}
+        className="bg-accent/10 border border-accent rounded-lg p-4"
+      />
+      {randomStories.map((story) => {
+        const featuredImg = getFeaturedImage(story);
+        return (
+          <article
+            key={story.id}
+            className="border-b border-b-grey last:border-none flex gap-2 pt-2 pb-4"
+          >
+            <img
+              src={featuredImg.url}
+              alt={featuredImg.alt}
+              className="h-25 w-20 rounded object-cover"
+            />
+            <div className="w-full flex flex-col justify-between">
+              <h4>{story.title}</h4>
+              <div className="w-full flex justify-between items-center">
+                <StoryTimestamp
+                  story={story}
+                  className="text-sm text-primary"
+                />
+
+                <Button variant="ghost-clean" asChild>
+                  <Link to={`${baseUrl}${story.id}`}>
+                    Leer <span className="sr-only">el relato</span>
+                    <CirclePlus className="size-6" aria-hidden="true" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  ) : null;
+}
+
+function OtherMonitoringResources() {
+  return (
+    <div className="shadow-2xl rounded-3xl overflow-hidden">
+      <img
+        src={monitoringResources}
+        alt="Personas realizando monitoreo comunitario"
+        className="w-full h-60 object-cover"
+      />
+      <div
+        className="flex flex-col bg-primary p-4 bg-cover bg-center bg-no-repeat bg-blend-multiply overflow-hidden text-background"
+        style={{
+          backgroundImage: `url(${monitoringResourcesBg})`,
+        }}
+      >
+        <h3>
+          ¿Cómo debe nuestra iniciativa tomar los datos sobre biodiversidad?
+        </h3>
+        <p className="text-lg font-normal">
+          Te invitamos a acercarte, participar y aprender cómo podemos, juntos,
+          recolectar información sobre la biodiversidad de nuestro territorio.
+        </p>
+
+        <Button
+          asChild
+          variant="link"
+          className="self-end flex gap-2 items-center text-right text-background font-normal"
+        >
+          <Link to="/Monitoreo">
+            Accede a los recursos de monitoreo
+            <CirclePlus className="size-6" aria-hidden="true" />
+          </Link>
+        </Button>
+      </div>
+    </div>
+  );
+}

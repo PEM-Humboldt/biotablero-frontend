@@ -1,0 +1,60 @@
+import { LOCALE } from "@config/global";
+
+import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
+import { uiText } from "pages/monitoring/outlets/initiatives/layout/uiText";
+import { makeInitiativeLocationsString } from "@utils/format";
+
+export function BasicInfo() {
+  const { initiativeInfo } = useInitiativeCTX();
+
+  if (!initiativeInfo) {
+    return null;
+  }
+
+  const creationDateObj = new Date(initiativeInfo.creationDate);
+
+  const datetime = `${creationDateObj.getFullYear()}-${String(creationDateObj.getMonth() + 1)}`;
+
+  const renderDate = creationDateObj.toLocaleDateString(LOCALE, {
+    month: "long",
+    year: "numeric",
+  });
+
+  const initiativeLocations = makeInitiativeLocationsString(
+    initiativeInfo.locations,
+    uiText.profile.basicInfo.locationSeparator,
+  );
+
+  const initiativeUsers = initiativeInfo.users
+    .map((u) => u.externalData?.fullName || u.userName || null)
+    .filter(Boolean)
+    .join(uiText.profile.basicInfo.usersSeparator);
+
+  return (
+    <>
+      <h3 className="flex flex-col text-5xl uppercase m-0">
+        {initiativeInfo.shortName ?? ""}
+
+        <div className="text-lg normal-case font-normal no-underline">
+          {initiativeInfo.name}
+        </div>
+      </h3>
+
+      <div className="flex flex-col mb-4 text-grey-dark">
+        <div title={uiText.profile.basicInfo.usersTitle}>{initiativeUsers}</div>
+        <div className="flex flex-col">
+          <time
+            title={uiText.profile.basicInfo.creationDateTitle}
+            dateTime={datetime}
+          >
+            {uiText.profile.basicInfo.datePrefix}
+            {renderDate}
+          </time>
+          <address title="Ubicación" className="not-italic inline">
+            {initiativeLocations}
+          </address>
+        </div>
+      </div>
+    </>
+  );
+}

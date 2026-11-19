@@ -1,0 +1,164 @@
+import { createBrowserRouter, redirect } from "react-router";
+
+import { getKeycloak } from "@api/auth";
+import { checkNLoad } from "@utils/userLoader";
+
+import { MainLayout } from "core/layout/MainLayout";
+import { Home } from "pages/Home";
+import { Indicators } from "pages/Indicators";
+import { Portfolio } from "pages/Portfolio";
+import { InitiativesMap } from "pages/monitoring/outlets/InitiativesMap";
+import { Initiatives } from "pages/monitoring/outlets/Initiatives";
+import { Resources as MonitoringResources } from "pages/monitoring/outlets/Resources";
+import { TopicsSearch } from "pages/monitoring/outlets/TopicsSearch";
+import { Manager as ResourcesManager } from "pages/monitoring/outlets/resources/Manager";
+import { Help } from "pages/monitoring/outlets/Help";
+
+import { MyProfile } from "pages/monitoring/outlets/MyProfile";
+import { InitiativesAdmin } from "pages/monitoring/outlets/InitiativesAdmin";
+import { TopicsAdmin } from "pages/monitoring/outlets/TopicsAdmin";
+import { TagsAdmin } from "pages/monitoring/outlets/TagsAdmin";
+import { Logs } from "pages/monitoring/outlets/Logs";
+import { ToS } from "pages/TOS";
+
+export const routes = createBrowserRouter([
+  {
+    path: "/",
+    loader: async () => {
+      try {
+        await getKeycloak();
+      } catch (err) {
+        console.error("Error handling authentication:", err);
+      }
+    },
+    HydrateFallback: () => <div>Cargando aplicación...</div>,
+    Component: MainLayout,
+    children: [
+      {
+        index: true,
+        Component: Home,
+      },
+      {
+        path: "Consultas",
+        lazy: async () => {
+          const { Search } = await import("pages/Search");
+          return { Component: Search };
+        },
+      },
+      {
+        path: "Monitoreo",
+        lazy: async () => {
+          const { Monitoring } = await import("pages/Monitoring");
+          return { Component: Monitoring };
+        },
+        children: [
+          {
+            index: true,
+            Component: InitiativesMap,
+          },
+          {
+            path: "Departamento/:departmentId?/:initiativeId?",
+            Component: InitiativesMap,
+          },
+          {
+            path: "Iniciativas/:initiativeId?/:tabSection?/:detailItem?",
+            Component: Initiatives,
+          },
+          {
+            path: "Indicadores",
+            Component: TopicsSearch,
+          },
+          {
+            path: "Recursos",
+            children: [
+              {
+                Component: ResourcesManager,
+                path: "Admin",
+                loader: () =>
+                  checkNLoad({
+                    requirements: { roles: ["User"] },
+                    redirectPath: "/Monitoreo/Recursos",
+                  }),
+              },
+              { Component: MonitoringResources, path: ":resourceId?" },
+            ],
+          },
+          {
+            path: "Ayudas",
+            Component: Help,
+          },
+          {
+            path: "MiPerfil",
+            Component: MyProfile,
+            loader: () =>
+              checkNLoad({
+                requirements: { roles: ["User"] },
+                redirectPath: "/Monitoreo",
+              }),
+          },
+          {
+            path: "Admin",
+            children: [
+              { index: true, loader: () => redirect("Iniciativas") },
+              {
+                path: "Iniciativas",
+                Component: InitiativesAdmin,
+                loader: () =>
+                  checkNLoad({
+                    requirements: { roles: ["Admin"] },
+                    redirectPath: "/Monitoreo",
+                  }),
+              },
+              {
+                path: "Tematicas",
+                Component: TopicsAdmin,
+                loader: () =>
+                  checkNLoad({
+                    requirements: { roles: ["Admin"] },
+                    redirectPath: "/Monitoreo",
+                  }),
+              },
+              {
+                path: "Etiquetas",
+                Component: TagsAdmin,
+                loader: () =>
+                  checkNLoad({
+                    requirements: { roles: ["Admin"] },
+                    redirectPath: "/Monitoreo",
+                  }),
+              },
+              {
+                path: "Registros",
+                Component: Logs,
+                loader: () =>
+                  checkNLoad({
+                    requirements: { roles: ["Admin"] },
+                    redirectPath: "/Monitoreo",
+                  }),
+              },
+            ],
+          },
+        ],
+      },
+      {
+        path: "Indicadores",
+        Component: Indicators,
+      },
+      {
+        path: "/:user/Compensaciones",
+        lazy: async () => {
+          const { RenderCompensation } = await import("pages/CompensationAuth");
+          return { Component: RenderCompensation };
+        },
+      },
+      {
+        path: "Portafolios",
+        Component: Portfolio,
+      },
+      {
+        path: "TerminosCondiciones",
+        Component: ToS,
+      },
+    ],
+  },
+]);

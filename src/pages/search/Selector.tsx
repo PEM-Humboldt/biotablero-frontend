@@ -1,0 +1,170 @@
+import { useEffect, useState } from "react";
+
+import EditIcon from "@mui/icons-material/Edit";
+
+import { SearchAccordion } from "@ui/SearchAccordion";
+import { isFlagEnabled } from "@utils/isFlagEnabled";
+import {
+  ErrorMessage,
+  LoadingMessage,
+} from "pages/search/selector/selectorMessages";
+import SearchAPI from "pages/search/api/searchAPI";
+import type { AreaType } from "pages/search/types/dashboard";
+import {
+  type SrchType,
+  useSearchDispatchCTX,
+  useSearchStateCTX,
+} from "pages/search/hooks/SearchContext";
+import { DrawPolygon } from "pages/search/selector/DrawPolygon";
+import SearchAreas from "pages/search/selector/SearchAreas";
+import { SearchUpdated } from "pages/search/hooks/SearchReducer";
+
+interface SelectorProps {
+  showDrawControls: (show: boolean) => void;
+}
+
+type AreasErrorType = "none" | "request-failed" | "empty-result";
+
+// TODO: Pensar a futuro un sistema más robusto para manejo de errores
+const AREA_ERROR_MESSAGES: Record<AreasErrorType, string> = {
+  none: "",
+  "request-failed":
+    "Hubo un error en esta funcionalidad, prueba otra alternativa.",
+  "empty-result": "No se encontraron áreas disponibles para consultar.",
+};
+
+export function Selector({ showDrawControls }: SelectorProps) {
+  const [drawPolygonFlag, setDrawPolygonFlag] = useState(true);
+  const [areaTypes, setAreaTypes] = useState<Array<AreaType>>([]);
+  const [areasError, setAreasError] = useState<AreasErrorType>("none");
+  const [polygonError, setPolygonError] = useState(false);
+  const [isLoadingAreaTypes, setIsLoadingAreaTypes] = useState(true);
+
+  const { searchType } = useSearchStateCTX();
+  const dispatchSearchMap = useSearchDispatchCTX();
+
+  useEffect(() => {
+    const selectorSync = async () => {
+      try {
+        const polygonFlag = await isFlagEnabled("drawPolygon");
+        setDrawPolygonFlag(polygonFlag);
+
+        const areaTypesReq = await SearchAPI.requestAreaTypes();
+        const selectableAreaTypes = areaTypesReq.filter(
+          ({ id }) => id !== "national",
+        );
+        setAreaTypes(selectableAreaTypes);
+        setAreasError("none");
+      } catch (err) {
+        console.error(err);
+        setAreasError("request-failed");
+      } finally {
+        setIsLoadingAreaTypes(false);
+      }
+    };
+
+    void selectorSync();
+  }, []);
+
+  useEffect(() => {
+    const testBackend = async () => {
+      try {
+        await SearchAPI.requestTestBackend();
+      } catch (err) {
+        console.error("Cannot get data from the backend", err);
+        setPolygonError(true);
+        showDrawControls(false);
+      }
+    };
+
+    void testBackend();
+  }, [showDrawControls]);
+
+  let ComponentToRender: React.FC<any>;
+
+  if (isLoadingAreaTypes) {
+    ComponentToRender = () => <LoadingMessage />;
+  } else if (areasError !== "none") {
+    ComponentToRender = () => (
+      <ErrorMessage message={AREA_ERROR_MESSAGES[areasError]} />
+    );
+  } else {
+    ComponentToRender = SearchAreas;
+  }
+
+  const sections = [
+    {
+      label: {
+        id: "panel1-Geocerca",
+        name: "Área de consulta",
+        collapsed: !(searchType === "definedArea"),
+      },
+      component: ComponentToRender,
+      componentProps: {
+        areasList: areaTypes,
+      },
+    },
+    {
+      label: {
+        id: "draw-polygon",
+        name: "Dibujar polígono",
+        icon: EditIcon,
+        disabled: !drawPolygonFlag,
+        collapsed: !(searchType === "drawPolygon"),
+      },
+      // TODO: Considerar move DrawPolygon aquí mismo o mover SearchAreas a otro archivo
+      component: polygonError ? ErrorMessage : DrawPolygon,
+    },
+    {
+      label: {
+        id: "panel3",
+        name: "Subir polígono",
+        disabled: true,
+      },
+    },
+  ];
+
+  const onChange = (lvl: string, expTab: string) => {
+    let searchFor: SrchType | null = null;
+    if (expTab === "panel1-Geocerca") {
+      searchFor = "definedArea";
+    } else if (expTab === "draw-polygon") {
+      searchFor = "drawPolygon";
+      showDrawControls(true);
+    }
+
+    dispatchSearchMap({
+      type: SearchUpdated.RESET_SEARCH_TYPE,
+      searchType: searchFor,
+    });
+  };
+
+  return (
+    <div className="selector">
+      <div className="description">
+        <p>
+          En esta sección podrás encontrar información sobre{" "}
+          <b> ecosistemas </b>,<b>especies</b> y <b>paisaje</b>, de 3 distintas
+          maneras:
+        </p>
+        <p>
+          <i>1</i> Selecciona un <b>área de consulta</b> predeterminada
+          (departamentos, jurisdicciones, etc.)
+        </p>
+        <p>
+          <i>2</i> Dibuja un <b>polígono</b>
+        </p>
+        <p>
+          <i>3</i> Sube tu propio <b>polígono</b> (usuarios registrados)
+        </p>
+      </div>
+      <SearchAccordion
+        componentsArray={sections}
+        classNameDefault="m0b"
+        classNameSelected="m0b selector-expanded"
+        level="1"
+        handleChange={onChange}
+      />
+    </div>
+  );
+}

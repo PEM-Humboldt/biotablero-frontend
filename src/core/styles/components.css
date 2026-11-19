@@ -1,0 +1,470 @@
+@layer components {
+  /* NOTE: Para marcación de páginas */
+  .page-main {
+    @apply bg-[#f5f5f5] w-full p-4 *:max-w-7xl flex flex-col gap-4 items-center;
+
+    & > header {
+      @apply p-6 pb-0 w-full flex justify-between items-baseline;
+
+      & > h3 {
+        @apply text-primary;
+      }
+    }
+  }
+
+  .common-tabs {
+    @apply w-full;
+
+    & > .tabs-list {
+      @apply p-2! px-2! bg-grey-light text-grey-dark rounded-lg space-x-2;
+
+      & > .tabs-trigger {
+        @apply gap-4 text-base! border-b border-b-grey-light text-primary data-[state=active]:bg-primary rounded-lg data-[state=active]:text-primary-foreground hover:data-[state=inactive]:bg-blue-800 hover:text-primary-foreground hover:data-[state=inactive]:cursor-pointer data-[state=active]:shadow;
+      }
+    }
+
+    & > .tabs-content {
+      @apply bg-muted rounded-lg;
+    }
+  }
+
+  /* NOTE: para la tabla de invitaciones */
+  .table-invitations {
+    @apply border border-primary/30 rounded-lg mb-2 overflow-hidden;
+
+    & > table {
+      @apply table-fixed w-full bg-white;
+
+      & thead {
+        @apply bg-muted/30 [&_th]:py-1 border-b border-b-primary/30 text-left text-primary [&_th]:font-normal [&_th]:text-base;
+      }
+
+      & tr {
+        @apply hover:bg-muted;
+      }
+
+      & td,
+      & th {
+        @apply px-3 py-1;
+
+        /* NOTE: Col id */
+        &:first-child {
+          @apply w-[10%];
+        }
+
+        /* NOTE: Cols fecha y usuario */
+        &:nth-child(2),
+        &:nth-child(3) {
+          @apply w-[20%];
+        }
+
+        /* NOTE: Col acción */
+        &:last-child {
+          @apply w-[50%];
+        }
+      }
+    }
+  }
+
+  /* NOTE: Para la tabla de logs */
+  .table-logs {
+    @apply border border-primary/30 rounded-lg mb-2 overflow-hidden;
+
+    & > table {
+      @apply table-fixed w-full bg-white;
+
+      & thead {
+        @apply bg-muted/30 [&_th]:py-1 border-b border-b-primary/30 text-left text-primary [&_th]:font-normal [&_th]:text-base;
+      }
+
+      & tr {
+        @apply hover:bg-muted;
+      }
+
+      & td,
+      & th {
+        @apply px-3 py-1;
+
+        /* NOTE: Col id */
+        &:first-child {
+          @apply hidden md:table-cell w-[30%];
+        }
+
+        /* NOTE: Cols fecha */
+        &:nth-child(2) {
+          @apply md:w-[15%];
+        }
+
+        /* NOTE: Cols usuario */
+        &:nth-child(3) {
+          @apply hidden md:table-cell w-[15%];
+        }
+
+        /* NOTE: Col tipo */
+        &:nth-child(4) {
+          @apply hidden md:table-cell w-[10%];
+        }
+
+        /* NOTE: Col descripcion completa el 100% */
+        &:nth-child(5) {
+          @apply md:w-[10%];
+        }
+
+        /* NOTE: Col acción */
+        &:last-child {
+          @apply md:w-[10%] text-center;
+        }
+      }
+    }
+  }
+
+  /* Manejo de indentación y viñetas para listas anidadas en Lexical */
+  .editor-list-ul {
+    @apply list-disc;
+  }
+
+  .editor-list-ul .editor-list-ul {
+    list-style-type: circle;
+  }
+
+  .editor-list-ul .editor-list-ul .editor-list-ul {
+    list-style-type: square;
+  }
+
+  .editor-list-ol {
+    @apply list-decimal;
+  }
+
+  /* Lexical usa clases para la indentación profunda si usas el comando Tab */
+  .editor-listItem {
+    @apply ml-8;
+  }
+
+  .editor-nested-listitem {
+    list-style-type: none; /* Evita doble viñeta en el contenedor */
+  }
+
+  /* Reset de márgenes para que no se sumen exponencialmente de forma errónea */
+  .editor-nested-listitem > ul,
+  .editor-nested-listitem > ol {
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+
+  /* NOTE: para manejar los estilos de renderizado de los relatos del territorio */
+  .markdown-renderer {
+    @apply text-base lg:text-lg leading-relaxed text-foreground break-words;
+
+    /* Párrafos y espaciado general */
+    & p {
+      @apply mb-4 last:mb-0 text-base lg:text-lg;
+    }
+
+    /* Headings dinámicos (h1-h6) */
+    & h1 {
+      @apply text-4xl lg:text-5xl font-bold mt-8 mb-4;
+    }
+    & h2 {
+      @apply text-3xl lg:text-4xl font-bold mt-6 mb-3;
+    }
+    & h3 {
+      @apply text-2xl lg:text-3xl font-normal mt-5 mb-2;
+    }
+    & h4 {
+      @apply text-xl lg:text-2xl font-normal mt-4 mb-2;
+    }
+    & h5,
+    & h6 {
+      @apply text-lg lg:text-xl font-normal mt-4 mb-2;
+    }
+
+    /* Listas */
+    & ul,
+    & ol {
+      @apply ml-16 mb-4 p-0;
+      list-style-position: outside;
+    }
+
+    /* Cualquier lista anidada (ul u ol dentro de ul u ol) usa la misma sangría */
+    & :is(ul, ol) :is(ul, ol) {
+      @apply mt-2 ml-8;
+    }
+
+    & ul {
+      @apply list-disc;
+    }
+
+    & ol {
+      @apply list-decimal;
+    }
+
+    & li {
+      @apply mb-1 relative;
+      display: list-item;
+
+      &::marker {
+        @apply text-foreground text-base font-light;
+      }
+    }
+
+    /* <li> que Lexical usa solo como contenedor de una sublista */
+    & li:has(> ul:only-child),
+    & li:has(> ol:only-child) {
+      @apply ml-0;
+      display: block;
+    }
+
+    & li > p {
+      @apply m-0 inline;
+    }
+
+    & li > ul,
+    & li > ol {
+      @apply block;
+    }
+
+    /* Links */
+    & a {
+      @apply text-accent underline transition-colors font-normal hover:text-primary;
+    }
+
+    /* Citas (Blockquotes) */
+    & blockquote {
+      @apply border-l-4 border-primary px-4 py-1 my-4 ml-16 italic text-primary font-normal bg-muted max-w-[50ch] rounded-r-sm;
+    }
+
+    /* Formatos de texto */
+    & strong {
+      @apply font-normal text-foreground;
+    }
+
+    & em {
+      @apply italic;
+    }
+  }
+
+  /* NOTE: para manejar los estilos de renderizado de los relatos del territorio */
+  .markdown-ShortInfo {
+    @apply leading-relaxed text-foreground break-words text-[#424242]! font-[300]!;
+
+    /* Párrafos y espaciado general */
+    & p {
+      @apply mb-1 last:mb-0 text-left text-pretty;
+    }
+
+    /* Listas */
+    & ul,
+    & ol {
+      @apply ml-8 mb-2 p-0 text-[12px]!;
+      list-style-position: outside;
+    }
+
+    & ul {
+      @apply list-disc;
+    }
+
+    & ol {
+      list-style-type: none !important;
+      counter-reset: li-counter;
+
+      & ol {
+        counter-reset: li-counter;
+        @apply mt-2 ml-4;
+      }
+    }
+
+    & li {
+      @apply mb-1 relative;
+      display: list-item;
+    }
+
+    & ol > li {
+      counter-increment: li-counter;
+
+      &::marker {
+        content: counter(li-counter) ". ";
+        @apply text-foreground font-light;
+      }
+    }
+
+    & li:has(> ul:only-child),
+    & li:has(> ol:only-child) {
+      @apply ml-0;
+      display: block;
+      list-style-type: none !important;
+      counter-increment: none;
+
+      &::marker {
+        content: none !important;
+      }
+    }
+
+    & li > p {
+      @apply m-0 inline;
+    }
+
+    & li > ul,
+    & li > ol {
+      @apply block;
+    }
+
+    /* Links */
+    & a {
+      @apply text-primary underline transition-colors font-normal hover:text-accent;
+    }
+
+    /* Formatos de texto */
+    & strong {
+      @apply font-normal text-foreground;
+    }
+
+    & em {
+      @apply italic;
+    }
+  }
+
+  /* NOTE: Para la tabla de etiquetas */
+  .table-tags {
+    @apply border border-primary/30 rounded-lg mb-2 overflow-hidden;
+
+    & > table {
+      @apply table-fixed w-full bg-white;
+
+      & thead {
+        @apply bg-muted/30 [&_th]:py-1 border-b border-b-primary/30 text-left text-primary [&_th]:font-normal [&_th]:text-base;
+      }
+
+      & tr {
+        @apply hover:bg-muted;
+      }
+
+      & td,
+      & th {
+        @apply px-3 py-1;
+
+        /* NOTE: Col categoría */
+        &:first-child {
+          @apply hidden md:table-cell md:w-[15%] md:truncate;
+        }
+
+        /* NOTE: Col nombre */
+        &:nth-child(2) {
+          @apply md:w-[20%];
+        }
+
+        /* NOTE: Col nombre largo*/
+        &:nth-child(3) {
+          @apply hidden md:table-cell md:w-[30%] md:truncate;
+        }
+
+        /* NOTE: Col url*/
+        &:nth-child(4) {
+          @apply hidden md:table-cell md:truncate;
+        }
+
+        /* NOTE: Col acción */
+        &:last-child {
+          @apply md:w-[20%] text-center;
+        }
+      }
+    }
+  }
+
+  /* NOTE: Para inputs de lista */
+  .table-form-display-container {
+    @apply border border-primary/30 w-full max-w-full rounded-lg mb-2 overflow-x-auto;
+  }
+
+  .table-form-display {
+    @apply w-full bg-white;
+
+    & thead {
+      @apply bg-muted/30 [&_th]:py-1 border-b border-b-primary/30 text-left text-primary [&_th]:font-normal [&_th]:text-base;
+    }
+
+    & tr {
+      @apply hover:bg-muted;
+    }
+
+    & td,
+    & th {
+      @apply px-2 whitespace-nowrap;
+    }
+  }
+
+  .table-form-actions {
+    @apply p-0! m-0! *:p-0! *:m-0 text-right flex gap-1 justify-end;
+  }
+
+  .form-input-list {
+    @apply flex flex-wrap gap-2 [&>button]:flex-[1_0_210px] [&>div]:flex-[1_0_210px] [&>div]:last:flex-0 justify-end items-end;
+  }
+
+  .scrollbar-custom {
+    &::-webkit-scrollbar {
+      @apply w-2 h-2;
+    }
+
+    &::-webkit-scrollbar-track {
+      @apply bg-primary/10;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      @apply bg-accent rounded-lg;
+    }
+  }
+
+  /* NOTE: pantalla de loading */
+  .loading-backdrop {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(66, 66, 66, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    & .loading-wrapper {
+      padding: 75px 30px 0;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 1);
+      box-sizing: border-box;
+
+      & h2 {
+        text-transform: uppercase;
+        color: #ea485f;
+      }
+
+      & .loading-bars {
+        display: flex;
+        justify-content: center;
+        height: 60px;
+        transform: rotate(180deg) scale(1.5);
+
+        & .bar {
+          display: inline-block;
+          width: 13px;
+          height: 15px;
+          margin: 0 2px;
+
+          &:nth-last-child(1) {
+            animation: loadingA 1.5s 1s infinite;
+            background-color: #d65e6e;
+          }
+
+          &:nth-last-child(2) {
+            animation: loadingA 1.5s 0.5s infinite;
+            background-color: #e84a5f;
+          }
+
+          &:nth-last-child(3) {
+            animation: loadingA 1.5s 0s infinite;
+            background-color: #e32759;
+          }
+        }
+      }
+    }
+  }
+}
