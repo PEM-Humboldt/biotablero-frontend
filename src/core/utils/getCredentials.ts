@@ -1,0 +1,56 @@
+/**
+ * Compares if an object matches the shape and values of a partial object.
+ *
+ * @param thisObject - The source object.
+ * @param has - The partial object to check against.
+ * @returns `true` if `thisObject` matches `has`, otherwise `false`.
+ */
+export function partialComparison<T extends Record<string, unknown>>(
+  thisObject: T,
+  has: Partial<T>,
+): boolean {
+  if (typeof has !== typeof thisObject) {
+    return false;
+  }
+
+  for (const key of Object.keys(has)) {
+    const required = has[key];
+    const userHas = thisObject[key];
+
+    if (required === undefined) {
+      return false;
+    }
+
+    if (Array.isArray(required) && Array.isArray(userHas)) {
+      for (let i = 0; i < required.length; i++) {
+        if (!userHas.includes(required[i])) {
+          return false;
+        }
+      }
+      continue;
+    }
+
+    if (
+      required &&
+      typeof required === "object" &&
+      userHas &&
+      typeof userHas === "object"
+    ) {
+      const result = partialComparison(
+        userHas as Record<string, unknown>,
+        required as Record<string, unknown>,
+      );
+
+      if (!result) {
+        return false;
+      }
+      continue;
+    }
+
+    if (required !== userHas) {
+      return false;
+    }
+  }
+
+  return true;
+}

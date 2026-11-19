@@ -1,0 +1,46 @@
+import { Button } from "@ui/shadCN/component/button";
+import { useInitiativeCTX } from "pages/monitoring/hooks/useInitiativeCTX";
+import { UserStateInInitiative } from "pages/monitoring/types/userJoinRequest";
+import { uiText } from "pages/monitoring/ui/joinInitiativeRequestButton/layout/uiText";
+import { LeaveInitiativeBtnAlert } from "pages/monitoring/ui/joinInitiativeRequestButton/LeaveInitiativeBtnAlert";
+import { CancelJoinInitiativeRequestBtnAlert } from "pages/monitoring/ui/joinInitiativeRequestButton/CancelJoinInitiativeRequestBtnAlert";
+import { MakeJoinInitiativeRequestBtnDialog } from "pages/monitoring/ui/joinInitiativeRequestButton/MakeJoinInitiativeRequestBtnDialog";
+import { useUserCTX } from "@hooks/UserCTX";
+
+export function JoinInitiativeRequestButton() {
+  const { userStateInInitiative } = useInitiativeCTX();
+  const { login } = useUserCTX();
+
+  switch (userStateInInitiative) {
+    case UserStateInInitiative.IDLE:
+      return (
+        <div className="bg-muted text-muted-foreground text-center font-normal rounded-lg p-2">
+          {uiText.loading}
+        </div>
+      );
+
+    case UserStateInInitiative.GUEST:
+      return (
+        <Button onClick={() => void login()}>
+          {uiText.noUser.icon && <uiText.noUser.icon />}
+          Unirse a la iniciativa
+        </Button>
+      );
+
+    case UserStateInInitiative.USER_NONE:
+      return <MakeJoinInitiativeRequestBtnDialog />;
+
+    case UserStateInInitiative.USER_ASPIRING:
+      return <CancelJoinInitiativeRequestBtnAlert />;
+
+    case UserStateInInitiative.USER_PARTICIPANT:
+    case UserStateInInitiative.USER_VIEWER:
+      return <LeaveInitiativeBtnAlert />;
+
+    case UserStateInInitiative.NO_INITIATIVE:
+    case UserStateInInitiative.USER_LEADER:
+    case UserStateInInitiative.ADMIN:
+    default:
+      return null;
+  }
+}

@@ -1,0 +1,163 @@
+import type { ImageMimeType } from "@appTypes/formats";
+import type { ODataParams } from "@appTypes/odata";
+import { GRAPHS_EXTENDED_COLOR_PALETTE } from "@config/color";
+
+// Logs
+export const LOG_RECORDS_PER_PAGE = 20; // registrys on the logs summary
+
+// Initiative description and properties
+export const MONITORING_YEARS_AVAILABLE = [2024, 2025, 2026];
+export const INITIATIVES_PER_PAGE = 10; // Initiatives on the admin panel
+
+export const INITIAVIVE_NAME_MAX_LENGTH = 100;
+export const INITIAVIVE_SHORTNAME_MAX_LENGTH = 40;
+export const INITIAVIVE_DESCRIPTION_MAX_LENGTH = 1000;
+export const INITIAVIVE_OBJECTIVE_MAX_LENGTH = 1000;
+export const INITIAVIVE_INFLUENCE_MAX_LENGTH = 1000;
+
+export const INITIATIVE_IMG_BANNER_WIDTH_MAX = 1600;
+export const INITIATIVE_IMG_BANNER_WIDTH_MIN = 200;
+export const INITIATIVE_IMG_BANNER_HEIGHT_MAX = 1600;
+export const INITIATIVE_IMG_BANNER_HEIGHT_MIN = 200;
+
+export const INITIATIVE_IMG_GENERAL_WIDTH_MAX = 1600;
+export const INITIATIVE_IMG_GENERAL_WIDTH_MIN = 200;
+export const INITIATIVE_IMG_GENERAL_HEIGHT_MAX = 1600;
+export const INITIATIVE_IMG_GENERAL_HEIGHT_MIN = 200;
+
+export const INITIATIVE_LOCATIONS_MAX_AMOUNT = 0; // 0 for infinity
+export const INITIATIVE_LOCATIONS_MIN_AMOUNT = 1;
+export const INITIATIVE_LOCALITY_MAX_LENGTH = 300;
+
+export const INITIATIVE_LEADERS_MAX_AMOUNT = 3;
+export const INITIATIVE_LEADERS_MIN_AMOUNT = 1;
+export const INITIATIVE_DISPLAY_LEADERS_SEARCH = 5;
+export const INITIATIVE_USER_FOCUS_AREA_LENGTH = 200;
+
+export const INITIATIVE_CONTACTS_MAX_AMOUNT = 3;
+export const INITIATIVE_CONTACTS_MIN_AMOUNT = 1;
+export const INITIATIVE_EMAIL_MAX_LENGHT = 120;
+export const INITIATIVE_PHONE_MAX_LENGHT = 10;
+
+export const INITIATIVE_TAGS_LIMIT_POLITICAL_CTX = 10;
+export const INITIATIVE_TAGS_LIMIT_CULTURAL_CTX = 3;
+export const INITIATIVE_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS: ODataParams = {
+  orderby: "name asc",
+};
+
+export const MONITORING_IMG_ALLOWED_FORMATS: ImageMimeType[] = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+];
+export const INITIATIVES_IMG_MAX_FILE_SIZE = 3;
+
+// Initiatives browser
+export const INITIATIVES_MAP_PADDING_LG = {
+  south: 50,
+  north: 50,
+  east: 0,
+  west: 0,
+};
+export const INITIATIVES_MAP_PADDING_SM = {
+  south: 10,
+  north: 0,
+  east: 50,
+  west: 10,
+};
+export const INITIATIVES_MAP_STATS_BAR_HEIGHT = 20;
+export const INITIATIVES_MAP_STATS_GRAPH_Y_MARGINS = 70;
+
+export const INITIATIVES_MAP_GRADIENT = [
+  {
+    color: GRAPHS_EXTENDED_COLOR_PALETTE[12], // "#FDEBC4"
+    position: 0,
+  },
+  {
+    color: GRAPHS_EXTENDED_COLOR_PALETTE[24], // "#F1A49E",
+    position: 0.5,
+  },
+  {
+    color: GRAPHS_EXTENDED_COLOR_PALETTE[26], // "#B079A8",
+    position: 1,
+  },
+];
+
+export const INITIATIVE_MONITORING_EVENTS_HORIZONTAL_TICS = 5;
+export const INITIATIVE_MAP_DEFAULT_ZOOM = 10;
+
+// initiative admin
+export const JOIN_REQUESTS_PER_PAGE = 10;
+
+// Initiative Join Invitations
+export const INITIATIVE_INVITATION_MESSAGE_MAX_LENGTH = 200;
+export const INITIATIVE_INVITATIONS_SEND_PER_PAGE = 5;
+
+// territoryStory
+export const TERRITORY_STORIES_PER_PAGE = 20;
+export const TERRITORY_STORIES_FROM_OTHER_INITIATIVE = 3;
+export const TERRITORY_STORY_TITLE_MAX_LENGTH = 100;
+export const TERRITORY_STORY_HEADINGS_OFFSET = 2;
+export const TERRITORY_STORY_TEXT_MIN_LENGTH = 100;
+export const TERRITORY_STORY_TEXT_MAX_LENGTH = 2000;
+export const TERRITORY_STORY_KEYWORDS_MAX_AMOUNT = 4;
+export const TERRITORY_STORY_KEYWORD_MAX_LENGTH = 75;
+export const TERRITORY_STORY_IMG_MAX_AMOUNT = 6;
+export const TERRITORY_STORY_IMG_DESCRIPTION_MAX_LENGTH = 150;
+export const TERRITORY_STORY_IMG_MAX_FILE_SIZE = 20; // size in megabytes
+export const TERRITORY_STORY_IMG_MAX_WIDTH = 1600; // size in pixels
+export const TERRITORY_STORY_IMG_MAX_HEIGHT = 1600; // size in pixels
+export const TERRITORY_STORY_IMG_MIN_WIDTH = 300; // size in pixels
+export const TERRITORY_STORY_IMG_MIN_HEIGHT = 300; // size in pixels
+export const TERRITORY_STORY_YT_VID_MAX_AMOUNT = 6;
+
+// Tags
+export const TAG_COLORS = [
+  { bg: "[&_li]:bg-blue-200", fg: "[&_li]:text-blue-800" },
+  { bg: "[&_li]:bg-green-100", fg: "[&_li]:text-green-800" },
+  { bg: "[&_li]:bg-[#e5a85c]/20", fg: "[&_li]:text-[#f25e50]" },
+  { bg: "[&_li]:bg-grey-light", fg: "[&_li]:text-grey-dark" },
+  { bg: "[&_li]:bg-accent/10", fg: "[&_li]:text-foreground" },
+];
+
+// Tag admin
+export const TAG_NAME_MAX_LENGTH = 40;
+export const TAG_FULLNAME_MAX_LENGTH = 120;
+export const TAG_URL_MAX_LENGTH = 150;
+export const TAG_RECORDS_PER_PAGE = 20;
+
+// Resources
+export const RESOURCES_PER_PAGE = 10;
+export const RESOURCES_MAX_ITEMS_EDIT_LIST = 10;
+export const RESOURCE_NAME_MIN_LENGTH = 3;
+export const RESOURCE_NAME_MAX_LENGTH = 100;
+export const RESOURCE_DESCRIPTION_MAX_LENGTH = 500;
+export const RESOURCE_TAGS_LIMIT_ECOSYSTEM = 2;
+export const RESOURCE_TAGS_LIMIT_BIOLOGICAL_GROUP = 2;
+export const RESOURCE_ATTACHMENT_DESCRIPTION_MAX_LENGTH = 100;
+export const RESOURCE_LINKS_MAX_AMOUNT = 10;
+export const RESOURCE_LINK_MAX_LENGTH = 250;
+export const RESOURCE_FILES_MAX_AMOUNT = 3;
+export const RESOURCE_FILE_MAX_SIZE = 10; // size in megabytes;
+export const RESOURCES_DEFAULT_TAGS_COMBOBOX_SEARCH_PARAMS: ODataParams = {
+  orderby: "name asc",
+};
+
+// glosary
+export const GLOSARY_FILTER_IS_AND = false;
+
+// Indicators
+export const TOPICS_PER_PAGE = 7;
+export const TOPIC_OCCUPATION_SPECIES_MAX_COUNT = 3;
+export const TOPIC_RELATIONAL_INTENSITY_MAX_COUNT = 3;
+export const TOPIC_VERSION_DESCRIPTION_FIELD_MAX_LENGTH = 3000;
+export const TOPIC_RELATIONAL_INTENSITY_HIGHLIGHT_VALUE = "Agregado";
+
+// Help
+export const HELP_YOUTUBE_VIDEO_URL = "www.youtube.com/watch?v=z2Ida2a2hHQ";
+
+// Administrador de eventos de monitoreo
+export const MONITORING_EVENTS_EDITOR_LIST_AMOUNT = 5;
+export const MONITORING_EVENTS_MIN_PER_MONTH = 1;
+export const MONITORING_EVENTS_MAX_PER_MONTH = 100;
+export const MONITORING_STARTING_YEAR = 2025;

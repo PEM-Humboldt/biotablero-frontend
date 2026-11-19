@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-import TableStylized from 'pages/compensation/drawer/TableStylized';
+import TableStylized from "pages/compensation/drawer/TableStylized";
 
 class StrategiesBox extends Component {
   constructor(props) {
@@ -21,20 +21,16 @@ class StrategiesBox extends Component {
     this.setState((prevState) => ({
       showTable: !prevState.showTable,
     }));
-  }
+  };
 
   render() {
-    const {
-      biome, subBasin, ea, area, strategies, elementSuggested, units,
-    } = this.props;
+    const { biome, subBasin, ea, area, strategies, elementSuggested, units } =
+      this.props;
     const { showTable } = this.state;
-    const tableHeaders = ['Estrategia', 'Héctareas', 'Agregar'];
+    const tableHeaders = ["Estrategia", "Héctareas", "Agregar"];
     return (
       <div className="complist">
-        <div
-          className="titecositema"
-          role="presentation"
-        >
+        <div className="titecositema" role="presentation">
           <div>
             <div>
               <b className="addedBioma">{biome}</b>
@@ -51,7 +47,9 @@ class StrategiesBox extends Component {
               </div>
               <div>
                 <button
-                  className={`icongraph ${showTable ? 'rotate-false' : 'rotate-true'}`}
+                  className={`icongraph ${
+                    showTable ? "rotate-false" : "rotate-true"
+                  }`}
                   type="button"
                   onClick={this.switchTable}
                   title="Mostrar / Ocultar estrategias"
@@ -87,9 +85,9 @@ StrategiesBox.propTypes = {
 };
 
 StrategiesBox.defaultProps = {
-  elementSuggested: '',
+  elementSuggested: "",
   showTable: true,
-  units: 'ha',
+  units: "ha",
 };
 
 export default StrategiesBox;

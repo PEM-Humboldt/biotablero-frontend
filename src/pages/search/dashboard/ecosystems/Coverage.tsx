@@ -1,0 +1,107 @@
+import InfoIcon from "@mui/icons-material/Info";
+import { IconTooltip } from "@ui/Tooltips";
+import { ShortInfo } from "@composites/ShortInfo";
+import SmallStackedBar, {
+  type SmallStackedBarData,
+} from "@composites/charts/SmallStackedBar";
+import { TextBoxes } from "@ui/TextBoxes";
+import { matchColor } from "pages/search/utils/matchColor";
+import { type MessageWrapperType } from "@composites/charts/withMessageWrapper";
+import colorPalettes from "pages/search/utils/colorPalettes";
+import { GetSearchIndicatorInfo } from "@hooks/useReport/GetSearchIndicatorInfo";
+
+interface Props {
+  coverage: SmallStackedBarData[];
+  infoOpen: boolean;
+  toggleInfo: () => void;
+  texts: {
+    info: string;
+    cons: string;
+    meto: string;
+    quote: string;
+  };
+  messages: MessageWrapperType;
+  areaIdStr: string;
+  onClickGraph: (id: string) => void;
+  resetActiveSE?: () => void;
+}
+
+export function Coverage({
+  coverage,
+  infoOpen,
+  toggleInfo,
+  texts,
+  messages,
+  areaIdStr,
+  onClickGraph,
+  resetActiveSE,
+}: Props) {
+  const onCoverageClick = (id: string) => {
+    onClickGraph(id);
+  };
+
+  return (
+    <>
+      <div className="graphcontainer">
+        <h4>
+          <button type="button" onClick={resetActiveSE}>
+            Cobertura
+          </button>
+        </h4>
+
+        <IconTooltip title="Interpretación">
+          <span className="iconWrapper">
+            <InfoIcon
+              fontSize="medium"
+              className={`metrics-info-icon${infoOpen ? " activeBox" : ""}`}
+              onClick={toggleInfo}
+            />
+          </span>
+        </IconTooltip>
+
+        {infoOpen && (
+          <ShortInfo description={texts.info} className="graphinfo3" />
+        )}
+      </div>
+
+      <GetSearchIndicatorInfo
+        wrapperId="Coverage"
+        title="Cobertura"
+        graphInfo={texts}
+        tableData={coverage as unknown as Record<string, string | number>[]}
+        graphId=""
+        includesMap={true}
+      >
+        <>
+          <h6>Natural, Secundaria y Transformada:</h6>
+
+          <div className="graficaeco">
+            <div className="svgPointer">
+              <SmallStackedBar
+                loadStatus={messages}
+                data={coverage}
+                units="ha"
+                colors={(key: string) =>
+                  matchColor("coverage")(key) || colorPalettes.default[0]
+                }
+                onClickGraphHandler={onCoverageClick}
+                forceFullPercent={true}
+              />
+            </div>
+          </div>
+        </>
+      </GetSearchIndicatorInfo>
+
+      <TextBoxes
+        addToReportWrapperId="Coverage"
+        texts={texts}
+        download={{
+          data: coverage,
+          filename: `eco_coverages_${areaIdStr}.csv`,
+        }}
+        toggleInfo={toggleInfo}
+        isInfoOpen={infoOpen}
+      />
+    </>
+  );
+}

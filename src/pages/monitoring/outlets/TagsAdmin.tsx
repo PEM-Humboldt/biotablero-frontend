@@ -1,0 +1,164 @@
+import { useEffect, useRef, useState } from "react";
+
+import { uiText } from "pages/monitoring/outlets/tagsAdmin/layout/uiText";
+import {
+  addTag,
+  getTagCategories,
+  getTags,
+  updateTag,
+} from "pages/monitoring/api/services/tags";
+import type { LoadStatusMsgBarProp } from "@ui/loadStatusSecction";
+import { LoadStatusMsgBar } from "@ui/loadStatusSecction";
+import type { ODataParams } from "@appTypes/odata";
+import { TAG_RECORDS_PER_PAGE } from "@config/monitoring";
+import type {
+  ODataTag,
+  ODataTagInfo,
+} from "pages/monitoring/types/odataResponse";
+import { ODataTable } from "@composites/ODataTable";
+import { TablePager } from "@composites/TablePager";
+import { getTableContent } from "pages/monitoring/outlets/tagsAdmin/layout/tableContent";
+import { translateTagCategory } from "pages/monitoring/outlets/tagsAdmin/utils/tagCategoryTranslator";
+import { TagFormButton } from "pages/monitoring/outlets/tagsAdmin/TagFormBtn";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import type { TagCategory, TagDataForm } from "pages/monitoring/types/tagData";
+import { PageTitleUpdater } from "@ui/PageTitleUpdater";
+
+function parseEntry(rawODataTag: ODataTag): ODataTag {
+  return {
+    ...rawODataTag,
+    categoryName: translateTagCategory(rawODataTag.category.name),
+    url: rawODataTag.url || "",
+  };
+}
+
+function parseODataTags(odataTags: ODataTagInfo): ODataTag[] {
+  const { value } = odataTags;
+  return value.map(parseEntry);
+}
+
+export function TagsAdmin() {
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [tags, setTags] = useState<ODataTagInfo | null>(null);
+  const [loadMsg, setLoadMsg] = useState<LoadStatusMsgBarProp>({
+    message: uiText.loadingStates.loading,
+    type: "normal",
+  });
+  const [searchParams] = useState<ODataParams>({
+    top: TAG_RECORDS_PER_PAGE,
+    orderby: "id asc",
+  });
+  const prevSearchParamsRef = useRef(searchParams);
+  const [refetchTrigger, setRefetchTrigger] = useState(0);
+  const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
+
+  const tagCreateAction = (tag: TagDataForm) => {
+    return addTag({
+      ...tag,
+      url: tag.url || undefined,
+      fullName: tag.fullName || undefined,
+    });
+  };
+
+  const tagEditAction = (id: number, tag: TagDataForm) => {
+    return updateTag(id, {
+      ...tag,
+      url: tag.url || undefined,
+      fullName: tag.fullName || undefined,
+    });
+  };
+
+  const fetchTagCategories = async () => {
+    const result = await getTagCategories();
+
+    if (isMonitoringAPIError(result)) {
+      return;
+    }
+
+    setTagCategories(
+      result.map((category) => ({
+        ...category,
+        name: translateTagCategory(category.name),
+      })),
+    );
+  };
+
+  useEffect(() => {
+    const filterChange = async () => {
+      if (prevSearchParamsRef.current !== searchParams) {
+        setCurrentPage(1);
+        prevSearchParamsRef.current = searchParams;
+      }
+
+      setLoadMsg({
+        message: uiText.loadingStates.loading,
+        type: "normal",
+      });
+      const skip = (currentPage - 1) * TAG_RECORDS_PER_PAGE;
+      const newSearchParams = {
+        ...searchParams,
+        skip: skip,
+      };
+
+      await fetchTagCategories();
+      const updatedTags = await getTags(newSearchParams);
+      if (isMonitoringAPIError(updatedTags)) {
+        setTags(null);
+        return;
+      }
+
+      setTags(updatedTags);
+
+      setLoadMsg({
+        message: null,
+        type: "normal",
+      });
+    };
+
+    void filterChange();
+  }, [searchParams, currentPage, refetchTrigger]);
+
+  const recordsAvailable = tags ? tags["@odata.count"] : 0;
+
+  return (
+    <main className="page-main">
+      <PageTitleUpdater title="Administrador de etiquetas" />
+
+      <header>
+        <h3>{uiText.title}</h3>
+        <div className="max-w-[500px] text-right text-base">
+          <TagFormButton
+            tagCategories={tagCategories}
+            onActionSuccess={() => setRefetchTrigger((prev) => prev + 1)}
+            createTagAction={tagCreateAction}
+          />
+        </div>
+      </header>
+      {loadMsg.message !== null ? (
+        <LoadStatusMsgBar message={loadMsg.message} type={loadMsg.type} />
+      ) : (
+        <div className="space-y-4">
+          {tags === null || tags.value.length === 0 ? (
+            <p>{uiText.noDataAvailable}</p>
+          ) : (
+            <ODataTable
+              cols={getTableContent(
+                () => setRefetchTrigger((prev) => prev + 1),
+                tagEditAction,
+              )}
+              values={parseODataTags(tags)}
+              className="table-tags"
+            />
+          )}
+          <TablePager
+            currentPage={currentPage}
+            recordsAvailable={recordsAvailable}
+            onPageChange={setCurrentPage}
+            recordsPerPage={TAG_RECORDS_PER_PAGE}
+            paginated={3}
+          />
+        </div>
+      )}
+    </main>
+  );
+}

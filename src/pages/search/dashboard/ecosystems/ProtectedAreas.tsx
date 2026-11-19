@@ -1,0 +1,115 @@
+import InfoIcon from "@mui/icons-material/Info";
+import { IconTooltip } from "@ui/Tooltips";
+import { ShortInfo } from "@composites/ShortInfo";
+import SmallStackedBar from "@composites/charts/SmallStackedBar";
+import { TextBoxes } from "@ui/TextBoxes";
+import { matchColor } from "pages/search/utils/matchColor";
+import { MessageWrapperType } from "@composites/charts/withMessageWrapper";
+import { formatNumber } from "@utils/format";
+import colorPalettes from "pages/search/utils/colorPalettes";
+import { GetSearchIndicatorInfo } from "@hooks/useReport/GetSearchIndicatorInfo";
+
+/**
+ * Calculate percentage for a given value according to total
+ *
+ * @param {number} part value for the given part
+ * @param {number} total value obtained by adding all parts
+ *
+ * @returns {number} percentage associated to each part
+ */
+const getPercentage = (part: number, total: number): number =>
+  total > 0 && Number.isFinite(part) && Number.isFinite(total)
+    ? parseFloat(((part * 100) / total).toFixed(2))
+    : 0;
+
+interface PAArea {
+  area: number;
+  label: string;
+  key: string;
+  percentage: number;
+}
+
+interface Props {
+  PAAreas: PAArea[];
+  PATotalArea: number;
+  PADivergentData: boolean;
+  areaHa: number;
+  infoOpen: boolean;
+  toggleInfo: () => void;
+  texts: {
+    info: string;
+    cons: string;
+    meto: string;
+    quote: string;
+  };
+  messages: MessageWrapperType;
+  areaIdStr: string;
+}
+
+export function ProtectedAreas({
+  PAAreas,
+  PATotalArea,
+  PADivergentData,
+  areaHa,
+  infoOpen,
+  toggleInfo,
+  texts,
+  messages,
+  areaIdStr,
+}: Props) {
+  const paColor = matchColor("pa", true);
+  const safeAreaHa = Number.isFinite(areaHa) && areaHa > 0 ? areaHa : 0;
+  const protectedAreasPercentage = getPercentage(PATotalArea, safeAreaHa);
+
+  return (
+    <>
+      <h4>
+        Áreas protegidas <b>{`${formatNumber(PATotalArea, 0)} ha`}</b>
+      </h4>
+
+      <IconTooltip title="Interpretación">
+        <InfoIcon
+          className={`metrics-info-icon${infoOpen ? " activeBox" : ""}`}
+          onClick={toggleInfo}
+        />
+      </IconTooltip>
+
+      <h5 className="pa-percentage">{`${protectedAreasPercentage} %`}</h5>
+
+      {infoOpen && (
+        <ShortInfo description={texts.info} className="graphinfo3" />
+      )}
+
+      <GetSearchIndicatorInfo
+        wrapperId="ProtectedAreas"
+        title="Áreas protegidas"
+        graphInfo={texts}
+        tableData={PAAreas as unknown as Record<string, string | number>[]}
+        graphId=""
+        includesMap={false}
+      >
+        <div className="graficaeco">
+          <h6>Distribución por áreas protegidas:</h6>
+          <SmallStackedBar
+            loadStatus={messages}
+            data={PAAreas}
+            units="ha"
+            colors={(key: string) => paColor(key) || colorPalettes.default[0]}
+            scaleType={PADivergentData ? "symlog" : "linear"}
+          />
+        </div>
+      </GetSearchIndicatorInfo>
+
+      <TextBoxes
+        addToReportWrapperId="ProtectedAreas"
+        texts={texts}
+        download={{
+          data: PAAreas,
+          filename: `eco_protected_areas_${areaIdStr}.csv`,
+        }}
+        toggleInfo={toggleInfo}
+        isInfoOpen={infoOpen}
+      />
+    </>
+  );
+}

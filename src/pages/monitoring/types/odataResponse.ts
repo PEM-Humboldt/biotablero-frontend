@@ -1,0 +1,200 @@
+import type { HasId, ODataResponse } from "@appTypes/odata";
+import type { JoinRequestStatus } from "pages/monitoring/types/catalog";
+import type {
+  ImageObjectTS,
+  VideoObjectTS,
+} from "pages/monitoring/types/territoryStory";
+import type { SendedJoinInitiativeInvitation } from "pages/monitoring/types/userJoinRequest";
+import type { TopicMetadata } from "pages/monitoring/types/topics";
+import { MonitoringEvent } from "./monitoringEvents";
+
+// NOTE: Logs
+export interface ODataLogEntryShort extends HasId {
+  timeStamp: string;
+  type: string;
+  shortMessage: string;
+  userName: string;
+}
+
+export interface ODataLogEntryFull extends ODataLogEntryShort {
+  clientAgent: string;
+  clientIp: string;
+  customRecord: boolean;
+  level: string;
+  message: string;
+  properties: string;
+}
+
+export interface LogEntryShort extends Omit<ODataLogEntryShort, "timeStamp"> {
+  timeStamp: Date;
+}
+
+export interface LogEntryFull
+  extends Omit<ODataLogEntryFull, "timeStamp" | "properties"> {
+  timeStamp: Date;
+  properties: Record<string, unknown>;
+}
+
+// NOTE: Ubicacion
+export type LocationBasicInfo = {
+  id: number;
+  name: string;
+  code: string;
+  level: number;
+  parent?: {
+    id: number;
+    name: string;
+    code: string;
+  };
+};
+
+export type LocationCompleteInfo = {
+  id: number;
+  locationId: number;
+  locality: string;
+  location: LocationBasicInfo;
+};
+
+// NOTE: Iniciativas
+export interface ODataInitiativeShort extends HasId {
+  name: string;
+  shortName: string;
+  description: string;
+  influenceArea?: string;
+  objective?: string;
+  creationDate: string;
+  coordinate: [number, number];
+  polygonArea: number;
+  enabled: boolean;
+  locations: LocationCompleteInfo[];
+}
+
+// NOTE: solicitudes
+export interface ODataInitiativeUserRequest extends HasId {
+  userName: string;
+  reviewerUserName: string;
+  creationDate: string;
+  responseDate: string;
+  initiativeId: number;
+  status: JoinRequestStatus;
+}
+
+// NOTE: Usuarios
+export interface ODataUser {
+  id: "91276d6f-3c12-4aad-9f09-7864518f4f40";
+  email: string;
+  emailVerified: boolean;
+  username: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+
+  phone?: "3055555555";
+  picture?: "https://ui-avatars.com/api/?name=Initiative+Leader+Example&background=random";
+  organization?: "Empresa privada";
+  selfRecognition?: "Indígena";
+  gender?: "Masculino";
+}
+
+export interface TerritoryStoryShort extends HasId {
+  initiativeId: number;
+  authorUserName: string;
+  title: string;
+  text: string;
+  keywords: string;
+  creationDate: string;
+  restricted: boolean;
+  enabled: boolean;
+  featuredContent: boolean;
+  likes: number;
+  iLikedIt?: boolean;
+  images: ImageObjectTS[];
+  videos: Omit<VideoObjectTS, "territoryStoryId">[];
+}
+
+// NOTE: Etiquetas
+interface TagCategory extends HasId {
+  name: string;
+}
+
+export interface ODataTag extends HasId {
+  name: string;
+  url?: string;
+  fullName?: string;
+  category: TagCategory;
+  categoryName: string;
+}
+
+export interface TagInTopic {
+  topicTagId: number;
+  tag: Omit<ODataTag, "categoryName">;
+}
+
+export interface TagInInitiative {
+  initiativeTagId: number;
+  tag: Omit<ODataTag, "categoryName">;
+}
+
+// NOTE: Recursos monitoreo
+export interface ResourceType extends HasId {
+  name: string;
+  description: string;
+}
+
+export interface ResourceAttachment extends HasId {
+  resourceId: number;
+  name: string;
+  url: string;
+}
+
+export interface ResourceTag {
+  resourceTagId: number;
+  tag: Omit<ODataTag, "categoryName">;
+}
+
+export interface MonitoringResourceShort extends HasId {
+  initiative: { id: number; name: string };
+  authorUserName: string;
+  name: string;
+  isDraft: boolean;
+  likes: number;
+  iLikedIt?: boolean;
+  resourceType: ResourceType;
+  creationDate: string;
+  publicationDate: string;
+  totalFiles: number;
+  totalLinks: number;
+  tags: ResourceTag[];
+}
+
+export interface MonitoringResource extends HasId {
+  initiative: { id: number; name: string };
+  authorUserName: string;
+  name: string;
+  description: string;
+  isDraft: boolean;
+  likes: number;
+  iLikedIt?: boolean;
+  resourceType: ResourceType;
+  creationDate: string;
+  publicationDate: string;
+  files: ResourceAttachment[];
+  links: ResourceAttachment[];
+  tags: ResourceTag[];
+}
+
+// Indicadores
+// NOTE: Alias temporal
+
+export type ODataLog = ODataResponse<ODataLogEntryShort>;
+export type ODataInitiative = ODataResponse<ODataInitiativeShort>;
+export type ODataUserRequest = ODataResponse<ODataInitiativeUserRequest>;
+export type ODataUserInfo = ODataResponse<ODataUser>;
+export type ODataTerritoryStory = ODataResponse<TerritoryStoryShort>;
+export type ODataTagInfo = ODataResponse<ODataTag>;
+export type ODataResourceType = ODataResponse<ResourceType>;
+export type ODataMonitoringResources = ODataResponse<MonitoringResourceShort>;
+export type ODataSendedInvitations =
+  ODataResponse<SendedJoinInitiativeInvitation>;
+export type ODataTopics = ODataResponse<TopicMetadata>;
+export type ODataMonitoringEvents = ODataResponse<MonitoringEvent>;

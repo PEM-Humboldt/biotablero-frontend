@@ -1,0 +1,196 @@
+import { useEffect, useState, useRef, useCallback } from "react";
+import { FileDown } from "lucide-react";
+
+import { ODataSearchBar } from "@composites/ODataSearchBar";
+import { TablePager } from "@composites/TablePager";
+import { LOG_RECORDS_PER_PAGE } from "@config/monitoring";
+import type { ODataParams, SearchBarComponent } from "@appTypes/odata";
+import { Button } from "@ui/shadCN/component/button";
+import {
+  LoadStatusMsgBar,
+  type LoadStatusMsgBarProp,
+} from "@ui/loadStatusSecction";
+import { ODataTable } from "@composites/ODataTable";
+
+import { downloadLogs, getLogs } from "pages/monitoring/api/services/logs";
+import { isMonitoringAPIError } from "pages/monitoring/api/types/guards";
+import { searchBarItems } from "pages/monitoring/outlets/logs/layout/searchBarContent";
+import { uiText } from "pages/monitoring/outlets/logs/layout/uiText";
+import type {
+  ODataLogEntryShort,
+  ODataLog,
+  LogEntryShort,
+} from "pages/monitoring/types/odataResponse";
+import { tableContent } from "pages/monitoring/outlets/logs/layout/tableContent";
+import { PageTitleUpdater } from "@ui/PageTitleUpdater";
+
+function parseLogEntry(rawODataLog: ODataLogEntryShort): LogEntryShort {
+  return {
+    ...rawODataLog,
+    timeStamp: new Date(rawODataLog.timeStamp),
+  };
+}
+
+function parseODataLogs(odataLogs: ODataLog): LogEntryShort[] {
+  const { value } = odataLogs;
+  return value.map(parseLogEntry);
+}
+
+export function Logs() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [logs, setLogs] = useState<ODataLog | null>(null);
+  const [loadMsg, setLoadMsg] = useState<LoadStatusMsgBarProp>({
+    message: uiText.logLoadingStates.loading,
+    type: "normal",
+  });
+  const [searchParams, setSearchParams] = useState<ODataParams>({
+    top: LOG_RECORDS_PER_PAGE,
+    orderby: "timeStamp desc",
+  });
+  const [searchBarComponents, setSearchBarComponents] = useState<
+    SearchBarComponent<ODataLogEntryShort>[] | null
+  >(null);
+  const prevSearchParamsRef = useRef(searchParams);
+
+  useEffect(() => {
+    const fetchSearchBarItems = async () => {
+      const res = await searchBarItems();
+      setSearchBarComponents(res);
+    };
+
+    void fetchSearchBarItems();
+  }, []);
+
+  const isNewFilter =
+    searchParams.filter !== prevSearchParamsRef.current.filter;
+  const resolvedPage = isNewFilter ? 1 : currentPage;
+
+  const fetchLogs = useCallback(async () => {
+    setIsLoading(true);
+
+    setLoadMsg({
+      message: uiText.logLoadingStates.loading,
+      type: "normal",
+    });
+    const skip = (resolvedPage - 1) * LOG_RECORDS_PER_PAGE;
+    const newSearchParams = {
+      ...searchParams,
+      skip: skip,
+    };
+
+    const updatedLogs = await getLogs(newSearchParams);
+    setIsLoading(false);
+    if (isMonitoringAPIError(updatedLogs)) {
+      setLogs(null);
+      return;
+    }
+
+    setLogs(updatedLogs);
+    setLoadMsg({
+      message: null,
+      type: "normal",
+    });
+  }, [searchParams, resolvedPage]);
+
+  useEffect(() => {
+    void fetchLogs();
+  }, [fetchLogs]);
+
+  useEffect(() => {
+    if (resolvedPage !== currentPage) {
+      setCurrentPage(resolvedPage);
+    }
+    prevSearchParamsRef.current = searchParams;
+  }, [resolvedPage, currentPage, searchParams]);
+
+  const handleDownload = async () => {
+    const { top: _top, skip: _skip, ...downloadParams } = searchParams;
+    setIsLoading(true);
+
+    const res = await downloadLogs(downloadParams);
+
+    if (isMonitoringAPIError(res)) {
+      setLoadMsg({
+        message: res.data.map((error) => error.msg).join(". "),
+        type: "error",
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(false);
+    const url = window.URL.createObjectURL(res);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.setAttribute("download", uiText.download.filename);
+
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  };
+
+  const recordsAvailable = logs ? logs["@odata.count"] : 0;
+  const downloadDisabled = logs && logs["@odata.count"] > 10_000;
+
+  return (
+    <main className="page-main">
+      <PageTitleUpdater title="Registros de actividad" />
+      <header>
+        <h3>{uiText.logsTitle}</h3>
+        <div className="max-w-[500px] text-right text-base">
+          {downloadDisabled ? (
+            uiText.download.warn
+          ) : (
+            <Button
+              type="button"
+              onClick={() => void handleDownload()}
+              disabled={recordsAvailable === 0}
+            >
+              {isLoading
+                ? uiText.download.button.isDownloading
+                : uiText.download.button.isReady}
+              {!isLoading && <FileDown aria-hidden="true" />}
+            </Button>
+          )}
+        </div>
+      </header>
+
+      {searchBarComponents && (
+        <ODataSearchBar
+          components={searchBarComponents}
+          setSearchParams={setSearchParams}
+          submit={uiText.searchBar.submitBtn}
+          reset={uiText.searchBar.resetBtn}
+          className="w-full bg-muted"
+        />
+      )}
+
+      {loadMsg.message !== null ? (
+        <LoadStatusMsgBar message={loadMsg.message} type={loadMsg.type} />
+      ) : (
+        <div className="space-y-4">
+          {logs === null || logs.value.length === 0 ? (
+            <p>{uiText.noLogsAvailable}</p>
+          ) : (
+            <ODataTable
+              cols={tableContent}
+              values={parseODataLogs(logs)}
+              className="table-logs"
+            />
+          )}
+          <TablePager
+            currentPage={currentPage}
+            recordsAvailable={recordsAvailable}
+            onPageChange={setCurrentPage}
+            recordsPerPage={LOG_RECORDS_PER_PAGE}
+            paginated={3}
+          />
+        </div>
+      )}
+    </main>
+  );
+}

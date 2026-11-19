@@ -1,0 +1,61 @@
+name: Reporte de problema / Bug
+description: Plantilla para notificar un fallo o comportamiento inesperado
+title: '[bug]: '
+labels: ["bug"]
+body:
+  - type: textarea
+    id: descripcion
+    attributes:
+      label: "¿Qué está fallando?"
+      description: Explica en 1 o 2 frases cuál es el problema y lo que debería suceder en su lugar.
+      placeholder: "ej: la pantalla se queda en blanco y debería salir X o Y... me sale un mensaje de error incluso cuando puse la información correcta y debería salir esto... no me guarda los archivos de audio..., etc."
+    validations:
+      required: true
+
+  - type: textarea
+    id: pasos
+    attributes:
+      label: "Pasos para reproducir el error"
+      description: Detalla la secuencia de acciones que generan este error.
+      value: |
+        1. Ingresé a la sección de...
+        2. Hice clic en el botón...
+        3. Escribí los datos...
+        4. Apareció el error.
+    validations:
+      required: true
+
+  - type: input
+    id: url
+    attributes:
+      label: "La url donde ocurrió el error"
+      placeholder: "Ej: https://biotablerobeta.humboldt.org.co/Monitoreo/Iniciativas/"
+
+  - type: input
+    id: entorno
+    attributes:
+      label: "Entorno (Navegador, SO y Dispositivo)"
+      placeholder: "Ej: Chrome en Windows 11 / Safari en iPhone / Firefox en macOS"
+
+  - type: input
+    id: rol
+    attributes:
+      label: "Rol o tipo de usuario cuando sucedió el error"
+      placeholder: "Ej: Administrador, Anónimo, Líder, Colaborador"
+
+  - type: dropdown
+    id: gravedad
+    attributes:
+      label: "Severidad del fallo"
+      options:
+        - "Bloqueante: Impide continuar el uso por completo."
+        - "Mayor: Afecta una función principal, pero hay alternativa."
+        - "Menor: Detalle visual o problema secundario."
+    validations:
+      required: true
+
+  - type: textarea
+    id: adjuntos
+    attributes:
+      label: "Capturas de pantalla o Gifs o video"
+      description: Arrastra y suelta aquí las imágenes o grabaciones donde se vea el error.

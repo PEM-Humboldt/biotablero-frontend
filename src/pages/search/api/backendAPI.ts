@@ -1,0 +1,327 @@
+import axios, { CancelTokenSource } from "axios";
+import { SCIHF } from "pages/search/types/forest";
+import { cfData } from "pages/search/types/compensationFactor";
+import {
+  currentPAConn,
+  currentSEPAConn,
+  timelinePAConn,
+} from "pages/search/types/connectivity";
+import { HFPersistence } from "pages/search/types/humanFootprint";
+import { concentration, gaps } from "pages/search/types/richness";
+import {
+  portfoliosByTarget,
+  targetOrPortfolio,
+} from "pages/search/types/portfolios";
+import { geofenceDetails } from "pages/search/types/dashboard";
+
+class BackendAPI {
+  /** ****** */
+  /** FOREST */
+  /** ****** */
+  /**
+   * Get the structural condition index with human footprint persistence categories in the given
+   * area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} Objects with value for the SCI and HF persistence
+   */
+  static requestSCIHF(
+    areaType: string,
+    areaId: string | number,
+  ): Promise<Array<SCIHF>> {
+    return BackendAPI.makeGetRequest(
+      `forest/sci/hf?areaType=${areaType}&areaId=${areaId}`,
+    );
+  }
+
+  /** ************ */
+  /** CONNECTIVITY */
+  /** ************ */
+  /**
+   * Get the area distribution for each category of protected area connectivity in a given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Array>} Array of objects with data of current PA connectivity
+   */
+  static requestCurrentPAConnectivity(
+    areaType: string,
+    areaId: string | number,
+  ): Promise<Array<currentPAConn>> {
+    return BackendAPI.makeGetRequest(
+      `connectivity/current?areaType=${areaType}&areaId=${areaId}`,
+    );
+  }
+
+  /**
+   * Get the area distribution for each category of protected area connectivity for an specific
+   * strategic ecosystem in a given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType strategic ecosystem type
+   *
+   * @return {Promise<Array>} Array of objects with data of current PA connectivity by SE
+   */
+  static requestCurrentSEPAConnectivity(
+    areaType: string,
+    areaId: string | number,
+    seType: string | number,
+  ): Promise<Array<currentSEPAConn>> {
+    return BackendAPI.makeGetRequest(
+      `connectivity/current/se?areaType=${areaType}&areaId=${areaId}&seType=${seType}`,
+    );
+  }
+
+  /**
+   *  Get the timeline for each category of protected area connectivity in a given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} category category of index, fe. "prot", "prot_conn"
+   *
+   * @return {Promise<Array>} Array of objects with data of timeline PA connectivity
+   */
+  static requestTimelinePAConnectivity(
+    areaType: string,
+    areaId: string | number,
+    category: string,
+  ): Promise<timelinePAConn> {
+    return BackendAPI.makeGetRequest(
+      `connectivity/timeline?areaType=${areaType}&areaId=${areaId}&category=${category}`,
+    );
+  }
+
+  /** ******************* */
+  /** COMPENSATION FACTOR */
+  /** ******************* */
+  /**
+   * Recover biomes located in the selected area
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   */
+  static requestBiomes(
+    areaType: string,
+    areaId: string | number,
+  ): Promise<Array<cfData>> {
+    return BackendAPI.makeGetRequest(`${areaType}/${areaId}/generalBiome`);
+  }
+
+  /**
+   * Recover biotic units by selected area
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   */
+  static requestBioticUnits(
+    areaType: string,
+    areaId: string | number,
+  ): Promise<Array<cfData>> {
+    return BackendAPI.makeGetRequest(`${areaType}/${areaId}/bioticUnit`);
+  }
+
+  /**
+   * Recover compensation Factor values by selected area
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   */
+  static requestCompensationFactor(
+    areaType: string,
+    areaId: string | number,
+  ): Promise<Array<cfData>> {
+    return BackendAPI.makeGetRequest(
+      `${areaType}/${areaId}/compensationFactor`,
+    );
+  }
+
+  /**
+   * Request the layer of the biomes by EA
+   * @param {Number | String} areaId id ea to request
+   *
+   * @return {ShapeAPIObject} layer object to be loaded in the map
+   */
+  static requestBiomesbyEALayer(areaId: number | string) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(`ea/layers/${areaId}/biomes`, {
+        cancelToken: source.token,
+      }),
+      source,
+    };
+  }
+
+  /** *************** */
+  /** HUMAN FOOTPRINT */
+  /** *************** */
+  /**
+
+  /**
+   * Get the persistence of human footprint data in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Array>} Array of objects with data for the persistence of human footprint
+   */
+  static requestHFPersistence(
+    areaType: string,
+    areaId: string | number,
+  ): Promise<Array<HFPersistence>> {
+    return BackendAPI.makeGetRequest(`${areaType}/${areaId}/hf/persistence`);
+  }
+
+  /** ******** */
+  /** RICHNESS */
+  /** ******** */
+
+  /**
+   * Get values for richness species concentration in the given area
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {Promise<Object>} Object with values of richness species concentration
+   */
+  static requestConcentration(
+    areaType: string,
+    areaId: number | string,
+  ): Promise<Array<concentration>> {
+    return BackendAPI.makeGetRequest(
+      `richness/concentration?areaType=${areaType}&areaId=${areaId}`,
+    );
+  }
+
+  /**
+   * Get the layer of a strategic ecosystem in a given area.
+   * Data obtained from connectivity service
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} seType strategic ecosystem type to request geometry
+   *
+   * @return {ShapeAPIObject} layer object to be loaded in the map
+   */
+  static requestPAConnSELayer(
+    areaType: string,
+    areaId: string,
+    seType: string,
+  ) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(
+        `connectivity/se/layer?areaType=${areaType}&areaId=${areaId}&seType=${seType}`,
+        { cancelToken: source.token },
+      ),
+      source,
+    };
+  }
+
+  /**
+   * Get the geometry associated for the structural condition index with human footprint persistence
+   * in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {ShapeAPIObject} layer object to be loaded in the map
+   */
+  static requestSCIHFGLayer(areaType: string, areaId: number | string) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(
+        `forest/sci/hf/layer?areaType=${areaType}&areaId=${areaId}`,
+        { cancelToken: source.token },
+      ),
+      source,
+    };
+  }
+
+  /**
+   * Get the geometry associated to protected areas in a given combination of structural condition
+   * index and human footprint persistence in an specific area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   * @param {String} sciCat sci category
+   * @param {String} hfPers hf persistence category
+   *
+   * @return {ShapeAPIObject} layer object to be loaded in the map
+   */
+  static requestSCIHFPALayer(
+    areaType: string,
+    areaId: string | number,
+    sciCat: string,
+    hfPers: string,
+  ) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(
+        `forest/sci/${sciCat}/hf/${hfPers}/layer?areaType=${areaType}&areaId=${areaId}`,
+        { cancelToken: source.token },
+      ),
+      source,
+    };
+  }
+
+  /**
+   * Get the geometry associated for the human footprint persistence in the given area.
+   *
+   * @param {String} areaType area type id, f.e. "ea", "states"
+   * @param {Number | String} areaId area id to request, f.e. "CRQ", 24
+   *
+   * @return {ShapeAPIObject} layer object to be loaded in the map
+   */
+  static requestHFPersistenceLayer(areaType: string, areaId: string | number) {
+    const source = axios.CancelToken.source();
+    return {
+      request: BackendAPI.makeGetRequest(
+        `${areaType}/${areaId}/hf/layers/persistence`,
+        { cancelToken: source.token },
+      ),
+      source,
+    };
+  }
+
+  /** ************** */
+  /** BASE FUNCTIONS */
+  /** ************** */
+
+  /**
+   * Request an endpoint through a GET request
+   *
+   * @param {String} endpoint endpoint to attach to url
+   */
+  static makeGetRequest(endpoint: string, options = {}, completeRes = false) {
+    const config = {
+      ...options,
+      headers: {
+        Authorization: `apiKey ${window._env_?.VITE_BACKEND_KEY || import.meta.env.VITE_BACKEND_KEY}`,
+      },
+    };
+    return axios
+      .get(
+        `${window._env_?.VITE_BACKEND_URL || import.meta.env.VITE_BACKEND_URL}/${endpoint}`,
+        config,
+      )
+      .then((res) => {
+        if (completeRes) {
+          return res;
+        }
+        return res.data;
+      })
+      .catch((error) => {
+        if (axios.isCancel(error)) {
+          return Promise.resolve("request canceled");
+        }
+        let message = "Bad GET response. Try later";
+        if (error.response) message = error.response.status;
+        if (error.request && error.request.statusText === "")
+          message = "no-data-available";
+        return Promise.reject(message);
+      });
+  }
+}
+
+export default BackendAPI;

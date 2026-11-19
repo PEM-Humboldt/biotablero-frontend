@@ -1,26 +1,30 @@
+import { SvgIconTypeMap } from "@mui/material";
+import { OverridableComponent } from "@mui/material/OverridableComponent";
 import React from "react";
 
-export interface componentProps {
+export interface ComponentProps {
   handleAccordionChange?: (
     level: string,
     tabLayerId: string,
-    expandedTab?: string
+    expandedTab?: string,
   ) => void;
   openTab?: string;
 }
 
-export interface accordionComponent {
+export interface AccordionComponent {
   label: {
     id: string;
     name: React.ReactNode;
-    icon?: string;
+    icon?:
+      | string
+      | (OverridableComponent<SvgIconTypeMap> & { muiName: string });
     disabled?: boolean;
     collapsed?: boolean;
     expandIcon?: {};
     detailId?: string;
     description?: string;
   };
-  component?: React.ComponentType<componentProps>;
-  componentProps?: componentProps;
+  component?: React.ComponentType<any>; // TODO: Arreglar este any, debe ser un tipo
+  componentProps?: any; // TODO: Arreglar este any, debe ser un tipo
   defaultTab?: string;
 }

@@ -1,0 +1,32 @@
+import { useEffect } from "react";
+import { useOutletContext } from "react-router";
+
+import { SidebarProvider } from "@ui/shadCN/component/sidebar";
+
+import type { UiManager } from "core/layout/MainLayout";
+import { CardManager } from "pages/indicators/CardManager";
+import { TagManager } from "pages/indicators/TagManager";
+import { useIndicatorsCards } from "pages/indicators/hooks/useIndicatorsCards";
+import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
+
+export function Indicators() {
+  const { layoutDispatch } = useOutletContext<UiManager>();
+  const { isLoadingCards, cards, setFilters } = useIndicatorsCards();
+
+  useEffect(() => {
+    layoutDispatch({
+      type: LayoutUpdated.CHANGE_SECTION,
+      sectionData: {
+        moduleInfo: { name: "Indicadores", icon: "indicators" },
+        logos: new Set(),
+      },
+    });
+  }, [layoutDispatch]);
+
+  return (
+    <SidebarProvider>
+      <TagManager filterData={setFilters} />
+      <CardManager isLoading={isLoadingCards} cardsData={cards} />
+    </SidebarProvider>
+  );
+}

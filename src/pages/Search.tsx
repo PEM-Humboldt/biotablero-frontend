@@ -1,0 +1,261 @@
+import { useCallback, useEffect, useReducer } from "react";
+import { useNavigate, useLocation, useOutletContext } from "react-router";
+import L from "leaflet";
+import type * as geojson from "geojson";
+
+import { LegacyCTX, SearchCTX } from "pages/search/hooks/SearchContext";
+import SearchAPI from "pages/search/api/searchAPI";
+import type { AreaIdBasic } from "pages/search/types/dashboard";
+import { MapViewer } from "pages/search/MapViewer";
+import GeoServerAPI from "@api/geoServer";
+import { Dashboard } from "pages/search/Dashboard";
+import { Selector } from "pages/search/Selector";
+import type { UiManager } from "core/layout/MainLayout";
+import { LayoutUpdated } from "core/layout/mainLayout/hooks/layoutReducer";
+import {
+  searchInitialState,
+  searchReducer,
+  SearchUpdated,
+} from "pages/search/hooks/SearchReducer";
+import { ReportCTX } from "@hooks/useReport";
+
+import { toast } from "sonner";
+import { CircleXIcon, FileExclamationPoint } from "lucide-react";
+import { Button } from "@ui/shadCN/component/button";
+
+export function Search() {
+  const { layoutDispatch } = useOutletContext<UiManager>();
+  const [searchState, searchDispatch] = useReducer(
+    searchReducer,
+    searchInitialState,
+  );
+  const navigate = useNavigate();
+  const { search, pathname } = useLocation();
+  const query = new URLSearchParams(search);
+  const areaTypeURL = query.get("area_type");
+  const areaIdURL = query.get("area_id");
+
+  useEffect(() => {
+    let toastId: string | number | undefined;
+
+    // HACK: se difiere el toast al siguiente ciclo del event loop porque crearlo
+    // directo en el efecto no se renderizaba de forma consistente. todavía no sé
+    // porqué, puede ser porque el <Toaster /> aún no está suscrito, o el dismiss
+    // del cleanup choca con la creación del toast nuevo (Search se remonta al cargar).
+    const timer = setTimeout(() => {
+      toastId = toast("Indicadores no disponibles", {
+        position: "bottom-left",
+        description:
+          "Actualmente algunos indicadores no se encuentran disponibles debido a la actualización del módulo de consultas. Estamos trabajando para incorporarlos próximamente.",
+        icon: <FileExclamationPoint className="size-8 text-accent" />,
+        className:
+          "relative p-6 gap-6! border-2! border-accent! -translate-y-17",
+        duration: Infinity,
+        action: (
+          <Button
+            size="icon"
+            variant="ghost-clean"
+            className="absolute top-1 right-1"
+            onClick={() => toast.dismiss(toastId)}
+          >
+            <CircleXIcon className="size-6" />
+          </Button>
+        ),
+      });
+    }, 0);
+
+    return () => {
+      clearTimeout(timer);
+      if (toastId !== undefined) {
+        toast.dismiss(toastId);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    layoutDispatch({
+      type: LayoutUpdated.CHANGE_SECTION,
+      sectionData: {
+        moduleInfo: { name: "Consultas Geográficas", icon: "search" },
+        logos: new Set(),
+        className: "fullgrid",
+      },
+    });
+  }, [layoutDispatch]);
+
+  useEffect(() => {
+    if (searchState.searchType !== "definedArea") {
+      return;
+    }
+
+    if (areaTypeURL === null) {
+      layoutDispatch({
+        type: LayoutUpdated.HEADER_NAMES,
+        newHeader: { title: "", subtitle: "" },
+      });
+      searchDispatch({ type: SearchUpdated.GO_BACK });
+      return;
+    }
+
+    let cancelled = false;
+
+    const syncSearchConsole = async () => {
+      try {
+        const [areaTypes, areaIds] = await Promise.all([
+          SearchAPI.requestAreaTypes(),
+          SearchAPI.requestAreaIds(areaTypeURL),
+        ]);
+        if (cancelled) {
+          return;
+        }
+
+        const typeObj = areaTypes.find(({ id }) => id === areaTypeURL);
+        const headerNames = { subtitle: typeObj?.label ?? "" };
+
+        if (areaIdURL === null) {
+          layoutDispatch({
+            type: LayoutUpdated.HEADER_NAMES,
+            newHeader: { ...headerNames, title: "" },
+          });
+
+          searchDispatch({
+            type: SearchUpdated.CONSOLE_PARTIAL,
+            payload: { areaType: typeObj, areaNamesList: areaIds },
+          });
+
+          return;
+        }
+
+        const areaInfo = await SearchAPI.requestAreaInfo(areaIdURL);
+        const idObj = areaIds.find(({ id }) => id === areaInfo.id);
+        if (cancelled) {
+          return;
+        }
+
+        layoutDispatch({
+          type: LayoutUpdated.HEADER_NAMES,
+          newHeader: { ...headerNames, title: idObj?.name ?? "" },
+        });
+
+        searchDispatch({
+          type: SearchUpdated.CONSOLE_FULL,
+          payload: {
+            areaType: typeObj,
+            areaNamesList: areaIds,
+            areaId: idObj,
+            areaInfo: areaInfo,
+          },
+        });
+      } catch (err) {
+        console.error("Error while fetching the area's data:", err);
+      }
+    };
+
+    void syncSearchConsole();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [areaTypeURL, areaIdURL, searchState.searchType, layoutDispatch]);
+
+  useEffect(() => {
+    if (
+      searchState.areaType?.id !== "custom" ||
+      !searchState.areaLayer.json ||
+      (searchState.areaId && typeof searchState.areaId.id === "number")
+    ) {
+      return;
+    }
+
+    const syncDrawConsole = async () => {
+      const geojson = searchState.areaLayer
+        .json as geojson.Feature<geojson.Polygon>;
+
+      try {
+        const areaPolygon = await SearchAPI.requestAreaPolygon(geojson);
+
+        const areaInfo = await SearchAPI.requestAreaInfo(
+          areaPolygon.polygon_id,
+        );
+        const areaBasic: AreaIdBasic = {
+          id: areaPolygon.polygon_id,
+          name: "polígono",
+          area: areaInfo.area,
+          area_type: searchState.areaType!,
+        };
+
+        searchDispatch({
+          type: SearchUpdated.CONSOLE_DRAW,
+          payload: {
+            areaId: areaBasic,
+            areaInfo: areaInfo,
+          },
+        });
+      } catch (err) {
+        console.error("Error processing custom polygon:", err);
+      }
+    };
+
+    void syncDrawConsole();
+  }, [searchState.areaId, searchState.areaLayer.json, searchState.areaType]);
+
+  useEffect(() => {
+    if (!searchState.areaType) {
+      return;
+    }
+
+    let params = `?area_type=${searchState.areaType.id}`;
+    if (searchState.areaId) {
+      params += `&area_id=${searchState.areaId.id}`;
+    }
+
+    if (params !== search) {
+      void navigate({ pathname, search: params }, { replace: true });
+    }
+  }, [searchState.areaType, searchState.areaId, navigate, pathname, search]);
+
+  const handleShowDrawControls = useCallback(
+    (show: boolean) => {
+      searchDispatch({
+        type: SearchUpdated.SHOW_DRAW_CONTROL,
+        showDrawControl: show,
+      });
+    },
+    [searchDispatch],
+  );
+
+  const bounds =
+    searchState.areaLayer.id === "geofence" && searchState.areaLayer.json
+      ? L.geoJSON(searchState.areaLayer.json).getBounds()
+      : [];
+
+  const showDashboard =
+    searchState.areaType !== undefined &&
+    searchState.areaId !== undefined &&
+    searchState.areaHa !== undefined;
+
+  return (
+    <SearchCTX state={searchState} dispatch={searchDispatch}>
+      <LegacyCTX>
+        <div className="flex h-[calc(100vh-138px)] md:h-[calc(100vh-148px)] w-full">
+          <MapViewer
+            bounds={bounds}
+            polygon={null}
+            loadPolygonInfo={() => {}}
+            geoServerUrl={GeoServerAPI.getRequestURL()}
+          />
+
+          <div className="flex-[1_1_40%] h-full min-h-0 flex flex-col order-2">
+            {showDashboard ? (
+              <ReportCTX>
+                <Dashboard />
+              </ReportCTX>
+            ) : (
+              <Selector showDrawControls={handleShowDrawControls} />
+            )}
+          </div>
+        </div>
+      </LegacyCTX>
+    </SearchCTX>
+  );
+}

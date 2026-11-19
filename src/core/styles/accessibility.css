@@ -1,0 +1,31 @@
+@layer accesibility {
+  /* ACCESSIBILLITY CLASSES */
+  .hidden,
+  [hidden] {
+    display: none !important;
+  }
+
+  *:focus-visible {
+    @apply outline-2! outline-primary! outline-offset-2!;
+  }
+
+  .sr-only:not(:focus-visible):not(:active) {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      transition: none !important;
+      animation: none !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
