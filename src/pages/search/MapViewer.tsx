@@ -208,16 +208,16 @@ export function MapViewer({
 
       {/* TODO: Catch warning from OpenStreetMap when cannot load the tiles */}
 
-      {/* HACK: Pendiente a la integración de la db con el sistema de usuarios */}
-      {user && user.username === "geb" && (
-        <WMSTileLayer
-          layers="Biotablero:Regiones_geb"
-          format="image/png"
-          url={`${geoServerUrl}/Biotablero/wms?service=WMS`}
-          opacity={0.4}
-          transparent
-        />
-      )}
+      {user &&
+        (user.username === "geb" || user.username === "admin@geb.com.co") && (
+          <WMSTileLayer
+            layers="Biotablero:Regiones_geb"
+            format="image/png"
+            url={`${geoServerUrl}/Biotablero/wms?service=WMS`}
+            opacity={0.4}
+            transparent
+          />
+        )}
     </MapContainer>
   );
 }
