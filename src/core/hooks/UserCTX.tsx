@@ -38,7 +38,10 @@ export function generateUserFromKeycloak(userKC: UserKeycloak): UserProfile {
     organization: userKC.organizacion,
   };
 
-  if (userProfile.username === "geb") {
+  if (
+    userProfile.username === "geb" ||
+    userProfile.username === "admin@geb.com.co"
+  ) {
     userProfile.company = {
       id: 1,
       name: "Grupo Energía Bogotá",

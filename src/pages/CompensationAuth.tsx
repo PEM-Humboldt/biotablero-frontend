@@ -17,7 +17,8 @@ export function RenderCompensation() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const renderCompensation = user?.username === "geb";
+  const renderCompensation =
+    user?.username === "geb" || user?.username === "admin@geb.com.co";
 
   useEffect(() => {
     layoutDispatch({
